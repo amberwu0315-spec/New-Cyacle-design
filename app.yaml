@@ -1,0 +1,8 @@
+application:
+    name: cyacle
+artifacts:
+    - name: server
+      type: SERVER
+domains:
+    - name: app
+      source: LOCAL

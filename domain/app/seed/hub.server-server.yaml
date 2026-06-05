@@ -1,0 +1,16 @@
+portal_sites:
+  - name: app.UserActor-client-rpc
+    type: RPCGW
+    actor_skel_name: app.UserActor
+    access_method: client
+    web_name: ""
+
+portal_rules:
+  - name: app.UserActor-client-rpc
+    scheme: http
+    host: ""
+    port: 7088
+    path_prefix: /api
+    target_type: SITE
+    site_name: app.UserActor-client-rpc
+    redirection_pattern: ""

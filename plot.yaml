@@ -1,0 +1,8 @@
+general:
+    disableOverride: false
+team:
+    name: carbonnt
+golang:
+    modulePathPrefix: go.cew.io/app
+git:
+    repoUrlPrefix: git@git.cew.io:carbonnt

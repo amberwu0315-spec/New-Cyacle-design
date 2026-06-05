@@ -1,0 +1,11 @@
+# vined - begin
+.DS_Store
+.idea/
+.vscode/
+/.cache/
+/app/src/server/cmd
+/dev.yaml
+/go.work
+/go.work.sum
+/pnpm-workspace.yaml
+# vined - end
