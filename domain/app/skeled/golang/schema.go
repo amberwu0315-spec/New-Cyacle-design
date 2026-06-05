@@ -8,7 +8,7 @@ func init() {
 
 var _DomainSchema = &skel.DomainSchema{
 	Domain: "app",
-	Hash:   "96211193",
+	Hash:   "dfe84fd4",
 	Full:   true,
 	Enums: []*skel.EnumSchema{
 		{
@@ -263,11 +263,89 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "UserActor",
 			SkelName:    "app.UserActor",
 			Description: "user",
-			Hash:        "cdf51931",
+			Hash:        "0802a989",
 			Vias: []skel.ActorVia{
 				skel.ActorViaClient,
 			},
-			AuthEnabled: false,
+			AuthEnabled: true,
+			AuthCredential: &skel.DataSchema{
+				Name:     "UserActorCredential",
+				SkelName: "app.UserActorCredential",
+				Hash:     "36f8aa72",
+				Members: []*skel.MemberSchema{
+					{
+						Name: "session",
+						Type: &skel.TypeSchema{
+							Kind:   skel.TypeKindScalar,
+							Scalar: "string",
+						},
+					},
+				},
+			},
+			AuthInfo: &skel.DataSchema{
+				Name:     "UserActorInfo",
+				SkelName: "app.UserActorInfo",
+				Hash:     "9f47f675",
+				Members: []*skel.MemberSchema{
+					{
+						Name: "userId",
+						Type: &skel.TypeSchema{
+							Kind:   skel.TypeKindScalar,
+							Scalar: "int",
+						},
+					},
+				},
+			},
+			AuthService: &skel.ServiceSchema{
+				Name:     "UserActorAuthService",
+				SkelName: "app.UserActorAuthService",
+				Hash:     "2fb2007b",
+				AuthMode: skel.AuthModeUnset,
+				Methods: []*skel.MethodSchema{
+					{
+						Name:     "auth",
+						SkelName: "auth",
+						Hash:     "75210953",
+						AuthMode: skel.AuthModeAuth,
+						Arguments: []*skel.MemberSchema{
+							{
+								Name: "credential",
+								Type: &skel.TypeSchema{
+									Kind:     skel.TypeKindData,
+									Name:     "UserActorCredential",
+									SkelName: "app.UserActorCredential",
+								},
+							},
+						},
+						ResultType: &skel.TypeSchema{
+							Kind:     skel.TypeKindData,
+							Name:     "UserActorInfo",
+							SkelName: "app.UserActorInfo",
+						},
+					},
+				},
+			},
+			AuthMethod: &skel.MethodSchema{
+				Name:     "auth",
+				SkelName: "auth",
+				Hash:     "75210953",
+				AuthMode: skel.AuthModeAuth,
+				Arguments: []*skel.MemberSchema{
+					{
+						Name: "credential",
+						Type: &skel.TypeSchema{
+							Kind:     skel.TypeKindData,
+							Name:     "UserActorCredential",
+							SkelName: "app.UserActorCredential",
+						},
+					},
+				},
+				ResultType: &skel.TypeSchema{
+					Kind:     skel.TypeKindData,
+					Name:     "UserActorInfo",
+					SkelName: "app.UserActorInfo",
+				},
+			},
 			PermEnabled: false,
 		},
 	},

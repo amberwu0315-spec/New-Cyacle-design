@@ -3,4 +3,14 @@ domain app
 @desc("user")
 pub actor UserActor {
     via client {}
+
+    auth {
+        credential {
+            session: string
+        }
+
+        info {
+            userId: int
+        }
+    }
 }

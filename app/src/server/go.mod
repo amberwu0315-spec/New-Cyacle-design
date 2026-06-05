@@ -5,7 +5,7 @@ go 1.26.0
 require (
 	go.cew.io/app/carbonnt/cyacle/server/app v0.0.0-00010101000000-000000000000
 	go.cew.io/app/carbonnt/cyacle/server/unit v0.0.0-00010101000000-000000000000
-	go.cew.io/app/carbonnt/cyacle/skeled/unitpub v0.0.0-00010101000000-000000000000
+	go.cew.io/app/carbonnt/cyacle/skeled/apppub v0.0.0-00010101000000-000000000000
 	go.yorun.ai/vine v1.1.10
 )
 
@@ -18,6 +18,7 @@ require (
 	github.com/bytedance/sonic/loader v0.5.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cloudwego/base64x v0.1.6 // indirect
+	github.com/cockroachdb/apd/v3 v3.2.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/dustin/go-humanize v1.0.1 // indirect
 	github.com/fxamacker/cbor/v2 v2.9.1 // indirect
@@ -70,6 +71,9 @@ require (
 	github.com/ugorji/go/codec v1.3.1 // indirect
 	github.com/urfave/cli/v3 v3.4.1 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/unit v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/unitpub v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/util/vmath v0.0.1-alpha1 // indirect
 	go.mongodb.org/mongo-driver/v2 v2.5.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	golang.org/x/arch v0.26.0 // indirect

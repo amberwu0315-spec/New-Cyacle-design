@@ -20,3 +20,9 @@ type PageResp[TItem any] = apppub.PageResp[TItem]
 type UnitValue = apppub.UnitValue
 
 type UserActor = apppub.UserActor
+type UserActorCredential = apppub.UserActorCredential
+type UserActorInfo = apppub.UserActorInfo
+type UserActorAuthServiceServer = apppub.UserActorAuthServiceServer
+type UserActorAuthServiceServerER = apppub.UserActorAuthServiceServerER
+type DefaultUserActorAuthServiceServer = apppub.DefaultUserActorAuthServiceServer
+type DefaultUserActorAuthServiceServerER = apppub.DefaultUserActorAuthServiceServerER
