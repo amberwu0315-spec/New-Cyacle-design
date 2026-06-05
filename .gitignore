@@ -5,6 +5,7 @@
 /.cache/
 /app/src/server/cmd
 /dev.yaml
+/domain/unit
 /go.work
 /go.work.sum
 /pnpm-workspace.yaml

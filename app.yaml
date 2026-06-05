@@ -6,3 +6,6 @@ artifacts:
 domains:
     - name: app
       source: LOCAL
+    - name: unit
+      source: REMOTE
+      gitUrl: git@git.cew.io:/carbonnt/cyacle/domain/unit.git

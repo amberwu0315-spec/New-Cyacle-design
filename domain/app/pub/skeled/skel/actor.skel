@@ -1,0 +1,6 @@
+domain app
+
+@desc("user")
+pub actor UserActor {
+    via client {}
+}

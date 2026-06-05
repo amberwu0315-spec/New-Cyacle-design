@@ -5,4 +5,4 @@ team:
 golang:
     modulePathPrefix: go.cew.io/app
 git:
-    repoUrlPrefix: git@git.cew.io:carbonnt
+    repoUrlPrefix: "git@git.cew.io:"
