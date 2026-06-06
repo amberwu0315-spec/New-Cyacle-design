@@ -9,3 +9,9 @@ domains:
     - name: unit
       source: REMOTE
       gitUrl: git@git.cew.io:/carbonnt/cyacle/domain/unit.git
+    - name: formula
+      source: REMOTE
+      gitUrl: git@git.cew.io:/carbonnt/cyacle/domain/formula.git
+    - name: category
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/category.git
