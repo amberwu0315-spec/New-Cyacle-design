@@ -4,7 +4,7 @@ go 1.26.0
 
 require (
 	go.cew.io/app/carbonnt/cyacle/skeled/apppub v0.0.0-00010101000000-000000000000
-	go.yorun.ai/vine v1.1.15
+	go.yorun.ai/vine v1.1.16
 )
 
 require (
