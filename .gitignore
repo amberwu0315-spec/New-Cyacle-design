@@ -5,6 +5,8 @@
 /.cache/
 /app/src/server/cmd
 /dev.yaml
+/domain/category
+/domain/formula
 /domain/unit
 /go.work
 /go.work.sum
