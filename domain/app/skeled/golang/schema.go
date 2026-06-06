@@ -10,6 +10,9 @@ var _DomainSchema = &skel.DomainSchema{
 	Domain: "app",
 	Hash:   "dfe84fd4",
 	Full:   true,
+	Generated: &skel.GeneratedInfo{
+		CompilerVersion: "v1.1.23",
+	},
 	Enums: []*skel.EnumSchema{
 		{
 			Name:        "ItemType",
@@ -44,7 +47,7 @@ var _DomainSchema = &skel.DomainSchema{
 					Description: "宏文本片段内容",
 					Type: &skel.TypeSchema{
 						Kind:     skel.TypeKindScalar,
-						Scalar:   "string",
+						Scalar:   skel.ScalarString,
 						Nullable: true,
 					},
 				},
@@ -118,7 +121,7 @@ var _DomainSchema = &skel.DomainSchema{
 						TypeArguments: []*skel.TypeSchema{
 							{
 								Kind:   skel.TypeKindScalar,
-								Scalar: "string",
+								Scalar: skel.ScalarString,
 							},
 						},
 						Nullable: true,
@@ -134,7 +137,7 @@ var _DomainSchema = &skel.DomainSchema{
 						TypeArguments: []*skel.TypeSchema{
 							{
 								Kind:   skel.TypeKindScalar,
-								Scalar: "string",
+								Scalar: skel.ScalarString,
 							},
 						},
 						Nullable: true,
@@ -165,7 +168,7 @@ var _DomainSchema = &skel.DomainSchema{
 					Description: "数据更新时间",
 					Type: &skel.TypeSchema{
 						Kind:     skel.TypeKindScalar,
-						Scalar:   "timestamp",
+						Scalar:   skel.ScalarTimestamp,
 						Nullable: true,
 					},
 				},
@@ -174,7 +177,7 @@ var _DomainSchema = &skel.DomainSchema{
 					Description: "是否来源于AI, 如翻译",
 					Type: &skel.TypeSchema{
 						Kind:   skel.TypeKindScalar,
-						Scalar: "bool",
+						Scalar: skel.ScalarBool,
 					},
 				},
 			},
@@ -214,7 +217,7 @@ var _DomainSchema = &skel.DomainSchema{
 					Description: "总数",
 					Type: &skel.TypeSchema{
 						Kind:   skel.TypeKindScalar,
-						Scalar: "int",
+						Scalar: skel.ScalarInt,
 					},
 				},
 				{
@@ -242,7 +245,7 @@ var _DomainSchema = &skel.DomainSchema{
 					Description: "数值",
 					Type: &skel.TypeSchema{
 						Kind:     skel.TypeKindScalar,
-						Scalar:   "decimal",
+						Scalar:   skel.ScalarDecimal,
 						Nullable: true,
 					},
 				},
@@ -251,7 +254,7 @@ var _DomainSchema = &skel.DomainSchema{
 					Description: "单位id",
 					Type: &skel.TypeSchema{
 						Kind:     skel.TypeKindScalar,
-						Scalar:   "string",
+						Scalar:   skel.ScalarString,
 						Nullable: true,
 					},
 				},
@@ -277,7 +280,7 @@ var _DomainSchema = &skel.DomainSchema{
 						Name: "session",
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
-							Scalar: "string",
+							Scalar: skel.ScalarString,
 						},
 					},
 				},
@@ -291,7 +294,7 @@ var _DomainSchema = &skel.DomainSchema{
 						Name: "userId",
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
-							Scalar: "int",
+							Scalar: skel.ScalarInt,
 						},
 					},
 				},
@@ -300,6 +303,7 @@ var _DomainSchema = &skel.DomainSchema{
 				Name:     "UserActorAuthService",
 				SkelName: "app.UserActorAuthService",
 				Hash:     "2fb2007b",
+				Pub:      false,
 				AuthMode: skel.AuthModeUnset,
 				Methods: []*skel.MethodSchema{
 					{

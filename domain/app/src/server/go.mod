@@ -2,7 +2,7 @@ module go.cew.io/app/carbonnt/cyacle/server/app
 
 go 1.26.0
 
-require go.yorun.ai/vine v1.1.17
+require go.yorun.ai/vine v1.1.23
 
 require (
 	cloud.google.com/go v0.123.0 // indirect
@@ -55,6 +55,7 @@ require (
 	github.com/quic-go/quic-go v0.59.0 // indirect
 	github.com/redis/go-redis/v9 v9.18.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/tidwall/btree v1.1.0 // indirect
 	github.com/tidwall/gjson v1.19.0 // indirect

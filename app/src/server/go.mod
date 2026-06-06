@@ -8,7 +8,7 @@ require (
 	go.cew.io/app/carbonnt/cyacle/server/formula v0.0.0-00010101000000-000000000000
 	go.cew.io/app/carbonnt/cyacle/server/unit v0.0.0-00010101000000-000000000000
 	go.cew.io/app/carbonnt/cyacle/skeled/apppub v0.0.0-00010101000000-000000000000
-	go.yorun.ai/vine v1.1.17
+	go.yorun.ai/vine v1.1.23
 )
 
 require (
@@ -63,6 +63,7 @@ require (
 	github.com/quic-go/quic-go v0.59.0 // indirect
 	github.com/redis/go-redis/v9 v9.18.0 // indirect
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
+	github.com/robfig/cron/v3 v3.0.1 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/tidwall/btree v1.1.0 // indirect
 	github.com/tidwall/gjson v1.19.0 // indirect

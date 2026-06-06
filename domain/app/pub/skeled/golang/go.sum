@@ -20,8 +20,8 @@ github.com/stretchr/testify v1.11.1 h1:7s2iGBzp5EwR7/aIZr8ao5+dra3wiQyKjjFuvgVKu
 github.com/stretchr/testify v1.11.1/go.mod h1:wZwfW3scLgRK+23gO65QZefKpKQRnfz6sD981Nm4B6U=
 github.com/x448/float16 v0.8.4 h1:qLwI1I70+NjRFUR3zs1JPUCgaCXSh3SW62uAKT1mSBM=
 github.com/x448/float16 v0.8.4/go.mod h1:14CWIYCyZA/cWjXOioeEpHeN/83MdbZDRQHoFcYsOfg=
-go.yorun.ai/vine v1.1.17 h1:4f5aOUC0X7ka5he7i6z+tNc3T/zdyT/bfdbIUp/68N8=
-go.yorun.ai/vine v1.1.17/go.mod h1:OfKP1CididgsC20+3obPcFExIJ1nBFmE21ubcDVMQHI=
+go.yorun.ai/vine v1.1.23 h1:Dygs3vDbgkc3b0yV/Imt1/lEX/WCmD1Zz3vp1IKNyOU=
+go.yorun.ai/vine v1.1.23/go.mod h1:8vl4j/SD8mKoMGKgykXd6ymZuJcvSbkfLd9AdACtNOo=
 golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f h1:W3F4c+6OLc6H2lb//N1q4WpJkhzJCK5J6kUi1NTVXfM=
 golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f/go.mod h1:J1xhfL/vlindoeF/aINzNzt2Bket5bjo9sdOYzOsU80=
 golang.org/x/net v0.53.0 h1:d+qAbo5L0orcWAr0a9JweQpjXF19LMXJE8Ey7hwOdUA=
