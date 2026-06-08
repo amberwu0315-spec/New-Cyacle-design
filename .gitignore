@@ -8,6 +8,10 @@
 /domain/category
 /domain/formula
 /domain/unit
+/domain/accounting.api
+/domain/accounting.core
+/domain/lca.api
+/domain/lca.core
 /go.work
 /go.work.sum
 /pnpm-workspace.yaml
