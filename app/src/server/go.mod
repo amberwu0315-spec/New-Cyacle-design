@@ -80,6 +80,7 @@ require (
 	go.cew.io/app/carbonnt/cyacle/skeled/formulapub v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/unit v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/unitpub v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/unit/pub/sdk v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/util/vmath v0.0.1-alpha2 // indirect
 	go.mongodb.org/mongo-driver/v2 v2.5.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
@@ -100,3 +101,5 @@ require (
 	modernc.org/memory v1.11.0 // indirect
 	modernc.org/sqlite v1.49.1 // indirect
 )
+
+replace go.cew.io/app/carbonnt/cyacle/unit/pub/sdk => ../../../domain/unit/pub/sdk
