@@ -14,4 +14,7 @@ domains:
       gitUrl: git@git.cew.io:/carbonnt/cyacle/domain/formula.git
     - name: category
       source: REMOTE
-      gitUrl: git@git.cew.io:/carbonnt/cyacle/domain/category.git
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/category.git
+    - name: factor
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/factor.git
