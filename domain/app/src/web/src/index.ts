@@ -1,8 +1,22 @@
 export { cn } from './lib/utils.ts'
+export {
+  formatMessage,
+  getMessages,
+  languageStore,
+  useLanguageStore,
+  useTranslation,
+} from './lib/i18n/index.ts'
 export { queryClient, TanstackQueryRootProvider } from './lib/query-client.tsx'
 export { vrpcClient } from './lib/vrpc-client.ts'
 
+export type {
+  MessageParams,
+  Messages,
+  SupportedLanguage,
+} from './lib/i18n/index.ts'
+
 export { createAppRouter } from './create-router.ts'
+export { LanguageSwitcher } from './components/layouts/app-layout/language-switcher.tsx'
 export {
   collectDomainRouteTrees,
   defineDomainRouteSlots,

@@ -2,6 +2,11 @@
 
 本文件只放代码姿势。实际包名、domain 名、skel service 名和 method meta export 名以项目检测结果为准。
 
+## 代码变更
+严禁修改`app/src/web` 中的代码，它只负责最终汇总和暴露。`domain/app/src/web` 中的代码才是其他子domain依赖的共享 app 代码。
+
+## 约定与命名
+
 命名规则：`@example-app/*` 是中性示例包名；`@example-app/web-app` 表示共享 app Web 包占位，真实项目以 `domain/app/src/web/package.json` 的 `name` 和 `exports` 为准。
 
 ---
@@ -75,7 +80,6 @@ App 自身路由分两类：login、register、SSO、独立落地页等不需要
 ```tsx
 // domain/app/src/web/src/routes/index.tsx
 import { createRootRoute } from '@tanstack/react-router'
-import { createAppNavConfig } from '../components/layouts/app-layout/nav-config'
 import { RootLayout } from '../root-layout'
 import { createAppLayoutRoute } from './app-layout-route'
 import { createHomeRouteTree } from './home-route'
@@ -88,8 +92,7 @@ import {
 export function createAppRouteTree(domainRouteTrees: DomainRouteTreeCollection) {
   const { routeTrees } = domainRouteTrees
   const RootRoute = createRootRoute({ component: RootLayout })
-  const navConfig = createAppNavConfig(routeTrees)
-  const AppLayoutRoute = createAppLayoutRoute({ RootRoute, navConfig })
+  const AppLayoutRoute = createAppLayoutRoute({ RootRoute, routeTrees })
   const rootDomainRoutes = resolveDomainRoutes(
     RootRoute,
     routeTrees.flatMap((routeTree) => getDomainRouteBranchFactories(routeTree, 'root')),
@@ -106,7 +109,7 @@ export function createAppRouteTree(domainRouteTrees: DomainRouteTreeCollection) 
 }
 ```
 
-`AppLayout` 承载 app 自己页面和 layout slot 下 domain 页面使用的统一框架。当前 app 的左侧导航由内置 nav 和 domain 函数式 `metas.nav` 聚合而来，app 会调用 `nav({ locale })`。
+`AppLayout` 承载 app 自己页面和 layout slot 下 domain 页面使用的统一框架。当前 app 的左侧导航由内置 nav 和 domain 函数式 `metas.nav` 聚合而来，app 会按当前语言调用 `nav({ language })`。
 
 ```tsx
 // domain/app/src/web/src/components/layouts/app-layout/index.tsx
@@ -201,6 +204,7 @@ import { Boxes } from 'lucide-react'
 
 import { createHomeRouteTree } from './home-route'
 import { createReportsRouteTree } from './reports-route'
+import { getCatalogMessages } from '../lib/i18n'
 
 function createCatalogRouteBranches({ RootRoute }: { RootRoute: AnyRoute }): AnyRoute[] {
   const domainRoute = createRoute({
@@ -217,23 +221,23 @@ function createCatalogRouteBranches({ RootRoute }: { RootRoute: AnyRoute }): Any
   ]
 }
 
-const createCatalogNavMeta: DomainNavMetaFactory = ({ locale }) => {
-  const isEnglish = locale.startsWith('en')
+const createCatalogNavMeta: DomainNavMetaFactory = ({ language }) => {
+  const t = getCatalogMessages(language)
 
   return {
-    label: isEnglish ? 'Catalog' : '目录',
-    desc: isEnglish ? 'Catalog management and reports' : '目录管理与报告入口',
+    label: t.common.nav.label,
+    desc: t.common.nav.desc,
     icon: Boxes,
     defaultTo: '/catalog',
     groups: [
       {
         id: 'catalog-main',
-        title: isEnglish ? 'Catalog' : '目录',
+        title: t.common.nav.groupTitle,
         items: [
           {
             id: 'catalog-home',
-            label: isEnglish ? 'Home' : '首页',
-            desc: isEnglish ? 'Open catalog home' : '进入目录首页',
+            label: t.common.nav.homeLabel,
+            desc: t.common.nav.homeDesc,
             to: '/catalog',
             icon: Boxes,
           },
@@ -425,7 +429,6 @@ App route tree 在 shell 层组装 app 级 route、domain root slot 和 domain l
 // domain/app/src/web/src/routes/index.tsx
 import { createRootRoute } from '@tanstack/react-router'
 
-import { createAppNavConfig } from '../components/layouts/app-layout/nav-config'
 import { RootComponent } from '../root-layout'
 import { createAppLayoutRoute } from './app-layout-route'
 import { createHomeRouteTree } from './home-route'
@@ -438,8 +441,7 @@ import {
 export function createAppRouteTree(domainRouteTrees: DomainRouteTreeCollection) {
   const { routeTrees } = domainRouteTrees
   const RootRoute = createRootRoute({ component: RootComponent })
-  const navConfig = createAppNavConfig(routeTrees)
-  const AppLayoutRoute = createAppLayoutRoute({ RootRoute, navConfig })
+  const AppLayoutRoute = createAppLayoutRoute({ RootRoute, routeTrees })
   const rootDomainRoutes = resolveDomainRoutes(
     RootRoute,
     routeTrees.flatMap((routeTree) => getDomainRouteBranchFactories(routeTree, 'root')),

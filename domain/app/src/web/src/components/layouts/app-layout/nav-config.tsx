@@ -1,9 +1,11 @@
 import type { LucideIcon } from 'lucide-react'
 
+import { getMessages, languageStore } from '../../../lib/i18n'
+import type { SupportedLanguage } from '../../../lib/i18n'
 import type { DomainRouteTree } from '../../../routes/helpers/domain-route-tree'
 
 export interface DomainNavMetaContext {
-  locale: string
+  language: SupportedLanguage
 }
 
 export interface DomainNavItemMeta {
@@ -74,11 +76,8 @@ export interface AppNavConfig {
 }
 
 export interface AppNavConfigOptions {
-  locale?: string
+  language?: SupportedLanguage
 }
-
-const DEFAULT_DOMAIN_NAV_CATEGORY = '业务应用'
-const DEFAULT_APP_NAV_LOCALE = 'zh-CN'
 
 export const MOCK_USER = {
   name: 'Cyacle',
@@ -111,14 +110,17 @@ function createDefaultSceneId(defaultTo: string) {
   return pathKey ? `domain-${pathKey}` : 'domain-root'
 }
 
-function normalizeDomainNavMeta(navMeta: DomainNavMeta): AppScene {
+function normalizeDomainNavMeta(
+  navMeta: DomainNavMeta,
+  defaultCategory: string,
+): AppScene {
   const defaultTo = normalizeNavPath(navMeta.defaultTo)
 
   return {
     id: navMeta.id ?? createDefaultSceneId(defaultTo),
     label: navMeta.label,
     description: navMeta.desc,
-    category: navMeta.category ?? DEFAULT_DOMAIN_NAV_CATEGORY,
+    category: navMeta.category ?? defaultCategory,
     icon: navMeta.icon,
     defaultTo,
     groups: navMeta.groups.map((group) => ({
@@ -154,8 +156,10 @@ export function createAppNavConfig(
   domainRouteTrees: Array<DomainRouteTree>,
   options: AppNavConfigOptions = {},
 ): AppNavConfig {
+  const language = options.language ?? languageStore.getSnapshot()
+  const t = getMessages(language)
   const navMetaContext = {
-    locale: options.locale ?? DEFAULT_APP_NAV_LOCALE,
+    language,
   }
   const scenes: Array<AppScene> = []
   const categories: Array<AppSceneCategory> = []
@@ -167,7 +171,10 @@ export function createAppNavConfig(
       continue
     }
 
-    const scene = normalizeDomainNavMeta(navMeta)
+    const scene = normalizeDomainNavMeta(
+      navMeta,
+      t.common.nav.categories.businessApps,
+    )
     scenes.push(scene)
 
     const category = categories.find((item) => item.title === scene.category)

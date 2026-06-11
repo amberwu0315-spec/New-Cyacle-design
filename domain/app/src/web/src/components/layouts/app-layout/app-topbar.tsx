@@ -2,9 +2,11 @@ import * as React from 'react'
 import { ChevronRight, Menu } from 'lucide-react'
 
 import { Button } from '../../ui/button'
+import { useTranslation } from '../../../lib/i18n'
 import { cn } from '../../../lib/utils'
 
 import { AccountPopover } from './account-popover'
+import { LanguageSwitcher } from './language-switcher'
 import type { BreadcrumbItem } from './nav-matching'
 import type { AppNavItem, AppScene } from './nav-config'
 
@@ -25,11 +27,25 @@ export function AppTopbar({
   sidebarState,
   onToggleSidebar,
 }: AppTopbarProps) {
+  const { t } = useTranslation()
   const [isSidebarIconHovered, setIsSidebarIconHovered] = React.useState(false)
   const SidebarIcon =
     isSidebarIconHovered || isMobile
       ? Menu
       : (activeItem?.icon ?? activeScene.icon)
+  const sidebarButtonLabel = isMobile
+    ? t.common.shell.topbar.openSidebar
+    : sidebarState === 'collapsed'
+      ? t.common.shell.topbar.expandSidebar
+      : t.common.shell.topbar.collapseSidebar
+
+  const handleSidebarIconMouseEnter = React.useCallback(() => {
+    setIsSidebarIconHovered(true)
+  }, [])
+
+  const handleSidebarIconMouseLeave = React.useCallback(() => {
+    setIsSidebarIconHovered(false)
+  }, [])
 
   return (
     <header className="flex h-14 shrink-0 items-center justify-between border-b border-border bg-background px-4">
@@ -38,17 +54,11 @@ export function AppTopbar({
           type="button"
           variant="ghost"
           size="icon-lg"
-          aria-label={
-            isMobile
-              ? '打开侧边栏'
-              : sidebarState === 'collapsed'
-                ? '展开侧边栏'
-                : '收起侧边栏'
-          }
+          aria-label={sidebarButtonLabel}
           className="shrink-0 bg-primary/10 text-primary hover:bg-primary/[0.14] hover:text-primary active:translate-y-0"
           onClick={onToggleSidebar}
-          onMouseEnter={() => setIsSidebarIconHovered(true)}
-          onMouseLeave={() => setIsSidebarIconHovered(false)}
+          onMouseEnter={handleSidebarIconMouseEnter}
+          onMouseLeave={handleSidebarIconMouseLeave}
         >
           <SidebarIcon aria-hidden="true" />
         </Button>
@@ -79,6 +89,7 @@ export function AppTopbar({
       </div>
 
       <div className="flex items-center gap-2">
+        <LanguageSwitcher />
         <div className="pl-1">
           <AccountPopover />
         </div>

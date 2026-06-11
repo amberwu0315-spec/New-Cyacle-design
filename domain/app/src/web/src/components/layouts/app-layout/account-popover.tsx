@@ -9,11 +9,13 @@ import {
   PopoverTrigger,
 } from '../../ui/popover'
 import { crossDomainRoutePaths } from '../../../lib/cross-domain-route-paths'
+import { useTranslation } from '../../../lib/i18n'
 
 import defaultUserAvatar from './assets/default-user-avatar.png'
 import { MOCK_USER } from './nav-config'
 
 export function AccountPopover() {
+  const { t } = useTranslation()
   const navigate = useNavigate()
 
   const handleLogoutClick = React.useCallback(() => {
@@ -26,7 +28,7 @@ export function AccountPopover() {
         render={
           <Button
             variant="ghost"
-            aria-label="账号菜单"
+            aria-label={t.common.shell.account.menu}
             className="h-8 gap-2 px-2 active:translate-y-0"
           />
         }
@@ -78,7 +80,7 @@ export function AccountPopover() {
             onClick={handleLogoutClick}
           >
             <LogOut aria-hidden="true" className="size-4" />
-            <span>退出登录</span>
+            <span>{t.common.shell.account.logout}</span>
           </Button>
         </div>
       </PopoverContent>

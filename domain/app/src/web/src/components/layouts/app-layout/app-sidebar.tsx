@@ -7,6 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '../../ui/popover'
+import { formatMessage, useTranslation } from '../../../lib/i18n'
 import { cn } from '../../../lib/utils'
 
 import cyacleLogo from './assets/brand/cyacle.png'
@@ -117,6 +118,7 @@ export function AppSidebar({
   onCloseMobile,
   onScenePanelOpenChange,
 }: AppSidebarProps) {
+  const { t } = useTranslation()
   const navigate = useNavigate()
   const categorizedScenes = React.useMemo(
     () => getCategorizedScenes(navConfig),
@@ -257,6 +259,65 @@ export function AppSidebar({
     [handleNavigate],
   )
 
+  const handleGroupToggleClick = React.useCallback(
+    (event: React.MouseEvent<HTMLButtonElement>) => {
+      const groupId = event.currentTarget.dataset.groupId
+      if (!groupId) {
+        return
+      }
+
+      toggleGroupCollapsed(groupId)
+    },
+    [toggleGroupCollapsed],
+  )
+
+  const handleNavLinkClick = React.useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>) => {
+      if (shouldUseBrowserNavigation(event)) {
+        return
+      }
+
+      const to = event.currentTarget.dataset.to
+      if (!to) {
+        return
+      }
+
+      event.preventDefault()
+      handleNavigate(to)
+    },
+    [handleNavigate],
+  )
+
+  const handleResizeDoubleClick = React.useCallback(() => {
+    updateSidebarWidth(SIDEBAR_DEFAULT_WIDTH)
+  }, [updateSidebarWidth])
+
+  const handleResizeKeyDown = React.useCallback(
+    (event: React.KeyboardEvent<HTMLButtonElement>) => {
+      if (event.key === 'ArrowLeft') {
+        event.preventDefault()
+        updateSidebarWidth(sidebarWidth - 12)
+      }
+      if (event.key === 'ArrowRight') {
+        event.preventDefault()
+        updateSidebarWidth(sidebarWidth + 12)
+      }
+      if (event.key === 'Home') {
+        event.preventDefault()
+        updateSidebarWidth(SIDEBAR_MIN_WIDTH)
+      }
+      if (event.key === 'End') {
+        event.preventDefault()
+        updateSidebarWidth(SIDEBAR_MAX_WIDTH)
+      }
+      if (event.key === 'Enter') {
+        event.preventDefault()
+        updateSidebarWidth(SIDEBAR_DEFAULT_WIDTH)
+      }
+    },
+    [sidebarWidth, updateSidebarWidth],
+  )
+
   return (
     <>
       <div
@@ -287,8 +348,8 @@ export function AppSidebar({
         <div className="h-14 overflow-hidden bg-sidebar p-0">
           <a
             href={APP_HOME_PATH}
-            aria-label="返回首页"
-            title="返回首页"
+            aria-label={t.common.shell.sidebar.homeLink}
+            title={t.common.shell.sidebar.homeLink}
             className={cn(
               'flex h-full cursor-pointer items-center text-sidebar-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
               isLogoExpanded ? 'w-full px-3' : 'w-[3.4rem] justify-center',
@@ -304,13 +365,13 @@ export function AppSidebar({
                   className="size-9 shrink-0 object-contain"
                 />
                 <span className="truncate text-[26px] leading-none font-semibold tracking-normal text-foreground">
-                  青钥
+                  {t.common.shell.sidebar.brandName}
                 </span>
               </div>
             ) : (
               <img
                 src={cyacleLogo}
-                alt="青钥"
+                alt={t.common.shell.sidebar.brandName}
                 className="size-9 shrink-0 object-contain"
               />
             )}
@@ -328,7 +389,12 @@ export function AppSidebar({
             onOpenChange={onScenePanelOpenChange}
           >
             <PopoverTrigger
-              aria-label={`当前场景：${activeScene.label}`}
+              aria-label={formatMessage(
+                t.common.shell.sidebar.scenePickerLabel,
+                {
+                  label: activeScene.label,
+                },
+              )}
               className={cn(
                 'flex h-14 w-full cursor-pointer items-center justify-between overflow-hidden rounded-[8px] border border-sidebar-border bg-background px-2 text-sidebar-foreground shadow-[0_2px_12px_rgba(15,23,42,0.04)] transition-[width,height,padding,border-radius,background-color,color,border-color] duration-200 ease-out hover:bg-primary/[0.06] hover:text-primary',
                 isNavCompact &&
@@ -424,6 +490,7 @@ export function AppSidebar({
                           <a
                             key={scene.id}
                             href={scene.defaultTo}
+                            data-to={scene.defaultTo}
                             className={cn(
                               'group relative flex w-full items-center gap-3.5 rounded-lg border border-border bg-card px-4 py-3.5 text-left transition-colors duration-200',
                               'cursor-pointer',
@@ -431,13 +498,7 @@ export function AppSidebar({
                                 ? 'border-primary/30 bg-primary/[0.06]'
                                 : 'hover:bg-primary/[0.06] active:bg-primary/[0.08]',
                             )}
-                            onClick={(event) => {
-                              if (shouldUseBrowserNavigation(event)) {
-                                return
-                              }
-                              event.preventDefault()
-                              handleNavigate(scene.defaultTo)
-                            }}
+                            onClick={handleNavLinkClick}
                           >
                             <span
                               className={cn(
@@ -511,6 +572,7 @@ export function AppSidebar({
                   {group.title ? (
                     <button
                       type="button"
+                      data-group-id={group.id}
                       aria-expanded={!isGroupCollapsed}
                       title={activeGroupItem?.label}
                       className={cn(
@@ -520,7 +582,7 @@ export function AppSidebar({
                         isCollapsed &&
                           'my-0 h-0 min-h-0 overflow-hidden px-0 opacity-0',
                       )}
-                      onClick={() => toggleGroupCollapsed(group.id)}
+                      onClick={handleGroupToggleClick}
                     >
                       <span
                         className={cn('truncate', isCollapsed && 'hidden')}
@@ -552,19 +614,14 @@ export function AppSidebar({
                         <a
                           key={item.id}
                           href={item.to}
+                          data-to={item.to}
                           title={item.label}
                           className={cn(
                             isActive ? activeStyle : defaultStyle,
                             'flex h-8 w-full items-center gap-2 rounded-md border px-2 text-left text-sm transition-colors',
                             isCollapsed && 'size-8 justify-center gap-0 p-2',
                           )}
-                          onClick={(event) => {
-                            if (shouldUseBrowserNavigation(event)) {
-                              return
-                            }
-                            event.preventDefault()
-                            handleNavigate(item.to)
-                          }}
+                          onClick={handleNavLinkClick}
                         >
                           <item.icon className="size-4 shrink-0" />
                           <span
@@ -590,40 +647,19 @@ export function AppSidebar({
             type="button"
             role="separator"
             aria-orientation="vertical"
-            aria-label="调整侧边栏宽度"
+            aria-label={t.common.shell.sidebar.resizeLabel}
             aria-valuemin={SIDEBAR_MIN_WIDTH}
             aria-valuemax={SIDEBAR_MAX_WIDTH}
             aria-valuenow={sidebarWidth}
-            title="拖动调整宽度，双击恢复默认"
+            title={t.common.shell.sidebar.resizeHint}
             className={cn(
               'absolute top-0 right-0 z-20 h-full w-2 cursor-col-resize touch-none outline-none',
               'before:absolute before:top-0 before:right-0 before:h-full before:w-px before:bg-transparent before:transition-colors',
               'hover:before:bg-primary/45 focus-visible:before:bg-primary/70',
               isResizing && 'before:bg-primary/70',
             )}
-            onDoubleClick={() => updateSidebarWidth(SIDEBAR_DEFAULT_WIDTH)}
-            onKeyDown={(event) => {
-              if (event.key === 'ArrowLeft') {
-                event.preventDefault()
-                updateSidebarWidth(sidebarWidth - 12)
-              }
-              if (event.key === 'ArrowRight') {
-                event.preventDefault()
-                updateSidebarWidth(sidebarWidth + 12)
-              }
-              if (event.key === 'Home') {
-                event.preventDefault()
-                updateSidebarWidth(SIDEBAR_MIN_WIDTH)
-              }
-              if (event.key === 'End') {
-                event.preventDefault()
-                updateSidebarWidth(SIDEBAR_MAX_WIDTH)
-              }
-              if (event.key === 'Enter') {
-                event.preventDefault()
-                updateSidebarWidth(SIDEBAR_DEFAULT_WIDTH)
-              }
-            }}
+            onDoubleClick={handleResizeDoubleClick}
+            onKeyDown={handleResizeKeyDown}
             onPointerDown={handleResizePointerDown}
           />
         ) : null}

@@ -29,28 +29,27 @@ app 侧会兼容这种函数签名，并默认把它挂到 `layout` slot。它�
 ```ts
 import { defineDomainRouteTree } from '@carbonnt-cyacle/web-app'
 import type { DomainNavMetaFactory } from '@carbonnt-cyacle/web-app'
+import { Users } from 'lucide-react'
 
-const createUicNavMeta: DomainNavMetaFactory = ({ locale }) => {
-  const isEnglish = locale.startsWith('en')
+import { getUicMessages } from '../lib/i18n'
+
+const createUicNavMeta: DomainNavMetaFactory = ({ language }) => {
+  const t = getUicMessages(language)
 
   return {
-    label: isEnglish ? 'User Center' : '用户中心',
-    desc: isEnglish
-      ? 'Account, sign-in, organization, and permission entries'
-      : '账号、登录注册、组织与权限入口',
+    label: t.common.nav.label,
+    desc: t.common.nav.desc,
     icon: Users,
     defaultTo: '/uic',
     groups: [
       {
         id: 'uic-main',
-        title: isEnglish ? 'User Center' : '用户中心',
+        title: t.common.nav.groupTitle,
         items: [
           {
             id: 'uic-home',
-            label: isEnglish ? 'Home' : '首页',
-            desc: isEnglish
-              ? 'Open the user center home page'
-              : '进入用户中心首页',
+            label: t.common.nav.homeLabel,
+            desc: t.common.nav.homeDesc,
             to: '/uic',
             icon: Users,
           },
@@ -73,7 +72,7 @@ export function createDomainRouteTree() {
 }
 ```
 
-`metas` 是可选泛型扩展位，当前 app 只消费函数式 `metas.nav` 来注册左侧导航，并会调用 `nav({ locale })`。其他应用可以按自己的 shell 继续扩展 `metas`。
+`metas` 是可选泛型扩展位，当前 app 只消费函数式 `metas.nav` 来注册左侧导航，并会按当前语言调用 `nav({ language })`。其他应用可以按自己的 shell 继续扩展 `metas`。
 
 ## 两种 routes 写法
 

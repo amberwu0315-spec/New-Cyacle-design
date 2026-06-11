@@ -1,5 +1,6 @@
 import * as React from 'react'
 import { useLocation } from '@tanstack/react-router'
+import Cookies from 'js-cookie'
 
 import { AppSidebar } from './app-sidebar'
 import { AppTopbar } from './app-topbar'
@@ -11,22 +12,12 @@ import {
 import type { AppNavConfig } from './nav-config'
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state'
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const MOBILE_MEDIA_QUERY = '(max-width: 1023px)'
 
 type SidebarState = 'expanded' | 'collapsed'
 
 function getCookieSidebarState() {
-  if (typeof document === 'undefined') {
-    return true
-  }
-
-  const cookieValue = document.cookie
-    .split('; ')
-    .find((row) => row.startsWith(`${SIDEBAR_COOKIE_NAME}=`))
-    ?.split('=')[1]
-
-  return cookieValue !== 'false'
+  return Cookies.get(SIDEBAR_COOKIE_NAME) !== 'false'
 }
 
 function getInitialIsMobile() {
@@ -38,7 +29,11 @@ function getInitialIsMobile() {
 }
 
 function persistSidebarState(isOpen: boolean) {
-  document.cookie = `${SIDEBAR_COOKIE_NAME}=${isOpen}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
+  Cookies.set(SIDEBAR_COOKIE_NAME, String(isOpen), {
+    path: '/',
+    expires: 7,
+    sameSite: 'lax',
+  })
 }
 
 export function AppLayout({
