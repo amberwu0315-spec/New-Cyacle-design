@@ -1,14 +1,25 @@
+import * as React from 'react'
+import { LogOut } from 'lucide-react'
+import { useNavigate } from '@tanstack/react-router'
+
 import { Button } from '../../ui/button'
 import {
   Popover,
   PopoverContent,
   PopoverTrigger,
 } from '../../ui/popover'
+import { crossDomainRoutePaths } from '../../../lib/cross-domain-route-paths'
 
 import defaultUserAvatar from './assets/default-user-avatar.png'
 import { MOCK_USER } from './nav-config'
 
 export function AccountPopover() {
+  const navigate = useNavigate()
+
+  const handleLogoutClick = React.useCallback(() => {
+    void navigate({ to: crossDomainRoutePaths.uic.login })
+  }, [navigate])
+
   return (
     <Popover>
       <PopoverTrigger
@@ -37,7 +48,7 @@ export function AccountPopover() {
         sideOffset={8}
         className="w-[280px] rounded-lg border border-border/70 p-0 shadow-xl"
       >
-        <div className="p-2.5">
+        <div className="p-2.5 pb-0">
           <div className="rounded-lg bg-muted px-3 py-2.5">
             <div className="flex items-start gap-3">
               <img
@@ -57,6 +68,18 @@ export function AccountPopover() {
               </div>
             </div>
           </div>
+        </div>
+
+        <div className="mt-2.5 border-t border-border/70 p-2.5">
+          <Button
+            type="button"
+            variant="ghost"
+            className="h-9 w-full justify-start gap-2 px-2 text-destructive hover:bg-destructive/10 hover:text-destructive active:translate-y-0"
+            onClick={handleLogoutClick}
+          >
+            <LogOut aria-hidden="true" className="size-4" />
+            <span>退出登录</span>
+          </Button>
         </div>
       </PopoverContent>
     </Popover>

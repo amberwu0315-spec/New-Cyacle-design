@@ -6,6 +6,35 @@
 
 ---
 
+## React 性能写法
+
+组件内传给 JSX 属性或子组件的事件处理器、回调函数，默认使用 `React.useCallback` 定义稳定引用，并写全依赖；不要在组件体内直接声明 `function handleXxx()` 后再传给 `onClick`、`onChange` 等 props。只有不传给 JSX/子组件、也不会被依赖比较消费的纯局部函数，才可以保持普通函数。
+
+```tsx
+// 不推荐：每次 render 都重新创建并传给 JSX prop
+function AccountPopover() {
+  const navigate = useNavigate()
+
+  function handleLogoutClick() {
+    void navigate({ to: crossDomainRoutePaths.uic.login })
+  }
+
+  return <Button onClick={handleLogoutClick}>退出登录</Button>
+}
+
+// 推荐：传给 JSX prop 的 handler 使用稳定引用
+function AccountPopover() {
+  const navigate = useNavigate()
+  const handleLogoutClick = React.useCallback(() => {
+    void navigate({ to: crossDomainRoutePaths.uic.login })
+  }, [navigate])
+
+  return <Button onClick={handleLogoutClick}>退出登录</Button>
+}
+```
+
+---
+
 ## Shell Layout 结构
 
 本节只定义最小代码姿势：app 自身路由区分有/无 layout；feature domain 通过 `createDomainRouteTree()` 接入自己的 route tree。当前 plot 默认模板生成的 `{ RootRoute }` route factory 仍被 app 侧兼容，默认挂到 app layout 下，只负责路由注册；需要 nav、login/register 无 layout route、或其它 shell meta 时，升级为 `defineDomainRouteTree(...)`。

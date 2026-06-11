@@ -24,6 +24,7 @@ const SIDEBAR_COLLAPSED_GROUPS_STORAGE_KEY = 'vinehub_sidebar_collapsed_groups'
 const SIDEBAR_DEFAULT_WIDTH = 208
 const SIDEBAR_MIN_WIDTH = 176
 const SIDEBAR_MAX_WIDTH = 360
+const APP_HOME_PATH = '/'
 
 function clampSidebarWidth(width: number) {
   return Math.min(SIDEBAR_MAX_WIDTH, Math.max(SIDEBAR_MIN_WIDTH, width))
@@ -244,6 +245,18 @@ export function AppSidebar({
     [navigate, onCloseMobile, onScenePanelOpenChange],
   )
 
+  const handleLogoClick = React.useCallback(
+    (event: React.MouseEvent<HTMLAnchorElement>) => {
+      if (shouldUseBrowserNavigation(event)) {
+        return
+      }
+
+      event.preventDefault()
+      handleNavigate(APP_HOME_PATH)
+    },
+    [handleNavigate],
+  )
+
   return (
     <>
       <div
@@ -272,11 +285,15 @@ export function AppSidebar({
         }
       >
         <div className="h-14 overflow-hidden bg-sidebar p-0">
-          <div
+          <a
+            href={APP_HOME_PATH}
+            aria-label="返回首页"
+            title="返回首页"
             className={cn(
-              'flex h-full items-center text-sidebar-foreground',
+              'flex h-full cursor-pointer items-center text-sidebar-foreground transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring focus-visible:outline-none',
               isLogoExpanded ? 'w-full px-3' : 'w-[3.4rem] justify-center',
             )}
+            onClick={handleLogoClick}
           >
             {isLogoExpanded ? (
               <div className="flex min-w-0 items-center gap-2.5">
@@ -297,7 +314,7 @@ export function AppSidebar({
                 className="size-9 shrink-0 object-contain"
               />
             )}
-          </div>
+          </a>
         </div>
 
         <div
