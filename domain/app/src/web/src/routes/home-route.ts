@@ -1,7 +1,10 @@
 import type { AnyRoute } from '@tanstack/react-router'
-import { createRoute } from '@tanstack/react-router'
+import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
 
-import { AppHomePage } from '../features/home/page'
+const AppHomePage = lazyRouteComponent(
+  () => import('../features/home/page'),
+  'AppHomePage',
+)
 
 type HomeRouteDeps = {
   RootRoute: AnyRoute

@@ -40,6 +40,51 @@ function AccountPopover() {
 
 ---
 
+## Lazy Route 写法
+
+路由文件默认只保留路由注册、`path`、`loader`、`beforeLoad`、search 校验等匹配和加载所需的关键配置；页面组件从 `features/*/page.tsx` 通过 TanStack Router 的 `lazyRouteComponent` 按需加载。不要在 route 文件里静态 import 页面组件，除非该页面非常轻且确认需要进入首包。
+
+```tsx
+import type { AnyRoute } from '@tanstack/react-router'
+import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
+
+const LoginPage = lazyRouteComponent(
+  () => import('../features/login/page'),
+  'LoginPage',
+)
+
+type LoginRouteDeps = {
+  RootRoute: AnyRoute
+}
+
+export function createLoginRouteBranches({ RootRoute }: LoginRouteDeps) {
+  return createRoute({
+    getParentRoute: () => RootRoute,
+    path: 'uic/login',
+    component: LoginPage,
+  })
+}
+```
+
+同一个页面模块导出多个 route component 时，每个 route 单独声明对应的 lazy component：
+
+```tsx
+const UserAgreementPage = lazyRouteComponent(
+  () => import('../features/terms/page'),
+  'UserAgreementPage',
+)
+const PrivacyPolicyPage = lazyRouteComponent(
+  () => import('../features/terms/page'),
+  'PrivacyPolicyPage',
+)
+```
+
+不要 lazy app 壳子本身：`RootComponent`、`AppLayoutRoute`、`AppLayout`、`createDomainRouteTree()` 和 domain route branch factory 保持同步。它们负责应用骨架、路由注册、slot 挂载和 nav meta 聚合；把这些改成异步会让 `createAppRouter([...])` 协议变复杂，收益也不明显。
+
+当前 app router 已配置 `defaultPreload: 'intent'`，`lazyRouteComponent` 会暴露 preload 能力；用户 hover/focus 链接时 TanStack Router 可以提前加载目标页面 chunk。只有当某个 route 需要把 `component`、`pendingComponent`、`errorComponent` 等非关键配置拆成独立 lazy route 文件时，才考虑 TanStack Router 的 code-based `.lazy(() => import('./xxx.lazy').then((d) => d.Route))` 写法；使用这种写法前先固定 route id，避免 lazy route id 和主 route 不一致。
+
+---
+
 ## Shell Layout 结构
 
 本节只定义最小代码姿势：app 自身路由区分有/无 layout；feature domain 通过 `createDomainRouteTree()` 接入自己的 route tree。当前 plot 默认模板生成的 `{ RootRoute }` route factory 仍被 app 侧兼容，默认挂到 app layout 下，只负责路由注册；需要 nav、login/register 无 layout route、或其它 shell meta 时，升级为 `defineDomainRouteTree(...)`。
