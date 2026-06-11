@@ -1,0 +1,25 @@
+{
+  "dependencies": {
+    "@carbonnt-cyacle/web-app": "workspace:*",
+    "@carbonnt-cyacle/web-uic": "workspace:*",
+    "@tanstack/react-router": "^1.170.14",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0"
+  },
+  "devDependencies": {
+    "@tailwindcss/vite": "^4.3.0",
+    "@tanstack/devtools-vite": "^0.7.0",
+    "@types/node": "^22.10.2",
+    "@vitejs/plugin-react": "^6.0.2",
+    "tailwindcss": "^4.3.0",
+    "typescript": "^6.0.2",
+    "vite": "^8.0.13"
+  },
+  "name": "@carbonnt-cyacle/web",
+  "private": true,
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite dev"
+  },
+  "type": "module"
+}
