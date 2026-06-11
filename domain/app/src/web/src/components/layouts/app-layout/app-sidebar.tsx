@@ -11,7 +11,7 @@ import { cn } from '../../../lib/utils'
 
 import cyacleLogo from './assets/brand/cyacle.png'
 import { getCategorizedScenes } from './nav-matching'
-import type { AppNavItem, AppScene } from './nav-config'
+import type { AppNavConfig, AppNavItem, AppScene } from './nav-config'
 
 const activeStyle =
   'border border-transparent bg-primary/[0.08] text-primary hover:bg-primary/[0.08] hover:text-primary active:bg-primary/[0.1] active:text-primary'
@@ -69,6 +69,7 @@ function getInitialCollapsedGroups() {
 interface AppSidebarProps {
   activeItem: AppNavItem | null
   activeScene: AppScene
+  navConfig: AppNavConfig
   isMobile: boolean
   isMobileOpen: boolean
   isScenePanelOpen: boolean
@@ -107,6 +108,7 @@ function shouldUseBrowserNavigation(
 export function AppSidebar({
   activeItem,
   activeScene,
+  navConfig,
   isMobile,
   isMobileOpen,
   isScenePanelOpen,
@@ -115,7 +117,10 @@ export function AppSidebar({
   onScenePanelOpenChange,
 }: AppSidebarProps) {
   const navigate = useNavigate()
-  const categorizedScenes = React.useMemo(() => getCategorizedScenes(), [])
+  const categorizedScenes = React.useMemo(
+    () => getCategorizedScenes(navConfig),
+    [navConfig],
+  )
   const isCollapsed = !isMobile && sidebarState === 'collapsed'
   const [isLogoExpanded, setIsLogoExpanded] = React.useState(!isCollapsed)
   const [isNavCompact, setIsNavCompact] = React.useState(isCollapsed)

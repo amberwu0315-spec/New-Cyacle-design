@@ -8,6 +8,7 @@ import {
   getActiveScene,
   getBreadcrumbItems,
 } from './nav-matching'
+import type { AppNavConfig } from './nav-config'
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state'
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
@@ -40,7 +41,13 @@ function persistSidebarState(isOpen: boolean) {
   document.cookie = `${SIDEBAR_COOKIE_NAME}=${isOpen}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
 }
 
-export function AppLayout({ children }: { children: React.ReactNode }) {
+export function AppLayout({
+  children,
+  navConfig,
+}: {
+  children: React.ReactNode
+  navConfig: AppNavConfig
+}) {
   const pathname = useLocation({
     select: (location) => location.pathname,
   })
@@ -110,16 +117,16 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
 
   const sidebarState: SidebarState = isSidebarOpen ? 'expanded' : 'collapsed'
   const activeScene = React.useMemo(
-    () => getActiveScene(pathname),
-    [pathname],
+    () => getActiveScene(navConfig, pathname),
+    [navConfig, pathname],
   )
   const activeItem = React.useMemo(
-    () => getActiveNavItem(pathname),
-    [pathname],
+    () => getActiveNavItem(navConfig, pathname),
+    [navConfig, pathname],
   )
   const breadcrumbItems = React.useMemo(
-    () => getBreadcrumbItems(pathname, sidebarState),
-    [pathname, sidebarState],
+    () => getBreadcrumbItems(navConfig, pathname, sidebarState),
+    [navConfig, pathname, sidebarState],
   )
 
   return (
@@ -128,6 +135,7 @@ export function AppLayout({ children }: { children: React.ReactNode }) {
         <AppSidebar
           activeItem={activeItem}
           activeScene={activeScene}
+          navConfig={navConfig}
           isMobile={isMobile}
           isMobileOpen={isMobileSidebarOpen}
           isScenePanelOpen={isScenePanelOpen}

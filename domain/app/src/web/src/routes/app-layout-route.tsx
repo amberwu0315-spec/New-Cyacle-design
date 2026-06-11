@@ -2,20 +2,22 @@ import type { AnyRoute } from '@tanstack/react-router'
 import { Outlet, createRoute } from '@tanstack/react-router'
 
 import { AppLayout } from '../components/layouts/app-layout/app-layout'
+import type { AppNavConfig } from '../components/layouts/app-layout/nav-config'
 
 type AppLayoutRouteDeps = {
   RootRoute: AnyRoute
+  navConfig: AppNavConfig
 }
 
-function AppLayoutRouteComponent() {
-  return (
-    <AppLayout>
-      <Outlet />
-    </AppLayout>
-  )
-}
+export function createAppLayoutRoute({ RootRoute, navConfig }: AppLayoutRouteDeps) {
+  function AppLayoutRouteComponent() {
+    return (
+      <AppLayout navConfig={navConfig}>
+        <Outlet />
+      </AppLayout>
+    )
+  }
 
-export function createAppLayoutRoute({ RootRoute }: AppLayoutRouteDeps) {
   return createRoute({
     getParentRoute: () => RootRoute,
     id: 'app-layout',

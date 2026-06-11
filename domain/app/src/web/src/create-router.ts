@@ -1,13 +1,16 @@
 import { createRouter } from '@tanstack/react-router'
 
-import { createAppRouteTree, type DomainRouteTreeFactory } from './routes/index.tsx'
+import type { DomainRouteTreeEntrypoint } from './routes/helpers/domain-route-tree.ts'
+import { collectDomainRouteTrees } from './routes/helpers/domain-route-tree.ts'
+import { createAppRouteTree } from './routes/index.tsx'
 
-export function createAppRouter(factories: DomainRouteTreeFactory[]) {
+export function createAppRouter(routeTreeEntrypoints: Array<DomainRouteTreeEntrypoint>) {
+  const domainRouteTrees = collectDomainRouteTrees(routeTreeEntrypoints)
+
   return createRouter({
-    routeTree: createAppRouteTree(factories),
+    routeTree: createAppRouteTree(domainRouteTrees),
     scrollRestoration: true,
     defaultPreload: 'intent',
     defaultPreloadStaleTime: 0,
   })
 }
-

@@ -8,16 +8,17 @@
 
 ## Shell Layout 结构
 
-本节只定义最小代码姿势：app 自身路由区分有/无 layout；普通 business domain 默认不被 app layout 包裹。app package 导出 `AppLayout` 和 `AppPage`，app 自己的页面可以使用，business domain 也可以按需导入；domain 不用共享页面容器时，在自身 `src/components/layouts/` 定制 `DomainPage`。
+本节只定义最小代码姿势：app 自身路由区分有/无 layout；feature domain 通过 `createDomainRouteTree()` 接入自己的 route tree。当前 plot 默认模板生成的 `{ RootRoute }` route factory 仍被 app 侧兼容，默认挂到 app layout 下，只负责路由注册；需要 nav、login/register 无 layout route、或其它 shell meta 时，升级为 `defineDomainRouteTree(...)`。
 
 | 场景 | 默认写法 |
 | --- | --- |
 | 全局 provider、Toaster、QueryClient 等基础设施 | `root-layout.tsx` |
 | app 自己需要统一页面框架的路由 | 挂到 `AppLayout` 分支 |
 | app 自己不需要页面框架的路由 | 直接挂 RootRoute |
-| 普通 business domain route tree | 直接挂 RootRoute，不默认包 `AppLayout` |
+| 普通 business domain route tree | `routes: [...]`，挂到 app layout 下 |
+| 特殊无 layout domain route | `routes: { root: [...] }`，直接挂 RootRoute |
 | 普通页面内容区 | 页面包 `AppPage`；domain 可自定义 `DomainPage` |
-| domain 需要复用 app layout | domain 从 app package 导入 `AppLayout` / `AppPage` 按需使用 |
+| domain route tree 扩展信息 | `metas?: TMetas`，当前 app 消费函数式 `metas.nav` |
 
 ---
 
@@ -38,45 +39,45 @@ domain/app/src/web/src/
 
 ---
 
-### App 路由：app 自身分有/无 layout，domain 默认不包
+### App 路由：app 自身分有/无 layout，domain 通过 slot 接入
 
-App 自身路由分两类：login、register、SSO、独立落地页等不需要 layout 的路由直接挂 RootRoute；help、settings 等需要 app 统一页面框架的路由挂 `appLayoutRoute`。普通 business domain route tree 直接挂 RootRoute，不默认被 `AppLayout` 包裹；domain 页面需要共享框架时，自己从 app package 导入 `AppLayout` / `AppPage` 使用。
+App 自身路由分两类：login、register、SSO、独立落地页等不需要 layout 的路由直接挂 RootRoute；help、settings 等需要 app 统一页面框架的路由挂 `AppLayoutRoute`。feature domain 的 `routes.root` 直接挂 RootRoute，`routes.layout` 和 `routes: [...]` 挂 `AppLayoutRoute`。
 
 ```tsx
 // domain/app/src/web/src/routes/index.tsx
-import { createRootRoute, createRoute } from '@tanstack/react-router'
+import { createRootRoute } from '@tanstack/react-router'
+import { createAppNavConfig } from '../components/layouts/app-layout/nav-config'
 import { RootLayout } from '../root-layout'
-import { AppLayout } from '../components/layouts/app-layout'
-import { resolveDomainRoutes, type DomainRouteTreeFactory } from './helpers/domain-routes-resolver'
-import { createHelpRouteTree } from './help-route'
-import { createLoginRouteTree } from './login-route'
+import { createAppLayoutRoute } from './app-layout-route'
+import { createHomeRouteTree } from './home-route'
+import {
+  getDomainRouteBranchFactories,
+  resolveDomainRoutes,
+  type DomainRouteTreeCollection,
+} from './helpers/domain-route-tree'
 
-export type { DomainRouteTreeFactory }
-
-export function createAppRouteTree(factories: DomainRouteTreeFactory[]) {
+export function createAppRouteTree(domainRouteTrees: DomainRouteTreeCollection) {
+  const { routeTrees } = domainRouteTrees
   const RootRoute = createRootRoute({ component: RootLayout })
-
-  const appLayoutRoute = createRoute({
-    getParentRoute: () => RootRoute,
-    id: '_app-layout',
-    component: AppLayout,
-  })
-
-  // 普通 business domain 默认不包 app layout。
-  const domainRoutes = resolveDomainRoutes(RootRoute, factories)
+  const navConfig = createAppNavConfig(routeTrees)
+  const AppLayoutRoute = createAppLayoutRoute({ RootRoute, navConfig })
+  const rootDomainRoutes = resolveDomainRoutes(
+    RootRoute,
+    routeTrees.flatMap((routeTree) => getDomainRouteBranchFactories(routeTree, 'root')),
+  )
+  const layoutDomainRoutes = resolveDomainRoutes(
+    AppLayoutRoute,
+    routeTrees.flatMap((routeTree) => getDomainRouteBranchFactories(routeTree, 'layout')),
+  )
 
   return RootRoute.addChildren([
-    // app 自己的无 layout 路由。
-    createLoginRouteTree({ RootRoute }),
-    // app 自己的有 layout 路由。
-    appLayoutRoute.addChildren([createHelpRouteTree({ RootRoute: appLayoutRoute })]),
-    // business domain 默认直接挂 RootRoute。
-    ...domainRoutes,
+    ...rootDomainRoutes,
+    AppLayoutRoute.addChildren([createHomeRouteTree({ RootRoute: AppLayoutRoute }), ...layoutDomainRoutes]),
   ])
 }
 ```
 
-`AppLayout` 承载 app 自己页面的统一框架；domain 需要同样框架时显式 import 使用，不作为 domain route tree 的默认外层。示例可保留轻量 header / footer / main 结构，但不要默认放业务导航、组织入口或跨 domain 菜单。
+`AppLayout` 承载 app 自己页面和 layout slot 下 domain 页面使用的统一框架。当前 app 的左侧导航由内置 nav 和 domain 函数式 `metas.nav` 聚合而来，app 会调用 `nav({ locale })`。
 
 ```tsx
 // domain/app/src/web/src/components/layouts/app-layout/index.tsx
@@ -125,9 +126,9 @@ export { AppPage } from './app-page'
 
 ---
 
-### Business domain：默认不包 app layout
+### Business domain：默认模板与高级声明
 
-Business domain route tree 默认不添加内部 layout route，也不默认包 `AppLayout`。每个普通页面通过 `AppPage` 或 domain 自己的 `DomainPage` 收口内容区。
+Business domain 对外只导出 `createDomainRouteTree()`。默认模板可以继续使用 `{ RootRoute }` factory，只注册路由并默认挂到 app layout 下。高级场景改为返回 `defineDomainRouteTree(...)`：`routes: [...]` 会挂到 app layout 下，`{ root, layout }` 可同时声明无 layout 路由和带 app layout/nav 的业务路由。每个普通页面通过 `AppPage` 或 domain 自己的 `DomainPage` 收口内容区。
 
 ```text
 domain/catalog/src/web/src/
@@ -137,7 +138,7 @@ domain/catalog/src/web/src/
             └── index.tsx
 ```
 
-默认 route tree 不创建内部 layout route：
+默认模板只注册路由：
 
 ```tsx
 // domain/catalog/src/web/src/routes/index.tsx
@@ -145,9 +146,34 @@ import type { AnyRoute } from '@tanstack/react-router'
 import { Outlet, createRoute } from '@tanstack/react-router'
 
 import { createHomeRouteTree } from './home-route'
-import { createReportsRouteTree } from './reports-route'
 
 export function createDomainRouteTree({ RootRoute }: { RootRoute: AnyRoute }): AnyRoute[] {
+  const domainRoute = createRoute({
+    getParentRoute: () => RootRoute,
+    path: 'catalog',
+    component: Outlet,
+  })
+
+  const homeRoute = createHomeRouteTree({ domainRoute })
+
+  return [domainRoute.addChildren([homeRoute])]
+}
+```
+
+高级写法可注册 app nav 和 layout/root slot：
+
+```tsx
+// domain/catalog/src/web/src/routes/index.tsx
+import { defineDomainRouteTree } from '@example-app/web-app'
+import type { DomainNavMetaFactory } from '@example-app/web-app'
+import type { AnyRoute } from '@tanstack/react-router'
+import { Outlet, createRoute } from '@tanstack/react-router'
+import { Boxes } from 'lucide-react'
+
+import { createHomeRouteTree } from './home-route'
+import { createReportsRouteTree } from './reports-route'
+
+function createCatalogRouteBranches({ RootRoute }: { RootRoute: AnyRoute }): AnyRoute[] {
   const domainRoute = createRoute({
     getParentRoute: () => RootRoute,
     path: 'catalog',
@@ -160,6 +186,56 @@ export function createDomainRouteTree({ RootRoute }: { RootRoute: AnyRoute }): A
       createReportsRouteTree({ domainRoute }),
     ]),
   ]
+}
+
+const createCatalogNavMeta: DomainNavMetaFactory = ({ locale }) => {
+  const isEnglish = locale.startsWith('en')
+
+  return {
+    label: isEnglish ? 'Catalog' : '目录',
+    desc: isEnglish ? 'Catalog management and reports' : '目录管理与报告入口',
+    icon: Boxes,
+    defaultTo: '/catalog',
+    groups: [
+      {
+        id: 'catalog-main',
+        title: isEnglish ? 'Catalog' : '目录',
+        items: [
+          {
+            id: 'catalog-home',
+            label: isEnglish ? 'Home' : '首页',
+            desc: isEnglish ? 'Open catalog home' : '进入目录首页',
+            to: '/catalog',
+            icon: Boxes,
+          },
+        ],
+      },
+    ],
+  }
+}
+
+export function createDomainRouteTree() {
+  return defineDomainRouteTree({
+    routes: [createCatalogRouteBranches],
+    metas: {
+      nav: createCatalogNavMeta,
+    },
+  })
+}
+```
+
+需要特殊无 layout 路由时使用 slot 写法：
+
+```tsx
+import { defineDomainRouteSlots, defineDomainRouteTree } from '@example-app/web-app'
+
+export function createDomainRouteTree() {
+  return defineDomainRouteTree({
+    routes: defineDomainRouteSlots({
+      root: [createLoginRouteBranches, createRegisterRouteBranches],
+      layout: [createAuthRouteBranches],
+    }),
+  })
 }
 ```
 
@@ -218,9 +294,10 @@ export function AuthPage({ children }: { children: ReactNode }) {
 - Layout 组件统一放 `src/components/layouts/`，不平铺在 src 顶层
 - `root-layout.tsx` 只作 RootRoute component（provider + Outlet）
 - app 自身路由分有/无 layout；有 layout 路由挂 `AppLayout`，无 layout 路由直接挂 RootRoute
-- 普通 business domain 默认不包 `AppLayout`，直接接入 RootRoute
+- 普通 business domain 默认使用 `routes: [...]`，挂到 app layout 下并可配合函数式 `metas.nav`
+- login、register、SSO callback 等特殊页面使用 `routes.root`，直接接入 RootRoute
 - 页面尽量不要裸跑；普通页面通过 `AppPage` / `DomainPage` 收口内容区
-- Domain 需要 app 共享 layout 时从 app package 导入，需要不同体验时在自身 `src/components/layouts/` 定制
+- Domain 需要不同页面容器时在自身 `src/components/layouts/` 定制
 
 ---
 
@@ -313,37 +390,55 @@ export const Route = createLazyRoute('/help')({
 })
 ```
 
-App route tree 在 shell 层组装 app 级 route 和 domain route。
+App route tree 在 shell 层组装 app 级 route、domain root slot 和 domain layout slot。
 
 ```tsx
 // domain/app/src/web/src/routes/index.tsx
 import { createRootRoute } from '@tanstack/react-router'
 
+import { createAppNavConfig } from '../components/layouts/app-layout/nav-config'
 import { RootComponent } from '../root-layout'
-import { createHelpRouteTree } from './help-route'
-import { resolveDomainRoutes, type DomainRouteTreeFactory } from './helpers/domain-routes-resolver'
+import { createAppLayoutRoute } from './app-layout-route'
+import { createHomeRouteTree } from './home-route'
+import {
+  getDomainRouteBranchFactories,
+  resolveDomainRoutes,
+  type DomainRouteTreeCollection,
+} from './helpers/domain-route-tree'
 
-export type { DomainRouteTreeFactory }
-
-export function createAppRouteTree(factories: DomainRouteTreeFactory[]) {
+export function createAppRouteTree(domainRouteTrees: DomainRouteTreeCollection) {
+  const { routeTrees } = domainRouteTrees
   const RootRoute = createRootRoute({ component: RootComponent })
-  const domainRoutes = resolveDomainRoutes(RootRoute, factories)
+  const navConfig = createAppNavConfig(routeTrees)
+  const AppLayoutRoute = createAppLayoutRoute({ RootRoute, navConfig })
+  const rootDomainRoutes = resolveDomainRoutes(
+    RootRoute,
+    routeTrees.flatMap((routeTree) => getDomainRouteBranchFactories(routeTree, 'root')),
+  )
+  const layoutDomainRoutes = resolveDomainRoutes(
+    AppLayoutRoute,
+    routeTrees.flatMap((routeTree) => getDomainRouteBranchFactories(routeTree, 'layout')),
+  )
 
-  return RootRoute.addChildren([createHelpRouteTree({ RootRoute }), ...domainRoutes])
+  return RootRoute.addChildren([
+    ...rootDomainRoutes,
+    AppLayoutRoute.addChildren([createHomeRouteTree({ RootRoute: AppLayoutRoute }), ...layoutDomainRoutes]),
+  ])
 }
 ```
 
-Domain 默认路由以领域名称开始，domain root 可同步承载 `Outlet`，子页面挂在 domain root 下并优先 lazy。
+Domain 默认路由以领域名称开始，domain root 可同步承载 `Outlet`，子页面挂在 domain root 下并优先 lazy。公开的 `createDomainRouteTree()` 返回声明对象，内部 route branch factory 才接收 app 传入的 `RootRoute`。
 
 ```tsx
 // domain/catalog/src/web/src/routes/index.tsx
+import { defineDomainRouteTree } from '@example-app/web-app'
 import type { AnyRoute } from '@tanstack/react-router'
 import { Outlet, createRoute } from '@tanstack/react-router'
 
 import { createHomeRouteTree } from './home-route'
 import { createReportsRouteTree } from './reports-route'
 
-export function createDomainRouteTree({ RootRoute }: { RootRoute: AnyRoute }): AnyRoute[] {
+function createCatalogRouteBranches({ RootRoute }: { RootRoute: AnyRoute }): AnyRoute[] {
   const domainRoute = createRoute({
     getParentRoute: () => RootRoute,
     path: 'catalog',
@@ -356,6 +451,12 @@ export function createDomainRouteTree({ RootRoute }: { RootRoute: AnyRoute }): A
       createReportsRouteTree({ domainRoute }),
     ]),
   ]
+}
+
+export function createDomainRouteTree() {
+  return defineDomainRouteTree({
+    routes: [createCatalogRouteBranches],
+  })
 }
 ```
 
