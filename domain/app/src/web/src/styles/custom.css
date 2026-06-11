@@ -1,0 +1,59 @@
+@layer base {
+
+  /* 统一表单控件文本垂直对齐（不改 ui 基础组件源码） */
+  [data-slot='input'] {
+    line-height: 1.25rem;
+    padding-top: 0;
+    padding-bottom: 0;
+  }
+
+  [data-slot='select-trigger'] {
+    line-height: 1.25rem;
+  }
+
+  [data-slot='select-trigger'] [data-slot='select-value'] {
+    line-height: 1.25rem;
+  }
+
+  [data-slot='breadcrumb'],
+  [data-slot='breadcrumb'] * {
+    -webkit-user-select: none;
+    user-select: none;
+  }
+
+  /* ── 全局滚动条样式 (shadcn/ui 风格) ── */
+
+  /* Firefox */
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: var(--border) transparent;
+  }
+
+  /* Webkit (Chrome / Safari / Edge) */
+  ::-webkit-scrollbar {
+    width: 6px;
+    height: 6px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background-color: var(--border);
+    border-radius: 9999px;
+    transition: background-color 0.2s;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background-color: var(--muted-foreground);
+  }
+
+  ::-webkit-scrollbar-thumb:active {
+    background-color: var(--ring);
+  }
+
+  ::-webkit-scrollbar-corner {
+    background: transparent;
+  }
+}
