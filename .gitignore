@@ -1,5 +1,6 @@
 .vite
 # local disabled domains
+
 # vined - begin
 *.local
 .DS_Store
@@ -16,6 +17,7 @@
 /dev.yaml
 /domain/category
 /domain/factor
+/domain/file
 /domain/formula
 /domain/uic
 /domain/unit

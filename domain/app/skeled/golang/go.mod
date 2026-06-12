@@ -1,10 +1,10 @@
 module go.cew.io/app/carbonnt/cyacle/skeled/app
 
-go 1.26.0
+go 1.26
 
 require (
 	go.cew.io/app/carbonnt/cyacle/skeled/apppub v0.0.0-00010101000000-000000000000
-	go.yorun.ai/vine v1.1.23
+	go.yorun.ai/vine v1.1.25
 )
 
 require (

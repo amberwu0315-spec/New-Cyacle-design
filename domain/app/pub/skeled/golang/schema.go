@@ -8,10 +8,10 @@ func init() {
 
 var _DomainSchema = &skel.DomainSchema{
 	Domain: "app",
-	Hash:   "93b0244c",
+	Hash:   "f797c96f",
 	Full:   false,
 	Generated: &skel.GeneratedInfo{
-		CompilerVersion: "v1.1.23",
+		CompilerVersion: "v1.1.25",
 	},
 	Enums: []*skel.EnumSchema{
 		{
@@ -266,7 +266,7 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "UserActor",
 			SkelName:    "app.UserActor",
 			Description: "user",
-			Hash:        "0802a989",
+			Hash:        "f301f4ab",
 			Vias: []skel.ActorVia{
 				skel.ActorViaClient,
 			},
@@ -274,10 +274,17 @@ var _DomainSchema = &skel.DomainSchema{
 			AuthCredential: &skel.DataSchema{
 				Name:     "UserActorCredential",
 				SkelName: "app.UserActorCredential",
-				Hash:     "36f8aa72",
+				Hash:     "31f4b931",
 				Members: []*skel.MemberSchema{
 					{
 						Name: "session",
+						Type: &skel.TypeSchema{
+							Kind:   skel.TypeKindScalar,
+							Scalar: skel.ScalarString,
+						},
+					},
+					{
+						Name: "scope",
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarString,
@@ -288,13 +295,20 @@ var _DomainSchema = &skel.DomainSchema{
 			AuthInfo: &skel.DataSchema{
 				Name:     "UserActorInfo",
 				SkelName: "app.UserActorInfo",
-				Hash:     "9f47f675",
+				Hash:     "f83f0c12",
 				Members: []*skel.MemberSchema{
 					{
 						Name: "userId",
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarInt,
+						},
+					},
+					{
+						Name: "workspaceId",
+						Type: &skel.TypeSchema{
+							Kind:   skel.TypeKindScalar,
+							Scalar: skel.ScalarString,
 						},
 					},
 				},

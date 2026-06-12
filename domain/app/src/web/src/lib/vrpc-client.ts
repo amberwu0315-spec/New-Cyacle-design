@@ -6,7 +6,7 @@ import { toast } from 'sonner'
 
 import { redirectToLoginWithCurrentLocation } from './auth-session'
 import { runtimeConfig } from './runtime-config'
-import { getSessionCredential } from './session-cookie'
+import { getSessionCredential, getSessionScopeCredential } from './session-cookie'
 
 
 export const vrpcClient = createVrpcClient({
@@ -27,7 +27,7 @@ vrpcClient.use({
     }
 
     const headers = new Headers(context.init.headers)
-    headers.set('Authorization', `session ${sessionCredential}`)
+    headers.set('Authorization', `session ${sessionCredential}, scope ${getSessionScopeCredential()}`)
     context.init.headers = headers
   },
   onError: (error, context) => {

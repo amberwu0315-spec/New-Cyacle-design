@@ -1,7 +1,9 @@
 import Cookies from 'js-cookie'
 
 export const SESSION_COOKIE_KEY = 'NSID'
+export const SESSION_SCOPE_COOKIE_KEY = 'NSCP'
 export const SESSION_COOKIE_EXPIRES_DAYS = 365
+export const SESSION_SCOPE_CREDENTIAL_EMPTY = '-'
 
 const LOCAL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1'])
 
@@ -45,6 +47,16 @@ export function getSessionCredential() {
   return Cookies.get(SESSION_COOKIE_KEY) ?? null
 }
 
+export function getSessionScope() {
+  return Cookies.get(SESSION_SCOPE_COOKIE_KEY) ?? null
+}
+
+export function getSessionScopeCredential() {
+  const scope = getSessionScope()?.trim()
+
+  return scope || SESSION_SCOPE_CREDENTIAL_EMPTY
+}
+
 export function setSessionCredential(sessionId: string) {
   const domain = resolveSessionCookieDomain()
   const secure = getCookieSecureOption()
@@ -58,19 +70,50 @@ export function setSessionCredential(sessionId: string) {
   })
 }
 
+export function setSessionScope(scope: string) {
+  const domain = resolveSessionCookieDomain()
+  const secure = getCookieSecureOption()
+  const normalizedScope = scope.trim()
+
+  if (!normalizedScope) {
+    Cookies.remove(SESSION_SCOPE_COOKIE_KEY, {
+      domain,
+      path: '/',
+      sameSite: 'lax',
+      secure,
+    })
+    Cookies.remove(SESSION_SCOPE_COOKIE_KEY, {
+      path: '/',
+      sameSite: 'lax',
+      secure,
+    })
+    return
+  }
+
+  Cookies.set(SESSION_SCOPE_COOKIE_KEY, normalizedScope, {
+    domain,
+    expires: SESSION_COOKIE_EXPIRES_DAYS,
+    path: '/',
+    sameSite: 'lax',
+    secure,
+  })
+}
+
 export function clearSessionCredential() {
   const domain = resolveSessionCookieDomain()
   const secure = getCookieSecureOption()
 
-  Cookies.remove(SESSION_COOKIE_KEY, {
-    domain,
-    path: '/',
-    sameSite: 'lax',
-    secure,
-  })
-  Cookies.remove(SESSION_COOKIE_KEY, {
-    path: '/',
-    sameSite: 'lax',
-    secure,
-  })
+  for (const key of [SESSION_COOKIE_KEY, SESSION_SCOPE_COOKIE_KEY]) {
+    Cookies.remove(key, {
+      domain,
+      path: '/',
+      sameSite: 'lax',
+      secure,
+    })
+    Cookies.remove(key, {
+      path: '/',
+      sameSite: 'lax',
+      secure,
+    })
+  }
 }

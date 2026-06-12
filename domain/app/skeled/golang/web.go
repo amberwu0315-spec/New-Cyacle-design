@@ -13,7 +13,7 @@ func init() {
 var _WebWebSpec = &web.WebSpec{
 	Name:              "WebWeb",
 	SkelName:          "app.WebWeb",
-	Hash:              "d4430529",
+	Hash:              "6de540e7",
 	ServerType:        reflect.TypeFor[WebWebServer](),
 	DefaultServerType: reflect.TypeFor[*DefaultWebWebServer](),
 }

@@ -13,7 +13,7 @@ func init() {
 	meta.RegisterActor(meta.ActorSpec{
 		Name:         "UserActor",
 		SkelName:     "app.UserActor",
-		Hash:         "0802a989",
+		Hash:         "f301f4ab",
 		InfoSkelName: "app.UserActorInfo",
 		InfoType:     reflect.TypeFor[*UserActorInfo](),
 	})
@@ -41,10 +41,12 @@ func (UserActor) Vias() []skel.ActorVia {
 
 type UserActorCredential struct {
 	Session string `json:"session"`
+	Scope   string `json:"scope"`
 }
 
 type UserActorInfo struct {
-	UserId int `json:"userId"`
+	UserId      int    `json:"userId"`
+	WorkspaceId string `json:"workspaceId"`
 }
 
 // UserActorAuthServiceServer

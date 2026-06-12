@@ -9,10 +9,15 @@ export {
 export { queryClient, TanstackQueryRootProvider } from './lib/query-client.tsx'
 export {
   SESSION_COOKIE_KEY,
+  SESSION_SCOPE_COOKIE_KEY,
+  SESSION_SCOPE_CREDENTIAL_EMPTY,
   clearSessionCredential,
   getSessionCredential,
+  getSessionScope,
+  getSessionScopeCredential,
   resolveSessionCookieDomain,
   setSessionCredential,
+  setSessionScope,
 } from './lib/session-cookie.ts'
 export { vrpcClient } from './lib/vrpc-client.ts'
 
