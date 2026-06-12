@@ -7,6 +7,13 @@ export {
   useTranslation,
 } from './lib/i18n/index.ts'
 export { queryClient, TanstackQueryRootProvider } from './lib/query-client.tsx'
+export {
+  SESSION_COOKIE_KEY,
+  clearSessionCredential,
+  getSessionCredential,
+  resolveSessionCookieDomain,
+  setSessionCredential,
+} from './lib/session-cookie.ts'
 export { vrpcClient } from './lib/vrpc-client.ts'
 
 export type {

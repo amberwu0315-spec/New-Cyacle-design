@@ -8,17 +8,29 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '../../ui/popover'
+import { clearAuthSessionSideEffects } from '../../../lib/auth-session'
 import { crossDomainRoutePaths } from '../../../lib/cross-domain-route-paths'
 import { useTranslation } from '../../../lib/i18n'
 
 import defaultUserAvatar from './assets/default-user-avatar.png'
 import { MOCK_USER } from './nav-config'
+import { useCurrentUserProfile } from './queries'
 
 export function AccountPopover() {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const profileQuery = useCurrentUserProfile()
+  const profile = profileQuery.data
+  const accountName =
+    profile?.realName?.trim() ||
+    profile?.nickname?.trim() ||
+    profile?.username?.trim() ||
+    MOCK_USER.name
+  const accountContact =
+    profile?.email?.trim() || profile?.phone?.trim() || MOCK_USER.email
 
   const handleLogoutClick = React.useCallback(() => {
+    clearAuthSessionSideEffects()
     void navigate({ to: crossDomainRoutePaths.uic.login })
   }, [navigate])
 
@@ -40,7 +52,7 @@ export function AccountPopover() {
           className="size-6 shrink-0 rounded-full border border-border object-cover"
         />
         <span className="max-w-28 truncate text-sm font-medium text-foreground">
-          {MOCK_USER.name}
+          {accountName}
         </span>
       </PopoverTrigger>
 
@@ -55,17 +67,17 @@ export function AccountPopover() {
             <div className="flex items-start gap-3">
               <img
                 src={defaultUserAvatar}
-                alt={MOCK_USER.name}
+                alt={accountName}
                 className="size-11 shrink-0 rounded-full border border-border object-cover"
               />
               <div className="min-w-0 flex-1">
                 <div className="min-w-0">
                   <div className="truncate text-[15px] leading-5 font-semibold text-foreground">
-                    {MOCK_USER.name}
+                    {accountName}
                   </div>
                 </div>
                 <div className="mt-0.5 truncate text-xs leading-4 text-muted-foreground">
-                  {MOCK_USER.email}
+                  {accountContact}
                 </div>
               </div>
             </div>
