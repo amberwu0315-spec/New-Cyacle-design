@@ -2,7 +2,11 @@ module go.cew.io/app/carbonnt/cyacle/server/app
 
 go 1.26.0
 
-require go.yorun.ai/vine v1.1.25
+require (
+	github.com/gin-gonic/gin v1.12.0
+	go.cew.io/app/carbonnt/cyacle/skeled/app v0.0.0-00010101000000-000000000000
+	go.yorun.ai/vine v1.1.25
+)
 
 require (
 	cloud.google.com/go v0.123.0 // indirect
@@ -18,7 +22,6 @@ require (
 	github.com/fxamacker/cbor/v2 v2.9.1 // indirect
 	github.com/gabriel-vasile/mimetype v1.4.13 // indirect
 	github.com/gin-contrib/sse v1.1.1 // indirect
-	github.com/gin-gonic/gin v1.12.0 // indirect
 	github.com/glebarez/go-sqlite v1.21.2 // indirect
 	github.com/glebarez/sqlite v1.11.0 // indirect
 	github.com/go-playground/locales v0.14.1 // indirect
@@ -66,6 +69,7 @@ require (
 	github.com/ugorji/go/codec v1.3.1 // indirect
 	github.com/urfave/cli/v3 v3.4.1 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/apppub v0.0.0-00010101000000-000000000000 // indirect
 	go.mongodb.org/mongo-driver/v2 v2.5.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	golang.org/x/arch v0.26.0 // indirect

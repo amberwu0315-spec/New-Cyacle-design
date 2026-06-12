@@ -1,19 +1,30 @@
+.vite
+
 # vined - begin
+*.local
 .DS_Store
+.env
 .idea/
+.nitro
+.output
+.tanstack
+.vinxi
 .vscode/
+.wrangler
 /.cache/
 /app/src/server/cmd
 /dev.yaml
 /domain/category
-/domain/formula
-/domain/unit
 /domain/factor
-/domain/accounting.core
-/domain/accounting.api
-/domain/lca.api
-/domain/lca.core
+/domain/formula
+/domain/uic
+/domain/unit
 /go.work
 /go.work.sum
 /pnpm-workspace.yaml
+__unconfig*
+dist
+dist-ssr
+node_modules
+todos.json
 # vined - end

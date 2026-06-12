@@ -8,7 +8,7 @@ func init() {
 
 var _DomainSchema = &skel.DomainSchema{
 	Domain: "app",
-	Hash:   "dfe84fd4",
+	Hash:   "93b0244c",
 	Full:   false,
 	Generated: &skel.GeneratedInfo{
 		CompilerVersion: "v1.1.23",
