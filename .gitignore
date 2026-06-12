@@ -1,5 +1,5 @@
 .vite
-
+# local disabled domains
 # vined - begin
 *.local
 .DS_Store

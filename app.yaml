@@ -8,12 +8,9 @@ artifacts:
 domains:
     - name: app
       source: LOCAL
-    - name: uic
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/uic.git
     - name: unit
       source: REMOTE
-      gitUrl: git@git.cew.io:/carbonnt/cyacle/domain/unit.git
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/uic.git
     - name: formula
       source: REMOTE
       gitUrl: git@git.cew.io:/carbonnt/cyacle/domain/formula.git
