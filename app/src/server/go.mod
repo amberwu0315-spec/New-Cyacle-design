@@ -117,10 +117,14 @@ require (
 	go.cew.io/app/carbonnt/cyacle/skeled/filepub v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/uic v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/uicpub v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/sdk/unitpub v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/category v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/categorypub v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/formula v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/formulapub v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/unit v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/unitpub v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/util/vmath v0.0.1-alpha2 // indirect
-	go.mongodb.org/mongo-driver v1.13.1 // indirect
 	go.mongodb.org/mongo-driver/v2 v2.5.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect
 	go.uber.org/multierr v1.10.0 // indirect
