@@ -1,0 +1,17 @@
+portalSites:
+  - name: base.UserActor-client-rpc
+    type: RPCGW
+    actorSkelName: base.UserActor
+    actorVia: client
+    webName: ""
+
+portalRules:
+  - name: base.UserActor-client-rpc
+    scheme: http
+    host: ""
+    port: 7088
+    pathPrefix: "/api"
+    targetType: SITE
+    siteName: base.UserActor-client-rpc
+    redirectionPattern: ""
+    override: true

@@ -1,0 +1,37 @@
+package basepub
+
+import "fmt"
+
+// ItemType 宏文本片段类型
+type ItemType string
+
+const (
+	ItemTypeUnspecified ItemType = "UNSPECIFIED"
+	// ItemTypePlain 普通文本
+	ItemTypePlain ItemType = "PLAIN"
+	// ItemTypeCtxVar 占位符
+	ItemTypeCtxVar ItemType = "CTX_VAR"
+	// ItemTypeUnit 单位
+	ItemTypeUnit ItemType = "UNIT"
+)
+
+func (itemType ItemType) MarshalJSON() ([]byte, error) {
+	return []byte(fmt.Sprintf("\"%s\"", itemType)), nil
+}
+
+func (itemType *ItemType) UnmarshalJSON(data []byte) error {
+	var err error = nil
+	switch string(data) {
+	case `"PLAIN"`:
+		*itemType = ItemTypePlain
+	case `"CTX_VAR"`:
+		*itemType = ItemTypeCtxVar
+	case `"UNIT"`:
+		*itemType = ItemTypeUnit
+	case "null":
+		err = fmt.Errorf("unexpected null value for non-pointer ItemType")
+	default:
+		*itemType = ItemTypeUnspecified
+	}
+	return err
+}

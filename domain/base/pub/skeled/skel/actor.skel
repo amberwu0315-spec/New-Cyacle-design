@@ -1,0 +1,16 @@
+domain base
+
+@desc("user")
+pub actor UserActor {
+    via client {}
+    auth {
+        credential {
+            session: string
+            scope: string
+        }
+        info {
+            userId: int
+            workspaceId: string
+        }
+    }
+}

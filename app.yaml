@@ -8,6 +8,8 @@ artifacts:
 domains:
     - name: app
       source: LOCAL
+    - name: base
+      source: LOCAL
     - name: file
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/file.git
