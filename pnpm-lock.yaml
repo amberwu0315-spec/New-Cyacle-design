@@ -8,9 +8,9 @@ importers:
 
   app/src/web:
     dependencies:
-      '@carbonnt-cyacle/web-app':
+      '@carbonnt-cyacle/web-base':
         specifier: workspace:*
-        version: link:../../../domain/app/src/web
+        version: link:../../../domain/base/src/web
       '@carbonnt-cyacle/web-uic':
         specifier: workspace:*
         version: link:../../../domain/uic/src/web
@@ -143,20 +143,114 @@ importers:
         specifier: ^8.0.13
         version: 8.0.16(@types/node@22.19.21)(jiti@2.7.0)
 
+  domain/base/pub/skeled/typescript:
+    dependencies:
+      '@yorun-ai/vrpc':
+        specifier: '*'
+        version: 3.1.1
+
+  domain/base/skeled/typescript:
+    dependencies:
+      '@yorun-ai/vrpc':
+        specifier: '*'
+        version: 3.1.1
+
+  domain/base/src/web:
+    dependencies:
+      '@base-ui/react':
+        specifier: ^1.5.0
+        version: 1.5.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@fontsource-variable/geist':
+        specifier: ^5.2.9
+        version: 5.2.9
+      '@tanstack/react-query':
+        specifier: ^5.100.14
+        version: 5.101.0(react@19.2.7)
+      '@tanstack/react-router':
+        specifier: ^1.170.14
+        version: 1.170.15(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@yorun-ai/vrpc':
+        specifier: ^3.1.1
+        version: 3.1.1
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      date-fns:
+        specifier: ^4.2.1
+        version: 4.4.0
+      js-cookie:
+        specifier: ^3.0.8
+        version: 3.0.8
+      lucide-react:
+        specifier: ^0.545.0
+        version: 0.545.0(react@19.2.7)
+      next-themes:
+        specifier: ^0.4.6
+        version: 0.4.6(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.2.0
+        version: 19.2.7
+      react-day-picker:
+        specifier: ^10.0.1
+        version: 10.0.1(@types/react@19.2.17)(react@19.2.7)
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.7(react@19.2.7)
+      react-hook-form:
+        specifier: ^7.76.0
+        version: 7.78.0(react@19.2.7)
+      sonner:
+        specifier: ^2.0.7
+        version: 2.0.7(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      tailwind-merge:
+        specifier: ^3.6.0
+        version: 3.6.0
+      tw-animate-css:
+        specifier: ^1.4.0
+        version: 1.4.0
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@types/js-cookie':
+        specifier: ^3.0.6
+        version: 3.0.6
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.21
+      '@types/react':
+        specifier: ^19.2.0
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: ^19.2.0
+        version: 19.2.3(@types/react@19.2.17)
+      shadcn:
+        specifier: ^4.7.0
+        version: 4.11.0(typescript@6.0.3)
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
+      vite:
+        specifier: ^8.0.13
+        version: 8.0.16(@types/node@22.19.21)(jiti@2.7.0)
+
   domain/uic/pub/skeled/typescript:
     dependencies:
-      '@carbonnt-cyacle/skeled-apppub':
+      '@carbonnt-cyacle/skeled-basepub':
         specifier: workspace:*
-        version: link:../../../../app/pub/skeled/typescript
+        version: link:../../../../base/pub/skeled/typescript
       '@yorun-ai/vrpc':
         specifier: '*'
         version: 3.1.1
 
   domain/uic/skeled/typescript:
     dependencies:
-      '@carbonnt-cyacle/skeled-apppub':
+      '@carbonnt-cyacle/skeled-basepub':
         specifier: workspace:*
-        version: link:../../../app/pub/skeled/typescript
+        version: link:../../../base/pub/skeled/typescript
       '@yorun-ai/vrpc':
         specifier: '*'
         version: 3.1.1
@@ -166,12 +260,12 @@ importers:
       '@base-ui/react':
         specifier: ^1.5.0
         version: 1.5.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
-      '@carbonnt-cyacle/skeled-apppub':
+      '@carbonnt-cyacle/skeled-basepub':
         specifier: workspace:*
-        version: link:../../../app/pub/skeled/typescript
-      '@carbonnt-cyacle/web-app':
+        version: link:../../../base/pub/skeled/typescript
+      '@carbonnt-cyacle/web-base':
         specifier: workspace:*
-        version: link:../../../app/src/web
+        version: link:../../../base/src/web
       '@fontsource-variable/geist':
         specifier: ^5.2.9
         version: 5.2.9
@@ -916,7 +1010,7 @@ packages:
         optional: true
 
   '@yorun-ai/vrpc@3.1.1':
-    resolution: {integrity: sha512-1T0G8bUqnpWnlqoWjOyXZIw3tRj7m3BpBolDjy1UUd0hv4TDYGDdtazhq8orSgKP4mRIN+9kVrpH0e20s277vQ==, tarball: https://npm.cew.io/repository/npm/@yorun-ai/vrpc/-/vrpc-3.1.1.tgz}
+    resolution: {integrity: sha512-1T0G8bUqnpWnlqoWjOyXZIw3tRj7m3BpBolDjy1UUd0hv4TDYGDdtazhq8orSgKP4mRIN+9kVrpH0e20s277vQ==}
 
   accepts@2.0.0:
     resolution: {integrity: sha512-5cvg6CtKwfgdmVqY1WIiXKc3Q1bkRqGLi+2W/6ao+6Y7gu/RCwRuAhGEzh5B4KlszSuTLgZYuqFqo5bImjNKng==, tarball: https://npm.cew.io/repository/npm/accepts/-/accepts-2.0.0.tgz}

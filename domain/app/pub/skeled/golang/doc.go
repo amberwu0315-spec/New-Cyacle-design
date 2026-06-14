@@ -1,2 +1,0 @@
-// Package apppub
-package apppub

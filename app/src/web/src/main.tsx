@@ -1,5 +1,5 @@
 import type { AnyRouter } from '@tanstack/react-router'
-import { mountApp, createAppRouter } from '@carbonnt-cyacle/web-app'
+import { mountApp, createAppRouter } from '@carbonnt-cyacle/web-base'
 
 import "./styles.css";
 

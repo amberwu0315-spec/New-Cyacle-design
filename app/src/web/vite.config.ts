@@ -1,5 +1,4 @@
 import { parseArgs } from 'node:util'
-import { fileURLToPath } from 'node:url'
 
 import { devtools } from '@tanstack/devtools-vite'
 import { defineConfig } from 'vite'
@@ -32,18 +31,7 @@ const config = defineConfig({
   define: {
     __YORUN_VRPC_CLIENT_VERSION__: JSON.stringify(readVrpcClientVersion()),
   },
-  server: {
-    proxy: {
-      '/api': {
-        target: 'http://127.0.0.1:7088',
-        changeOrigin: true,
-      },
-    },
-  },
   resolve: {
-    alias: {
-      '@carbonnt-cyacle/skeled-uicpub': fileURLToPath(new URL('../../../domain/uic/pub/skeled/typescript/index.ts', import.meta.url)),
-    },
     dedupe: ['react', 'react-dom'],
     tsconfigPaths: true,
   },

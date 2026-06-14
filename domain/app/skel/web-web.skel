@@ -1,5 +1,0 @@
-domain app
-
-web WebWeb {
-    allow UserActor via client
-}

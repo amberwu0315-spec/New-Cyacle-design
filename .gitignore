@@ -13,7 +13,6 @@
 .vscode/
 .wrangler
 /.cache/
-/app/src/server/cmd
 /dev.yaml
 /domain/category
 /domain/factor
@@ -27,6 +26,7 @@
 __unconfig*
 dist
 dist-ssr
+go.cew.io/app/carbonnt/cyacle/server/app
 node_modules
 todos.json
 # vined - end

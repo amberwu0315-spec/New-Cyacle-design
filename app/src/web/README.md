@@ -32,7 +32,7 @@ cyacle/
 
 `app/src/web` 是唯一直接执行 `pnpm dev` 和 `pnpm build` 的 ship module。它不承载业务页面和共享组件，只负责把 app domain 与各 feature domain 的前端包组装成最终应用。
 
-`domain/app/src/web` 是 plotted app domain 的前端基础包，提供根路由、全局布局、共享 UI、全局样式、React Query、VRPC client 等能力。
+`domain/base/src/web` 是 plotted app domain 的前端基础包，提供根路由、全局布局、共享 UI、全局样式、React Query、VRPC client 等能力。
 
 `domain/<domain>/src/web` 是 feature domain 的前端包，提供该领域自己的路由、页面和局部组件。
 
@@ -52,7 +52,7 @@ ship module 的主要职责：
 `src/main.tsx` 由 `plot app apply` 生成，结构类似：
 
 ```ts
-import { mountApp, createAppRouter } from '@scope/web-app'
+import { mountApp, createAppRouter } from '@scope/web-base'
 
 import './styles.css'
 
@@ -82,7 +82,7 @@ app domain 提供：
 app domain 是共享层，不作为 feature domain route tree 加入 `createAppRouter([...])`。feature domain 可以依赖 app domain，例如：
 
 ```ts
-import { Button } from '@scope/web-app/components/ui/button'
+import { Button } from '@scope/web-base/components/ui/button'
 ```
 
 ## Feature Domain
@@ -134,12 +134,12 @@ app/src/web/src/styles.css
 内容由 `plot app apply` 生成，结构类似：
 
 ```css
-@import "@scope/web-app/globals.css";
+@import "@scope/web-base/globals.css";
 
 @import "@scope/web-feature/globals.css";
 ```
 
-`@scope/web-app/globals.css` 是 Tailwind/global CSS 基础入口，包含 Tailwind、theme、字体和全局基础样式。feature domain 通过自己的 `globals.css` 暴露样式入口，ship module 统一 import 这些入口。
+`@scope/web-base/globals.css` 是 Tailwind/global CSS 基础入口，包含 Tailwind、theme、字体和全局基础样式。feature domain 通过自己的 `globals.css` 暴露样式入口，ship module 统一 import 这些入口。
 
 ## Package 依赖
 
@@ -155,7 +155,7 @@ feature domain 的 `package.json` 依赖 app domain：
 ```json
 {
   "dependencies": {
-    "@scope/web-app": "workspace:*"
+    "@scope/web-base": "workspace:*"
   }
 }
 ```

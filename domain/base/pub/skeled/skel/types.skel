@@ -1,0 +1,67 @@
+domain base
+
+@desc("宏文本片段类型")
+pub enum ItemType {
+    @desc("普通文本")
+    PLAIN
+    @desc("占位符")
+    CTX_VAR
+    @desc("单位")
+    UNIT
+}
+
+@desc("宏文本片段")
+pub data Item {
+    @desc("宏文本片段内容")
+    value: string?
+    @desc("宏文本片段类型")
+    type: ItemType?
+}
+
+@desc("多语言宏文本")
+pub data MMacroText {
+    @desc("中文")
+    zh: MStringItem<MacroText>?
+    @desc("英文")
+    en: MStringItem<MacroText>?
+}
+
+@desc("多语言普通文本")
+pub data MString {
+    @desc("中文")
+    zh: MStringItem<string>?
+    @desc("英文")
+    en: MStringItem<string>?
+}
+
+@desc("多语言中的单一语言内容")
+pub data MStringItem<TItem> {
+    @desc("内容")
+    value: TItem?
+    @desc("数据更新时间")
+    updatedAt: timestamp?
+    @desc("是否来源于AI, 如翻译")
+    fromAI: bool
+}
+
+@desc("宏文本")
+pub data MacroText {
+    @desc("宏文片段列表")
+    items: list<Item>?
+}
+
+@desc("分页结果")
+pub data PageResp<TItem> {
+    @desc("总数")
+    total: int
+    @desc("数据")
+    data: list<TItem>?
+}
+
+@desc("数值带单位")
+pub data UnitValue {
+    @desc("数值")
+    value: decimal?
+    @desc("单位id")
+    unitId: string?
+}

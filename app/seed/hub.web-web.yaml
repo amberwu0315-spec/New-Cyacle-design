@@ -1,0 +1,17 @@
+portalSites:
+  - name: app.WebWeb-web
+    type: WEBGW
+    actorSkelName: base.UserActor
+    actorVia: client
+    webName: app.WebWeb
+
+portalRules:
+  - name: app.WebWeb-web
+    scheme: http
+    host: ""
+    port: 7088
+    pathPrefix: "/"
+    targetType: SITE
+    siteName: app.WebWeb-web
+    redirectionPattern: ""
+    override: true
