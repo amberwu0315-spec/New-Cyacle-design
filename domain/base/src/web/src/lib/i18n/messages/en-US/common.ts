@@ -31,6 +31,13 @@ export const common = {
       switchWorkspace: 'Switch workspace',
       logout: 'Log out',
     },
+    profileBootstrap: {
+      errorTitle: 'Unable to verify your sign-in status',
+      errorDescription: 'The system could not retrieve your account information. To protect workspace data, access is paused for now.',
+      actionHint: 'Try reloading first. If the issue continues, sign in again before entering the workspace.',
+      retry: 'Reload',
+      logout: 'Sign in again',
+    },
   },
   workspace: {
     title: 'Choose workspace',

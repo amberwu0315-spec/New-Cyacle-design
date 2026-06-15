@@ -1,6 +1,7 @@
 import * as React from 'react'
-import { useLocation } from '@tanstack/react-router'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import Cookies from 'js-cookie'
+import { AlertTriangleIcon, LogOutIcon, RefreshCwIcon } from 'lucide-react'
 
 import { AppSidebar } from './app-sidebar'
 import { AppTopbar } from './app-topbar'
@@ -11,12 +12,17 @@ import {
   getBreadcrumbItems,
 } from './nav-matching'
 import type { AppNavConfig } from './nav-config'
+import { Button } from '../../ui/button'
+import { Spinner } from '../../ui/spinner'
+import { clearAuthSessionSideEffects } from '../../../lib/auth-session'
+import { crossDomainRoutePaths } from '../../../lib/cross-domain-route-paths'
+import { useTranslation } from '../../../lib/i18n'
 import {
   getSessionCredential,
   getSessionWorkspaceId,
 } from '../../../lib/session-cookie'
 import { selectWorkspaceId } from '../../../lib/workspace-session'
-import { useAvailableWorkspaces } from './queries'
+import { useAvailableWorkspaces, useCurrentUserProfile } from './queries'
 import type { WorkspaceSelectionItem } from '../../../lib/workspace-session'
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state'
@@ -44,6 +50,65 @@ function persistSidebarState(isOpen: boolean) {
   })
 }
 
+type SessionBootstrapErrorProps = {
+  actionHint: string
+  description: string
+  isRetrying: boolean
+  logoutLabel: string
+  onLogout: () => void
+  onRetry: () => void
+  retryLabel: string
+  title: string
+}
+
+function SessionBootstrapError({
+  actionHint,
+  description,
+  isRetrying,
+  logoutLabel,
+  onLogout,
+  onRetry,
+  retryLabel,
+  title,
+}: SessionBootstrapErrorProps) {
+  return (
+    <div
+      role="alertdialog"
+      aria-modal="true"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-background/90 px-6 text-foreground backdrop-blur-sm"
+    >
+      <section className="flex w-full max-w-[520px] flex-col items-center text-center">
+        <div className="flex size-11 items-center justify-center rounded-lg border border-destructive/15 bg-destructive/5 text-destructive shadow-sm">
+          <AlertTriangleIcon aria-hidden="true" className="size-5" />
+        </div>
+        <h1 className="mt-5 text-[22px] leading-8 font-semibold tracking-normal text-foreground">
+          {title}
+        </h1>
+        <p className="mt-2 max-w-[460px] text-sm leading-6 text-muted-foreground">
+          {description}
+        </p>
+        <p className="mt-3 rounded-lg bg-muted px-3 py-2 text-xs leading-5 text-muted-foreground">
+          {actionHint}
+        </p>
+        <div className="mt-6 flex flex-wrap justify-center gap-2.5">
+          <Button size="lg" onClick={onRetry} disabled={isRetrying}>
+            {isRetrying ? (
+              <Spinner className="size-4" />
+            ) : (
+              <RefreshCwIcon aria-hidden="true" className="size-4" />
+            )}
+            <span>{retryLabel}</span>
+          </Button>
+          <Button size="lg" variant="outline" onClick={onLogout}>
+            <LogOutIcon aria-hidden="true" className="size-4" />
+            <span>{logoutLabel}</span>
+          </Button>
+        </div>
+      </section>
+    </div>
+  )
+}
+
 export function AppLayout({
   children,
   navConfig,
@@ -51,6 +116,8 @@ export function AppLayout({
   children: React.ReactNode
   navConfig: AppNavConfig
 }) {
+  const { t } = useTranslation()
+  const navigate = useNavigate()
   const pathname = useLocation({
     select: (location) => location.pathname,
   })
@@ -68,6 +135,14 @@ export function AppLayout({
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false)
   const [isScenePanelOpen, setIsScenePanelOpen] = React.useState(false)
   const hasSessionCredential = Boolean(getSessionCredential())
+  const {
+    data: currentUserProfile,
+    isError: isProfileError,
+    isFetching: isProfileFetching,
+    isSuccess: isProfileSuccess,
+    refetch: refetchProfile,
+  } = useCurrentUserProfile()
+  const hasCurrentUserProfile = Boolean(currentUserProfile)
   const {
     data: availableWorkspaces,
     isError: isWorkspaceError,
@@ -176,6 +251,15 @@ export function AppLayout({
     void refetchWorkspaces()
   }, [refetchWorkspaces])
 
+  const handleProfileRetry = React.useCallback(() => {
+    void refetchProfile()
+  }, [refetchProfile])
+
+  const handleProfileLogout = React.useCallback(() => {
+    clearAuthSessionSideEffects()
+    void navigate({ to: crossDomainRoutePaths.uic.login })
+  }, [navigate])
+
   React.useEffect(() => {
     if (
       !shouldRequireWorkspaceSelection ||
@@ -231,6 +315,9 @@ export function AppLayout({
     [navConfig, pathname, sidebarState],
   )
 
+  const isProfileBootstrapError =
+    !hasCurrentUserProfile && (isProfileError || isProfileSuccess)
+
   return (
     <div className="h-dvh overflow-hidden bg-background text-foreground">
       <div className="flex h-full min-h-0 w-full">
@@ -276,6 +363,19 @@ export function AppLayout({
         onSelect={handleWorkspaceSelect}
         switchingWorkspaceId={switchingWorkspaceId}
       />
+
+      {isProfileBootstrapError ? (
+        <SessionBootstrapError
+          title={t.common.shell.profileBootstrap.errorTitle}
+          description={t.common.shell.profileBootstrap.errorDescription}
+          actionHint={t.common.shell.profileBootstrap.actionHint}
+          retryLabel={t.common.shell.profileBootstrap.retry}
+          logoutLabel={t.common.shell.profileBootstrap.logout}
+          isRetrying={isProfileFetching}
+          onRetry={handleProfileRetry}
+          onLogout={handleProfileLogout}
+        />
+      ) : null}
     </div>
   )
 }

@@ -29,6 +29,13 @@ export const common = {
       switchWorkspace: '切换空间',
       logout: '退出登录',
     },
+    profileBootstrap: {
+      errorTitle: '无法确认当前登录状态',
+      errorDescription: '系统暂时无法获取当前账号信息。为保障数据安全，已暂停访问工作区。',
+      actionHint: '请先重新加载；如果多次重试仍未恢复，请重新登录后再进入。',
+      retry: '重新加载',
+      logout: '重新登录',
+    },
   },
   workspace: {
     title: '选择空间',
