@@ -28,6 +28,7 @@ const devReverseProxyWatchInterval = time.Second
 type _DevReverseProxy struct {
 	stateFilePath string
 	mutex         sync.RWMutex
+	host          string
 	port          int
 	proxy         *web.ReverseProxy
 	err           error
@@ -87,41 +88,49 @@ func (p *_DevReverseProxy) watch() {
 }
 
 func (p *_DevReverseProxy) reload() {
-	proxy, port, err := readDevReverseProxy(p.stateFilePath)
+	state, err := readDevState(p.stateFilePath)
 
 	p.mutex.Lock()
 	defer p.mutex.Unlock()
+
 	if err != nil {
 		p.err = err
 		return
 	}
-	if p.port == port {
+
+	host := devReverseProxyHost(state.Host, state.Port)
+	if p.host == host && p.port == state.Port {
 		p.err = nil
 		return
 	}
-	p.port = port
+
+	proxy := web.NewReverseProxy(web.ProxyOption{Target: &url.URL{
+		Scheme: "http",
+		Host:   host,
+	}})
+	if p.proxy != nil {
+		p.proxy.Close()
+	}
+	p.host = host
+	p.port = state.Port
 	p.proxy = proxy
 	p.err = nil
 }
 
-func readDevReverseProxy(stateFilePath string) (*web.ReverseProxy, int, error) {
+func readDevState(stateFilePath string) (*_DevState, error) {
 	state := &_DevState{}
 	content, err := os.ReadFile(stateFilePath)
 	if err != nil {
-		return nil, 0, fmt.Errorf("read dev state %s: %w", stateFilePath, err)
+		return nil, fmt.Errorf("read dev state %s: %w", stateFilePath, err)
 	}
 	err = json.Unmarshal(content, state)
 	if err != nil {
-		return nil, 0, fmt.Errorf("parse dev state %s: %w", stateFilePath, err)
+		return nil, fmt.Errorf("parse dev state %s: %w", stateFilePath, err)
 	}
 	if state.Port <= 0 {
-		return nil, 0, fmt.Errorf("invalid dev server port %d in %s", state.Port, stateFilePath)
+		return nil, fmt.Errorf("invalid dev server port %d in %s", state.Port, stateFilePath)
 	}
-
-	return web.NewReverseProxy(web.ProxyOption{Target: &url.URL{
-		Scheme: "http",
-		Host:   devReverseProxyHost(state.Host, state.Port),
-	}}), state.Port, nil
+	return state, nil
 }
 
 func devReverseProxyHost(host string, port int) string {

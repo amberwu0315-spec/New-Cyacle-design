@@ -7,7 +7,7 @@ require (
 	go.cew.io/app/carbonnt/cyacle/server/uic v0.0.0-00010101000000-000000000000
 	go.cew.io/app/carbonnt/cyacle/skeled/app v0.0.0-00010101000000-000000000000
 	go.cew.io/app/carbonnt/cyacle/skeled/basepub v0.0.0-00010101000000-000000000000
-	go.yorun.ai/vine v1.1.34
+	go.yorun.ai/vine v1.1.36
 )
 
 require (

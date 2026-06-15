@@ -13,6 +13,13 @@
 .vscode/
 .wrangler
 /.cache/
+/app/seed
+/app/skel
+/app/skeled
+/app/src/server
+/app/src/web/package.json
+/app/src/web/pnpm-lock.yaml
+/app/src/web/src
 /dev.yaml
 /domain/category
 /domain/factor
@@ -26,7 +33,6 @@
 __unconfig*
 dist
 dist-ssr
-go.cew.io/app/carbonnt/cyacle/server/app
 node_modules
 todos.json
 # vined - end

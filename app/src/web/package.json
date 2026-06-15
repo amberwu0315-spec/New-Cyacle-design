@@ -15,7 +15,7 @@
     "typescript": "^6.0.2",
     "vite": "^8.0.13"
   },
-  "name": "@carbonnt-cyacle/web",
+  "name": "@carbonnt-cyacle/web-app",
   "private": true,
   "scripts": {
     "build": "vite build",
