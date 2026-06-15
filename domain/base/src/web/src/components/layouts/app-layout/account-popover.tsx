@@ -129,8 +129,10 @@ function WorkspaceMenuItem({
 export function AccountPopover() {
   const { t } = useTranslation()
   const navigate = useNavigate()
-  const profileQuery = useCurrentUserProfile()
   const hasSessionCredential = Boolean(getSessionCredential())
+  const profileQuery = useCurrentUserProfile({
+    enabled: hasSessionCredential,
+  })
   const workspaceQuery = useAvailableWorkspaces({
     enabled: hasSessionCredential,
   })

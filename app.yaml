@@ -13,6 +13,8 @@ domains:
     - name: file
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/file.git
+    - name: meta
+      source: LOCAL
     - name: uic
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/uic.git

@@ -17,8 +17,9 @@ export const accountProfileKeys = {
   profile: () => [getProfileMeta.serviceName, getProfileMeta.methodName] as const,
 }
 
-export function useCurrentUserProfile() {
+export function useCurrentUserProfile({ enabled = true } = {}) {
   return useQuery({
+    enabled,
     queryKey: accountProfileKeys.profile(),
     queryFn: () =>
       pcfUserApiService.getProfile(null, { suppressGlobalToast: true }),

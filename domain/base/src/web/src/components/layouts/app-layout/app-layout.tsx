@@ -131,6 +131,9 @@ export function AppLayout({
   const [switchingWorkspaceId, setSwitchingWorkspaceId] = React.useState<
     string | null
   >(null)
+  const [lastAvailableWorkspaces, setLastAvailableWorkspaces] = React.useState<
+    Array<WorkspaceSelectionItem>
+  >([])
   const [workspaceSwitchFailed, setWorkspaceSwitchFailed] = React.useState(false)
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false)
   const [isScenePanelOpen, setIsScenePanelOpen] = React.useState(false)
@@ -141,7 +144,9 @@ export function AppLayout({
     isFetching: isProfileFetching,
     isSuccess: isProfileSuccess,
     refetch: refetchProfile,
-  } = useCurrentUserProfile()
+  } = useCurrentUserProfile({
+    enabled: hasSessionCredential,
+  })
   const hasCurrentUserProfile = Boolean(currentUserProfile)
   const {
     data: availableWorkspaces,
@@ -166,6 +171,17 @@ export function AppLayout({
     hasSessionCredential &&
     isWorkspaceSuccess &&
     (!selectedWorkspaceId || !isSelectedWorkspaceValid)
+  const workspaceSelectionOptions = React.useMemo(() => {
+    if (availableWorkspaces?.length) {
+      return availableWorkspaces
+    }
+
+    if (switchingWorkspaceId && lastAvailableWorkspaces.length) {
+      return lastAvailableWorkspaces
+    }
+
+    return availableWorkspaces ?? []
+  }, [availableWorkspaces, lastAvailableWorkspaces, switchingWorkspaceId])
 
   const setPersistedSidebarOpen = React.useCallback((getNext: (current: boolean) => boolean) => {
     setIsSidebarOpen((current) => {
@@ -194,6 +210,12 @@ export function AppLayout({
     setIsMobileSidebarOpen(false)
     setIsScenePanelOpen(false)
   }, [pathname])
+
+  React.useEffect(() => {
+    if (availableWorkspaces?.length) {
+      setLastAvailableWorkspaces(availableWorkspaces)
+    }
+  }, [availableWorkspaces])
 
   React.useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
@@ -352,10 +374,11 @@ export function AppLayout({
       <WorkspaceSelectionDialog
         open={shouldRequireWorkspaceSelection}
         currentWorkspaceId={selectedWorkspaceId}
-        workspaces={availableWorkspaces ?? []}
+        workspaces={workspaceSelectionOptions}
         isLoading={
           isWorkspaceLoading ||
-          (isWorkspaceFetching && !availableWorkspaces?.length)
+          (isWorkspaceFetching && !availableWorkspaces?.length) ||
+          (Boolean(switchingWorkspaceId) && !workspaceSelectionOptions.length)
         }
         isError={isWorkspaceError}
         isSwitchError={workspaceSwitchFailed}

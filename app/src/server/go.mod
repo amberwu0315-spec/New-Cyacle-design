@@ -5,6 +5,7 @@ go 1.26.0
 require (
 	github.com/gin-gonic/gin v1.12.0
 	go.cew.io/app/carbonnt/cyacle/server/file v0.0.0-00010101000000-000000000000
+	go.cew.io/app/carbonnt/cyacle/server/meta v0.0.0-00010101000000-000000000000
 	go.cew.io/app/carbonnt/cyacle/server/uic v0.0.0-00010101000000-000000000000
 	go.cew.io/app/carbonnt/cyacle/skeled/app v0.0.0-00010101000000-000000000000
 	go.cew.io/app/carbonnt/cyacle/skeled/basepub v0.0.0-00010101000000-000000000000
@@ -112,6 +113,8 @@ require (
 	github.com/x448/float16 v0.8.4 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/file v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/filepub v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/meta v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/metapub v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/uic v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/uicpub v0.0.0-00010101000000-000000000000 // indirect
 	go.mongodb.org/mongo-driver v1.13.1 // indirect

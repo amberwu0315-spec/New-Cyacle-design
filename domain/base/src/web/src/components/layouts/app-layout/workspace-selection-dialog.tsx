@@ -10,6 +10,7 @@ import { Button } from '../../ui/button'
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogHeader,
   DialogTitle,
 } from '../../ui/dialog'
@@ -77,19 +78,19 @@ function WorkspaceOptionButton({
     <button
       type="button"
       className={cn(
-        'group flex min-h-16 w-full items-center gap-3 rounded-lg border border-border/70 bg-background px-3 py-3 text-left transition-colors hover:bg-muted focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-100',
+        'group flex min-h-[76px] w-full items-center gap-4 rounded-lg border border-border/70 bg-background px-4 py-3.5 text-left transition-colors hover:border-primary/30 hover:bg-muted/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-100',
         isCurrent && 'border-primary/50 bg-primary/5',
       )}
       aria-busy={isThisSwitching || undefined}
       disabled={isSwitching}
       onClick={handleSelect}
     >
-      <span className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
+      <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
         <Building2Icon aria-hidden="true" className="size-4" />
       </span>
       <span className="min-w-0 flex-1">
         <span className="flex min-w-0 items-center gap-2">
-          <span className="truncate text-sm font-medium text-foreground">
+          <span className="truncate text-[15px] leading-5 font-medium text-foreground">
             {workspace.name}
           </span>
           {isCurrent ? (
@@ -99,7 +100,7 @@ function WorkspaceOptionButton({
           ) : null}
         </span>
         {secondaryText ? (
-          <span className="mt-0.5 block truncate text-xs text-muted-foreground">
+          <span className="mt-1 block truncate text-xs leading-5 text-muted-foreground">
             {secondaryText}
           </span>
         ) : null}
@@ -131,26 +132,29 @@ export function WorkspaceSelectionDialog({
 }: WorkspaceSelectionDialogProps) {
   const { t } = useTranslation()
   const hasWorkspaces = workspaces.length > 0
+  const isSwitchingWorkspace = Boolean(switchingWorkspaceId)
+  const showEmptyState = !isSwitchingWorkspace && (isError || !hasWorkspaces)
 
   return (
     <Dialog open={open}>
       <DialogContent
         showCloseButton={false}
-        className="gap-0 overflow-hidden p-0 sm:max-w-[520px]"
+        className="gap-0 overflow-hidden p-0 shadow-xl sm:max-w-[580px]"
       >
-        <DialogHeader className="px-5 pt-5 pb-4">
+        <DialogHeader className="px-6 pt-6 pb-5">
           <DialogTitle>{t.common.workspace.title}</DialogTitle>
+          <DialogDescription>{t.common.workspace.description}</DialogDescription>
         </DialogHeader>
 
         {isLoading ? (
-          <div className="flex min-h-[220px] flex-col items-center justify-center gap-3 px-5 pb-5 text-sm text-muted-foreground">
+          <div className="flex min-h-[220px] flex-col items-center justify-center gap-3 px-6 pb-6 text-sm text-muted-foreground">
             <Spinner />
             <span>{t.common.workspace.loading}</span>
           </div>
         ) : null}
 
-        {!isLoading && (isError || !hasWorkspaces) ? (
-          <div className="px-5 pb-5">
+        {!isLoading && showEmptyState ? (
+          <div className="px-6 pb-6">
             <Empty className="min-h-[220px] border border-border/70">
               <EmptyHeader>
                 <EmptyMedia variant="icon">
@@ -174,7 +178,7 @@ export function WorkspaceSelectionDialog({
         ) : null}
 
         {!isLoading && !isError && hasWorkspaces ? (
-          <div className="max-h-[min(50dvh,360px)] overflow-y-auto px-2 pb-2">
+          <div className="max-h-[min(52dvh,420px)] overflow-y-auto px-6 pb-6">
             <div className="flex flex-col gap-2">
               {isSwitchError ? (
                 <div className="rounded-lg bg-destructive/10 px-3 py-2 text-xs leading-5 text-destructive">

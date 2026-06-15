@@ -5,6 +5,7 @@ import (
 	appapp "go.cew.io/app/carbonnt/cyacle/server/app/app"
 	fileapp "go.cew.io/app/carbonnt/cyacle/server/file/app"
 	uicapp "go.cew.io/app/carbonnt/cyacle/server/uic/app"
+	metaapp "go.cew.io/app/carbonnt/cyacle/server/meta/app"
 	"go.yorun.ai/vine/app"
 )
 
@@ -12,6 +13,7 @@ func main() {
 	app.NewBundledStandalone(
 		app.NewStandalone[*fileapp.FileApp](),
 		app.NewStandalone[*uicapp.UicApp](),
+		app.NewStandalone[*metaapp.MetaApp](),
 		app.NewStandalone[*appapp.AppApp](),
 	).StartAndWait()
 }

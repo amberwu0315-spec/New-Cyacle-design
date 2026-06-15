@@ -27,11 +27,6 @@
 /domain/formula
 /domain/uic
 /domain/unit
-/domain/accounting.api
-/domain/accounting.core
-/domain/lca.api
-/domain/lca.core
-/domain/project.data
 /go.work
 /go.work.sum
 /pnpm-workspace.yaml

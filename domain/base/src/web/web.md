@@ -4,7 +4,8 @@
 
 ## 本地开发测试账号
 
-- dev 环境可用账号：`dev-01` / `tanheng666!`
+- 开发测试域名：http://localhost:7088（前后端一体，无需访问 vite 服务）
+- 开发环境测试账号：`dev-01` / `tanheng666!`
 
 ## 代码变更
 严禁修改`app/src/web` 中的代码，它只负责最终汇总和暴露。`domain/base/src/web` 中的代码才是其他子domain依赖的共享 app 代码。
