@@ -34,5 +34,6 @@ __unconfig*
 dist
 dist-ssr
 node_modules
+.pnpm-store/
 todos.json
 # vined - end

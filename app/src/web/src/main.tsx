@@ -3,10 +3,8 @@ import { mountApp, createAppRouter } from '@carbonnt-cyacle/web-base'
 
 import "./styles.css";
 
-import { createDomainRouteTree as createUicRouteTree } from '@carbonnt-cyacle/web-uic'
 
 const router = createAppRouter([
-    createUicRouteTree
 ]) satisfies AnyRouter
 
 declare module '@tanstack/react-router' {
