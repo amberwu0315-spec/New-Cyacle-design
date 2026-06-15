@@ -61,7 +61,9 @@ export function AppLayout({
   const [selectedWorkspaceId, setSelectedWorkspaceId] = React.useState(
     getSessionWorkspaceId,
   )
-  const [isWorkspaceSwitching, setIsWorkspaceSwitching] = React.useState(false)
+  const [switchingWorkspaceId, setSwitchingWorkspaceId] = React.useState<
+    string | null
+  >(null)
   const [workspaceSwitchFailed, setWorkspaceSwitchFailed] = React.useState(false)
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false)
   const [isScenePanelOpen, setIsScenePanelOpen] = React.useState(false)
@@ -149,8 +151,12 @@ export function AppLayout({
 
   const handleWorkspaceSelect = React.useCallback(
     async (workspace: WorkspaceSelectionItem) => {
+      if (switchingWorkspaceId) {
+        return
+      }
+
       setWorkspaceSwitchFailed(false)
-      setIsWorkspaceSwitching(true)
+      setSwitchingWorkspaceId(workspace.id)
 
       try {
         const result = await selectWorkspaceId(workspace.id)
@@ -159,10 +165,10 @@ export function AppLayout({
         console.error('Failed to switch workspace:', error)
         setWorkspaceSwitchFailed(true)
       } finally {
-        setIsWorkspaceSwitching(false)
+        setSwitchingWorkspaceId(null)
       }
     },
-    [],
+    [switchingWorkspaceId],
   )
 
   const handleWorkspaceRetry = React.useCallback(() => {
@@ -183,7 +189,7 @@ export function AppLayout({
 
     async function selectSingleWorkspace() {
       setWorkspaceSwitchFailed(false)
-      setIsWorkspaceSwitching(true)
+      setSwitchingWorkspaceId(workspace.id)
 
       try {
         const result = await selectWorkspaceId(workspace.id)
@@ -199,7 +205,7 @@ export function AppLayout({
         }
       } finally {
         if (!ignore) {
-          setIsWorkspaceSwitching(false)
+          setSwitchingWorkspaceId(null)
         }
       }
     }
@@ -261,11 +267,14 @@ export function AppLayout({
         currentWorkspaceId={selectedWorkspaceId}
         workspaces={availableWorkspaces ?? []}
         isLoading={
-          isWorkspaceLoading || isWorkspaceFetching || isWorkspaceSwitching
+          isWorkspaceLoading ||
+          (isWorkspaceFetching && !availableWorkspaces?.length)
         }
-        isError={isWorkspaceError || workspaceSwitchFailed}
+        isError={isWorkspaceError}
+        isSwitchError={workspaceSwitchFailed}
         onRetry={handleWorkspaceRetry}
         onSelect={handleWorkspaceSelect}
+        switchingWorkspaceId={switchingWorkspaceId}
       />
     </div>
   )
