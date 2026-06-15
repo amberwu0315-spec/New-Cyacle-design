@@ -3,17 +3,15 @@ package main
 import (
 	_ "go.cew.io/app/carbonnt/cyacle/skeled/basepub"
 	appapp "go.cew.io/app/carbonnt/cyacle/server/app/app"
-	unitapp "go.cew.io/app/carbonnt/cyacle/server/unit/app"
-	categoryapp "go.cew.io/app/carbonnt/cyacle/server/category/app"
-	formulaapp "go.cew.io/app/carbonnt/cyacle/server/formula/app"
+	fileapp "go.cew.io/app/carbonnt/cyacle/server/file/app"
+	uicapp "go.cew.io/app/carbonnt/cyacle/server/uic/app"
 	"go.yorun.ai/vine/app"
 )
 
 func main() {
 	app.NewBundledStandalone(
-		app.NewStandalone[*unitapp.UnitApp](),
-		app.NewStandalone[*categoryapp.CategoryApp](),
-		app.NewStandalone[*formulaapp.FormulaApp](),
+		app.NewStandalone[*fileapp.FileApp](),
+		app.NewStandalone[*uicapp.UicApp](),
 		app.NewStandalone[*appapp.AppApp](),
 	).StartAndWait()
 }

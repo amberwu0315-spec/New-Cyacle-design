@@ -2,6 +2,10 @@
 
 本文件只放代码姿势。实际包名、domain 名和 skel service 名以项目检测结果为准。
 
+## 本地开发测试账号
+
+- dev 环境可用账号：`dev-01` / `tanheng666!`
+
 ## 代码变更
 严禁修改`app/src/web` 中的代码，它只负责最终汇总和暴露。`domain/base/src/web` 中的代码才是其他子domain依赖的共享 app 代码。
 

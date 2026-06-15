@@ -29,7 +29,7 @@ export {
   selectWorkspaceId,
   workspaceKeys,
 } from './lib/workspace-session.ts'
-export { vrpcClient } from './lib/vrpc-client.ts'
+export { vrpcClient, vrpcHttpClient } from './lib/vrpc-client.ts'
 
 export type {
   MessageParams,
@@ -40,6 +40,7 @@ export type { WorkspaceSelectionItem } from './lib/workspace-session.ts'
 
 export { createAppRouter } from './create-router.ts'
 export { LanguageSwitcher } from './components/layouts/app-layout/language-switcher.tsx'
+export { DomainBaseLayout } from './components/layouts/domain-base-layout/index.tsx'
 export { WorkspaceSelectionDialog } from './components/layouts/app-layout/workspace-selection-dialog.tsx'
 export {
   collectDomainRouteTrees,
@@ -58,6 +59,7 @@ export type {
   DomainNavMetaContext,
   DomainNavMetaFactory,
 } from './components/layouts/app-layout/index.ts'
+export type { DomainBaseLayoutProps } from './components/layouts/domain-base-layout/index.tsx'
 export type {
   DomainRouteConfig,
   DomainRouteSlot,

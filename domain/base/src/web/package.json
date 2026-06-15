@@ -1,6 +1,13 @@
 {
   "dependencies": {
     "@base-ui/react": "^1.5.0",
+    "@crew-ui/base": "^2.0.7",
+    "@cew-lib/file-viewer-base": "^1.0.4",
+    "@cew-lib/file-viewer-excel": "^1.0.4",
+    "@cew-lib/file-viewer-image": "^1.0.4",
+    "@cew-lib/file-viewer-pdf": "^1.0.4",
+    "@cew-lib/file-viewer-video": "^1.0.4",
+    "@cew-lib/cyacle-replace-symbols": "^1.0.3",
     "@fontsource-variable/geist": "^5.2.9",
     "@tanstack/react-query": "^5.100.14",
     "@tanstack/react-router": "^1.170.14",
