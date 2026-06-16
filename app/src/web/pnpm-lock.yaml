@@ -8,6 +8,12 @@ importers:
 
   .:
     dependencies:
+      '@carbonnt-cyacle/skeled-metapub':
+        specifier: workspace:*
+        version: link:../../../domain/meta/pub/skeled/typescript
+      '@carbonnt-cyacle/skeled-uicpub':
+        specifier: workspace:*
+        version: link:../../../domain/uic/pub/skeled/typescript
       '@carbonnt-cyacle/web-base':
         specifier: workspace:*
         version: link:../../../domain/base/src/web

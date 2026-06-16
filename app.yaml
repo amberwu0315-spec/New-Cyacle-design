@@ -22,6 +22,9 @@ domains:
     - name: uic
       source: REMOTE
       gitUrl: https://git.cew.io/carbonnt/cyacle/domain/uic.git
+    - name: notice
+      source: REMOTE
+      gitUrl: https://git.cew.io/carbonnt/cyacle/domain/notice.git
     - name: unit
       source: REMOTE
       gitUrl: https://git.cew.io/carbonnt/cyacle/domain/unit.git
