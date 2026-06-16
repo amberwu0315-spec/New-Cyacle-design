@@ -1,7 +1,5 @@
 {
   "dependencies": {
-    "@carbonnt-cyacle/skeled-metapub": "workspace:*",
-    "@carbonnt-cyacle/skeled-uicpub": "workspace:*",
     "@carbonnt-cyacle/web-base": "workspace:*",
     "@carbonnt-cyacle/web-project-data": "workspace:*",
     "@carbonnt-cyacle/web-uic": "workspace:*",
