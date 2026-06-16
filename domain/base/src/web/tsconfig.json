@@ -4,10 +4,6 @@
     "target": "ES2022",
     "jsx": "react-jsx",
     "module": "ESNext",
-    "paths": {
-      "@carbonnt-cyacle/skeled-uicpub": ["../../../uic/pub/skeled/typescript/index.ts"],
-      "#/*": ["./src/*"]
-    },
     "lib": ["ES2022", "DOM", "DOM.Iterable"],
     "types": ["vite/client"],
 

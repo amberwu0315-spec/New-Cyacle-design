@@ -380,15 +380,9 @@ importers:
       '@carbonnt-cyacle/skeled-basepub':
         specifier: workspace:*
         version: link:../../../base/pub/skeled/typescript
-      '@carbonnt-cyacle/skeled-metapub':
-        specifier: workspace:*
-        version: link:../../../meta/pub/skeled/typescript
       '@carbonnt-cyacle/skeled-noticepub':
         specifier: workspace:*
         version: link:../../../notice/pub/skeled/typescript
-      '@carbonnt-cyacle/skeled-uicpub':
-        specifier: workspace:*
-        version: link:../../pub/skeled/typescript
       '@carbonnt-cyacle/web-base':
         specifier: workspace:*
         version: link:../../../base/src/web
