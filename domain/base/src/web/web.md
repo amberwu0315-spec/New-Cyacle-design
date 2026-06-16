@@ -101,23 +101,23 @@ const PrivacyPolicyPage = lazyRouteComponent(
 | app 自己不需要页面框架的路由 | 直接挂 RootRoute |
 | 普通 business domain route tree | `routes: [...]`，挂到 app layout 下 |
 | 特殊无 layout domain route | `routes: { root: [...] }`，直接挂 RootRoute |
-| 普通页面内容区 | 页面包 `AppPage`；domain 可自定义 `DomainPage` |
+| 普通页面内容区 | 优先用共享 `DomainBaseLayout` 打底；domain 可自定义 `PageLayout`/`DomainPage` |
 | domain route tree 扩展信息 | `metas?: TMetas`，当前 app 消费函数式 `metas.nav` |
 
 ---
 
 ### App 层目录与 layout 组织
 
-`root-layout.tsx` 保持作为 RootRoute component，只承载全局 provider、Toaster 等基础设施，不参与业务页面结构。App layout 与页面容器统一放在 `src/components/layouts/` 下：
+`root-layout.tsx` 保持作为 RootRoute component，只承载全局 provider、Toaster 等基础设施，不参与业务页面结构。App shell layout 与 domain 通用页面底座统一放在 `src/components/layouts/` 下：
 
 ```text
 domain/base/src/web/src/
 ├── root-layout.tsx                        ← RootRoute component，全局 provider + Outlet
 └── components/
     └── layouts/
-        ├── app-layout/                    ← app 自身有 layout 路由使用；domain 可按需导入
+        ├── app-layout/                    ← app shell 使用，负责导航、顶栏和 Outlet
         │   └── index.tsx
-        └── app-page/                      ← 共享页面内容区容器，供 app/domain 页面直接包裹
+        └── domain-base-layout/            ← business domain 页面通用底座
             └── index.tsx
 ```
 
@@ -182,42 +182,51 @@ export function AppLayout() {
 }
 ```
 
-`AppPage` 是共享页面内容区容器。页面尽量不要裸跑；app 页面和 business domain 页面优先包 `AppPage`，需要不同体验时再创建 domain 自己的 `DomainPage`。
+`DomainBaseLayout` 是共享给 business domain 的页面底座，只负责通用背景、最外层边距和 `data-slot="domain-base-layout"`；不要在这里加入具体 domain 的最大宽度、标题栏、筛选区或业务组件。需要进一步收口内容宽度、分区和语义 slot 时，在 domain 自己的 `src/layouts/` 或 `src/components/layouts/` 下封装 `PageLayout`。
 
 ```tsx
-// domain/base/src/web/src/components/layouts/app-page/index.tsx
-import type { HTMLAttributes } from 'react'
+// domain/base/src/web/src/components/layouts/domain-base-layout/domain-base-layout.tsx
+import type { ComponentPropsWithoutRef } from 'react'
 import { cn } from '../../../lib/utils'
 
-export function AppPage({ children, className, ...props }: HTMLAttributes<HTMLDivElement>) {
+export type DomainBaseLayoutProps = ComponentPropsWithoutRef<'div'>
+
+export function DomainBaseLayout({
+  children,
+  className,
+  ...props
+}: DomainBaseLayoutProps) {
   return (
-    <div data-slot="app-page" className={cn('p-6', className)} {...props}>
+    <div
+      {...props}
+      data-slot="domain-base-layout"
+      className={cn('min-h-full bg-background px-4 py-5 sm:px-6 lg:px-8', className)}
+    >
       {children}
     </div>
   )
 }
 ```
 
-通过统一的 `./components/layouts` export 导出：
+通过 package 根出口导出，domain 侧按当前真实包名导入：
 
 ```ts
-// domain/base/src/web/src/components/layouts/index.ts
-export { AppLayout } from './app-layout'
-export { AppPage } from './app-page'
+// domain/base/src/web/src/index.ts
+export { DomainBaseLayout } from './components/layouts/domain-base-layout/index.tsx'
+export type { DomainBaseLayoutProps } from './components/layouts/domain-base-layout/index.tsx'
 ```
 
 ---
 
 ### Business domain：默认模板与高级声明
 
-Business domain 对外只导出 `createDomainRouteTree()`。默认模板可以继续使用 `{ RootRoute }` factory，只注册路由并默认挂到 app layout 下。高级场景改为返回 `defineDomainRouteTree(...)`：`routes: [...]` 会挂到 app layout 下，`{ root, layout }` 可同时声明无 layout 路由和带 app layout/nav 的业务路由。每个普通页面通过 `AppPage` 或 domain 自己的 `DomainPage` 收口内容区。
+Business domain 对外只导出 `createDomainRouteTree()`。默认模板可以继续使用 `{ RootRoute }` factory，只注册路由并默认挂到 app layout 下。高级场景改为返回 `defineDomainRouteTree(...)`：`routes: [...]` 会挂到 app layout 下，`{ root, layout }` 可同时声明无 layout 路由和带 app layout/nav 的业务路由。每个普通业务页面通过 `DomainBaseLayout` 或 domain 自己封装的 `PageLayout` 收口内容区。
 
 ```text
 domain/catalog/src/web/src/
-└── components/
-    └── layouts/
-        └── catalog-page/        ← 可选：需要自定义 page 容器时创建
-            └── index.tsx
+└── layouts/
+    └── page-layout/             ← 推荐：统一本 domain 普通页面内容宽度和语义 slot
+        └── index.tsx
 ```
 
 默认模板只注册路由：
@@ -322,42 +331,56 @@ export function createDomainRouteTree() {
 }
 ```
 
-普通页面用 `AppPage`（或自定义的 `CatalogPage`）包裹内容：
+普通页面优先使用 domain 自己的 `PageLayout`。`PageLayout` 内部再复用 `DomainBaseLayout`，这样共享底座和 domain 个性化结构职责分开；`uic` 当前已经按这个姿势落地。
 
 ```tsx
-// domain/catalog/src/web/src/features/reports/page.tsx
-import { AppPage } from '@example-app/web-base/components/layouts'
-import { useReportsPage } from './hooks/use-reports-page'
+// domain/uic/src/web/src/layouts/page-layout/index.tsx
+import type { ComponentPropsWithoutRef } from 'react'
+import { DomainBaseLayout, cn } from '@carbonnt-cyacle/web-base'
 
-export function ReportsPage() {
-  const page = useReportsPage()
+export interface PageLayoutProps extends ComponentPropsWithoutRef<'div'> {
+  layoutClassName?: string
+}
 
+export function PageLayout({
+  children,
+  className,
+  layoutClassName,
+  ...props
+}: PageLayoutProps) {
   return (
-    <AppPage>
-      <div className="space-y-4">
-        <h1 className="text-2xl font-semibold">Reports</h1>
-        {/* ... */}
+    <DomainBaseLayout className={layoutClassName}>
+      <div
+        {...props}
+        data-slot="uic-page-layout"
+        className={cn('mx-auto w-full max-w-[1280px]', className)}
+      >
+        {children}
       </div>
-    </AppPage>
+    </DomainBaseLayout>
   )
 }
 ```
 
-Domain 有自定义 page 容器需求时，在自身的 `src/components/layouts/` 创建域名命名的组件，只替换页面中的 import 来源：
+页面组件只消费本 domain 的 `PageLayout`，不要每个页面重复写 `DomainBaseLayout`、`mx-auto`、`max-w` 这些外壳结构。
 
 ```tsx
-// domain/catalog/src/web/src/components/layouts/catalog-page/index.tsx
-import type { HTMLAttributes } from 'react'
-import { AppPage } from '@example-app/web-base/components/layouts'
+// domain/uic/src/web/src/features/user/profile/page.tsx
+import { PageLayout } from '../../../layouts/page-layout'
 
-export function CatalogPage({ children, ...props }: HTMLAttributes<HTMLDivElement>) {
-  return <AppPage {...props}>{children}</AppPage>
+export function ProfilePage() {
+  return (
+    <PageLayout className="flex flex-col gap-4">
+      <h1 className="text-2xl font-semibold">Profile</h1>
+      {/* ... */}
+    </PageLayout>
+  )
 }
 ```
 
 ### 复用或定制共享 layout
 
-Domain 需要和 app domain 一样的共享页面结构时，从 app package 导入 `AppLayout` 或 `AppPage` 使用；如果产品体验不同，就在 domain 自己的 `src/components/layouts/` 下定制。不要把这种选择上移成 app route resolver 的 domain 分类逻辑。
+Domain 普通页面默认复用 `DomainBaseLayout`，并在 domain 内封装自己的 `PageLayout`；如果产品体验完全不同，可以在 domain 内写独立 layout。不要导入 `AppLayout` 来包业务页面，也不要把 domain 分类逻辑上移到 app route resolver 里。
 
 ```tsx
 // domain/auth/src/web/src/components/layouts/auth-page/index.tsx
@@ -374,13 +397,14 @@ export function AuthPage({ children }: { children: ReactNode }) {
 
 
 **规则**
-- Layout 组件统一放 `src/components/layouts/`，不平铺在 src 顶层
+- base 共享 layout 统一放 `src/components/layouts/`；business domain 可按现有目录放 `src/layouts/` 或 `src/components/layouts/`
 - `root-layout.tsx` 只作 RootRoute component（provider + Outlet）
 - app 自身路由分有/无 layout；有 layout 路由挂 `AppLayout`，无 layout 路由直接挂 RootRoute
 - 普通 business domain 默认使用 `routes: [...]`，挂到 app layout 下并可配合函数式 `metas.nav`
 - login、register、SSO callback 等特殊页面使用 `routes.root`，直接接入 RootRoute
-- 页面尽量不要裸跑；普通页面通过 `AppPage` / `DomainPage` 收口内容区
-- Domain 需要不同页面容器时在自身 `src/components/layouts/` 定制
+- 页面尽量不要裸跑；普通 business domain 页面通过 `DomainBaseLayout` 或 domain 自己的 `PageLayout` 收口内容区
+- Domain 推荐封装自己的 `PageLayout`，内部复用 `DomainBaseLayout` 并只放本 domain 的宽度、间距和语义 slot
+- Domain 需要完全不同页面容器时在自身 `src/layouts/` 或 `src/components/layouts/` 定制
 
 ---
 

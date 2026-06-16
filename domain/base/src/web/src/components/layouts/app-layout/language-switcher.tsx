@@ -119,7 +119,7 @@ export function LanguageMenu() {
         side="top"
         align="end"
         sideOffset={8}
-        className="w-40 rounded-lg border border-border/70 p-1 shadow-lg"
+        className="w-40 rounded-lg border border-border/70 p-1 shadow-none"
       >
         <DropdownMenuGroup>
           {LANGUAGE_SWITCHER_OPTIONS.map((item) => {
