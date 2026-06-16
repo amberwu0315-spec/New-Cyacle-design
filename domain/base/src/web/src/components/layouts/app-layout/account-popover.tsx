@@ -34,7 +34,6 @@ type WorkspaceMenuItemProps = {
   currentWorkspaceScope: string | null
   isSwitching: boolean
   onSelect: (workspace: WorkspaceSelectionItem) => void | Promise<void>
-  switchingWorkspaceId: string | null
   workspace: WorkspaceSelectionItem
 }
 
@@ -63,12 +62,10 @@ function WorkspaceMenuItem({
   currentWorkspaceScope,
   isSwitching,
   onSelect,
-  switchingWorkspaceId,
   workspace,
 }: WorkspaceMenuItemProps) {
   const { t } = useTranslation()
   const isCurrent = currentWorkspaceScope === workspace.scope.trim()
-  const isThisSwitching = switchingWorkspaceId === workspace.id
   const secondaryText = getWorkspaceSecondaryText(workspace, {
     organization: t.common.workspace.organization,
     personal: t.common.workspace.personal,
@@ -96,11 +93,6 @@ function WorkspaceMenuItem({
           <span className="truncate text-sm leading-5 font-semibold text-foreground">
             {workspace.name}
           </span>
-          {isCurrent ? (
-            <span className="shrink-0 rounded-full border border-primary/20 bg-primary/10 px-1.5 py-0.5 text-[11px] leading-4 font-medium text-primary">
-              {t.common.workspace.current}
-            </span>
-          ) : null}
         </span>
         {secondaryText ? (
           <span className="mt-0.5 block truncate text-xs leading-4 text-muted-foreground">
@@ -108,9 +100,7 @@ function WorkspaceMenuItem({
           </span>
         ) : null}
       </span>
-      {isThisSwitching ? (
-        <Spinner className="size-4 shrink-0 text-primary" />
-      ) : isCurrent ? (
+      {isCurrent ? (
         <CheckIcon aria-hidden="true" className="size-4 shrink-0 text-primary" />
       ) : null}
     </DropdownMenuItem>
@@ -210,7 +200,6 @@ export function AccountPopover() {
         key={workspace.id}
         currentWorkspaceScope={currentWorkspaceScope}
         isSwitching={Boolean(switchingWorkspaceId)}
-        switchingWorkspaceId={switchingWorkspaceId}
         workspace={workspace}
         onSelect={handleWorkspaceSelect}
       />

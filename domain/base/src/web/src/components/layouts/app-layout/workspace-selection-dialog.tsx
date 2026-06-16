@@ -61,10 +61,8 @@ function WorkspaceOptionButton({
   switchingWorkspaceId,
   workspace,
 }: WorkspaceOptionButtonProps) {
-  const { t } = useTranslation()
   const isCurrent = currentWorkspaceScope === workspace.scope.trim()
   const isSwitching = Boolean(switchingWorkspaceId)
-  const isThisSwitching = switchingWorkspaceId === workspace.id
   const secondaryText = getWorkspaceSecondaryText(workspace)
   const handleSelect = React.useCallback(() => {
     if (isSwitching) {
@@ -81,7 +79,6 @@ function WorkspaceOptionButton({
         'group flex min-h-[76px] w-full items-center gap-4 rounded-lg border border-border/70 bg-background px-4 py-3.5 text-left transition-colors hover:border-primary/30 hover:bg-muted/70 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-ring disabled:cursor-not-allowed disabled:opacity-100',
         isCurrent && 'border-primary/50 bg-primary/5',
       )}
-      aria-busy={isThisSwitching || undefined}
       disabled={isSwitching}
       onClick={handleSelect}
     >
@@ -93,11 +90,6 @@ function WorkspaceOptionButton({
           <span className="truncate text-[15px] leading-5 font-medium text-foreground">
             {workspace.name}
           </span>
-          {isCurrent ? (
-            <span className="shrink-0 rounded-md bg-primary/10 px-1.5 py-0.5 text-[11px] leading-4 font-medium text-primary">
-              {t.common.workspace.current}
-            </span>
-          ) : null}
         </span>
         {secondaryText ? (
           <span className="mt-1 block truncate text-xs leading-5 text-muted-foreground">
@@ -105,9 +97,7 @@ function WorkspaceOptionButton({
           </span>
         ) : null}
       </span>
-      {isThisSwitching ? (
-        <Spinner className="size-4 shrink-0 text-primary" />
-      ) : isCurrent ? (
+      {isCurrent ? (
         <CheckIcon aria-hidden="true" className="size-4 shrink-0 text-primary" />
       ) : (
         <ChevronRightIcon
