@@ -4,9 +4,15 @@ go 1.26.0
 
 require (
 	github.com/gin-gonic/gin v1.12.0
+	go.cew.io/app/carbonnt/cyacle/server/category v0.0.0-00010101000000-000000000000
+	go.cew.io/app/carbonnt/cyacle/server/factor v0.0.0-00010101000000-000000000000
 	go.cew.io/app/carbonnt/cyacle/server/file v0.0.0-00010101000000-000000000000
+	go.cew.io/app/carbonnt/cyacle/server/formula v0.0.0-00010101000000-000000000000
+	go.cew.io/app/carbonnt/cyacle/server/lca/core v0.0.0-00010101000000-000000000000
 	go.cew.io/app/carbonnt/cyacle/server/meta v0.0.0-00010101000000-000000000000
+	go.cew.io/app/carbonnt/cyacle/server/project/data v0.0.0-00010101000000-000000000000
 	go.cew.io/app/carbonnt/cyacle/server/uic v0.0.0-00010101000000-000000000000
+	go.cew.io/app/carbonnt/cyacle/server/unit v0.0.0-00010101000000-000000000000
 	go.cew.io/app/carbonnt/cyacle/skeled/app v0.0.0-00010101000000-000000000000
 	go.cew.io/app/carbonnt/cyacle/skeled/basepub v0.0.0-00010101000000-000000000000
 	go.yorun.ai/vine v1.1.36
@@ -25,6 +31,7 @@ require (
 	github.com/bytedance/sonic/loader v0.5.1 // indirect
 	github.com/cespare/xxhash/v2 v2.3.0 // indirect
 	github.com/cloudwego/base64x v0.1.6 // indirect
+	github.com/cockroachdb/apd/v3 v3.2.1 // indirect
 	github.com/connesc/cipherio v0.2.1 // indirect
 	github.com/dgryski/go-rendezvous v0.0.0-20200823014737-9f7001d12a5f // indirect
 	github.com/disintegration/imaging v1.6.2 // indirect
@@ -66,7 +73,7 @@ require (
 	github.com/klauspost/cpuid/v2 v2.3.0 // indirect
 	github.com/klauspost/pgzip v1.2.5 // indirect
 	github.com/leodido/go-urn v1.4.0 // indirect
-	github.com/lib/pq v1.10.2 // indirect
+	github.com/lib/pq v1.10.7 // indirect
 	github.com/mattn/go-isatty v0.0.21 // indirect
 	github.com/mattn/go-runewidth v0.0.15 // indirect
 	github.com/mholt/archiver/v4 v4.0.0-alpha.8 // indirect
@@ -111,12 +118,24 @@ require (
 	github.com/urfave/cli/v3 v3.4.1 // indirect
 	github.com/wechatpay-apiv3/wechatpay-go v0.2.21 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
+	go.cew.io/app/carbonnt/cyacle/sdk/unitpub v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/category v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/categorypub v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/factorpub v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/file v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/filepub v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/formula v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/formulapub v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/lca/core v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/lca/corepub v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/meta v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/metapub v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/project/datapub v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/uic v0.0.0-00010101000000-000000000000 // indirect
 	go.cew.io/app/carbonnt/cyacle/skeled/uicpub v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/unit v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/app/carbonnt/cyacle/skeled/unitpub v0.0.0-00010101000000-000000000000 // indirect
+	go.cew.io/util/vmath v0.0.1-alpha2 // indirect
 	go.mongodb.org/mongo-driver v1.13.1 // indirect
 	go.mongodb.org/mongo-driver/v2 v2.5.0 // indirect
 	go.uber.org/atomic v1.11.0 // indirect

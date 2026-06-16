@@ -39,7 +39,10 @@ export type {
 export type { WorkspaceSelectionItem } from './lib/workspace-session.ts'
 
 export { createAppRouter } from './create-router.ts'
-export { LanguageSwitcher } from './components/layouts/app-layout/language-switcher.tsx'
+export {
+  LanguageSwitcher,
+  LanguageMenu as LoginLanguageMenu,
+} from './components/layouts/app-layout/language-switcher.tsx'
 export { DomainBaseLayout } from './components/layouts/domain-base-layout/index.tsx'
 export { WorkspaceSelectionDialog } from './components/layouts/app-layout/workspace-selection-dialog.tsx'
 export {

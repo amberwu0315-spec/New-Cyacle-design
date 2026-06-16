@@ -11,6 +11,9 @@ importers:
       '@carbonnt-cyacle/web-base':
         specifier: workspace:*
         version: link:../../../domain/base/src/web
+      '@carbonnt-cyacle/web-project-data':
+        specifier: workspace:*
+        version: link:../../../domain/project.data/src/web
       '@carbonnt-cyacle/web-uic':
         specifier: workspace:*
         version: link:../../../domain/uic/src/web
@@ -258,11 +261,71 @@ importers:
         specifier: ^8.0.13
         version: 8.0.16(@types/node@22.19.21)(jiti@2.7.0)
 
+  domain/category/pub/skeled/typescript:
+    dependencies:
+      '@carbonnt-cyacle/skeled-basepub':
+        specifier: workspace:*
+        version: link:../../../../base/pub/skeled/typescript
+      '@carbonnt-cyacle/skeled-unitpub':
+        specifier: workspace:*
+        version: link:../../../../unit/pub/skeled/typescript
+      '@yorun-ai/vrpc':
+        specifier: '*'
+        version: 3.1.1
+
+  domain/factor/pub/skeled/typescript:
+    dependencies:
+      '@carbonnt-cyacle/skeled-basepub':
+        specifier: workspace:*
+        version: link:../../../../base/pub/skeled/typescript
+      '@carbonnt-cyacle/skeled-unitpub':
+        specifier: workspace:*
+        version: link:../../../../unit/pub/skeled/typescript
+      '@yorun-ai/vrpc':
+        specifier: '*'
+        version: 3.1.1
+
   domain/file/pub/skeled/typescript:
     dependencies:
       '@carbonnt-cyacle/skeled-basepub':
         specifier: workspace:*
         version: link:../../../../base/pub/skeled/typescript
+      '@yorun-ai/vrpc':
+        specifier: '*'
+        version: 3.1.1
+
+  domain/formula/pub/skeled/typescript:
+    dependencies:
+      '@carbonnt-cyacle/skeled-basepub':
+        specifier: workspace:*
+        version: link:../../../../base/pub/skeled/typescript
+      '@carbonnt-cyacle/skeled-categorypub':
+        specifier: workspace:*
+        version: link:../../../../category/pub/skeled/typescript
+      '@carbonnt-cyacle/skeled-unitpub':
+        specifier: workspace:*
+        version: link:../../../../unit/pub/skeled/typescript
+      '@yorun-ai/vrpc':
+        specifier: '*'
+        version: 3.1.1
+
+  domain/lca.core/pub/skeled/typescript:
+    dependencies:
+      '@carbonnt-cyacle/skeled-basepub':
+        specifier: workspace:*
+        version: link:../../../../base/pub/skeled/typescript
+      '@carbonnt-cyacle/skeled-categorypub':
+        specifier: workspace:*
+        version: link:../../../../category/pub/skeled/typescript
+      '@carbonnt-cyacle/skeled-factorpub':
+        specifier: workspace:*
+        version: link:../../../../factor/pub/skeled/typescript
+      '@carbonnt-cyacle/skeled-formulapub':
+        specifier: workspace:*
+        version: link:../../../../formula/pub/skeled/typescript
+      '@carbonnt-cyacle/skeled-unitpub':
+        specifier: workspace:*
+        version: link:../../../../unit/pub/skeled/typescript
       '@yorun-ai/vrpc':
         specifier: '*'
         version: 3.1.1
@@ -281,6 +344,91 @@ importers:
       '@yorun-ai/vrpc':
         specifier: '*'
         version: 3.1.1
+
+  domain/project.data/pub/skeled/typescript:
+    dependencies:
+      '@carbonnt-cyacle/skeled-basepub':
+        specifier: workspace:*
+        version: link:../../../../base/pub/skeled/typescript
+      '@yorun-ai/vrpc':
+        specifier: '*'
+        version: 3.1.1
+
+  domain/project.data/skeled/typescript:
+    dependencies:
+      '@carbonnt-cyacle/skeled-basepub':
+        specifier: workspace:*
+        version: link:../../../base/pub/skeled/typescript
+      '@yorun-ai/vrpc':
+        specifier: '*'
+        version: 3.1.1
+
+  domain/project.data/src/web:
+    dependencies:
+      '@base-ui/react':
+        specifier: ^1.5.0
+        version: 1.5.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@carbonnt-cyacle/skeled-basepub':
+        specifier: workspace:*
+        version: link:../../../base/pub/skeled/typescript
+      '@carbonnt-cyacle/web-base':
+        specifier: workspace:*
+        version: link:../../../base/src/web
+      '@fontsource-variable/geist':
+        specifier: ^5.2.9
+        version: 5.2.9
+      '@tanstack/react-query':
+        specifier: ^5.100.14
+        version: 5.101.0(react@19.2.7)
+      '@tanstack/react-router':
+        specifier: ^1.170.14
+        version: 1.170.15(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@yorun-ai/vrpc':
+        specifier: ^3.1.1
+        version: 3.1.1
+      class-variance-authority:
+        specifier: ^0.7.1
+        version: 0.7.1
+      clsx:
+        specifier: ^2.1.1
+        version: 2.1.1
+      date-fns:
+        specifier: ^4.2.1
+        version: 4.4.0
+      lucide-react:
+        specifier: ^0.545.0
+        version: 0.545.0(react@19.2.7)
+      next-themes:
+        specifier: ^0.4.6
+        version: 0.4.6(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      react:
+        specifier: ^19.2.0
+        version: 19.2.7
+      react-day-picker:
+        specifier: ^10.0.1
+        version: 10.0.1(@types/react@19.2.17)(react@19.2.7)
+      react-dom:
+        specifier: ^19.2.0
+        version: 19.2.7(react@19.2.7)
+      sonner:
+        specifier: ^2.0.7
+        version: 2.0.7(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      tailwind-merge:
+        specifier: ^3.6.0
+        version: 3.6.0
+      zod:
+        specifier: ^4.4.3
+        version: 4.4.3
+    devDependencies:
+      '@types/node':
+        specifier: ^22.10.2
+        version: 22.19.21
+      '@types/react':
+        specifier: ^19.2.0
+        version: 19.2.17
+      typescript:
+        specifier: ^6.0.2
+        version: 6.0.3
 
   domain/uic/pub/skeled/typescript:
     dependencies:
@@ -390,6 +538,15 @@ importers:
       typescript:
         specifier: ^6.0.2
         version: 6.0.3
+
+  domain/unit/pub/skeled/typescript:
+    dependencies:
+      '@carbonnt-cyacle/skeled-basepub':
+        specifier: workspace:*
+        version: link:../../../../base/pub/skeled/typescript
+      '@yorun-ai/vrpc':
+        specifier: '*'
+        version: 3.1.1
 
 packages:
 

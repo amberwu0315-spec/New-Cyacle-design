@@ -33,3 +33,5 @@ domains:
     - name: project.data
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/project.data.git
+    - name: lca.core
+      source: LOCAL

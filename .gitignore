@@ -26,6 +26,7 @@
 /domain/factor
 /domain/file
 /domain/formula
+/domain/project.data
 /domain/uic
 /domain/unit
 /go.work
