@@ -26,6 +26,8 @@
 /domain/factor
 /domain/file
 /domain/formula
+/domain/lca.core
+/domain/meta
 /domain/project.data
 /domain/uic
 /domain/unit

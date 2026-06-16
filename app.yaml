@@ -12,26 +12,28 @@ domains:
       source: LOCAL
     - name: file
       source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/file.git
+      gitUrl: https://git.cew.io/carbonnt/cyacle/domain/file.git
     - name: meta
-      source: LOCAL
+      source: REMOTE
+      gitUrl: https://git.cew.io/carbonnt/cyacle/domain/meta.git
     - name: uic
       source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/uic.git
+      gitUrl: https://git.cew.io/carbonnt/cyacle/domain/uic.git
     - name: unit
       source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/unit.git
+      gitUrl: https://git.cew.io/carbonnt/cyacle/domain/unit.git
     - name: formula
       source: REMOTE
-      gitUrl: git@git.cew.io:/carbonnt/cyacle/domain/formula.git
+      gitUrl: https://git.cew.io/carbonnt/cyacle/domain/formula.git
     - name: category
       source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/category.git
+      gitUrl: https://git.cew.io/carbonnt/cyacle/domain/category.git
     - name: factor
       source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/factor.git
+      gitUrl: https://git.cew.io/carbonnt/cyacle/domain/factor.git
     - name: project.data
       source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/project.data.git
+      gitUrl: https://git.cew.io/carbonnt/cyacle/domain/project.data.git
     - name: lca.core
-      source: LOCAL
+      source: REMOTE
+      gitUrl: https://git.cew.io/carbonnt/cyacle/domain/lca.core.git
