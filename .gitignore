@@ -1,5 +1,6 @@
 .vite
 # local disabled domains
+.pnpm-store
 
 # vined - begin
 *.local
