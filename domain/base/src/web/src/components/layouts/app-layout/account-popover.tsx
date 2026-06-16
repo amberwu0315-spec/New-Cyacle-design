@@ -20,7 +20,7 @@ import { useTranslation } from '../../../lib/i18n'
 import { cn } from '../../../lib/utils'
 import {
   getSessionCredential,
-  getSessionWorkspaceId,
+  getSessionScope,
 } from '../../../lib/session-cookie'
 import {
   selectWorkspaceId,
@@ -28,11 +28,10 @@ import {
 } from '../../../lib/workspace-session'
 
 import defaultUserAvatar from './assets/default-user-avatar.png'
-import { MOCK_USER } from './nav-config'
 import { useAvailableWorkspaces, useCurrentUserProfile } from './queries'
 
 type WorkspaceMenuItemProps = {
-  currentWorkspaceId: string | null
+  currentWorkspaceScope: string | null
   isSwitching: boolean
   onSelect: (workspace: WorkspaceSelectionItem) => void | Promise<void>
   switchingWorkspaceId: string | null
@@ -61,14 +60,14 @@ function getWorkspaceSecondaryText(
 }
 
 function WorkspaceMenuItem({
-  currentWorkspaceId,
+  currentWorkspaceScope,
   isSwitching,
   onSelect,
   switchingWorkspaceId,
   workspace,
 }: WorkspaceMenuItemProps) {
   const { t } = useTranslation()
-  const isCurrent = currentWorkspaceId === workspace.id
+  const isCurrent = currentWorkspaceScope === workspace.scope.trim()
   const isThisSwitching = switchingWorkspaceId === workspace.id
   const secondaryText = getWorkspaceSecondaryText(workspace, {
     organization: t.common.workspace.organization,
@@ -92,14 +91,6 @@ function WorkspaceMenuItem({
       )}
       onClick={handleSelect}
     >
-      <span
-        className={cn(
-          'flex size-9 shrink-0 items-center justify-center rounded-lg bg-muted text-muted-foreground',
-          isCurrent && 'bg-primary/10 text-primary',
-        )}
-      >
-        <BoxIcon aria-hidden="true" className="size-4" />
-      </span>
       <span className="min-w-0 flex-1 text-left">
         <span className="flex min-w-0 items-center gap-2">
           <span className="truncate text-sm leading-5 font-semibold text-foreground">
@@ -141,18 +132,14 @@ export function AccountPopover() {
   >(null)
   const [workspaceSwitchFailed, setWorkspaceSwitchFailed] = React.useState(false)
   const profile = profileQuery.data
-  const currentWorkspaceId = getSessionWorkspaceId()
+  const currentWorkspaceScope = getSessionScope()?.trim() || null
   const workspaceOptions = workspaceQuery.data ?? []
   const hasWorkspaceOptions = workspaceOptions.length > 0
   const isWorkspaceLoading =
     workspaceQuery.isLoading || (workspaceQuery.isFetching && !hasWorkspaceOptions)
-  const accountName =
-    profile?.realName?.trim() ||
-    profile?.nickname?.trim() ||
-    profile?.username?.trim() ||
-    MOCK_USER.name
-  const accountContact =
-    profile?.email?.trim() || profile?.phone?.trim() || MOCK_USER.email
+  const accountName = profile?.username?.trim() ?? ''
+  const accountPhone = profile?.phone?.trim()
+  const accountEmail = profile?.email?.trim()
 
   const handleLogoutClick = React.useCallback(() => {
     clearAuthSessionSideEffects()
@@ -174,7 +161,7 @@ export function AccountPopover() {
       setSwitchingWorkspaceId(workspace.id)
 
       try {
-        await selectWorkspaceId(workspace.id)
+        await selectWorkspaceId(workspace)
         window.location.reload()
       } catch (error) {
         console.error('Failed to switch workspace:', error)
@@ -221,7 +208,7 @@ export function AccountPopover() {
     return workspaceOptions.map((workspace) => (
       <WorkspaceMenuItem
         key={workspace.id}
-        currentWorkspaceId={currentWorkspaceId}
+        currentWorkspaceScope={currentWorkspaceScope}
         isSwitching={Boolean(switchingWorkspaceId)}
         switchingWorkspaceId={switchingWorkspaceId}
         workspace={workspace}
@@ -229,7 +216,7 @@ export function AccountPopover() {
       />
     ))
   }, [
-    currentWorkspaceId,
+    currentWorkspaceScope,
     handleWorkspaceRetry,
     handleWorkspaceSelect,
     hasWorkspaceOptions,
@@ -284,9 +271,12 @@ export function AccountPopover() {
                     {accountName}
                   </div>
                 </div>
-                <div className="mt-0.5 truncate text-xs leading-4 text-muted-foreground">
-                  {accountContact}
-                </div>
+                {accountPhone || accountEmail ? (
+                  <div className="mt-0.5 space-y-0.5 text-xs leading-4 text-muted-foreground">
+                    {accountPhone ? <div className="truncate">{accountPhone}</div> : null}
+                    {accountEmail ? <div className="truncate">{accountEmail}</div> : null}
+                  </div>
+                ) : null}
               </div>
             </div>
           </div>

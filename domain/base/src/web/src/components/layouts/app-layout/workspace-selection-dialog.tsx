@@ -30,7 +30,7 @@ import type { WorkspaceSelectionItem } from '../../../lib/workspace-session'
 type WorkspaceSelectionDialogProps = {
   open: boolean
   workspaces: Array<WorkspaceSelectionItem>
-  currentWorkspaceId?: string | null
+  currentWorkspaceScope?: string | null
   isError?: boolean
   isLoading?: boolean
   isSwitchError?: boolean
@@ -40,7 +40,7 @@ type WorkspaceSelectionDialogProps = {
 }
 
 type WorkspaceOptionButtonProps = {
-  currentWorkspaceId?: string | null
+  currentWorkspaceScope?: string | null
   onSelect: (workspace: WorkspaceSelectionItem) => void | Promise<void>
   switchingWorkspaceId?: string | null
   workspace: WorkspaceSelectionItem
@@ -56,13 +56,13 @@ function getWorkspaceSecondaryText(workspace: WorkspaceSelectionItem) {
 }
 
 function WorkspaceOptionButton({
-  currentWorkspaceId,
+  currentWorkspaceScope,
   onSelect,
   switchingWorkspaceId,
   workspace,
 }: WorkspaceOptionButtonProps) {
   const { t } = useTranslation()
-  const isCurrent = currentWorkspaceId === workspace.id
+  const isCurrent = currentWorkspaceScope === workspace.scope.trim()
   const isSwitching = Boolean(switchingWorkspaceId)
   const isThisSwitching = switchingWorkspaceId === workspace.id
   const secondaryText = getWorkspaceSecondaryText(workspace)
@@ -120,7 +120,7 @@ function WorkspaceOptionButton({
 }
 
 export function WorkspaceSelectionDialog({
-  currentWorkspaceId,
+  currentWorkspaceScope,
   isError = false,
   isLoading = false,
   isSwitchError = false,
@@ -188,7 +188,7 @@ export function WorkspaceSelectionDialog({
               {workspaces.map((workspace) => (
                 <WorkspaceOptionButton
                   key={workspace.id}
-                  currentWorkspaceId={currentWorkspaceId}
+                  currentWorkspaceScope={currentWorkspaceScope}
                   workspace={workspace}
                   onSelect={onSelect}
                   switchingWorkspaceId={switchingWorkspaceId}

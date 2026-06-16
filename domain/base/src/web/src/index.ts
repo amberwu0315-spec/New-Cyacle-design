@@ -11,16 +11,13 @@ export {
   SESSION_COOKIE_KEY,
   SESSION_SCOPE_COOKIE_KEY,
   SESSION_SCOPE_CREDENTIAL_EMPTY,
-  SESSION_WORKSPACE_ID_COOKIE_KEY,
   clearSessionCredential,
   getSessionCredential,
   getSessionScope,
   getSessionScopeCredential,
-  getSessionWorkspaceId,
   resolveSessionCookieDomain,
   setSessionCredential,
   setSessionScope,
-  setSessionWorkspaceId,
 } from './lib/session-cookie.ts'
 export {
   clearWorkspaceSelectionSideEffects,

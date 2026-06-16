@@ -2,20 +2,13 @@ import type { WorkspaceApi } from '@carbonnt-cyacle/skeled-uicpub'
 import { createWorkspaceAppApiService } from '@carbonnt-cyacle/skeled-uicpub'
 
 import { queryClient } from './query-client'
-import {
-  setSessionScope,
-  setSessionWorkspaceId,
-} from './session-cookie'
+import { setSessionScope } from './session-cookie'
 import { vrpcClient } from './vrpc-client'
 
 const workspaceAppApiService = createWorkspaceAppApiService(vrpcClient)
 const getWorkspacesMeta = {
   serviceName: 'uic.WorkspaceAppApiService',
   methodName: 'getWorkspaces',
-} as const
-const switchWorkspaceMeta = {
-  serviceName: 'uic.WorkspaceAppApiService',
-  methodName: 'switchWorkspace',
 } as const
 
 export type WorkspaceSelectionItem = WorkspaceApi
@@ -24,11 +17,6 @@ export const workspaceKeys = {
   list: () => [
     getWorkspacesMeta.serviceName,
     getWorkspacesMeta.methodName,
-  ] as const,
-  switch: (workspaceId: string) => [
-    switchWorkspaceMeta.serviceName,
-    switchWorkspaceMeta.methodName,
-    workspaceId,
   ] as const,
 }
 
@@ -45,7 +33,7 @@ export async function prepareWorkspaceSelectionAfterAuth() {
   const workspaces = await fetchAvailableWorkspaces()
 
   if (workspaces.length === 1) {
-    const selectedWorkspace = await selectWorkspaceId(workspaces[0].id)
+    const selectedWorkspace = await selectWorkspaceId(workspaces[0])
 
     return {
       requiresSelection: false,
@@ -61,26 +49,20 @@ export async function prepareWorkspaceSelectionAfterAuth() {
   }
 }
 
-export async function selectWorkspaceId(workspaceId: string) {
-  const normalizedWorkspaceId = workspaceId.trim()
+export async function selectWorkspaceId(workspace: WorkspaceSelectionItem) {
+  const normalizedWorkspaceId = workspace.id.trim()
+  const normalizedScope =
+    typeof workspace.scope === 'string' ? workspace.scope.trim() : ''
 
   if (!normalizedWorkspaceId) {
     throw new Error('workspaceId is required')
   }
-
-  const result = await workspaceAppApiService.switchWorkspace(
-    { workspaceId: normalizedWorkspaceId },
-    { suppressGlobalToast: true },
-  )
-  const normalizedScope = result.scope.trim()
 
   if (!normalizedScope) {
     throw new Error('workspace scope is empty')
   }
 
   setSessionScope(normalizedScope)
-  setSessionWorkspaceId(normalizedWorkspaceId)
-  queryClient.clear()
 
   return {
     workspaceId: normalizedWorkspaceId,

@@ -19,7 +19,7 @@ import { crossDomainRoutePaths } from '../../../lib/cross-domain-route-paths'
 import { useTranslation } from '../../../lib/i18n'
 import {
   getSessionCredential,
-  getSessionWorkspaceId,
+  getSessionScope,
 } from '../../../lib/session-cookie'
 import { selectWorkspaceId } from '../../../lib/workspace-session'
 import { useAvailableWorkspaces, useCurrentUserProfile } from './queries'
@@ -125,8 +125,8 @@ export function AppLayout({
   const [isSidebarOpen, setIsSidebarOpen] = React.useState(
     getCookieSidebarState,
   )
-  const [selectedWorkspaceId, setSelectedWorkspaceId] = React.useState(
-    getSessionWorkspaceId,
+  const [selectedWorkspaceScope, setSelectedWorkspaceScope] = React.useState(
+    () => getSessionScope()?.trim() || null,
   )
   const [switchingWorkspaceId, setSwitchingWorkspaceId] = React.useState<
     string | null
@@ -159,18 +159,18 @@ export function AppLayout({
     enabled: hasSessionCredential,
   })
   const isSelectedWorkspaceValid = React.useMemo(() => {
-    if (!selectedWorkspaceId || !availableWorkspaces) {
+    if (!selectedWorkspaceScope || !availableWorkspaces) {
       return false
     }
 
     return availableWorkspaces.some(
-      (workspace) => workspace.id === selectedWorkspaceId,
+      (workspace) => workspace.scope.trim() === selectedWorkspaceScope,
     )
-  }, [availableWorkspaces, selectedWorkspaceId])
+  }, [availableWorkspaces, selectedWorkspaceScope])
   const shouldRequireWorkspaceSelection =
     hasSessionCredential &&
     isWorkspaceSuccess &&
-    (!selectedWorkspaceId || !isSelectedWorkspaceValid)
+    (!selectedWorkspaceScope || !isSelectedWorkspaceValid)
   const workspaceSelectionOptions = React.useMemo(() => {
     if (availableWorkspaces?.length) {
       return availableWorkspaces
@@ -256,8 +256,9 @@ export function AppLayout({
       setSwitchingWorkspaceId(workspace.id)
 
       try {
-        const result = await selectWorkspaceId(workspace.id)
-        setSelectedWorkspaceId(result.workspaceId)
+        const result = await selectWorkspaceId(workspace)
+        setSelectedWorkspaceScope(result.scope)
+        window.location.reload()
       } catch (error) {
         console.error('Failed to switch workspace:', error)
         setWorkspaceSwitchFailed(true)
@@ -298,10 +299,11 @@ export function AppLayout({
       setSwitchingWorkspaceId(workspace.id)
 
       try {
-        const result = await selectWorkspaceId(workspace.id)
+        const result = await selectWorkspaceId(workspace)
 
         if (!ignore) {
-          setSelectedWorkspaceId(result.workspaceId)
+          setSelectedWorkspaceScope(result.scope)
+          window.location.reload()
         }
       } catch (error) {
         console.error('Failed to switch workspace:', error)
@@ -373,7 +375,7 @@ export function AppLayout({
 
       <WorkspaceSelectionDialog
         open={shouldRequireWorkspaceSelection}
-        currentWorkspaceId={selectedWorkspaceId}
+        currentWorkspaceScope={selectedWorkspaceScope}
         workspaces={workspaceSelectionOptions}
         isLoading={
           isWorkspaceLoading ||
