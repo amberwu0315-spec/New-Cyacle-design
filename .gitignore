@@ -32,10 +32,10 @@
 /domain/lca.core
 /domain/meta
 /domain/notice
+/domain/pcf.factor.api
 /domain/project.data
 /domain/uic
 /domain/unit
-/domain/pcf.factor.api
 /go.work
 /go.work.sum
 /pnpm-lock.yaml
