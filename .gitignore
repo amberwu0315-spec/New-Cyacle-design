@@ -33,6 +33,7 @@
 /domain/project.data
 /domain/uic
 /domain/unit
+/domain/pcf.factor.api
 /go.work
 /go.work.sum
 /pnpm-workspace.yaml
