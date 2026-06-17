@@ -21,18 +21,12 @@
 }
 
 html,
-body,
-#app {
+body {
   min-height: 100%;
-}
-
-#app {
-  isolation: isolate;
 }
 
 body {
   margin: 0;
-  position: relative;
 }
 
 @theme inline {

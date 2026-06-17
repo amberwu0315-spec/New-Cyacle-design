@@ -2,7 +2,7 @@ import type { LucideIcon } from 'lucide-react'
 
 import { getMessages, languageStore } from '../../../lib/i18n'
 import type { SupportedLanguage } from '../../../lib/i18n'
-import type { DomainRouteTree } from '../../../routes/helpers/domain-route-tree'
+import type { WebDomain } from '../../../routes/web-domain'
 
 export interface DomainNavMetaContext {
   language: SupportedLanguage
@@ -36,7 +36,7 @@ export type DomainNavMetaFactory = (
   context: DomainNavMetaContext,
 ) => DomainNavMeta
 
-export interface AppLayoutDomainMetas extends Record<string, unknown> {
+export interface AppLayoutDomainCapabilities extends Record<string, unknown> {
   nav?: DomainNavMetaFactory
 }
 
@@ -138,11 +138,11 @@ function normalizeDomainNavMeta(
 }
 
 function getDomainNavMeta(
-  domainRouteTree: DomainRouteTree,
+  webDomain: WebDomain,
   context: DomainNavMetaContext,
 ) {
   const navMetaFactory = (
-    domainRouteTree.metas as AppLayoutDomainMetas | undefined
+    webDomain.capabilities as AppLayoutDomainCapabilities | undefined
   )?.nav
 
   if (typeof navMetaFactory !== 'function') {
@@ -153,7 +153,7 @@ function getDomainNavMeta(
 }
 
 export function createAppNavConfig(
-  domainRouteTrees: Array<DomainRouteTree>,
+  webDomains: ReadonlyArray<WebDomain>,
   options: AppNavConfigOptions = {},
 ): AppNavConfig {
   const language = options.language ?? languageStore.getSnapshot()
@@ -164,8 +164,8 @@ export function createAppNavConfig(
   const scenes: Array<AppScene> = []
   const categories: Array<AppSceneCategory> = []
 
-  for (const domainRouteTree of domainRouteTrees) {
-    const navMeta = getDomainNavMeta(domainRouteTree, navMetaContext)
+  for (const webDomain of webDomains) {
+    const navMeta = getDomainNavMeta(webDomain, navMetaContext)
 
     if (!navMeta) {
       continue

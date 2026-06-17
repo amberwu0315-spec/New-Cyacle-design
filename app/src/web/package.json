@@ -11,16 +11,22 @@
     "@tailwindcss/vite": "^4.3.0",
     "@tanstack/devtools-vite": "^0.7.0",
     "@types/node": "^22.10.2",
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
     "@vitejs/plugin-react": "^6.0.2",
     "tailwindcss": "^4.3.0",
     "typescript": "^6.0.2",
     "vite": "^8.0.13"
   },
+  "imports": {
+    "#/*": "./src/*"
+  },
   "name": "@carbonnt-cyacle/web-app",
   "private": true,
   "scripts": {
     "build": "vite build",
-    "dev": "vite dev"
+    "dev": "vite dev",
+    "typecheck": "tsc --noEmit -p tsconfig.json"
   },
   "type": "module"
 }

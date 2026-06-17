@@ -1,6 +1,5 @@
 import * as React from 'react'
 import { BoxIcon, CheckIcon, LogOut, RefreshCwIcon } from 'lucide-react'
-import { useNavigate } from '@tanstack/react-router'
 
 import { Button } from '../../ui/button'
 import {
@@ -14,21 +13,26 @@ import {
   DropdownMenuTrigger,
 } from '../../ui/dropdown-menu'
 import { Spinner } from '../../ui/spinner'
-import { clearAuthSessionSideEffects } from '../../../lib/auth-session'
-import { crossDomainRoutePaths } from '../../../lib/cross-domain-route-paths'
 import { useTranslation } from '../../../lib/i18n'
 import { cn } from '../../../lib/utils'
-import {
-  getSessionCredential,
-  getSessionScope,
-} from '../../../lib/session-cookie'
+import { getSessionScope } from '../../../lib/session-cookie'
 import {
   selectWorkspaceId,
   type WorkspaceSelectionItem,
 } from '../../../lib/workspace-session'
 
 import defaultUserAvatar from './assets/default-user-avatar.png'
-import { useAvailableWorkspaces, useCurrentUserProfile } from './queries'
+import type {
+  AppLayoutAsyncState,
+  AppLayoutUserProfile,
+} from './app-layout'
+
+export type AccountPopoverProps = {
+  hasSessionCredential: boolean
+  onLogout: () => void
+  profileQuery: AppLayoutAsyncState<AppLayoutUserProfile>
+  workspaceQuery: AppLayoutAsyncState<Array<WorkspaceSelectionItem>>
+}
 
 type WorkspaceMenuItemProps = {
   currentWorkspaceScope: string | null
@@ -107,16 +111,13 @@ function WorkspaceMenuItem({
   )
 }
 
-export function AccountPopover() {
+export function AccountPopover({
+  hasSessionCredential,
+  onLogout,
+  profileQuery,
+  workspaceQuery,
+}: AccountPopoverProps) {
   const { t } = useTranslation()
-  const navigate = useNavigate()
-  const hasSessionCredential = Boolean(getSessionCredential())
-  const profileQuery = useCurrentUserProfile({
-    enabled: hasSessionCredential,
-  })
-  const workspaceQuery = useAvailableWorkspaces({
-    enabled: hasSessionCredential,
-  })
   const [switchingWorkspaceId, setSwitchingWorkspaceId] = React.useState<
     string | null
   >(null)
@@ -130,11 +131,6 @@ export function AccountPopover() {
   const accountName = profile?.username?.trim() ?? ''
   const accountPhone = profile?.phone?.trim()
   const accountEmail = profile?.email?.trim()
-
-  const handleLogoutClick = React.useCallback(() => {
-    clearAuthSessionSideEffects()
-    void navigate({ to: crossDomainRoutePaths.uic.login })
-  }, [navigate])
 
   const handleWorkspaceRetry = React.useCallback(() => {
     setWorkspaceSwitchFailed(false)
@@ -304,7 +300,7 @@ export function AccountPopover() {
           <DropdownMenuItem
             variant="destructive"
             className="h-10 cursor-pointer gap-2 rounded-lg px-2.5 text-[15px] font-semibold"
-            onClick={handleLogoutClick}
+            onClick={onLogout}
           >
             <LogOut aria-hidden="true" className="size-4" />
             <span>{t.common.shell.account.logout}</span>

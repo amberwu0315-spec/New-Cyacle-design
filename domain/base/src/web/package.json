@@ -1,6 +1,5 @@
 {
   "dependencies": {
-    "@carbonnt-cyacle/skeled-uicpub": "workspace:*",
     "@base-ui/react": "^1.5.0",
     "@cew-lib/cyacle-replace-symbols": "^1.0.3",
     "@cew-lib/file-viewer-base": "^1.0.4",
@@ -46,8 +45,14 @@
     "./lib/query-client": "./src/lib/query-client.tsx",
     "./package.json": "./package.json"
   },
+  "imports": {
+    "#/*": "./src/*"
+  },
   "name": "@carbonnt-cyacle/web-base",
   "private": true,
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json"
+  },
   "type": "module",
   "version": "0.0.0"
 }

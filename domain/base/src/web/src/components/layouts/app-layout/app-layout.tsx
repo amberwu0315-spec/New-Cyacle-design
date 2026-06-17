@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { useLocation, useNavigate } from '@tanstack/react-router'
+import { useLocation } from '@tanstack/react-router'
 import Cookies from 'js-cookie'
 import { AlertTriangleIcon, LogOutIcon, RefreshCwIcon } from 'lucide-react'
 
@@ -14,15 +14,9 @@ import {
 import type { AppNavConfig } from './nav-config'
 import { Button } from '../../ui/button'
 import { Spinner } from '../../ui/spinner'
-import { clearAuthSessionSideEffects } from '../../../lib/auth-session'
-import { crossDomainRoutePaths } from '../../../lib/cross-domain-route-paths'
 import { useTranslation } from '../../../lib/i18n'
-import {
-  getSessionCredential,
-  getSessionScope,
-} from '../../../lib/session-cookie'
+import { getSessionScope } from '../../../lib/session-cookie'
 import { selectWorkspaceId } from '../../../lib/workspace-session'
-import { useAvailableWorkspaces, useCurrentUserProfile } from './queries'
 import type { WorkspaceSelectionItem } from '../../../lib/workspace-session'
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state'
@@ -59,6 +53,31 @@ type SessionBootstrapErrorProps = {
   onRetry: () => void
   retryLabel: string
   title: string
+}
+
+export type AppLayoutAsyncState<TData> = {
+  data: TData | null | undefined
+  isError: boolean
+  isFetching: boolean
+  isLoading?: boolean
+  isSuccess: boolean
+  refetch: () => unknown
+}
+
+export type AppLayoutUserProfile = {
+  email?: string | null
+  phone?: string | null
+  realName?: string | null
+  username?: string | null
+}
+
+export interface AppLayoutProps {
+  children: React.ReactNode
+  hasSessionCredential: boolean
+  navConfig: AppNavConfig
+  onLogout: () => void
+  profileQuery: AppLayoutAsyncState<AppLayoutUserProfile>
+  workspaceQuery: AppLayoutAsyncState<Array<WorkspaceSelectionItem>>
 }
 
 function SessionBootstrapError({
@@ -111,13 +130,13 @@ function SessionBootstrapError({
 
 export function AppLayout({
   children,
+  hasSessionCredential,
   navConfig,
-}: {
-  children: React.ReactNode
-  navConfig: AppNavConfig
-}) {
+  onLogout,
+  profileQuery,
+  workspaceQuery,
+}: AppLayoutProps) {
   const { t } = useTranslation()
-  const navigate = useNavigate()
   const pathname = useLocation({
     select: (location) => location.pathname,
   })
@@ -137,16 +156,13 @@ export function AppLayout({
   const [workspaceSwitchFailed, setWorkspaceSwitchFailed] = React.useState(false)
   const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false)
   const [isScenePanelOpen, setIsScenePanelOpen] = React.useState(false)
-  const hasSessionCredential = Boolean(getSessionCredential())
   const {
     data: currentUserProfile,
     isError: isProfileError,
     isFetching: isProfileFetching,
     isSuccess: isProfileSuccess,
     refetch: refetchProfile,
-  } = useCurrentUserProfile({
-    enabled: hasSessionCredential,
-  })
+  } = profileQuery
   const hasCurrentUserProfile = Boolean(currentUserProfile)
   const {
     data: availableWorkspaces,
@@ -155,9 +171,7 @@ export function AppLayout({
     isLoading: isWorkspaceLoading,
     isSuccess: isWorkspaceSuccess,
     refetch: refetchWorkspaces,
-  } = useAvailableWorkspaces({
-    enabled: hasSessionCredential,
-  })
+  } = workspaceQuery
   const isSelectedWorkspaceValid = React.useMemo(() => {
     if (!selectedWorkspaceScope || !availableWorkspaces) {
       return false
@@ -278,11 +292,6 @@ export function AppLayout({
     void refetchProfile()
   }, [refetchProfile])
 
-  const handleProfileLogout = React.useCallback(() => {
-    clearAuthSessionSideEffects()
-    void navigate({ to: crossDomainRoutePaths.uic.login })
-  }, [navigate])
-
   React.useEffect(() => {
     if (
       !shouldRequireWorkspaceSelection ||
@@ -362,9 +371,13 @@ export function AppLayout({
             activeItem={activeItem}
             activeScene={activeScene}
             breadcrumbItems={breadcrumbItems}
+            hasSessionCredential={hasSessionCredential}
             isMobile={isMobile}
+            onLogout={onLogout}
             sidebarState={sidebarState}
             onToggleSidebar={toggleSidebar}
+            profileQuery={profileQuery}
+            workspaceQuery={workspaceQuery}
           />
 
           <main className="flex min-h-0 flex-1 flex-col overflow-auto bg-background">
@@ -398,7 +411,7 @@ export function AppLayout({
           logoutLabel={t.common.shell.profileBootstrap.logout}
           isRetrying={isProfileFetching}
           onRetry={handleProfileRetry}
-          onLogout={handleProfileLogout}
+          onLogout={onLogout}
         />
       ) : null}
     </div>

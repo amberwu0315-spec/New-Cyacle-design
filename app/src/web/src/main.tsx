@@ -1,20 +1,16 @@
-import type { AnyRouter } from '@tanstack/react-router'
-import { mountApp, createAppRouter } from '@carbonnt-cyacle/web-base'
+import { RouterProvider } from '@tanstack/react-router'
+import ReactDOM from 'react-dom/client'
+import { BaseProviders } from '@carbonnt-cyacle/web-base'
 
-import "./styles.css";
+import './vineStyles.gen.css'
+import { router } from './router.ts'
 
-import { createDomainRouteTree as createProjectDataRouteTree } from '@carbonnt-cyacle/web-project-data'
-import { createDomainRouteTree as createUicRouteTree } from '@carbonnt-cyacle/web-uic'
+const rootElement = document.getElementById('app')!
 
-const router = createAppRouter([
-    createProjectDataRouteTree,
-    createUicRouteTree
-]) satisfies AnyRouter
-
-declare module '@tanstack/react-router' {
-  interface Register {
-    router: typeof router
-  }
+if (!rootElement.innerHTML) {
+  ReactDOM.createRoot(rootElement).render(
+    <BaseProviders>
+      <RouterProvider router={router} />
+    </BaseProviders>,
+  )
 }
-
-mountApp(document.getElementById('app')!, router)

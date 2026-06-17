@@ -36,6 +36,12 @@ importers:
       '@types/node':
         specifier: ^22.10.2
         version: 22.19.21
+      '@types/react':
+        specifier: ^19.2.0
+        version: 19.2.17
+      '@types/react-dom':
+        specifier: ^19.2.0
+        version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
         specifier: ^6.0.2
         version: 6.0.2(vite@8.0.16(@types/node@22.19.21)(jiti@2.7.0))
@@ -353,6 +359,9 @@ importers:
       typescript:
         specifier: ^6.0.2
         version: 6.0.3
+      vite:
+        specifier: ^8.0.13
+        version: 8.0.16(@types/node@22.19.21)(jiti@2.7.0)
 
   domain/uic/pub/skeled/typescript:
     dependencies:
@@ -459,6 +468,9 @@ importers:
       typescript:
         specifier: ^6.0.2
         version: 6.0.3
+      vite:
+        specifier: ^8.0.13
+        version: 8.0.16(@types/node@22.19.21)(jiti@2.7.0)
 
   domain/unit/pub/skeled/typescript:
     dependencies:

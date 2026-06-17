@@ -1,26 +1,28 @@
-.vite
 # local disabled domains
-.pnpm-store
 
 # vined - begin
+*.gen.css
+*.gen.ts
+*.gen.tsx
 *.local
 .DS_Store
+.cache/
 .env
 .idea/
 .nitro
 .output
+.pnpm-store
 .tanstack
 .vinxi
+.vite
 .vscode/
 .wrangler
-/.cache/
 /app/seed
 /app/skel
 /app/skeled
 /app/src/server
 /app/src/web/package.json
 /app/src/web/pnpm-lock.yaml
-/app/src/web/src
 /dev.yaml
 /domain/category
 /domain/factor
@@ -36,6 +38,7 @@
 /domain/pcf.factor.api
 /go.work
 /go.work.sum
+/pnpm-lock.yaml
 /pnpm-workspace.yaml
 __unconfig*
 dist

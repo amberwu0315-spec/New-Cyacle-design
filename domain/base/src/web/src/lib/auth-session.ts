@@ -1,17 +1,31 @@
-import { crossDomainRoutePaths } from './cross-domain-route-paths'
 import { queryClient } from './query-client'
 import { clearSessionCredential } from './session-cookie'
 
-const LOGIN_PATH = crossDomainRoutePaths.uic.login
+const DEFAULT_LOGIN_PATH = '/uic/login'
 
 let isRedirectingToLogin = false
+let configuredLoginPath = DEFAULT_LOGIN_PATH
+
+export type AuthSessionConfig = {
+  loginPath?: string
+}
+
+function normalizeLoginPath(loginPath: string | undefined) {
+  const normalizedPath = loginPath?.trim()
+
+  return normalizedPath || DEFAULT_LOGIN_PATH
+}
+
+export function configureAuthSession(config: AuthSessionConfig) {
+  configuredLoginPath = normalizeLoginPath(config.loginPath)
+}
 
 function getCurrentRedirectPath() {
   if (typeof window === 'undefined') {
     return undefined
   }
 
-  if (window.location.pathname === LOGIN_PATH) {
+  if (window.location.pathname === configuredLoginPath) {
     return undefined
   }
 
@@ -20,12 +34,12 @@ function getCurrentRedirectPath() {
 
 function createLoginPath(redirectPath = getCurrentRedirectPath()) {
   if (!redirectPath) {
-    return LOGIN_PATH
+    return configuredLoginPath
   }
 
   const searchParams = new URLSearchParams({ redirect: redirectPath })
 
-  return `${LOGIN_PATH}?${searchParams.toString()}`
+  return `${configuredLoginPath}?${searchParams.toString()}`
 }
 
 export function clearAuthSessionSideEffects() {
@@ -36,7 +50,10 @@ export function clearAuthSessionSideEffects() {
 export function redirectToLoginWithCurrentLocation() {
   clearAuthSessionSideEffects()
 
-  if (typeof window === 'undefined' || window.location.pathname === LOGIN_PATH) {
+  if (
+    typeof window === 'undefined' ||
+    window.location.pathname === configuredLoginPath
+  ) {
     return
   }
 

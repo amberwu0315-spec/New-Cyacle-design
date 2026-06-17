@@ -7,25 +7,38 @@ import { cn } from '../../../lib/utils'
 
 import { AccountPopover } from './account-popover'
 import { LanguageSwitcher } from './language-switcher'
+import type {
+  AppLayoutAsyncState,
+  AppLayoutUserProfile,
+} from './app-layout'
 import type { BreadcrumbItem } from './nav-matching'
 import type { AppNavItem, AppScene } from './nav-config'
+import type { WorkspaceSelectionItem } from '../../../lib/workspace-session'
 
 interface AppTopbarProps {
   activeItem: AppNavItem | null
   activeScene: AppScene
   breadcrumbItems: Array<BreadcrumbItem>
+  hasSessionCredential: boolean
   isMobile: boolean
+  onLogout: () => void
   sidebarState: 'expanded' | 'collapsed'
   onToggleSidebar: () => void
+  profileQuery: AppLayoutAsyncState<AppLayoutUserProfile>
+  workspaceQuery: AppLayoutAsyncState<Array<WorkspaceSelectionItem>>
 }
 
 export function AppTopbar({
   activeItem,
   activeScene,
   breadcrumbItems,
+  hasSessionCredential,
   isMobile,
+  onLogout,
   sidebarState,
   onToggleSidebar,
+  profileQuery,
+  workspaceQuery,
 }: AppTopbarProps) {
   const { t } = useTranslation()
   const [isSidebarIconHovered, setIsSidebarIconHovered] = React.useState(false)
@@ -91,7 +104,12 @@ export function AppTopbar({
       <div className="flex items-center gap-2">
         <LanguageSwitcher />
         <div className="pl-1">
-          <AccountPopover />
+          <AccountPopover
+            hasSessionCredential={hasSessionCredential}
+            onLogout={onLogout}
+            profileQuery={profileQuery}
+            workspaceQuery={workspaceQuery}
+          />
         </div>
       </div>
     </header>
