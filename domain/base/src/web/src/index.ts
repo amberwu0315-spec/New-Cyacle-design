@@ -54,8 +54,6 @@ export type {
 } from '#/components/layouts/app-layout/index.ts'
 export { WorkspaceSelectionDialog } from '#/components/layouts/app-layout/workspace-selection-dialog.tsx'
 export { LanguageMenu as LoginLanguageMenu } from '#/components/layouts/app-layout/language-switcher.tsx'
-export { DomainBaseLayout } from '#/components/layouts/domain-base-layout/index.tsx'
-export type { DomainBaseLayoutProps } from '#/components/layouts/domain-base-layout/index.tsx'
 export { ModuleLayout } from '#/components/layouts/module-layout/index.ts'
 export type { ModuleLayoutProps } from '#/components/layouts/module-layout/index.ts'
 export { BaseProviders } from '#/base-providers.tsx'

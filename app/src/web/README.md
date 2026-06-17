@@ -17,24 +17,32 @@ pnpm build -- --vrpcClientVersion=1.1.1
 cyacle/
 ├─ pnpm-workspace.yaml
 ├─ app/
-│  └─ src/web/              # ship module，最终运行和构建入口
+│  └─ src/web/              # ship module，最终运行和构建入口，也是项目 app 层
 │     ├─ index.html
 │     ├─ package.json
 │     ├─ vite.config.ts
 │     ├─ public/
 │     └─ src/
 │        ├─ main.tsx
-│        └─ styles.css
+│        ├─ router.ts
+│        ├─ globals.css
+│        ├─ vineModules.gen.ts
+│        ├─ vineStyles.gen.css
+│        ├─ components/
+│        ├─ routes/
+│        └─ features/
 └─ domain/
-   ├─ app/src/web/          # app domain，共享前端基础包
+   ├─ base/src/web/         # 共享前端基础包
    └─ <domain>/src/web/     # feature domain 前端包
 ```
 
-`app/src/web` 是唯一直接执行 `pnpm dev` 和 `pnpm build` 的 ship module。它不承载业务页面和共享组件，只负责把 app domain 与各 feature domain 的前端包组装成最终应用。
+`app/src/web` 是唯一直接执行 `pnpm dev` 和 `pnpm build` 的 ship module，同时也是本项目的 app 层入口。它可以承载项目自己的 router、shell layout、首页/帮助页等 app 级路由、入口级配置和只属于最终应用的页面。
 
-`domain/base/src/web` 是 plotted app domain 的前端基础包，提供根路由、全局布局、共享 UI、全局样式、React Query、VRPC client 等能力。
+`app/src/web` 不放跨 domain 复用的共享组件、共享 lib 或 feature domain 的业务页面。可复用能力放到 `domain/base/src/web`，领域业务页面放到对应 `domain/<domain>/src/web`。
 
-`domain/<domain>/src/web` 是 feature domain 的前端包，提供该领域自己的路由、页面和局部组件。
+`domain/base/src/web` 是共享前端基础包，提供 BaseProviders、共享 UI、共享 layout、全局样式、React Query、VRPC client、route mount helper 等能力。
+
+`domain/<domain>/src/web` 是 feature domain 的前端包，提供该领域自己的路由、页面、局部组件，并通过 `webDomain` 暴露 route mounts 和 capabilities。
 
 ## Ship Module
 
@@ -44,42 +52,95 @@ ship module 的主要职责：
 - 提供静态资源目录：`public/`
 - 启动 Vite dev server
 - 执行生产构建并输出 `dist/`
-- 在 `src/main.tsx` 中创建最终 router，并挂载 React app
-- 在 `src/styles.css` 中声明全局样式入口和 Tailwind source
-- 在 `package.json` 中依赖 app domain 和 feature domain 的 web package
+- 在 `src/main.tsx` 中挂载 React app，并引入最终样式入口
+- 在 `src/router.ts` 中创建最终 router，配置项目级入口参数，定义 domain route outlet，并挂载 app 自身路由和 feature domain 路由
+- 在 `src/routes/`、`src/features/`、`src/components/` 中放项目 app 层路由、页面和 shell 适配代码
+- 在 `src/globals.css` 中声明只属于最终应用的全局样式补充
+- 通过生成的 `src/vineModules.gen.ts` 和 `src/vineStyles.gen.css` 汇总 feature domain 入口
+- 在 `package.json` 中依赖 base domain 和 feature domain 的 web package
 - 启动 dev server 时把实际监听信息写入 `.cache/web/dev-state.json`
 
-`src/main.tsx` 由 `plot app apply` 生成，结构类似：
+`src/main.tsx` 结构类似：
 
-```ts
-import { mountApp, createAppRouter } from '@scope/web-base'
+```tsx
+import { RouterProvider } from '@tanstack/react-router'
+import ReactDOM from 'react-dom/client'
+import { BaseProviders } from '@scope/web-base'
 
-import './styles.css'
+import './vineStyles.gen.css'
+import { router } from './router'
 
-import { createDomainRouteTree as createFeatureRouteTree } from '@scope/web-feature'
+const rootElement = document.getElementById('app')!
 
-const router = createAppRouter([
-  createFeatureRouteTree,
-])
-
-mountApp(document.getElementById('app')!, router)
+ReactDOM.createRoot(rootElement).render(
+  <BaseProviders>
+    <RouterProvider router={router} />
+  </BaseProviders>,
+)
 ```
 
-ship module 不自己定义根布局和领域页面，只把 app domain 与 feature domain 暴露的能力拼起来。
+`src/router.ts` 是项目 app 层可维护的路由入口，结构类似：
 
-## App Domain
+```ts
+import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
+import {
+  configureAuthSession,
+  defineWebDomainRouteOutlets,
+  resolveWebDomainRouteMount,
+} from '@scope/web-base'
 
-app domain 提供：
+import { AppLayout } from './components/layouts/app-layout'
+import { createHomeRoute } from './routes/home-route'
+import { webModules } from './vineModules.gen'
 
-- `createAppRouter`：创建最终应用 router
-- `mountApp`：挂载 React 应用
+configureAuthSession({ loginPath: '/uic/login' })
+
+const appRouteOutlets = defineWebDomainRouteOutlets({
+  root: 'root',
+  shell: 'shell',
+})
+
+const RootRoute = createRootRoute()
+const ShellRoute = createRoute({
+  getParentRoute: () => RootRoute,
+  id: 'shell',
+  component: AppLayout,
+})
+
+const routeTree = RootRoute.addChildren([
+  ...resolveWebDomainRouteMount({
+    domains: webModules,
+    outlet: appRouteOutlets.root,
+    parentRoute: RootRoute,
+  }),
+  ShellRoute.addChildren([
+    createHomeRoute({ parentRoute: ShellRoute }),
+    ...resolveWebDomainRouteMount({
+      domains: webModules,
+      outlet: appRouteOutlets.shell,
+      parentRoute: ShellRoute,
+    }),
+  ]),
+])
+
+export const router = createRouter({ routeTree })
+```
+
+ship module 可以定义项目级 layout 和项目级页面。跨 domain 共享的基础设施仍放 `domain/base/src/web`；feature domain 的业务页面仍放各自 domain 包。
+
+## Base Domain
+
+base domain 提供：
+
+- `BaseProviders`：React Query、主题、Toaster 等全局 provider
 - `globals.css`：全局 Tailwind、theme、字体和基础 CSS
-- root layout 与首页路由
+- `defineWebDomain`、`defineWebDomainRouteOutlets`、`resolveWebDomainRouteMount`：domain route mount 协议
+- `AppLayout`、`ModuleLayout` 等共享 layout
 - `components/ui/*`：共享 UI 组件
 - `lib/query-client`：React Query provider
 - `lib/vrpc-client`：VRPC client
 
-app domain 是共享层，不作为 feature domain route tree 加入 `createAppRouter([...])`。feature domain 可以依赖 app domain，例如：
+base domain 是共享层，不作为 feature domain 加入 `webModules`。feature domain 可以依赖 base domain，例如：
 
 ```ts
 import { Button } from '@scope/web-base/components/ui/button'
@@ -105,52 +166,54 @@ domain/<domain>/src/web/
 对 ship module 来说，feature domain 最重要的出口是：
 
 ```ts
-export { createDomainRouteTree } from './routes'
+export { webDomain } from './routes'
 ```
 
-`createDomainRouteTree` 接收 app domain 创建的 `RootRoute`，返回该领域挂到根路由下的路由树。feature domain 不应该自己创建 root router，也不应该自己挂载 React app。
+`webDomain` 使用 base domain 提供的 `defineWebDomain()` 声明 route mounts 和 capabilities。feature domain 不应该自己创建 root router，也不应该自己挂载 React app。
 
 ## 路由关系
 
-路由分三层：
+路由由 `app/src/web/src/router.ts` 统一创建：
 
 ```text
-createAppRouter                       # app domain
-└─ RootRoute                          # app domain
-   ├─ home route                      # app domain
-   └─ /<domain>                       # feature domain
+router.ts                             # app/src/web
+└─ RootRoute                          # app 根路由
+   ├─ root outlet                     # login、register、SSO callback 等无 shell 页面
+   └─ ShellRoute                      # app shell
+      ├─ app routes                   # 首页、帮助页、项目级公共入口
+      └─ shell outlet                 # 普通 feature domain 页面
 ```
 
-app domain 负责根路由和公共布局。feature domain 只负责自己领域下的子树。
+app 层负责根路由、shell 路由、项目级页面和入口级配置。feature domain 只负责自己领域下的 route factory，并通过 `root`、`shell` 等 outlet 接入最终应用。
 
 ## 样式与 Tailwind
 
-最终页面只有一个 CSS 入口：
+最终页面由 `main.tsx` 引入一个生成的 CSS 汇总入口：
 
 ```text
-app/src/web/src/styles.css
+app/src/web/src/vineStyles.gen.css
 ```
 
 内容由 `plot app apply` 生成，结构类似：
 
 ```css
 @import "@scope/web-base/globals.css";
-
 @import "@scope/web-feature/globals.css";
+@import "./globals.css";
 ```
 
-`@scope/web-base/globals.css` 是 Tailwind/global CSS 基础入口，包含 Tailwind、theme、字体和全局基础样式。feature domain 通过自己的 `globals.css` 暴露样式入口，ship module 统一 import 这些入口。
+`@scope/web-base/globals.css` 是 Tailwind/global CSS 基础入口，包含 Tailwind、theme、字体和全局基础样式。feature domain 通过自己的 `globals.css` 暴露样式入口，ship module 统一 import 这些入口。`app/src/web/src/globals.css` 用于最终应用自己的全局样式补充。
 
 ## Package 依赖
 
 `app/src/web/package.json` 保留最终运行和构建需要直接可见的包。`plot app apply` 会维护 web workspace package 依赖：
 
-- app domain web package
+- base domain web package
 - feature domain web package
 
 这些依赖使用 `workspace:*`。ship module 不写入 skeled TypeScript 包依赖。
 
-feature domain 的 `package.json` 依赖 app domain：
+feature domain 的 `package.json` 依赖 base domain：
 
 ```json
 {
@@ -162,7 +225,7 @@ feature domain 的 `package.json` 依赖 app domain：
 
 ## PNPM Workspace
 
-根目录的 `pnpm-workspace.yaml` 由 plot 维护，包含 ship module、app domain web package、feature domain web package，以及 skeled TypeScript package。
+根目录的 `pnpm-workspace.yaml` 由 plot 维护，包含 ship module、base domain web package、feature domain web package，以及 skeled TypeScript package。
 
 当前策略是：
 
@@ -185,6 +248,7 @@ pnpm build
 
 ## 维护约束
 
-- `src/main.tsx` 由 `plot app apply` 生成，不手动编辑。
-- `src/styles.css` 由 `plot app apply` 生成，不手动编辑。
-- app domain 负责共享能力，feature domain 负责领域页面，ship module 只负责组合和运行。
+- `src/main.tsx`、`src/vineModules.gen.ts`、`src/vineStyles.gen.css` 由 `plot app apply` 维护，不手动编辑。
+- `src/router.ts`、`src/routes/`、`src/features/`、`src/components/` 可以承载项目 app 层自己的路由、页面和 shell 适配代码。
+- `src/globals.css` 可以放最终应用自己的全局样式补充。
+- base domain 负责跨 domain 共享能力，feature domain 负责领域页面，ship module 负责组合、运行入口、项目级路由和入口级配置。
