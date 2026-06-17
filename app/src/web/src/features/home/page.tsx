@@ -16,11 +16,6 @@ export function AppHomePage() {
             UIC User Profile
           </Link>
         </li>
-        <li>
-          <Link to='/project-data' className='text-blue-500 hover:underline'>
-            Project Data
-          </Link>
-        </li>
       </ul>
     </ModuleLayout>
   )
