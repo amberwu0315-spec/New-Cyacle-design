@@ -24,6 +24,7 @@ cyacle/
 │     ├─ public/
 │     └─ src/
 │        ├─ main.tsx
+│        ├─ project-config.ts
 │        ├─ router.ts
 │        ├─ globals.css
 │        ├─ vineModules.gen.ts
@@ -79,12 +80,27 @@ ReactDOM.createRoot(rootElement).render(
 )
 ```
 
-`src/router.ts` 是项目 app 层可维护的路由入口，结构类似：
+`src/project-config.ts` 是项目级配置入口，结构类似：
 
 ```ts
+import { configureWebProjectConfig, type WebProjectConfig } from '@scope/web-base'
+
+const webProjectConfig = {
+  routes: {
+    loginPath: '/uic/login',
+  },
+} satisfies WebProjectConfig
+
+configureWebProjectConfig(webProjectConfig)
+```
+
+`src/router.ts` 是项目 app 层可维护的路由入口，先加载项目级配置，再创建最终 router：
+
+```ts
+import './project-config'
+
 import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
 import {
-  configureAuthSession,
   defineWebDomainRouteOutlets,
   resolveWebDomainRouteMount,
 } from '@scope/web-base'
@@ -92,8 +108,6 @@ import {
 import { AppLayout } from './components/layouts/app-layout'
 import { createHomeRoute } from './routes/home-route'
 import { webModules } from './vineModules.gen'
-
-configureAuthSession({ loginPath: '/uic/login' })
 
 const appRouteOutlets = defineWebDomainRouteOutlets({
   root: 'root',

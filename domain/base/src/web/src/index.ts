@@ -5,10 +5,16 @@ export { queryClient, TanstackQueryRootProvider } from '#/lib/query-client.tsx'
 export { vrpcClient, vrpcHttpClient } from '#/lib/vrpc-client.ts'
 export {
   clearAuthSessionSideEffects,
-  configureAuthSession,
   redirectToLoginWithCurrentLocation,
 } from '#/lib/auth-session.ts'
-export type { AuthSessionConfig } from '#/lib/auth-session.ts'
+export {
+  configureWebProjectConfig,
+  getWebProjectConfig,
+} from '#/lib/web-project-config.ts'
+export type {
+  WebProjectConfig,
+  WebProjectRoutesConfig,
+} from '#/lib/web-project-config.ts'
 export {
   clearSessionCredential,
   getSessionCredential,

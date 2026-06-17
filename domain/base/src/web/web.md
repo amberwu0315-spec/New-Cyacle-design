@@ -114,6 +114,7 @@ const PrivacyPolicyPage = lazyRouteComponent(
 ```text
 app/src/web/src/
 ├── main.tsx                               ← 挂载 React app + BaseProviders
+├── project-config.ts                     ← 配置项目级共享参数
 ├── router.ts                              ← 创建最终 router + app route + domain outlet
 ├── routes/                                ← 项目 app 级路由
 ├── features/                              ← 项目 app 级页面
@@ -135,9 +136,10 @@ App 自身路由分两类：独立落地页等不需要 shell 的路由直接挂
 
 ```tsx
 // app/src/web/src/router.ts
+import './project-config'
+
 import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
 import {
-  configureAuthSession,
   defineWebDomainRouteOutlets,
   resolveWebDomainRouteMount,
 } from '@example-app/web-base'
@@ -145,8 +147,6 @@ import {
 import { AppLayout } from './components/layouts/app-layout'
 import { createHomeRoute } from './routes/home-route'
 import { webModules } from './vineModules.gen'
-
-configureAuthSession({ loginPath: '/uic/login' })
 
 const appRouteOutlets = defineWebDomainRouteOutlets({
   root: 'root',

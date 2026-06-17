@@ -1,45 +1,32 @@
 import { queryClient } from '#/lib/query-client.tsx'
 import { clearSessionCredential } from '#/lib/session-cookie.ts'
-
-const DEFAULT_LOGIN_PATH = '/uic/login'
+import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 
 let isRedirectingToLogin = false
-let configuredLoginPath = DEFAULT_LOGIN_PATH
 
-export type AuthSessionConfig = {
-  loginPath?: string
-}
-
-function normalizeLoginPath(loginPath: string | undefined) {
-  const normalizedPath = loginPath?.trim()
-
-  return normalizedPath || DEFAULT_LOGIN_PATH
-}
-
-export function configureAuthSession(config: AuthSessionConfig) {
-  configuredLoginPath = normalizeLoginPath(config.loginPath)
-}
-
-function getCurrentRedirectPath() {
+function getCurrentRedirectPath(loginPath: string) {
   if (typeof window === 'undefined') {
     return undefined
   }
 
-  if (window.location.pathname === configuredLoginPath) {
+  if (window.location.pathname === loginPath) {
     return undefined
   }
 
   return `${window.location.pathname}${window.location.search}${window.location.hash}`
 }
 
-function createLoginPath(redirectPath = getCurrentRedirectPath()) {
+function createLoginPath(
+  loginPath: string,
+  redirectPath = getCurrentRedirectPath(loginPath),
+) {
   if (!redirectPath) {
-    return configuredLoginPath
+    return loginPath
   }
 
   const searchParams = new URLSearchParams({ redirect: redirectPath })
 
-  return `${configuredLoginPath}?${searchParams.toString()}`
+  return `${loginPath}?${searchParams.toString()}`
 }
 
 export function clearAuthSessionSideEffects() {
@@ -50,10 +37,13 @@ export function clearAuthSessionSideEffects() {
 export function redirectToLoginWithCurrentLocation() {
   clearAuthSessionSideEffects()
 
-  if (
-    typeof window === 'undefined' ||
-    window.location.pathname === configuredLoginPath
-  ) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  const { loginPath } = getWebProjectConfig().routes
+
+  if (window.location.pathname === loginPath) {
     return
   }
 
@@ -62,5 +52,5 @@ export function redirectToLoginWithCurrentLocation() {
   }
 
   isRedirectingToLogin = true
-  window.location.replace(createLoginPath())
+  window.location.replace(createLoginPath(loginPath))
 }

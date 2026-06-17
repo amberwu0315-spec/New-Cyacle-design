@@ -1,6 +1,7 @@
+import '#/project-config.ts'
+
 import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
 import {
-  configureAuthSession,
   defineWebDomainRouteOutlets,
   resolveWebDomainRouteMount,
 } from '@carbonnt-cyacle/web-base'
@@ -8,8 +9,6 @@ import {
 import { AppLayout } from '#/components/layouts/app-layout/index.ts'
 import { createHomeRoute } from '#/routes/home-route.ts'
 import { webModules } from '#/vineModules.gen.ts'
-
-configureAuthSession({ loginPath: '/uic/login' })
 
 const appRouteOutlets = defineWebDomainRouteOutlets({
   root: 'root',
