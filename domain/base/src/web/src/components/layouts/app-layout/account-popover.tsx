@@ -12,6 +12,7 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from '#/components/ui/dropdown-menu.tsx'
+import { Skeleton } from '#/components/ui/skeleton.tsx'
 import { Spinner } from '#/components/ui/spinner.tsx'
 import { useTranslation } from '#/lib/i18n/index.ts'
 import { cn } from '#/lib/utils.ts'
@@ -128,6 +129,10 @@ export function AccountPopover({
   const hasWorkspaceOptions = workspaceOptions.length > 0
   const isWorkspaceLoading =
     workspaceQuery.isLoading || (workspaceQuery.isFetching && !hasWorkspaceOptions)
+  const isProfileLoading =
+    hasSessionCredential &&
+    !profile &&
+    (Boolean(profileQuery.isLoading) || profileQuery.isFetching)
   const accountName = profile?.username?.trim() ?? ''
   const accountPhone = profile?.phone?.trim()
   const accountEmail = profile?.email?.trim()
@@ -221,19 +226,31 @@ export function AccountPopover({
           <Button
             variant="ghost"
             aria-label={t.common.shell.account.menu}
-            className="h-8 gap-2 px-2 active:translate-y-0"
+            className="h-8 min-w-[6.5rem] justify-start gap-2 px-2 active:translate-y-0"
           />
         }
       >
-        <img
-          src={defaultUserAvatar}
-          alt=""
-          aria-hidden="true"
-          className="size-6 shrink-0 rounded-full border border-border object-cover"
-        />
-        <span className="max-w-28 truncate text-sm font-medium text-foreground">
-          {accountName}
-        </span>
+        {isProfileLoading ? (
+          <>
+            <Skeleton
+              aria-hidden="true"
+              className="size-6 shrink-0 rounded-full"
+            />
+            <Skeleton aria-hidden="true" className="h-4 w-14 shrink-0" />
+          </>
+        ) : (
+          <>
+            <img
+              src={defaultUserAvatar}
+              alt=""
+              aria-hidden="true"
+              className="size-6 shrink-0 rounded-full border border-border object-cover"
+            />
+            <span className="max-w-28 truncate text-sm font-medium text-foreground">
+              {accountName}
+            </span>
+          </>
+        )}
       </DropdownMenuTrigger>
 
       <DropdownMenuContent
@@ -244,26 +261,36 @@ export function AccountPopover({
       >
         <div className="p-2.5 pb-0">
           <div className="rounded-lg bg-muted px-3 py-2.5">
-            <div className="flex items-start gap-3">
-              <img
-                src={defaultUserAvatar}
-                alt={accountName}
-                className="size-11 shrink-0 rounded-full border border-border object-cover"
-              />
-              <div className="min-w-0 flex-1">
-                <div className="min-w-0">
-                  <div className="truncate text-[15px] leading-5 font-semibold text-foreground">
-                    {accountName}
-                  </div>
+            {isProfileLoading ? (
+              <div aria-hidden="true" className="flex items-start gap-3">
+                <Skeleton className="size-11 shrink-0 rounded-full" />
+                <div className="flex min-w-0 flex-1 flex-col gap-2 pt-1">
+                  <Skeleton className="h-4 w-28" />
+                  <Skeleton className="h-3 w-36" />
                 </div>
-                {accountPhone || accountEmail ? (
-                  <div className="mt-0.5 space-y-0.5 text-xs leading-4 text-muted-foreground">
-                    {accountPhone ? <div className="truncate">{accountPhone}</div> : null}
-                    {accountEmail ? <div className="truncate">{accountEmail}</div> : null}
-                  </div>
-                ) : null}
               </div>
-            </div>
+            ) : (
+              <div className="flex items-start gap-3">
+                <img
+                  src={defaultUserAvatar}
+                  alt={accountName}
+                  className="size-11 shrink-0 rounded-full border border-border object-cover"
+                />
+                <div className="min-w-0 flex-1">
+                  <div className="min-w-0">
+                    <div className="truncate text-[15px] leading-5 font-semibold text-foreground">
+                      {accountName}
+                    </div>
+                  </div>
+                  {accountPhone || accountEmail ? (
+                    <div className="mt-0.5 flex flex-col gap-0.5 text-xs leading-4 text-muted-foreground">
+                      {accountPhone ? <div className="truncate">{accountPhone}</div> : null}
+                      {accountEmail ? <div className="truncate">{accountEmail}</div> : null}
+                    </div>
+                  ) : null}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
