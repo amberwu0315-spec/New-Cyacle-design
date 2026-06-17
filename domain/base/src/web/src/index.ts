@@ -1,14 +1,14 @@
-export { cn } from './lib/utils.ts'
-export { Button } from './components/ui/button.tsx'
-export { RadioGroup, RadioGroupItem } from './components/ui/radio-group.tsx'
-export { queryClient, TanstackQueryRootProvider } from './lib/query-client.tsx'
-export { vrpcClient, vrpcHttpClient } from './lib/vrpc-client.ts'
+export { cn } from '#/lib/utils.ts'
+export { Button } from '#/components/ui/button.tsx'
+export { RadioGroup, RadioGroupItem } from '#/components/ui/radio-group.tsx'
+export { queryClient, TanstackQueryRootProvider } from '#/lib/query-client.tsx'
+export { vrpcClient, vrpcHttpClient } from '#/lib/vrpc-client.ts'
 export {
   clearAuthSessionSideEffects,
   configureAuthSession,
   redirectToLoginWithCurrentLocation,
-} from './lib/auth-session.ts'
-export type { AuthSessionConfig } from './lib/auth-session.ts'
+} from '#/lib/auth-session.ts'
+export type { AuthSessionConfig } from '#/lib/auth-session.ts'
 export {
   clearSessionCredential,
   getSessionCredential,
@@ -16,29 +16,29 @@ export {
   getSessionScopeCredential,
   setSessionCredential,
   setSessionScope,
-} from './lib/session-cookie.ts'
+} from '#/lib/session-cookie.ts'
 export {
   clearWorkspaceSelectionSideEffects,
   selectWorkspaceId,
-} from './lib/workspace-session.ts'
-export type { WorkspaceSelectionItem } from './lib/workspace-session.ts'
+} from '#/lib/workspace-session.ts'
+export type { WorkspaceSelectionItem } from '#/lib/workspace-session.ts'
 export {
   formatMessage,
   getMessages,
   languageStore,
   useLanguageStore,
   useTranslation,
-} from './lib/i18n/index.ts'
+} from '#/lib/i18n/index.ts'
 export type {
   Messages,
   MessageParams,
   SupportedLanguage,
-} from './lib/i18n/index.ts'
+} from '#/lib/i18n/index.ts'
 
 export {
   AppLayout,
   createAppNavConfig,
-} from './components/layouts/app-layout/index.ts'
+} from '#/components/layouts/app-layout/index.ts'
 export type {
   AppLayoutDomainCapabilities,
   AppLayoutAsyncState,
@@ -51,20 +51,20 @@ export type {
   DomainNavMeta,
   DomainNavMetaContext,
   DomainNavMetaFactory,
-} from './components/layouts/app-layout/index.ts'
-export { WorkspaceSelectionDialog } from './components/layouts/app-layout/workspace-selection-dialog.tsx'
-export { LanguageMenu as LoginLanguageMenu } from './components/layouts/app-layout/language-switcher.tsx'
-export { DomainBaseLayout } from './components/layouts/domain-base-layout/index.tsx'
-export type { DomainBaseLayoutProps } from './components/layouts/domain-base-layout/index.tsx'
-export { ModuleLayout } from './components/layouts/module-layout/index.ts'
-export type { ModuleLayoutProps } from './components/layouts/module-layout/index.ts'
-export { BaseProviders } from './base-providers.tsx'
+} from '#/components/layouts/app-layout/index.ts'
+export { WorkspaceSelectionDialog } from '#/components/layouts/app-layout/workspace-selection-dialog.tsx'
+export { LanguageMenu as LoginLanguageMenu } from '#/components/layouts/app-layout/language-switcher.tsx'
+export { DomainBaseLayout } from '#/components/layouts/domain-base-layout/index.tsx'
+export type { DomainBaseLayoutProps } from '#/components/layouts/domain-base-layout/index.tsx'
+export { ModuleLayout } from '#/components/layouts/module-layout/index.ts'
+export type { ModuleLayoutProps } from '#/components/layouts/module-layout/index.ts'
+export { BaseProviders } from '#/base-providers.tsx'
 export {
   collectWebDomainCapabilities,
   defineWebDomain,
   defineWebDomainRouteOutlets,
   resolveWebDomainRouteMount,
-} from './routes/web-domain.ts'
+} from '#/routes/web-domain.ts'
 export type {
   WebDomain,
   WebDomainCapabilities,
@@ -74,4 +74,4 @@ export type {
   WebDomainRouteMounts,
   WebDomainRouteOutlets,
   WebRouteHandle,
-} from './routes/web-domain.ts'
+} from '#/routes/web-domain.ts'

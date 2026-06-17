@@ -1,2 +1,2 @@
-export { ModuleLayout } from './module-layout'
-export type { ModuleLayoutProps } from './module-layout'
+export { ModuleLayout } from '#/components/layouts/module-layout/module-layout.tsx'
+export type { ModuleLayoutProps } from '#/components/layouts/module-layout/module-layout.tsx'

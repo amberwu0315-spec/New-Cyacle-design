@@ -3,21 +3,21 @@ import { useLocation } from '@tanstack/react-router'
 import Cookies from 'js-cookie'
 import { AlertTriangleIcon, LogOutIcon, RefreshCwIcon } from 'lucide-react'
 
-import { AppSidebar } from './app-sidebar'
-import { AppTopbar } from './app-topbar'
-import { WorkspaceSelectionDialog } from './workspace-selection-dialog'
+import { AppSidebar } from '#/components/layouts/app-layout/app-sidebar.tsx'
+import { AppTopbar } from '#/components/layouts/app-layout/app-topbar.tsx'
+import { WorkspaceSelectionDialog } from './workspace-selection-dialog.tsx'
 import {
   getActiveNavItem,
   getActiveScene,
   getBreadcrumbItems,
-} from './nav-matching'
-import type { AppNavConfig } from './nav-config'
-import { Button } from '../../ui/button'
-import { Spinner } from '../../ui/spinner'
-import { useTranslation } from '../../../lib/i18n'
-import { getSessionScope } from '../../../lib/session-cookie'
-import { selectWorkspaceId } from '../../../lib/workspace-session'
-import type { WorkspaceSelectionItem } from '../../../lib/workspace-session'
+} from './nav-matching.ts'
+import type { AppNavConfig } from './nav-config.tsx'
+import { Button } from '#/components/ui/button.tsx'
+import { Spinner } from '#/components/ui/spinner.tsx'
+import { useTranslation } from '#/lib/i18n/index.ts'
+import { getSessionScope } from '#/lib/session-cookie.ts'
+import { selectWorkspaceId } from '#/lib/workspace-session.ts'
+import type { WorkspaceSelectionItem } from '#/lib/workspace-session.ts'
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state'
 const MOBILE_MEDIA_QUERY = '(max-width: 1023px)'

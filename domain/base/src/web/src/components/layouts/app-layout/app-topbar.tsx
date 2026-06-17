@@ -1,19 +1,19 @@
 import * as React from 'react'
 import { ChevronRight, Menu } from 'lucide-react'
 
-import { Button } from '../../ui/button'
-import { useTranslation } from '../../../lib/i18n'
-import { cn } from '../../../lib/utils'
+import { Button } from '#/components/ui/button.tsx'
+import { useTranslation } from '#/lib/i18n/index.ts'
+import { cn } from '#/lib/utils.ts'
 
-import { AccountPopover } from './account-popover'
-import { LanguageSwitcher } from './language-switcher'
+import { AccountPopover } from '#/components/layouts/app-layout/account-popover.tsx'
+import { LanguageSwitcher } from '#/components/layouts/app-layout/language-switcher.tsx'
 import type {
   AppLayoutAsyncState,
   AppLayoutUserProfile,
-} from './app-layout'
-import type { BreadcrumbItem } from './nav-matching'
-import type { AppNavItem, AppScene } from './nav-config'
-import type { WorkspaceSelectionItem } from '../../../lib/workspace-session'
+} from '#/components/layouts/app-layout/app-layout.tsx'
+import type { BreadcrumbItem } from '#/components/layouts/app-layout/nav-matching.ts'
+import type { AppNavItem, AppScene } from '#/components/layouts/app-layout/nav-config.tsx'
+import type { WorkspaceSelectionItem } from '#/lib/workspace-session.ts'
 
 interface AppTopbarProps {
   activeItem: AppNavItem | null

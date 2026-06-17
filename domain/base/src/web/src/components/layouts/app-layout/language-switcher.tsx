@@ -1,21 +1,21 @@
 import * as React from 'react'
 import { CheckIcon, ChevronUpIcon, GlobeIcon } from 'lucide-react'
 
-import { Button } from '../../ui/button'
+import { Button } from '#/components/ui/button.tsx'
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '../../ui/dropdown-menu'
+} from '#/components/ui/dropdown-menu.tsx'
 import {
   formatMessage,
   languageStore,
   useTranslation,
-} from '../../../lib/i18n'
-import type { SupportedLanguage } from '../../../lib/i18n'
-import { cn } from '../../../lib/utils'
+} from '#/lib/i18n/index.ts'
+import type { SupportedLanguage } from '#/lib/i18n/index.ts'
+import { cn } from '#/lib/utils.ts'
 
 const LANGUAGE_SWITCHER_OPTIONS: Array<SupportedLanguage> = ['en-US', 'zh-CN']
 

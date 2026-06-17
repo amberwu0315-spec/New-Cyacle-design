@@ -1,5 +1,5 @@
-import { getSceneById } from './nav-config'
-import type { AppNavConfig, AppNavItem, AppScene } from './nav-config'
+import { getSceneById } from '#/components/layouts/app-layout/nav-config.tsx'
+import type { AppNavConfig, AppNavItem, AppScene } from '#/components/layouts/app-layout/nav-config.tsx'
 
 export interface BreadcrumbItem {
   label: string

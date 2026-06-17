@@ -10,12 +10,12 @@ import type {
 } from '@yorun-ai/vrpc/client'
 import { toast } from 'sonner'
 
-import { redirectToLoginWithCurrentLocation } from './auth-session'
-import { runtimeConfig } from './runtime-config'
+import { redirectToLoginWithCurrentLocation } from '#/lib/auth-session.ts'
+import { runtimeConfig } from '#/lib/runtime-config.ts'
 import {
   getSessionCredential,
   getSessionScopeCredential,
-} from './session-cookie'
+} from '#/lib/session-cookie.ts'
 
 const VRPC_STATUS_HEADER = 'vrpc-status'
 const VRPC_STATUS_ERROR = 'ERROR'

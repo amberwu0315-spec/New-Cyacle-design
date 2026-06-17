@@ -6,14 +6,14 @@ import {
   RefreshCwIcon,
 } from 'lucide-react'
 
-import { Button } from '../../ui/button'
+import { Button } from '#/components/ui/button.tsx'
 import {
   Dialog,
   DialogContent,
   DialogDescription,
   DialogHeader,
   DialogTitle,
-} from '../../ui/dialog'
+} from '#/components/ui/dialog.tsx'
 import {
   Empty,
   EmptyContent,
@@ -21,11 +21,11 @@ import {
   EmptyHeader,
   EmptyMedia,
   EmptyTitle,
-} from '../../ui/empty'
-import { Spinner } from '../../ui/spinner'
-import { useTranslation } from '../../../lib/i18n'
-import { cn } from '../../../lib/utils'
-import type { WorkspaceSelectionItem } from '../../../lib/workspace-session'
+} from '#/components/ui/empty.tsx'
+import { Spinner } from '#/components/ui/spinner.tsx'
+import { useTranslation } from '#/lib/i18n/index.ts'
+import { cn } from '#/lib/utils.ts'
+import type { WorkspaceSelectionItem } from '#/lib/workspace-session.ts'
 
 type WorkspaceSelectionDialogProps = {
   open: boolean

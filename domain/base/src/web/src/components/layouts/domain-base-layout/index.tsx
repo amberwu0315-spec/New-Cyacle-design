@@ -1,1 +1,1 @@
-export * from './domain-base-layout'
+export * from '#/components/layouts/domain-base-layout/domain-base-layout.tsx'

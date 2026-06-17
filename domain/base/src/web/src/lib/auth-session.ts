@@ -1,5 +1,5 @@
-import { queryClient } from './query-client'
-import { clearSessionCredential } from './session-cookie'
+import { queryClient } from '#/lib/query-client.tsx'
+import { clearSessionCredential } from '#/lib/session-cookie.ts'
 
 const DEFAULT_LOGIN_PATH = '/uic/login'
 

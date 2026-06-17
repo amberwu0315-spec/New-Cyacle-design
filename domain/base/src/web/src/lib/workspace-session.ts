@@ -1,5 +1,5 @@
-import { queryClient } from './query-client'
-import { setSessionScope } from './session-cookie'
+import { queryClient } from '#/lib/query-client.tsx'
+import { setSessionScope } from '#/lib/session-cookie.ts'
 
 export type WorkspaceSelectionItem = {
   belongDisplayName?: string | null

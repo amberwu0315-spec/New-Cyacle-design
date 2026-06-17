@@ -1,7 +1,7 @@
 import * as React from 'react'
 import { BoxIcon, CheckIcon, LogOut, RefreshCwIcon } from 'lucide-react'
 
-import { Button } from '../../ui/button'
+import { Button } from '#/components/ui/button.tsx'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -11,21 +11,21 @@ import {
   DropdownMenuSubContent,
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
-} from '../../ui/dropdown-menu'
-import { Spinner } from '../../ui/spinner'
-import { useTranslation } from '../../../lib/i18n'
-import { cn } from '../../../lib/utils'
-import { getSessionScope } from '../../../lib/session-cookie'
+} from '#/components/ui/dropdown-menu.tsx'
+import { Spinner } from '#/components/ui/spinner.tsx'
+import { useTranslation } from '#/lib/i18n/index.ts'
+import { cn } from '#/lib/utils.ts'
+import { getSessionScope } from '#/lib/session-cookie.ts'
 import {
   selectWorkspaceId,
   type WorkspaceSelectionItem,
-} from '../../../lib/workspace-session'
+} from '#/lib/workspace-session.ts'
 
-import defaultUserAvatar from './assets/default-user-avatar.png'
+import defaultUserAvatar from '#/components/layouts/app-layout/assets/default-user-avatar.png'
 import type {
   AppLayoutAsyncState,
   AppLayoutUserProfile,
-} from './app-layout'
+} from '#/components/layouts/app-layout/app-layout.tsx'
 
 export type AccountPopoverProps = {
   hasSessionCredential: boolean

@@ -1,8 +1,8 @@
 import type { LucideIcon } from 'lucide-react'
 
-import { getMessages, languageStore } from '../../../lib/i18n'
-import type { SupportedLanguage } from '../../../lib/i18n'
-import type { WebDomain } from '../../../routes/web-domain'
+import { getMessages, languageStore } from '#/lib/i18n/index.ts'
+import type { SupportedLanguage } from '#/lib/i18n/index.ts'
+import type { WebDomain } from '#/routes/web-domain.ts'
 
 export interface DomainNavMetaContext {
   language: SupportedLanguage

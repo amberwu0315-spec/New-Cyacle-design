@@ -6,13 +6,13 @@ import {
   Popover,
   PopoverContent,
   PopoverTrigger,
-} from '../../ui/popover'
-import { formatMessage, useTranslation } from '../../../lib/i18n'
-import { cn } from '../../../lib/utils'
+} from '#/components/ui/popover.tsx'
+import { formatMessage, useTranslation } from '#/lib/i18n/index.ts'
+import { cn } from '#/lib/utils.ts'
 
 import cyacleLogo from './assets/brand/cyacle.png'
-import { getCategorizedScenes } from './nav-matching'
-import type { AppNavConfig, AppNavItem, AppScene } from './nav-config'
+import { getCategorizedScenes } from './nav-matching.ts'
+import type { AppNavConfig, AppNavItem, AppScene } from './nav-config.tsx'
 
 const activeStyle =
   'border border-transparent bg-primary/[0.08] text-primary hover:bg-primary/[0.08] hover:text-primary active:bg-primary/[0.1] active:text-primary'
