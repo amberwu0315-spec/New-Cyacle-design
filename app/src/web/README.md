@@ -89,6 +89,18 @@ const webProjectConfig = {
   routes: {
     loginPath: '/uic/login',
   },
+  uploadServices: {
+    file: {
+      publicUploadPath: '/file.FileWeb/FileService/public/upload',
+      publicDownloadPath: '/file.FileWeb/FileService/public/download',
+      privateUploadPath: '/file.FileWeb/FileService/upload',
+      downloadPath: '/file.FileWeb/FileService/download',
+    },
+    document: {
+      uploadPath: '/doc.DocumentWeb/DocumentService/upload',
+      downloadPath: '/doc.DocumentWeb/DocumentService/download',
+    },
+  },
 } satisfies WebProjectConfig
 
 configureWebProjectConfig(webProjectConfig)

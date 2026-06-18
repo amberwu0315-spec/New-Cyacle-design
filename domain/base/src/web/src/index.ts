@@ -8,13 +8,34 @@ export {
   redirectToLoginWithCurrentLocation,
 } from '#/lib/auth-session.ts'
 export {
+  assertWebProjectConfigConfigured,
   configureWebProjectConfig,
   getWebProjectConfig,
 } from '#/lib/web-project-config.ts'
 export type {
   WebProjectConfig,
+  WebProjectDocumentUploadServiceConfig,
+  WebProjectFileUploadServiceConfig,
   WebProjectRoutesConfig,
+  WebProjectUploadServicesConfig,
 } from '#/lib/web-project-config.ts'
+export {
+  AVATAR_ACCEPTED_IMAGE_TYPES,
+  getFileDownloadUrl,
+  getFilePublicDownloadUrl,
+  uploadPrivateFile,
+  uploadPublicFile,
+  validateAvatarImageFile,
+} from '#/lib/upload-services/file-service.ts'
+export type { UploadedFileResource } from '#/lib/upload-services/file-service.ts'
+export {
+  getDocumentDownloadUrl,
+  uploadDocumentFile,
+} from '#/lib/upload-services/document-service.ts'
+export type {
+  UploadDocumentInput,
+  UploadedDocumentResource,
+} from '#/lib/upload-services/document-service.ts'
 export {
   clearSessionCredential,
   getSessionCredential,

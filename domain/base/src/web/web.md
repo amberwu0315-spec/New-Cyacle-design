@@ -862,6 +862,9 @@ pub 只内聚内置功能，跨领域互相 import 前先检查循环依赖。
 
 业务 API 推荐放在 feature-local `queries.ts` 中，使用 React Query 管 server state。
 
+### 配置注入
+app 的项目级配置，优先让 `app/src/web/src/project-config.ts` 通过 base 提供的配置入口注入，domain 侧通过 base 的读取 helper 消费；不要让 feature domain 反向 import `app/src/web`。
+
 ```ts
 // domain/catalog/src/web/src/features/reports/queries.ts
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
