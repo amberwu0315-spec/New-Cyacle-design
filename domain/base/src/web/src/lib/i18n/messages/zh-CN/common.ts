@@ -27,6 +27,7 @@ export const common = {
     account: {
       menu: '账号菜单',
       switchWorkspace: '切换空间',
+      languageSettings: '语言设置',
       logout: '退出登录',
     },
     profileBootstrap: {

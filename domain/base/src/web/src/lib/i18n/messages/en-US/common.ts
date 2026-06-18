@@ -29,6 +29,7 @@ export const common = {
     account: {
       menu: 'Account menu',
       switchWorkspace: 'Switch workspace',
+      languageSettings: 'Language',
       logout: 'Log out',
     },
     profileBootstrap: {

@@ -6,7 +6,6 @@ import { useTranslation } from '#/lib/i18n/index.ts'
 import { cn } from '#/lib/utils.ts'
 
 import { AccountPopover } from '#/components/layouts/app-layout/account-popover.tsx'
-import { LanguageSwitcher } from '#/components/layouts/app-layout/language-switcher.tsx'
 import type {
   AppLayoutAsyncState,
   AppLayoutUserProfile,
@@ -102,7 +101,6 @@ export function AppTopbar({
       </div>
 
       <div className="flex items-center gap-2">
-        <LanguageSwitcher />
         <div className="pl-1">
           <AccountPopover
             hasSessionCredential={hasSessionCredential}
