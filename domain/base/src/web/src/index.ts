@@ -29,15 +29,18 @@ export {
 } from '#/lib/upload-services/file-service.ts'
 export type { UploadedFileResource } from '#/lib/upload-services/file-service.ts'
 export {
+  fetchDocumentDownloadBlob,
   getDocumentDownloadUrl,
   uploadDocumentFile,
 } from '#/lib/upload-services/document-service.ts'
 export type {
+  FetchDocumentDownloadBlobOptions,
   UploadDocumentInput,
   UploadedDocumentResource,
 } from '#/lib/upload-services/document-service.ts'
 export {
   clearSessionCredential,
+  getSessionAuthorizationHeader,
   getSessionCredential,
   getSessionScope,
   getSessionScopeCredential,

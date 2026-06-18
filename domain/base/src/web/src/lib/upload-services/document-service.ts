@@ -1,5 +1,6 @@
 import { vrpcHttpClient } from '#/lib/vrpc-client.ts'
 import { getWebProjectConfig } from '#/lib/web-project-config.ts'
+import { getSessionAuthorizationHeader } from '#/lib/session-cookie.ts'
 
 export interface UploadedDocumentResource {
   id: string
@@ -11,7 +12,11 @@ export interface UploadDocumentInput {
   file: File
   organizationId: string
   folderId?: string | null
-  folderDesc?: string | null
+  fileDesc?: string | null
+}
+
+export interface FetchDocumentDownloadBlobOptions {
+  signal?: AbortSignal
 }
 
 function extractUploadedDocument(payload: unknown): UploadedDocumentResource | null {
@@ -67,9 +72,74 @@ export function getDocumentDownloadUrl(docId?: string | null) {
   return `${getWebProjectConfig().uploadServices.document.downloadPath}?${params.toString()}`
 }
 
+async function readResponseErrorMessage(response: Response) {
+  const bodyText = await response.text().catch(() => '')
+
+  if (!bodyText) {
+    return null
+  }
+
+  try {
+    const payload = JSON.parse(bodyText) as unknown
+
+    if (
+      payload &&
+      typeof payload === 'object' &&
+      'message' in payload &&
+      typeof payload.message === 'string' &&
+      payload.message.trim()
+    ) {
+      return payload.message
+    }
+  } catch {
+    return bodyText
+  }
+
+  return bodyText
+}
+
+export async function fetchDocumentDownloadBlob(
+  docId?: string | null,
+  options: FetchDocumentDownloadBlobOptions = {},
+) {
+  const downloadUrl = getDocumentDownloadUrl(docId)
+
+  if (!downloadUrl) {
+    throw new Error('文档 ID 不能为空。')
+  }
+
+  const headers = new Headers()
+  const authorization = getSessionAuthorizationHeader()
+
+  if (authorization) {
+    headers.set('Authorization', authorization)
+  }
+
+  const response = await fetch(downloadUrl, {
+    cache: 'no-cache',
+    credentials: 'include',
+    headers,
+    signal: options.signal,
+  })
+
+  if (!response.ok) {
+    throw new Error(
+      (await readResponseErrorMessage(response)) || '文档下载失败，请稍后重试。',
+    )
+  }
+
+  const blob = await response.blob()
+
+  if (!blob.size) {
+    throw new Error('文档内容为空。')
+  }
+
+  return blob
+}
+
 export async function uploadDocumentFile({
   file,
-  folderDesc,
+  fileDesc,
   folderId,
   organizationId,
 }: UploadDocumentInput): Promise<UploadedDocumentResource> {
@@ -77,7 +147,7 @@ export async function uploadDocumentFile({
   formData.append('file', file)
   formData.append('organizationId', organizationId)
   formData.append('folderId', folderId ?? '')
-  formData.append('folderDesc', folderDesc ?? '')
+  formData.append('fileDesc', fileDesc ?? '')
 
   const payload = await vrpcHttpClient.request<unknown>({
     path: getWebProjectConfig().uploadServices.document.uploadPath,

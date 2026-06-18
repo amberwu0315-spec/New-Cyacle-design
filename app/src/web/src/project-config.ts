@@ -26,8 +26,8 @@ const webProjectConfig = {
       privateDownloadPath: '/file.FileWeb/FileService/download',
     },
     document: {
-      uploadPath: '/doc.DocumentWeb/DocumentService/upload',
-      downloadPath: '/doc.DocumentWeb/DocumentService/download',
+      uploadPath: '/uic.DocumentWeb/DocumentService/upload',
+      downloadPath: '/uic.DocumentWeb/DocumentService/download',
     },
   },
 } satisfies WebProjectConfig
