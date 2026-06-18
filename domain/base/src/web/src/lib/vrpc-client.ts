@@ -13,8 +13,7 @@ import { toast } from 'sonner'
 import { redirectToLoginWithCurrentLocation } from '#/lib/auth-session.ts'
 import { runtimeConfig } from '#/lib/runtime-config.ts'
 import {
-  getSessionCredential,
-  getSessionScopeCredential,
+  getSessionAuthorizationHeader,
 } from '#/lib/session-cookie.ts'
 
 const VRPC_STATUS_HEADER = 'vrpc-status'
@@ -91,19 +90,14 @@ function isAuthenticationError(error: unknown) {
 }
 
 function attachSessionAuthorization(context: { init: RequestInit }) {
-  const sessionCredential = getSessionCredential()
+  const authorization = getSessionAuthorizationHeader()
 
-  if (!sessionCredential) {
+  if (!authorization) {
     return
   }
 
-  const authorizationParts = [
-    `session ${sessionCredential}`,
-    `scope ${getSessionScopeCredential()}`,
-  ]
-
   const headers = new Headers(context.init.headers)
-  headers.set('Authorization', authorizationParts.join(', '))
+  headers.set('Authorization', authorization)
   context.init.headers = headers
 }
 

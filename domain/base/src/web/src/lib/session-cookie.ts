@@ -62,6 +62,19 @@ export function getSessionScopeCredential() {
   return scope || SESSION_SCOPE_CREDENTIAL_EMPTY
 }
 
+export function getSessionAuthorizationHeader() {
+  const sessionCredential = getSessionCredential()
+
+  if (!sessionCredential) {
+    return null
+  }
+
+  return [
+    `session ${sessionCredential}`,
+    `scope ${getSessionScopeCredential()}`,
+  ].join(', ')
+}
+
 export function setSessionCredential(sessionId: string) {
   const domain = resolveSessionCookieDomain()
   const secure = getCookieSecureOption()
