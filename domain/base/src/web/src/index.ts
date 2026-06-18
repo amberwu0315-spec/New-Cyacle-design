@@ -92,6 +92,7 @@ export type {
 } from '#/components/layouts/module-layout/index.ts';
 export { BaseProviders } from '#/base-providers.tsx';
 export * from '#/components/assistant-workbench/index.ts';
+export * from '#/components/common/document-preview/index.ts';
 export {
   collectWebDomainCapabilities,
   defineWebDomain,

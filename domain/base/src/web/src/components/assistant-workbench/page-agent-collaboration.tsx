@@ -51,7 +51,6 @@ const ENTRY_DRAG_ZONE_SIZE = 600
 const ENTRY_LONG_PRESS_DELAY = 160
 const ENTRY_MOVE_TOLERANCE = 6
 const ENTRY_POSITION_STORAGE_KEY = 'agent-collaboration-entry-position'
-const PANEL_OPEN_STORAGE_KEY = 'agent-collaboration-panel-open'
 
 interface EntryPosition {
   right: number
@@ -194,30 +193,6 @@ function writeStoredEntryPosition(position: EntryPosition) {
   }
 }
 
-function readStoredPanelOpen() {
-  if (typeof window === 'undefined') {
-    return false
-  }
-
-  try {
-    return window.localStorage.getItem(PANEL_OPEN_STORAGE_KEY) === 'true'
-  } catch {
-    return false
-  }
-}
-
-function writeStoredPanelOpen(open: boolean) {
-  if (typeof window === 'undefined') {
-    return
-  }
-
-  try {
-    window.localStorage.setItem(PANEL_OPEN_STORAGE_KEY, String(open))
-  } catch {
-    // localStorage can be unavailable in restricted browser contexts.
-  }
-}
-
 function buildLaunchAreaFromTarget(
   target: AgentCollaborationTarget,
 ): AssistantLaunchArea {
@@ -276,6 +251,7 @@ function DefaultAgentCollaborationPanel({
     [launchArea.anchors],
   )
   const session = useAssistantAgentSession({
+    enabled: snapshot.open,
     scopeId: `agent-collaboration:${defaultTarget.id}`,
     activeTarget: snapshot.activeTarget ?? defaultTarget,
     launchArea,
@@ -521,8 +497,6 @@ export function AgentCollaborationRoot() {
   const entryDragCleanupRef = React.useRef<(() => void) | null>(null)
   const suppressEntryClickRef = React.useRef(false)
   const suppressEntryClickTimeoutRef = React.useRef<number | null>(null)
-  const [panelOpenPreferenceHydrated, setPanelOpenPreferenceHydrated] =
-    React.useState(false)
   const entryVisible = Boolean(
     config?.enabled && config.showEntry && !assistantOpen,
   )
@@ -545,41 +519,6 @@ export function AgentCollaborationRoot() {
   React.useEffect(() => {
     agentCollaborationActions.hydratePanelPlacement()
   }, [])
-
-  React.useEffect(() => {
-    if (!config?.enabled || panelOpenPreferenceHydrated) {
-      return
-    }
-
-    setPanelOpenPreferenceHydrated(true)
-
-    if (!readStoredPanelOpen()) {
-      return
-    }
-
-    if (config.openAssistant) {
-      config.openAssistant()
-      return
-    }
-
-    if (config.defaultTarget) {
-      agentCollaborationActions.openTarget(config.defaultTarget, {
-        renderMode: 'embedded',
-      })
-      return
-    }
-
-    assistantWorkbenchActions.setRenderMode('embedded')
-    assistantWorkbenchActions.open()
-  }, [config, panelOpenPreferenceHydrated])
-
-  React.useEffect(() => {
-    if (!config?.enabled || !panelOpenPreferenceHydrated) {
-      return
-    }
-
-    writeStoredPanelOpen(assistantOpen)
-  }, [assistantOpen, config?.enabled, panelOpenPreferenceHydrated])
 
   const suppressNextEntryClick = React.useCallback(() => {
     suppressEntryClickRef.current = true
@@ -825,7 +764,7 @@ export function AgentCollaborationRoot() {
   }, [])
 
   const panelContent = React.useMemo(() => {
-    if (!config?.enabled) {
+    if (!config?.enabled || !assistantOpen) {
       return null
     }
 
@@ -840,7 +779,7 @@ export function AgentCollaborationRoot() {
     return (
       <DefaultAgentCollaborationPanel defaultTarget={config.defaultTarget} />
     )
-  }, [config, snapshot])
+  }, [assistantOpen, config, snapshot])
 
   const panelLayout = React.useMemo(
     () => (config ? resolveAgentCollaborationPanelLayout(config) : null),

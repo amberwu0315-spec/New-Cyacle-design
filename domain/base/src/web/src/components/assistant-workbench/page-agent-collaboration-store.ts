@@ -102,6 +102,9 @@ const registryStore = createExternalStore(initialSnapshot)
 const panelPlacementStore = createExternalStore<AgentCollaborationPanelPlacement>(
   readStoredPanelPlacement(),
 )
+const layoutPanelSlotElementStore = createExternalStore<HTMLDivElement | null>(
+  null,
+)
 const dockInteractionActionVersionStore = createExternalStore(0)
 let pendingAssistantCloseTimer: ReturnType<typeof setTimeout> | null = null
 let pendingUnregisterOwnerId: string | null = null
@@ -273,6 +276,16 @@ export function subscribeCurrentAgentCollaborationPage(listener: () => void) {
   return registryStore.subscribe(listener)
 }
 
+export function getAgentCollaborationLayoutPanelSlotElement() {
+  return layoutPanelSlotElementStore.getSnapshot()
+}
+
+export function subscribeAgentCollaborationLayoutPanelSlotElement(
+  listener: () => void,
+) {
+  return layoutPanelSlotElementStore.subscribe(listener)
+}
+
 export const agentCollaborationActions = {
   registerPage(ownerId: string) {
     cancelPendingAssistantClose()
@@ -394,6 +407,10 @@ export const agentCollaborationActions = {
     panelPlacementStore.setState(readStoredPanelPlacement())
   },
 
+  setLayoutPanelSlotElement(element: HTMLDivElement | null) {
+    layoutPanelSlotElementStore.setState(element)
+  },
+
   setPanelPlacement(placement: AgentCollaborationPanelPlacement) {
     const currentPlacement = panelPlacementStore.getSnapshot()
     if (currentPlacement === placement) {
@@ -491,6 +508,14 @@ export function useCurrentAgentCollaborationPageConfig() {
   )
 }
 
+export function useAgentCollaborationLayoutPanelSlotElement() {
+  return useSyncExternalStore(
+    subscribeAgentCollaborationLayoutPanelSlotElement,
+    getAgentCollaborationLayoutPanelSlotElement,
+    getAgentCollaborationLayoutPanelSlotElement,
+  )
+}
+
 export function useAgentCollaborationPage(
   config: AgentCollaborationPageConfig | null,
   options?: UseAgentCollaborationPageOptions,
@@ -504,9 +529,10 @@ export function useAgentCollaborationPage(
     options ?? {},
     'panelSlotElement',
   )
+  const layoutPanelSlotElement = useAgentCollaborationLayoutPanelSlotElement()
   const panelSlotElement = hasExternalPanelSlot
     ? options?.panelSlotElement ?? null
-    : localPanelSlotElement
+    : layoutPanelSlotElement ?? localPanelSlotElement
 
   openAssistantRef.current = config?.openAssistant
   renderPanelRef.current = config?.renderPanel
@@ -554,7 +580,11 @@ export function useAgentCollaborationPage(
   }, [normalizedConfig, ownerId])
 
   const panelSlot = React.useMemo(() => {
-    if (hasExternalPanelSlot || !normalizedConfig?.enabled) {
+    if (
+      hasExternalPanelSlot ||
+      layoutPanelSlotElement ||
+      !normalizedConfig?.enabled
+    ) {
       return null
     }
 
@@ -564,6 +594,7 @@ export function useAgentCollaborationPage(
     })
   }, [
     hasExternalPanelSlot,
+    layoutPanelSlotElement,
     normalizedConfig?.enabled,
     options?.panelSlotClassName,
   ])

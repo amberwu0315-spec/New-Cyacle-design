@@ -461,6 +461,7 @@ function isAssistantStreamDebugEnabled() {
 }
 
 export interface UseAssistantAgentSessionOptions {
+  enabled?: boolean
   scopeId: string
   activeTarget: AssistantWorkbenchTarget | null
   launchArea?: AssistantLaunchArea | null
@@ -489,6 +490,7 @@ export function useAssistantAgentSession(
   const assistantMessages = i18nMessages.assistantWorkbench
   const queryClient = useQueryClient()
   const assistantUserContext = useAssistantAgentUserContext()
+  const sessionEnabled = options.enabled !== false
   const [currentThreadId, setCurrentThreadId] = React.useState<string | null>(
     null,
   )
@@ -586,6 +588,10 @@ export function useAssistantAgentSession(
   )
 
   const requestContext = React.useMemo(() => {
+    if (!sessionEnabled) {
+      return null
+    }
+
     const operatorId =
       options.operatorId?.trim() || assistantUserContext.operatorId?.trim()
 
@@ -603,6 +609,7 @@ export function useAssistantAgentSession(
     assistantUserContext.operatorId,
     assistantUserContext.organizationId,
     assistantUserContext.workspaceId,
+    sessionEnabled,
     options.organizationId,
     options.operatorId,
     options.workspaceId,
@@ -760,7 +767,7 @@ export function useAssistantAgentSession(
     ],
     queryFn: () =>
       assistantAgentService.getThreads(requestContext!, resolvedThreadTags),
-    enabled: Boolean(requestContext),
+    enabled: Boolean(sessionEnabled && requestContext),
   })
 
   const defaultThreadId = React.useMemo(
@@ -779,7 +786,7 @@ export function useAssistantAgentSession(
       assistantAgentService.getMessages(requestContext!, currentThreadId!, {
         thinkingTitle: assistantMessages.message.thinkingProcess,
       }),
-    enabled: Boolean(requestContext && currentThreadId),
+    enabled: Boolean(sessionEnabled && requestContext && currentThreadId),
   })
 
   const interactionsQuery = useQuery({
@@ -797,7 +804,7 @@ export function useAssistantAgentSession(
           defaultTitle: assistantMessages.errors.interactionTitle,
         },
       ),
-    enabled: Boolean(requestContext && currentThreadId),
+    enabled: Boolean(sessionEnabled && requestContext && currentThreadId),
   })
 
   React.useEffect(() => {
