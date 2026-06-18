@@ -49,6 +49,7 @@ export {
 } from '#/lib/session-cookie.ts'
 export {
   clearWorkspaceSelectionSideEffects,
+  getRememberedWorkspaceSelection,
   selectWorkspaceId,
 } from '#/lib/workspace-session.ts'
 export type { WorkspaceSelectionItem } from '#/lib/workspace-session.ts'

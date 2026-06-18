@@ -16,7 +16,10 @@ import { Button } from '#/components/ui/button.tsx'
 import { Spinner } from '#/components/ui/spinner.tsx'
 import { useTranslation } from '#/lib/i18n/index.ts'
 import { getSessionScope } from '#/lib/session-cookie.ts'
-import { selectWorkspaceId } from '#/lib/workspace-session.ts'
+import {
+  getRememberedWorkspaceSelection,
+  selectWorkspaceId,
+} from '#/lib/workspace-session.ts'
 import type { WorkspaceSelectionItem } from '#/lib/workspace-session.ts'
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state'
@@ -185,6 +188,27 @@ export function AppLayout({
     hasSessionCredential &&
     isWorkspaceSuccess &&
     (!selectedWorkspaceScope || !isSelectedWorkspaceValid)
+  const rememberedWorkspaceSelection = React.useMemo(() => {
+    if (!availableWorkspaces?.length) {
+      return null
+    }
+
+    return getRememberedWorkspaceSelection(availableWorkspaces)
+  }, [availableWorkspaces])
+  const autoSelectedWorkspace = React.useMemo(() => {
+    if (rememberedWorkspaceSelection) {
+      return rememberedWorkspaceSelection
+    }
+
+    if (availableWorkspaces?.length === 1) {
+      return availableWorkspaces[0]
+    }
+
+    return null
+  }, [availableWorkspaces, rememberedWorkspaceSelection])
+  const shouldOpenWorkspaceSelectionDialog =
+    shouldRequireWorkspaceSelection &&
+    (workspaceSwitchFailed || !autoSelectedWorkspace)
   const workspaceSelectionOptions = React.useMemo(() => {
     if (availableWorkspaces?.length) {
       return availableWorkspaces
@@ -293,17 +317,14 @@ export function AppLayout({
   }, [refetchProfile])
 
   React.useEffect(() => {
-    if (
-      !shouldRequireWorkspaceSelection ||
-      availableWorkspaces?.length !== 1
-    ) {
+    if (!shouldRequireWorkspaceSelection || !autoSelectedWorkspace) {
       return
     }
 
-    const [workspace] = availableWorkspaces
+    const workspace = autoSelectedWorkspace
     let ignore = false
 
-    async function selectSingleWorkspace() {
+    async function selectAutoWorkspace() {
       setWorkspaceSwitchFailed(false)
       setSwitchingWorkspaceId(workspace.id)
 
@@ -327,12 +348,12 @@ export function AppLayout({
       }
     }
 
-    void selectSingleWorkspace()
+    void selectAutoWorkspace()
 
     return () => {
       ignore = true
     }
-  }, [availableWorkspaces, shouldRequireWorkspaceSelection])
+  }, [autoSelectedWorkspace, shouldRequireWorkspaceSelection])
 
   const sidebarState: SidebarState = isSidebarOpen ? 'expanded' : 'collapsed'
   const activeScene = React.useMemo(
@@ -387,7 +408,7 @@ export function AppLayout({
       </div>
 
       <WorkspaceSelectionDialog
-        open={shouldRequireWorkspaceSelection}
+        open={shouldOpenWorkspaceSelectionDialog}
         currentWorkspaceScope={selectedWorkspaceScope}
         workspaces={workspaceSelectionOptions}
         isLoading={
@@ -397,6 +418,7 @@ export function AppLayout({
         }
         isError={isWorkspaceError}
         isSwitchError={workspaceSwitchFailed}
+        onLogout={onLogout}
         onRetry={handleWorkspaceRetry}
         onSelect={handleWorkspaceSelect}
         switchingWorkspaceId={switchingWorkspaceId}

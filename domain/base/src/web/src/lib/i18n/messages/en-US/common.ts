@@ -46,6 +46,7 @@ export const common = {
     emptyTitle: 'No available workspaces',
     emptyDescription: 'This account does not have access to a workspace. Contact an administrator.',
     retry: 'Reload',
+    logout: 'Log out',
     current: 'Current workspace',
     personal: 'Personal workspace',
     organization: 'Organization workspace',

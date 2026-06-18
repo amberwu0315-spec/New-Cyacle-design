@@ -3,6 +3,7 @@ import { Outlet, useNavigate } from '@tanstack/react-router'
 import {
   AppLayout as BaseAppLayout,
   clearAuthSessionSideEffects,
+  clearWorkspaceSelectionSideEffects,
   createAppNavConfig,
   getSessionCredential,
   useLanguageStore,
@@ -31,6 +32,7 @@ export function AppLayout() {
 
   const handleLogout = React.useCallback(() => {
     clearAuthSessionSideEffects()
+    clearWorkspaceSelectionSideEffects()
     void navigate({ to: '/uic/login' })
   }, [navigate])
 
