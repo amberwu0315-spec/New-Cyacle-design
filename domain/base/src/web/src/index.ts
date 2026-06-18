@@ -16,16 +16,22 @@ export type {
   WebProjectRoutesConfig,
 } from '#/lib/web-project-config.ts'
 export {
+  SESSION_WORKSPACE_ID_COOKIE_KEY,
   clearSessionCredential,
   getSessionCredential,
   getSessionScope,
   getSessionScopeCredential,
+  getSessionWorkspaceId,
   setSessionCredential,
   setSessionScope,
+  setSessionWorkspaceId,
 } from '#/lib/session-cookie.ts'
 export {
   clearWorkspaceSelectionSideEffects,
+  fetchAvailableWorkspaces,
+  prepareWorkspaceSelectionAfterAuth,
   selectWorkspaceId,
+  workspaceKeys,
 } from '#/lib/workspace-session.ts'
 export type { WorkspaceSelectionItem } from '#/lib/workspace-session.ts'
 export {
@@ -60,9 +66,16 @@ export type {
 } from '#/components/layouts/app-layout/index.ts'
 export { WorkspaceSelectionDialog } from '#/components/layouts/app-layout/workspace-selection-dialog.tsx'
 export { LanguageMenu as LoginLanguageMenu } from '#/components/layouts/app-layout/language-switcher.tsx'
-export { ModuleLayout } from '#/components/layouts/module-layout/index.ts'
-export type { ModuleLayoutProps } from '#/components/layouts/module-layout/index.ts'
+export {
+  ModuleLayout,
+  ModuleLayout as DomainBaseLayout,
+} from '#/components/layouts/module-layout/index.ts'
+export type {
+  ModuleLayoutProps,
+  ModuleLayoutProps as DomainBaseLayoutProps,
+} from '#/components/layouts/module-layout/index.ts'
 export { BaseProviders } from '#/base-providers.tsx'
+export * from '#/components/assistant-workbench/index.ts'
 export {
   collectWebDomainCapabilities,
   defineWebDomain,

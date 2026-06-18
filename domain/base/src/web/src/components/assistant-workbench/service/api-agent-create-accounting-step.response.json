@@ -1,0 +1,536 @@
+[
+    {
+        "runId": "73f2d8a6-143d-4d4c-96d8-012a1c19f6a8",
+        "step": "createModelSkeleton",
+        "items": [
+            {
+                "id": "da73e98d-4bca-4351-ba9a-c0e16a796dad",
+                "data": "{\"modelNodeName\": {\"en\": \"Raw material acquisition stage\", \"zh\": \"原材料获取阶段\"}, \"modelNodeType\": \"phases\", \"parentNodeName\": \"\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "068399c7-0b0e-41ea-a40e-76124c6fb184",
+                "data": "{\"modelNodeName\": {\"en\": \"Raw material production\", \"zh\": \"原材料生产\"}, \"modelNodeType\": \"modules\", \"parentNodeName\": \"原材料获取阶段\"}",
+                "itemIndex": 1,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "4c793988-f594-458f-9173-2b62c26056a3",
+                "data": "{\"modelNodeName\": {\"en\": \"PP granule production\", \"zh\": \"PP塑料颗粒的生产\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料生产\"}",
+                "itemIndex": 2,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "3a02e408-30ee-48f2-854c-0fb35b27b79f",
+                "data": "{\"modelNodeName\": {\"en\": \"Pen tube PP production\", \"zh\": \"笔芯管PP塑料的生产\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料生产\"}",
+                "itemIndex": 3,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "7eb2bf4a-39e9-47ed-b9a4-58812a226337",
+                "data": "{\"modelNodeName\": {\"en\": \"Stainless steel sheet production\", \"zh\": \"不锈钢板材的生产\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料生产\"}",
+                "itemIndex": 4,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "03788bff-129b-4f17-9f61-923d2217251a",
+                "data": "{\"modelNodeName\": {\"en\": \"Stainless steel wire production\", \"zh\": \"不锈钢丝的生产\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料生产\"}",
+                "itemIndex": 5,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "95170bed-d543-426a-9729-da4e96e4f209",
+                "data": "{\"modelNodeName\": {\"en\": \"Water-based ink production\", \"zh\": \"水性墨水的生产\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料生产\"}",
+                "itemIndex": 6,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "5a8cfaa3-d393-4d7e-be2f-483bd3deb73d",
+                "data": "{\"modelNodeName\": {\"en\": \"Tungsten carbide ball production\", \"zh\": \"碳化钨球珠的生产\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料生产\"}",
+                "itemIndex": 7,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "ae7d70c0-33c0-4d5e-b9be-be2f2bcbf4f8",
+                "data": "{\"modelNodeName\": {\"en\": \"Rubber seal production\", \"zh\": \"橡胶密封圈的生产\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料生产\"}",
+                "itemIndex": 8,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "6677112d-dff9-4c5e-b7eb-cfdb030cdac9",
+                "data": "{\"modelNodeName\": {\"en\": \"Color masterbatch production\", \"zh\": \"色母粒的生产\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料生产\"}",
+                "itemIndex": 9,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "df4a73d1-f449-4911-a9dc-ab0543245617",
+                "data": "{\"modelNodeName\": {\"en\": \"Adhesive production\", \"zh\": \"胶粘剂的生产\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料生产\"}",
+                "itemIndex": 10,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "ba9867c7-4957-4eea-9e5d-8241998fb576",
+                "data": "{\"modelNodeName\": {\"en\": \"Label PET film production\", \"zh\": \"标签PET薄膜的生产\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料生产\"}",
+                "itemIndex": 11,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "35089ced-6631-4873-abe8-c929ffbebca0",
+                "data": "{\"modelNodeName\": {\"en\": \"Clip stainless steel sheet production\", \"zh\": \"笔夹不锈钢片的生产\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料生产\"}",
+                "itemIndex": 12,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "e175cb20-d0c9-4525-9020-a010478f70af",
+                "data": "{\"modelNodeName\": {\"en\": \"Raw material transport\", \"zh\": \"原材料运输\"}, \"modelNodeType\": \"modules\", \"parentNodeName\": \"原材料获取阶段\"}",
+                "itemIndex": 13,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "f24a1014-9f5b-4931-ac2a-97f1cca3589a",
+                "data": "{\"modelNodeName\": {\"en\": \"Transport of PP granules\", \"zh\": \"PP塑料颗粒的运输\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料运输\"}",
+                "itemIndex": 14,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "5a565b1d-8084-4011-9729-7031e21f9a27",
+                "data": "{\"modelNodeName\": {\"en\": \"Transport of pen tube PP\", \"zh\": \"笔芯管PP塑料的运输\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料运输\"}",
+                "itemIndex": 15,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "cf350cdb-2019-4bba-aef4-7ad0fe3f5bfd",
+                "data": "{\"modelNodeName\": {\"en\": \"Transport of stainless steel sheet\", \"zh\": \"不锈钢板材的运输\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料运输\"}",
+                "itemIndex": 16,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "efca5321-90e3-48fe-850f-9279edc8c468",
+                "data": "{\"modelNodeName\": {\"en\": \"Transport of stainless steel wire\", \"zh\": \"不锈钢丝的运输\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料运输\"}",
+                "itemIndex": 17,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "38122abf-40e9-4fcd-b6c1-f4dfed8539e9",
+                "data": "{\"modelNodeName\": {\"en\": \"Transport of water-based ink\", \"zh\": \"水性墨水的运输\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料运输\"}",
+                "itemIndex": 18,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "12cca143-f763-49c5-a531-a80d1e7acbcb",
+                "data": "{\"modelNodeName\": {\"en\": \"Transport of tungsten carbide ball\", \"zh\": \"碳化钨球珠的运输\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料运输\"}",
+                "itemIndex": 19,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "e4462d6c-377b-4d58-b4e3-b872e014969e",
+                "data": "{\"modelNodeName\": {\"en\": \"Transport of rubber seal\", \"zh\": \"橡胶密封圈的运输\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料运输\"}",
+                "itemIndex": 20,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "f1a5cd22-4671-494d-a93e-7c5e9f0e5ba8",
+                "data": "{\"modelNodeName\": {\"en\": \"Transport of color masterbatch\", \"zh\": \"色母粒的运输\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料运输\"}",
+                "itemIndex": 21,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "8c5ac6b9-fd80-4a10-a918-14b125db4a43",
+                "data": "{\"modelNodeName\": {\"en\": \"Transport of adhesive\", \"zh\": \"胶粘剂的运输\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料运输\"}",
+                "itemIndex": 22,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "ed33cbbb-b70e-4ccf-84aa-75bb1b235e25",
+                "data": "{\"modelNodeName\": {\"en\": \"Transport of label PET film\", \"zh\": \"标签PET薄膜的运输\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料运输\"}",
+                "itemIndex": 23,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "396c3dd6-753f-4151-97dd-f86503cfc74f",
+                "data": "{\"modelNodeName\": {\"en\": \"Transport of clip stainless steel sheet\", \"zh\": \"笔夹不锈钢片的运输\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"原材料运输\"}",
+                "itemIndex": 24,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "21eea4e1-4bd0-4798-acfc-7252d18bff13",
+                "data": "{\"modelNodeName\": {\"en\": \"Packaging material production\", \"zh\": \"包装材料生产\"}, \"modelNodeType\": \"modules\", \"parentNodeName\": \"原材料获取阶段\"}",
+                "itemIndex": 25,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "aa4115f7-f20c-466a-b0fb-24bb96a50c91",
+                "data": "{\"modelNodeName\": {\"en\": \"Paper box production\", \"zh\": \"纸盒包装的生产\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"包装材料生产\"}",
+                "itemIndex": 26,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "c6ccdb54-4490-4a50-80c0-3d47011b038d",
+                "data": "{\"modelNodeName\": {\"en\": \"PE bag production\", \"zh\": \"PE塑料袋的生产\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"包装材料生产\"}",
+                "itemIndex": 27,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "1da00044-d6ab-43a6-a7e3-fed2e513211a",
+                "data": "{\"modelNodeName\": {\"en\": \"Packaging material transport\", \"zh\": \"包装材料运输\"}, \"modelNodeType\": \"modules\", \"parentNodeName\": \"原材料获取阶段\"}",
+                "itemIndex": 28,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "0f9b61a7-bfa8-4d06-a703-bb55ef29b78b",
+                "data": "{\"modelNodeName\": {\"en\": \"Transport of paper box\", \"zh\": \"纸盒包装的运输\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"包装材料运输\"}",
+                "itemIndex": 29,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "5b316f29-1606-4390-84a3-e9e509ab5782",
+                "data": "{\"modelNodeName\": {\"en\": \"Transport of PE bag\", \"zh\": \"PE塑料袋的运输\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"包装材料运输\"}",
+                "itemIndex": 30,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "9213de43-12fe-408a-b23e-30a494882332",
+                "data": "{\"modelNodeName\": {\"en\": \"Fuel production\", \"zh\": \"燃料生产\"}, \"modelNodeType\": \"modules\", \"parentNodeName\": \"原材料获取阶段\"}",
+                "itemIndex": 31,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "0a5613c1-f219-4e73-98af-15353009745e",
+                "data": "{\"modelNodeName\": {\"en\": \"Manufacturing stage\", \"zh\": \"生产制造阶段\"}, \"modelNodeType\": \"phases\", \"parentNodeName\": \"\"}",
+                "itemIndex": 32,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "1ca34cc3-40a3-471e-a2e1-aeb8c442ed34",
+                "data": "{\"modelNodeName\": {\"en\": \"Energy consumption\", \"zh\": \"能源消耗\"}, \"modelNodeType\": \"modules\", \"parentNodeName\": \"生产制造阶段\"}",
+                "itemIndex": 33,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "a9ad99e4-e4e3-48ef-b555-0eb94c543e92",
+                "data": "{\"modelNodeName\": {\"en\": \"Electricity for injection molding and assembly\", \"zh\": \"注塑和组装用电\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"能源消耗\"}",
+                "itemIndex": 34,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "1b564a7d-1b60-43be-9521-c45bc5dbd7e2",
+                "data": "{\"modelNodeName\": {\"en\": \"Production waste treatment\", \"zh\": \"生产废弃物处置\"}, \"modelNodeType\": \"modules\", \"parentNodeName\": \"生产制造阶段\"}",
+                "itemIndex": 35,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            },
+            {
+                "id": "2ca6c4ba-4588-4405-8ea8-6fe07f2a63c9",
+                "data": "{\"modelNodeName\": {\"en\": \"Plastic waste treatment\", \"zh\": \"塑料边角料处置\"}, \"modelNodeType\": \"unitProcesses\", \"parentNodeName\": \"生产废弃物处置\"}",
+                "itemIndex": 36,
+                "createdAt": "2026-06-02T16:32:14.067985+08:00"
+            }
+        ]
+    },
+    {
+        "runId": "73f2d8a6-143d-4d4c-96d8-012a1c19f6a8",
+        "step": "factorMapping",
+        "items": [
+            {
+                "id": "dbd38c20-69e3-4d5d-bcc1-3faf69dcd886",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[CN] polypropylene production, granulate | polypropylene, granulate\", \"zh\": \"[CN] 聚丙烯生产，颗粒 | 聚丙烯，颗粒\"}, \"databaseId\": \"ecoinvent_3_12\"}, \"unitProcessName\": \"PP塑料颗粒的生产\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:32:43.183995+08:00"
+            },
+            {
+                "id": "0907689d-4208-485a-a0e5-b12acd748c14",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[CN] polypropylene production, granulate | polypropylene, granulate\", \"zh\": \"[CN] 聚丙烯生产，颗粒 | 聚丙烯，颗粒\"}, \"databaseId\": \"ecoinvent_3_12\"}, \"unitProcessName\": \"笔芯管PP塑料的生产\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:32:44.066758+08:00"
+            },
+            {
+                "id": "8acc0c25-04ea-4bc6-a16f-a232740200cd",
+                "data": "{\"factor\": {\"name\": {\"en\": \"Polyester color masterbatch dyed plush - Polyester color masterbatch dyed plush products\", \"zh\": \"涤纶色母粒着色绒-涤纶色母粒着色绒类产品\"}, \"databaseId\": \"cpcd_2025_09\"}, \"unitProcessName\": \"色母粒的生产\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:32:47.124257+08:00"
+            },
+            {
+                "id": "323f0321-ecea-41db-957f-447451189ab5",
+                "data": "{\"factor\": {\"name\": {\"en\": \"water-based paint\", \"zh\": \"水性涂料\"}, \"databaseId\": \"cpcd_2025_09\"}, \"unitProcessName\": \"水性墨水的生产\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:32:48.078148+08:00"
+            },
+            {
+                "id": "6970c13d-efcc-4d44-ad20-699114a0c2d4",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RER] synthetic rubber production | synthetic rubber\", \"zh\": \"[RER] synthetic rubber production | synthetic rubber\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"橡胶密封圈的生产\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:32:48.269466+08:00"
+            },
+            {
+                "id": "bdd2cb9e-cb63-4321-8888-c9a51c6f8d1a",
+                "data": "{\"factor\": {\"name\": {\"en\": \"Steel Products - Stainless Steel Wire\", \"zh\": \"钢铁产品-不锈钢丝\"}, \"databaseId\": \"cpcd_2025_09\"}, \"unitProcessName\": \"不锈钢丝的生产\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:32:52.84859+08:00"
+            },
+            {
+                "id": "8e45abdb-c887-4541-ac12-48510b84a4d2",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] selective coating, stainless steel sheet, black chrome | selective coat, stainless steel sheet, black chrome\", \"zh\": \"[RoW] selective coating, stainless steel sheet, black chrome | selective coat, stainless steel sheet, black chrome\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"不锈钢板材的生产\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:32:53.245491+08:00"
+            },
+            {
+                "id": "17361905-dab1-46e2-968b-f58f59aac33d",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[GLO] market for tungsten carbide powder | tungsten carbide powder\", \"zh\": \"[GLO] market for tungsten carbide powder | tungsten carbide powder\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"碳化钨球珠的生产\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:32:53.810445+08:00"
+            },
+            {
+                "id": "9f97faa3-e438-47b1-8ceb-4d8c6c695d36",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[DE] adhesive production, for metal | adhesive, for metal\", \"zh\": \"[DE] adhesive production, for metal | adhesive, for metal\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"胶粘剂的生产\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:12.30788+08:00"
+            },
+            {
+                "id": "f174a768-40c7-4195-81c5-8255d6abeedb",
+                "data": "{\"factor\": {\"name\": {\"en\": \"PET Film\", \"zh\": \"PET 薄膜\"}, \"databaseId\": \"cpcd_2025_09\"}, \"unitProcessName\": \"标签PET薄膜的生产\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:13.485262+08:00"
+            },
+            {
+                "id": "be207a7a-a2c9-4465-b049-a9a726f694c4",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] transport, freight, lorry, all sizes, EURO5 to generic market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\", \"zh\": \"[RoW] transport, freight, lorry, all sizes, EURO5 to generic market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"PP塑料颗粒的运输\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:16.48368+08:00"
+            },
+            {
+                "id": "d72a3abd-d964-43cd-bedc-714c21811db6",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\", \"zh\": \"[RoW] market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"笔芯管PP塑料的运输\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:18.305668+08:00"
+            },
+            {
+                "id": "36c6a206-a1b8-4f5c-97c5-2febb802d6c1",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] transport, freight, lorry, all sizes, EURO5 to generic market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\", \"zh\": \"[RoW] transport, freight, lorry, all sizes, EURO5 to generic market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"不锈钢丝的运输\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:19.241574+08:00"
+            },
+            {
+                "id": "dabcefe2-e2a6-4fc9-9214-3f2fc08b326f",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] selective coating, stainless steel sheet, black chrome | selective coat, stainless steel sheet, black chrome\", \"zh\": \"[RoW] selective coating, stainless steel sheet, black chrome | selective coat, stainless steel sheet, black chrome\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"笔夹不锈钢片的生产\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:22.679654+08:00"
+            },
+            {
+                "id": "c186926f-fc65-4636-a14f-cc899d3b1c92",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\", \"zh\": \"[RoW] market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"不锈钢板材的运输\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:22.98268+08:00"
+            },
+            {
+                "id": "87579cfc-2e25-411b-90fe-61c0758a0582",
+                "data": "{\"factor\": {\"name\": {\"en\": \"\", \"zh\": \"\"}, \"databaseId\": \"\"}, \"unitProcessName\": \"纸盒包装的生产\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:30.304105+08:00"
+            },
+            {
+                "id": "19fc687c-b85f-4657-91b5-87137b7b6964",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\", \"zh\": \"[RoW] market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"水性墨水的运输\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:31.557282+08:00"
+            },
+            {
+                "id": "bd5a8a49-c6f0-4f2b-be62-1e7354a4b318",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] transport, freight, lorry, all sizes, EURO5 to generic market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\", \"zh\": \"[RoW] transport, freight, lorry, all sizes, EURO5 to generic market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"碳化钨球珠的运输\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:34.124767+08:00"
+            },
+            {
+                "id": "3e74e1d8-3f36-47b5-bc88-84f2fb0201eb",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\", \"zh\": \"[RoW] market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"色母粒的运输\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:43.936296+08:00"
+            },
+            {
+                "id": "64cf3bb9-abd5-4a10-b9ea-26a5f3ca309c",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\", \"zh\": \"[RoW] market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"橡胶密封圈的运输\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:44.625896+08:00"
+            },
+            {
+                "id": "04d6afb8-8a1f-4fd1-a09a-81433b37e526",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\", \"zh\": \"[RoW] market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"标签PET薄膜的运输\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:45.102238+08:00"
+            },
+            {
+                "id": "6e91055b-d280-46ff-b67a-ee3a906b4ac4",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] transport, freight, lorry, all sizes, EURO5 to generic market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\", \"zh\": \"[RoW] transport, freight, lorry, all sizes, EURO5 to generic market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"笔夹不锈钢片的运输\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:50.181555+08:00"
+            },
+            {
+                "id": "9fe17b7b-e8dd-47ee-9bbc-67ffb3687e9d",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] transport, freight, lorry, all sizes, EURO5 to generic market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\", \"zh\": \"[RoW] transport, freight, lorry, all sizes, EURO5 to generic market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"纸盒包装的运输\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:52.373067+08:00"
+            },
+            {
+                "id": "89ed8b95-2574-4378-9f11-07936cfe2b88",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] transport, freight, lorry, all sizes, EURO5 to generic market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\", \"zh\": \"[RoW] transport, freight, lorry, all sizes, EURO5 to generic market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"胶粘剂的运输\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:52.427565+08:00"
+            },
+            {
+                "id": "2d974dd1-982e-4c09-a11e-5568a74d9793",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] transport, freight, lorry, all sizes, EURO5 to generic market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\", \"zh\": \"[RoW] transport, freight, lorry, all sizes, EURO5 to generic market for transport, freight, lorry, unspecified | transport, freight, lorry, unspecified\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"PE塑料袋的运输\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:58.115986+08:00"
+            },
+            {
+                "id": "aec7bc21-e90b-47c5-8602-1180d2454425",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[RoW] packaging film production, low density polyethylene | packaging film, low density polyethylene\", \"zh\": \"[RoW] packaging film production, low density polyethylene | packaging film, low density polyethylene\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"PE塑料袋的生产\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:33:58.311872+08:00"
+            },
+            {
+                "id": "f9194b60-338a-437f-92af-1a1ade878971",
+                "data": "{\"factor\": {\"name\": {\"en\": \"2023 National Average Carbon Footprint Factor of Electricity\", \"zh\": \"2023年全国电力平均碳足迹因子\"}, \"databaseId\": \"cpcd_2025_09\"}, \"unitProcessName\": \"注塑和组装用电\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:34:08.93735+08:00"
+            },
+            {
+                "id": "c73dd7c4-0494-4556-846b-a05978f9aedc",
+                "data": "{\"factor\": {\"name\": {\"en\": \"[GLO] treatment of waste plastic, mixture, open burning | waste plastic, mixture\", \"zh\": \"[GLO] treatment of waste plastic, mixture, open burning | waste plastic, mixture\"}, \"databaseId\": \"ecoinvent_3_9_1\"}, \"unitProcessName\": \"塑料边角料处置\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:35:01.292404+08:00"
+            }
+        ]
+    },
+    {
+        "runId": "73f2d8a6-143d-4d4c-96d8-012a1c19f6a8",
+        "step": "createDataRecords",
+        "items": [
+            {
+                "id": "c58c5c28-dcc8-4f0b-8bae-0a60a0ae32a7",
+                "data": "{\"name\": {\"en\": \"Gel pen output\", \"zh\": \"中性笔产量\"}, \"amount\": \"1\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"支\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "9eb7af75-2e8a-4f34-a591-30da7048db3c",
+                "data": "{\"name\": {\"en\": \"PP granule consumption\", \"zh\": \"PP塑料颗粒的用量\"}, \"amount\": \"0.0045\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"kg\"}",
+                "itemIndex": 1,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "1cd8cb7e-5182-455f-b81c-924238623dda",
+                "data": "{\"name\": {\"en\": \"Pen tube PP consumption\", \"zh\": \"笔芯管PP塑料的用量\"}, \"amount\": \"0.001\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"kg\"}",
+                "itemIndex": 2,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "a8934a87-b153-4864-b8b5-ba9d32abf203",
+                "data": "{\"name\": {\"en\": \"Stainless steel sheet consumption (nib)\", \"zh\": \"不锈钢板材的用量（笔尖）\"}, \"amount\": \"0.0005\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"kg\"}",
+                "itemIndex": 3,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "50556ce2-5917-442f-8885-a29e5fb856dc",
+                "data": "{\"name\": {\"en\": \"Stainless steel wire consumption (spring)\", \"zh\": \"不锈钢丝的用量（弹簧）\"}, \"amount\": \"0.0003\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"kg\"}",
+                "itemIndex": 4,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "99190416-d992-4cad-b1bb-797e969b6ad4",
+                "data": "{\"name\": {\"en\": \"Water-based ink consumption\", \"zh\": \"水性墨水的用量\"}, \"amount\": \"0.0008\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"kg\"}",
+                "itemIndex": 5,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "ced336cf-319b-45ea-b19e-68d3ac64ccc8",
+                "data": "{\"name\": {\"en\": \"Tungsten carbide ball consumption\", \"zh\": \"碳化钨球珠的用量\"}, \"amount\": \"0.0001\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"kg\"}",
+                "itemIndex": 6,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "fa6b1f26-9fd1-4201-aac4-339680fbcd7e",
+                "data": "{\"name\": {\"en\": \"Rubber seal consumption\", \"zh\": \"橡胶密封圈的用量\"}, \"amount\": \"0.0002\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"kg\"}",
+                "itemIndex": 7,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "ad87dff0-a15e-46dc-a83b-4fe5e5743a63",
+                "data": "{\"name\": {\"en\": \"Color masterbatch consumption\", \"zh\": \"色母粒的用量\"}, \"amount\": \"0.0001\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"kg\"}",
+                "itemIndex": 8,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "2ae21893-e25b-4965-992a-f2b60de2a4d6",
+                "data": "{\"name\": {\"en\": \"Adhesive consumption\", \"zh\": \"胶粘剂的用量\"}, \"amount\": \"0.00005\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"kg\"}",
+                "itemIndex": 9,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "faa0be37-7009-43da-9332-ab7a7aa13b1d",
+                "data": "{\"name\": {\"en\": \"Label PET film consumption\", \"zh\": \"标签PET薄膜的用量\"}, \"amount\": \"0.00005\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"kg\"}",
+                "itemIndex": 10,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "a2910eb6-9bbe-4031-a0ed-79209a52a310",
+                "data": "{\"name\": {\"en\": \"Clip stainless steel sheet consumption\", \"zh\": \"笔夹不锈钢片的用量\"}, \"amount\": \"0.0003\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"kg\"}",
+                "itemIndex": 11,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "967826a6-afbc-480a-adfe-f26c1a630412",
+                "data": "{\"name\": {\"en\": \"Paper box packaging consumption\", \"zh\": \"纸盒包装的用量\"}, \"amount\": \"0.0005\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"kg\"}",
+                "itemIndex": 12,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "2d1ae796-9b68-4df4-9324-a890a4d89ba9",
+                "data": "{\"name\": {\"en\": \"PE bag consumption\", \"zh\": \"PE塑料袋的用量\"}, \"amount\": \"0.0002\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"kg\"}",
+                "itemIndex": 13,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "3393d8c6-6e9e-4c4a-bc4f-fcb5b396c395",
+                "data": "{\"name\": {\"en\": \"Electricity consumption for production\", \"zh\": \"生产用电量\"}, \"amount\": \"0.005\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"kW·h\"}",
+                "itemIndex": 14,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "a05f39d4-5265-43a0-a1b0-bc4cb58a1f5a",
+                "data": "{\"name\": {\"en\": \"Plastic waste treatment amount\", \"zh\": \"塑料边角料处置量\"}, \"amount\": \"0.0005\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"kg\"}",
+                "itemIndex": 15,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            },
+            {
+                "id": "42bdfd34-52b8-4c61-bd16-be928e9fd03b",
+                "data": "{\"name\": {\"en\": \"Raw material transport distance\", \"zh\": \"原材料运输距离\"}, \"amount\": \"500\", \"source\": \"AI基于行业常识推估\", \"unitSymbol\": \"km\"}",
+                "itemIndex": 16,
+                "createdAt": "2026-06-02T16:35:01.373645+08:00"
+            }
+        ]
+    },
+    {
+        "runId": "73f2d8a6-143d-4d4c-96d8-012a1c19f6a8",
+        "step": "setOutputProduct",
+        "items": [
+            {
+                "id": "e75679fc-4639-4e39-9374-fb1f9dcdb742",
+                "data": "{\"productDesc\": {\"en\": \"A typical ballpoint pen product model built based on industry common knowledge\", \"zh\": \"基于行业常识构建的典型中性笔产品模型\"}, \"productName\": {\"en\": \"Ballpoint pen\", \"zh\": \"中性笔\"}, \"isNewlyCreated\": false}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:35:01.55736+08:00"
+            }
+        ]
+    },
+    {
+        "runId": "73f2d8a6-143d-4d4c-96d8-012a1c19f6a8",
+        "step": "done",
+        "items": [
+            {
+                "id": "344f2db7-f9b5-41d5-8b76-9df79490531b",
+                "data": "{\"modelId\": \"VHeexn3mw1YjuRXE\", \"projectId\": \"p1t5BJ9hrqyXEHBF\", \"accountingId\": \"1RMpkxt8487S69cg\", \"outputId\": \"output_12345\"}",
+                "itemIndex": 0,
+                "createdAt": "2026-06-02T16:35:10.963081+08:00"
+            }
+        ]
+    }
+]
