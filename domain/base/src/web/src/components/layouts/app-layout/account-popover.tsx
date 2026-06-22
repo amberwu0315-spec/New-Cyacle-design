@@ -340,8 +340,10 @@ export function AccountPopover({
                   {t.common.shell.account.switchWorkspace}
                 </span>
                 {currentWorkspaceName ? (
-                  <span className="mt-0.5 block truncate text-xs leading-4 font-normal text-muted-foreground">
-                    {currentWorkspaceName}
+                  <span className="mt-0.5 inline-flex max-w-full rounded-md bg-muted px-1.5 py-0.5 text-[11px] leading-4 font-medium text-foreground/80">
+                    <span className="min-w-0 truncate">
+                      {currentWorkspaceName}
+                    </span>
                   </span>
                 ) : null}
               </span>
@@ -369,13 +371,11 @@ export function AccountPopover({
               className="min-h-12 cursor-pointer gap-2 rounded-lg px-2.5 py-2 text-[15px] font-semibold"
             >
               <GlobeIcon aria-hidden="true" className="text-muted-foreground" />
-              <span className="min-w-0 flex-1 text-left">
-                <span className="block truncate">
-                  {t.common.shell.account.languageSettings}
-                </span>
-                <span className="mt-0.5 block truncate text-xs leading-4 font-normal text-muted-foreground">
-                  {currentLanguageName}
-                </span>
+              <span className="min-w-0 flex-1 truncate text-left">
+                {t.common.shell.account.languageSettings}
+              </span>
+              <span className="max-w-20 shrink-0 truncate text-xs leading-4 font-medium text-muted-foreground">
+                {currentLanguageName}
               </span>
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent

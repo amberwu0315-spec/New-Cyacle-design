@@ -4,7 +4,8 @@
 
 ## 本地开发测试账号
 
-- 开发测试域名：http://localhost:7088（前后端一体，无需访问 vite 服务）
+- 开发测试域名：http://localhost:7088（前后端一体，默认从这个地址检查页面）
+- 浏览器/Playwright 验证默认访问 `http://localhost:7088`；即使 Vite 输出 `http://localhost:5173`，也不要直接用 5173 检查页面，7088 会代理到 Vite 服务。
 - 开发环境测试账号：`dev-01` / `tanheng666!`
 
 ## 代码变更
