@@ -8,35 +8,23 @@ importers:
 
   .:
     dependencies:
-      '@carbonnt-cyacle/skeled-lca-corepub':
-        specifier: workspace:*
-        version: link:../../../domain/lca.core/pub/skeled/typescript
       '@carbonnt-cyacle/web-base':
         specifier: workspace:*
         version: link:../../../domain/base/src/web
-      '@carbonnt-cyacle/web-category':
-        specifier: workspace:*
-        version: link:../../../domain/category/src/web
       '@carbonnt-cyacle/web-factor':
         specifier: workspace:*
         version: link:../../../domain/factor/src/web
-      '@carbonnt-cyacle/web-lca-core':
-        specifier: workspace:*
-        version: link:../../../domain/lca.core/src/web
-      '@carbonnt-cyacle/web-project-data':
-        specifier: workspace:*
-        version: link:../../../domain/project.data/src/web
       '@carbonnt-cyacle/web-uic':
         specifier: workspace:*
         version: link:../../../domain/uic/src/web
       '@tanstack/react-router':
-        specifier: ^1.170.14
+        specifier: 1.170.15
         version: 1.170.15(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react:
-        specifier: ^19.2.0
+        specifier: 19.2.7
         version: 19.2.7
       react-dom:
-        specifier: ^19.2.0
+        specifier: 19.2.7
         version: 19.2.7(react@19.2.7)
     devDependencies:
       '@tailwindcss/vite':
@@ -55,10 +43,10 @@ importers:
         specifier: ^22.10.2
         version: 22.19.21
       '@types/react':
-        specifier: ^19.2.0
+        specifier: 19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.2.0
+        specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
         specifier: ^6.0.2
