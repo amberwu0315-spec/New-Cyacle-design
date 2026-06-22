@@ -19,7 +19,10 @@ export function ModuleLayout({
     <div
       {...props}
       data-slot='module-layout'
-      className={cn('min-h-full bg-background px-4 py-5 sm:px-6 lg:px-8', className)}
+      className={cn(
+        'min-h-full bg-background px-4 py-5 sm:px-6 lg:px-8',
+        className,
+      )}
     >
       {children}
     </div>

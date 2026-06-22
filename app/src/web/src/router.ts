@@ -6,6 +6,7 @@ import {
   defineWebDomainRouteOutlets,
   resolveWebDomainRouteMount,
 } from '@carbonnt-cyacle/web-base'
+import { createDocumentManagementRoute } from '@carbonnt-cyacle/web-uic'
 
 import { AppLayout } from '#/components/layouts/app-layout/index.ts'
 import { createHomeRoute } from '#/routes/home-route.ts'
@@ -42,6 +43,7 @@ const routeTree = RootRoute.addChildren([
   ...rootDomainRoutes,
   ShellRoute.addChildren([
     createHomeRoute({ parentRoute: ShellRoute }),
+    createDocumentManagementRoute({ parentRoute: ShellRoute }),
     ...shellDomainRoutes,
   ]),
 ])
