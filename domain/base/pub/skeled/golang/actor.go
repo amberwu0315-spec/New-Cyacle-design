@@ -13,7 +13,7 @@ func init() {
 	meta.RegisterActor(meta.ActorSpec{
 		Name:         "UserActor",
 		SkelName:     "base.UserActor",
-		Hash:         "b76dd77d",
+		Hash:         "324d538a",
 		InfoSkelName: "base.UserActorInfo",
 		InfoType:     reflect.TypeFor[*UserActorInfo](),
 	})
@@ -46,6 +46,7 @@ type UserActorCredential struct {
 
 type UserActorInfo struct {
 	UserId      int    `json:"userId"`
+	Username    string `json:"username"`
 	WorkspaceId string `json:"workspaceId"`
 }
 

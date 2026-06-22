@@ -10,6 +10,7 @@ pub actor UserActor {
         }
         info {
             userId: int
+            username: string
             workspaceId: string
         }
     }

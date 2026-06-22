@@ -8,7 +8,7 @@ func init() {
 
 var _DomainSchema = &skel.DomainSchema{
 	Domain: "base",
-	Hash:   "5ba14a99",
+	Hash:   "c93f62ab",
 	Full:   false,
 	Generated: &skel.GeneratedInfo{
 		CompilerVersion: "v1.1.33",
@@ -266,7 +266,7 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "UserActor",
 			SkelName:    "base.UserActor",
 			Description: "user",
-			Hash:        "b76dd77d",
+			Hash:        "324d538a",
 			Vias: []skel.ActorVia{
 				skel.ActorViaClient,
 			},
@@ -295,13 +295,20 @@ var _DomainSchema = &skel.DomainSchema{
 			AuthInfo: &skel.DataSchema{
 				Name:     "UserActorInfo",
 				SkelName: "base.UserActorInfo",
-				Hash:     "c8bfbe45",
+				Hash:     "a6220f18",
 				Members: []*skel.MemberSchema{
 					{
 						Name: "userId",
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarInt,
+						},
+					},
+					{
+						Name: "username",
+						Type: &skel.TypeSchema{
+							Kind:   skel.TypeKindScalar,
+							Scalar: skel.ScalarString,
 						},
 					},
 					{
