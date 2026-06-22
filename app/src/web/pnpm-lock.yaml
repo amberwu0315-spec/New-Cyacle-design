@@ -14,6 +14,9 @@ importers:
       '@carbonnt-cyacle/web-factor':
         specifier: workspace:*
         version: link:../../../domain/factor/src/web
+      '@carbonnt-cyacle/web-lca-core':
+        specifier: workspace:*
+        version: link:../../../domain/lca.core/src/web
       '@carbonnt-cyacle/web-uic':
         specifier: workspace:*
         version: link:../../../domain/uic/src/web
