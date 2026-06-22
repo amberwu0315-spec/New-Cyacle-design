@@ -7,6 +7,7 @@ import {
 } from '@carbonnt-cyacle/web-base'
 
 import { AppLayout } from '#/components/layouts/app-layout/index.ts'
+import { AppNotFoundPage } from '#/features/not-found/page.tsx'
 import { createHomeRoute } from '#/routes/home-route.ts'
 import { webModules } from '#/vineModules.gen.ts'
 
@@ -45,6 +46,7 @@ const routeTree = RootRoute.addChildren([
 
 export const router = createRouter({
   routeTree,
+  defaultNotFoundComponent: AppNotFoundPage,
   defaultPreload: 'intent',
   defaultPreloadStaleTime: 0,
   scrollRestoration: true,

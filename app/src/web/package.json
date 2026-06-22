@@ -1,9 +1,6 @@
 {
   "dependencies": {
     "@carbonnt-cyacle/web-base": "workspace:*",
-    "@carbonnt-cyacle/web-category": "workspace:*",
-    "@carbonnt-cyacle/web-factor": "workspace:*",
-    "@carbonnt-cyacle/web-lca-core": "workspace:*",
     "@carbonnt-cyacle/web-uic": "workspace:*",
     "@tanstack/react-router": "1.170.15",
     "react": "19.2.7",
