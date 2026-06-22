@@ -8,7 +8,6 @@ export {
   redirectToLoginWithCurrentLocation,
 } from '#/lib/auth-session.ts';
 export {
-  assertWebProjectConfigConfigured,
   configureWebProjectConfig,
   getWebProjectConfig,
 } from '#/lib/web-project-config.ts';

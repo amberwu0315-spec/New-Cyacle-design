@@ -2,7 +2,6 @@ import '#/project-config.ts'
 
 import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
 import {
-  assertWebProjectConfigConfigured,
   defineWebDomainRouteOutlets,
   resolveWebDomainRouteMount,
 } from '@carbonnt-cyacle/web-base'
@@ -11,8 +10,6 @@ import { createDocumentManagementRoute } from '@carbonnt-cyacle/web-uic'
 import { AppLayout } from '#/components/layouts/app-layout/index.ts'
 import { createHomeRoute } from '#/routes/home-route.ts'
 import { webModules } from '#/vineModules.gen.ts'
-
-assertWebProjectConfigConfigured()
 
 const appRouteOutlets = defineWebDomainRouteOutlets({
   root: 'root',

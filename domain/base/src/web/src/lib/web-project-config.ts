@@ -40,10 +40,6 @@ export function getWebProjectConfig(): WebProjectConfig {
   return configuredWebProjectConfig
 }
 
-export function assertWebProjectConfigConfigured() {
-  getWebProjectConfig()
-}
-
 function createWebProjectConfig(config: WebProjectConfig): WebProjectConfig {
   return Object.freeze({
     routes: Object.freeze({
