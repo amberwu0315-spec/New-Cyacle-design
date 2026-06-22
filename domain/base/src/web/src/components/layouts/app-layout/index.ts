@@ -4,6 +4,11 @@ export type {
   AppLayoutProps,
   AppLayoutUserProfile,
 } from './app-layout'
+export type {
+  WorkspaceAutoSelectionResolver,
+  WorkspaceSelectionItem,
+  WorkspaceSelectionResult,
+} from './workspace-selection'
 export { createAppNavConfig } from './nav-config'
 export type {
   AppLayoutDomainCapabilities,

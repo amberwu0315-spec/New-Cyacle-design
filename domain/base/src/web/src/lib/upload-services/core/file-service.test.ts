@@ -20,6 +20,21 @@ import {
 } from '#/lib/session-cookie.ts'
 
 beforeEach(() => {
+  const localStorageStore = new Map<string, string>()
+
+  Object.defineProperty(window, 'localStorage', {
+    configurable: true,
+    value: {
+      getItem: (key: string) => localStorageStore.get(key) ?? null,
+      removeItem: (key: string) => {
+        localStorageStore.delete(key)
+      },
+      setItem: (key: string, value: string) => {
+        localStorageStore.set(key, value)
+      },
+    },
+  })
+
   configureTestWebProjectConfig()
 })
 

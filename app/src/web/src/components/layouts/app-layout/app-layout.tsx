@@ -5,17 +5,20 @@ import {
   AgentCollaborationRoot,
   AssistantAgentUserContextProvider,
   clearAuthSessionSideEffects,
-  clearWorkspaceSelectionSideEffects,
   createAppNavConfig,
   getSessionCredential,
-  getSessionWorkspaceId,
   type AssistantAgentUserContext,
   type AppLayoutUserProfile,
   type WebDomain,
   useLanguageStore,
 } from '@carbonnt-cyacle/web-base'
 import {
+  clearWorkspaceSelectionSideEffects,
   documentManagementNavDomain,
+  getSelectedWorkspaceId,
+  getSelectedWorkspaceScope,
+  getWorkspaceAutoSelection,
+  selectWorkspaceId,
   useAvailableWorkspaces,
   useCurrentUserProfile,
 } from '@carbonnt-cyacle/web-uic'
@@ -52,9 +55,10 @@ export function AppLayout() {
   const workspaceQuery = useAvailableWorkspaces({
     enabled: hasSessionCredential,
   })
+  const currentWorkspaceScope = getSelectedWorkspaceScope()
   const assistantUserContext = React.useMemo<AssistantAgentUserContext>(() => {
     const profile = profileQuery.data as AgentProfile | null | undefined
-    const workspaceId = getSessionWorkspaceId()
+    const workspaceId = getSelectedWorkspaceId()
     const currentWorkspace = workspaceQuery.data?.find(
       (workspace) => workspace.id === workspaceId,
     )
@@ -79,9 +83,12 @@ export function AppLayout() {
   return (
     <AssistantAgentUserContextProvider value={assistantUserContext}>
       <BaseAppLayout
+        currentWorkspaceScope={currentWorkspaceScope}
+        getWorkspaceAutoSelection={getWorkspaceAutoSelection}
         hasSessionCredential={hasSessionCredential}
         navConfig={navConfig}
         onLogout={handleLogout}
+        onWorkspaceSelect={selectWorkspaceId}
         profileQuery={profileQuery}
         workspaceQuery={workspaceQuery}
       >

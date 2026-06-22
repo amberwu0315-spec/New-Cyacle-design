@@ -26,7 +26,7 @@ import {
 import { Spinner } from '#/components/ui/spinner.tsx'
 import { useTranslation } from '#/lib/i18n/index.ts'
 import { cn } from '#/lib/utils.ts'
-import type { WorkspaceSelectionItem } from '#/lib/workspace-session.ts'
+import type { WorkspaceSelectionItem } from './workspace-selection.ts'
 
 type WorkspaceSelectionDialogProps = {
   open: boolean

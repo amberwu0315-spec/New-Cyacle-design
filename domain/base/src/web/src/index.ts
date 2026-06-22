@@ -49,15 +49,6 @@ export {
   setSessionWorkspaceId,
 } from '#/lib/session-cookie.ts';
 export {
-  clearWorkspaceSelectionSideEffects,
-  fetchAvailableWorkspaces,
-  prepareWorkspaceSelectionAfterAuth,
-  getRememberedWorkspaceSelection,
-  selectWorkspaceId,
-  workspaceKeys,
-} from '#/lib/workspace-session.ts';
-export type { WorkspaceSelectionItem } from '#/lib/workspace-session.ts';
-export {
   createI18nCatalog,
   formatMessage,
   getMessages,
@@ -89,6 +80,9 @@ export type {
   DomainNavMeta,
   DomainNavMetaContext,
   DomainNavMetaFactory,
+  WorkspaceAutoSelectionResolver,
+  WorkspaceSelectionItem,
+  WorkspaceSelectionResult,
 } from '#/components/layouts/app-layout/index.ts';
 export { WorkspaceSelectionDialog } from '#/components/layouts/app-layout/workspace-selection-dialog.tsx';
 export { LanguageMenu as LoginLanguageMenu } from '#/components/layouts/app-layout/language-switcher.tsx';

@@ -12,15 +12,22 @@ import type {
 } from '#/components/layouts/app-layout/app-layout.tsx'
 import type { BreadcrumbItem } from '#/components/layouts/app-layout/nav-matching.ts'
 import type { AppNavItem, AppScene } from '#/components/layouts/app-layout/nav-config.tsx'
-import type { WorkspaceSelectionItem } from '#/lib/workspace-session.ts'
+import type {
+  WorkspaceSelectionItem,
+  WorkspaceSelectionResult,
+} from './workspace-selection.ts'
 
 interface AppTopbarProps {
   activeItem: AppNavItem | null
   activeScene: AppScene
   breadcrumbItems: Array<BreadcrumbItem>
+  currentWorkspaceScope: string | null
   hasSessionCredential: boolean
   isMobile: boolean
   onLogout: () => void
+  onWorkspaceSelect: (
+    workspace: WorkspaceSelectionItem,
+  ) => Promise<WorkspaceSelectionResult>
   sidebarState: 'expanded' | 'collapsed'
   onToggleSidebar: () => void
   profileQuery: AppLayoutAsyncState<AppLayoutUserProfile>
@@ -31,9 +38,11 @@ export function AppTopbar({
   activeItem,
   activeScene,
   breadcrumbItems,
+  currentWorkspaceScope,
   hasSessionCredential,
   isMobile,
   onLogout,
+  onWorkspaceSelect,
   sidebarState,
   onToggleSidebar,
   profileQuery,
@@ -103,8 +112,10 @@ export function AppTopbar({
       <div className="flex items-center gap-2">
         <div className="pl-1">
           <AccountPopover
+            currentWorkspaceScope={currentWorkspaceScope}
             hasSessionCredential={hasSessionCredential}
             onLogout={onLogout}
+            onWorkspaceSelect={onWorkspaceSelect}
             profileQuery={profileQuery}
             workspaceQuery={workspaceQuery}
           />

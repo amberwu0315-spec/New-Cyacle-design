@@ -1,10 +1,10 @@
 import Cookies from 'js-cookie'
 
 export const SESSION_COOKIE_KEY = 'NSID'
-export const SESSION_SCOPE_COOKIE_KEY = 'NSCP'
-export const SESSION_WORKSPACE_ID_COOKIE_KEY = 'NSWID'
 export const SESSION_COOKIE_EXPIRES_DAYS = 365
 export const SESSION_SCOPE_CREDENTIAL_EMPTY = '-'
+const LOCAL_WORKSPACE_ID_STORAGE_KEY = 'carbonnt.workspace.lastSelectedId'
+const LOCAL_WORKSPACE_SCOPE_STORAGE_KEY = 'carbonnt.workspace.lastSelectedScope'
 
 const LOCAL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1'])
 
@@ -22,6 +22,42 @@ function getCurrentHostname() {
 
 function getCookieSecureOption() {
   return typeof window !== 'undefined' && window.location.protocol === 'https:'
+}
+
+function getLocalStorageItem(key: string) {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  try {
+    return window.localStorage.getItem(key)?.trim() || null
+  } catch {
+    return null
+  }
+}
+
+function setLocalStorageItem(key: string, value: string) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  try {
+    window.localStorage.setItem(key, value)
+  } catch {
+    // localStorage can be unavailable in private or restricted contexts.
+  }
+}
+
+function removeLocalStorageItem(key: string) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  try {
+    window.localStorage.removeItem(key)
+  } catch {
+    // localStorage can be unavailable in private or restricted contexts.
+  }
 }
 
 export function resolveSessionCookieDomain(hostname = getCurrentHostname()) {
@@ -49,11 +85,11 @@ export function getSessionCredential() {
 }
 
 export function getSessionScope() {
-  return Cookies.get(SESSION_SCOPE_COOKIE_KEY) ?? null
+  return getLocalStorageItem(LOCAL_WORKSPACE_SCOPE_STORAGE_KEY)
 }
 
 export function getSessionWorkspaceId() {
-  return Cookies.get(SESSION_WORKSPACE_ID_COOKIE_KEY) ?? null
+  return getLocalStorageItem(LOCAL_WORKSPACE_ID_STORAGE_KEY)
 }
 
 export function getSessionScopeCredential() {
@@ -89,87 +125,41 @@ export function setSessionCredential(sessionId: string) {
 }
 
 export function setSessionScope(scope: string) {
-  const domain = resolveSessionCookieDomain()
-  const secure = getCookieSecureOption()
   const normalizedScope = scope.trim()
 
   if (!normalizedScope) {
-    for (const key of [
-      SESSION_SCOPE_COOKIE_KEY,
-      SESSION_WORKSPACE_ID_COOKIE_KEY,
-    ]) {
-      Cookies.remove(key, {
-        domain,
-        path: '/',
-        sameSite: 'lax',
-        secure,
-      })
-      Cookies.remove(key, {
-        path: '/',
-        sameSite: 'lax',
-        secure,
-      })
-    }
+    removeLocalStorageItem(LOCAL_WORKSPACE_SCOPE_STORAGE_KEY)
+    removeLocalStorageItem(LOCAL_WORKSPACE_ID_STORAGE_KEY)
     return
   }
 
-  Cookies.set(SESSION_SCOPE_COOKIE_KEY, normalizedScope, {
-    domain,
-    expires: SESSION_COOKIE_EXPIRES_DAYS,
-    path: '/',
-    sameSite: 'lax',
-    secure,
-  })
+  setLocalStorageItem(LOCAL_WORKSPACE_SCOPE_STORAGE_KEY, normalizedScope)
 }
 
 export function setSessionWorkspaceId(workspaceId: string) {
-  const domain = resolveSessionCookieDomain()
-  const secure = getCookieSecureOption()
   const normalizedWorkspaceId = workspaceId.trim()
 
   if (!normalizedWorkspaceId) {
-    Cookies.remove(SESSION_WORKSPACE_ID_COOKIE_KEY, {
-      domain,
-      path: '/',
-      sameSite: 'lax',
-      secure,
-    })
-    Cookies.remove(SESSION_WORKSPACE_ID_COOKIE_KEY, {
-      path: '/',
-      sameSite: 'lax',
-      secure,
-    })
+    removeLocalStorageItem(LOCAL_WORKSPACE_ID_STORAGE_KEY)
     return
   }
 
-  Cookies.set(SESSION_WORKSPACE_ID_COOKIE_KEY, normalizedWorkspaceId, {
-    domain,
-    expires: SESSION_COOKIE_EXPIRES_DAYS,
-    path: '/',
-    sameSite: 'lax',
-    secure,
-  })
+  setLocalStorageItem(LOCAL_WORKSPACE_ID_STORAGE_KEY, normalizedWorkspaceId)
 }
 
 export function clearSessionCredential() {
   const domain = resolveSessionCookieDomain()
   const secure = getCookieSecureOption()
 
-  for (const key of [
-    SESSION_COOKIE_KEY,
-    SESSION_SCOPE_COOKIE_KEY,
-    SESSION_WORKSPACE_ID_COOKIE_KEY,
-  ]) {
-    Cookies.remove(key, {
-      domain,
-      path: '/',
-      sameSite: 'lax',
-      secure,
-    })
-    Cookies.remove(key, {
-      path: '/',
-      sameSite: 'lax',
-      secure,
-    })
-  }
+  Cookies.remove(SESSION_COOKIE_KEY, {
+    domain,
+    path: '/',
+    sameSite: 'lax',
+    secure,
+  })
+  Cookies.remove(SESSION_COOKIE_KEY, {
+    path: '/',
+    sameSite: 'lax',
+    secure,
+  })
 }

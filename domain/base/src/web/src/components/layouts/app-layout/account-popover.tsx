@@ -21,11 +21,10 @@ import {
 } from '#/lib/i18n/index.ts'
 import type { SupportedLanguage } from '#/lib/i18n/index.ts'
 import { cn } from '#/lib/utils.ts'
-import { getSessionScope } from '#/lib/session-cookie.ts'
-import {
-  selectWorkspaceId,
-  type WorkspaceSelectionItem,
-} from '#/lib/workspace-session.ts'
+import type {
+  WorkspaceSelectionItem,
+  WorkspaceSelectionResult,
+} from './workspace-selection.ts'
 
 import defaultUserAvatar from '#/components/layouts/app-layout/assets/default-user-avatar.png'
 import type {
@@ -34,8 +33,12 @@ import type {
 } from '#/components/layouts/app-layout/app-layout.tsx'
 
 export type AccountPopoverProps = {
+  currentWorkspaceScope: string | null
   hasSessionCredential: boolean
   onLogout: () => void
+  onWorkspaceSelect: (
+    workspace: WorkspaceSelectionItem,
+  ) => Promise<WorkspaceSelectionResult>
   profileQuery: AppLayoutAsyncState<AppLayoutUserProfile>
   workspaceQuery: AppLayoutAsyncState<Array<WorkspaceSelectionItem>>
 }
@@ -125,8 +128,10 @@ function WorkspaceMenuItem({
 }
 
 export function AccountPopover({
+  currentWorkspaceScope,
   hasSessionCredential,
   onLogout,
+  onWorkspaceSelect,
   profileQuery,
   workspaceQuery,
 }: AccountPopoverProps) {
@@ -136,7 +141,6 @@ export function AccountPopover({
   >(null)
   const [workspaceSwitchFailed, setWorkspaceSwitchFailed] = React.useState(false)
   const profile = profileQuery.data
-  const currentWorkspaceScope = getSessionScope()?.trim() || null
   const workspaceOptions = workspaceQuery.data ?? []
   const hasWorkspaceOptions = workspaceOptions.length > 0
   const isWorkspaceLoading =
@@ -180,7 +184,7 @@ export function AccountPopover({
       setSwitchingWorkspaceId(workspace.id)
 
       try {
-        await selectWorkspaceId(workspace)
+        await onWorkspaceSelect(workspace)
         window.location.reload()
       } catch (error) {
         console.error('Failed to switch workspace:', error)
@@ -188,7 +192,7 @@ export function AccountPopover({
         setSwitchingWorkspaceId(null)
       }
     },
-    [switchingWorkspaceId],
+    [onWorkspaceSelect, switchingWorkspaceId],
   )
 
   const handleLanguageChange = React.useCallback(

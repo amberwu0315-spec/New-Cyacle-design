@@ -15,12 +15,11 @@ import type { AppNavConfig } from './nav-config.tsx'
 import { Button } from '#/components/ui/button.tsx'
 import { Spinner } from '#/components/ui/spinner.tsx'
 import { useTranslation } from '#/lib/i18n/index.ts'
-import { getSessionScope } from '#/lib/session-cookie.ts'
-import {
-  getRememberedWorkspaceSelection,
-  selectWorkspaceId,
-} from '#/lib/workspace-session.ts'
-import type { WorkspaceSelectionItem } from '#/lib/workspace-session.ts'
+import type {
+  WorkspaceAutoSelectionResolver,
+  WorkspaceSelectionItem,
+  WorkspaceSelectionResult,
+} from './workspace-selection.ts'
 
 const SIDEBAR_COOKIE_NAME = 'sidebar_state'
 const MOBILE_MEDIA_QUERY = '(max-width: 1023px)'
@@ -76,9 +75,14 @@ export type AppLayoutUserProfile = {
 
 export interface AppLayoutProps {
   children: React.ReactNode
+  currentWorkspaceScope?: string | null
+  getWorkspaceAutoSelection: WorkspaceAutoSelectionResolver
   hasSessionCredential: boolean
   navConfig: AppNavConfig
   onLogout: () => void
+  onWorkspaceSelect: (
+    workspace: WorkspaceSelectionItem,
+  ) => Promise<WorkspaceSelectionResult>
   profileQuery: AppLayoutAsyncState<AppLayoutUserProfile>
   workspaceQuery: AppLayoutAsyncState<Array<WorkspaceSelectionItem>>
 }
@@ -133,9 +137,12 @@ function SessionBootstrapError({
 
 export function AppLayout({
   children,
+  currentWorkspaceScope,
+  getWorkspaceAutoSelection,
   hasSessionCredential,
   navConfig,
   onLogout,
+  onWorkspaceSelect,
   profileQuery,
   workspaceQuery,
 }: AppLayoutProps) {
@@ -148,7 +155,7 @@ export function AppLayout({
     getCookieSidebarState,
   )
   const [selectedWorkspaceScope, setSelectedWorkspaceScope] = React.useState(
-    () => getSessionScope()?.trim() || null,
+    () => currentWorkspaceScope?.trim() || null,
   )
   const [switchingWorkspaceId, setSwitchingWorkspaceId] = React.useState<
     string | null
@@ -188,24 +195,13 @@ export function AppLayout({
     hasSessionCredential &&
     isWorkspaceSuccess &&
     (!selectedWorkspaceScope || !isSelectedWorkspaceValid)
-  const rememberedWorkspaceSelection = React.useMemo(() => {
+  const autoSelectedWorkspace = React.useMemo(() => {
     if (!availableWorkspaces?.length) {
       return null
     }
 
-    return getRememberedWorkspaceSelection(availableWorkspaces)
-  }, [availableWorkspaces])
-  const autoSelectedWorkspace = React.useMemo(() => {
-    if (rememberedWorkspaceSelection) {
-      return rememberedWorkspaceSelection
-    }
-
-    if (availableWorkspaces?.length === 1) {
-      return availableWorkspaces[0]
-    }
-
-    return null
-  }, [availableWorkspaces, rememberedWorkspaceSelection])
+    return getWorkspaceAutoSelection(availableWorkspaces)
+  }, [availableWorkspaces, getWorkspaceAutoSelection])
   const shouldOpenWorkspaceSelectionDialog =
     shouldRequireWorkspaceSelection &&
     (workspaceSwitchFailed || !autoSelectedWorkspace)
@@ -256,6 +252,10 @@ export function AppLayout({
   }, [availableWorkspaces])
 
   React.useEffect(() => {
+    setSelectedWorkspaceScope(currentWorkspaceScope?.trim() || null)
+  }, [currentWorkspaceScope])
+
+  React.useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === 'b' && (event.metaKey || event.ctrlKey)) {
         event.preventDefault()
@@ -294,7 +294,7 @@ export function AppLayout({
       setSwitchingWorkspaceId(workspace.id)
 
       try {
-        const result = await selectWorkspaceId(workspace)
+        const result = await onWorkspaceSelect(workspace)
         setSelectedWorkspaceScope(result.scope)
         window.location.reload()
       } catch (error) {
@@ -304,7 +304,7 @@ export function AppLayout({
         setSwitchingWorkspaceId(null)
       }
     },
-    [switchingWorkspaceId],
+    [onWorkspaceSelect, switchingWorkspaceId],
   )
 
   const handleWorkspaceRetry = React.useCallback(() => {
@@ -329,7 +329,7 @@ export function AppLayout({
       setSwitchingWorkspaceId(workspace.id)
 
       try {
-        const result = await selectWorkspaceId(workspace)
+        const result = await onWorkspaceSelect(workspace)
 
         if (!ignore) {
           setSelectedWorkspaceScope(result.scope)
@@ -353,7 +353,7 @@ export function AppLayout({
     return () => {
       ignore = true
     }
-  }, [autoSelectedWorkspace, shouldRequireWorkspaceSelection])
+  }, [autoSelectedWorkspace, onWorkspaceSelect, shouldRequireWorkspaceSelection])
 
   const sidebarState: SidebarState = isSidebarOpen ? 'expanded' : 'collapsed'
   const activeScene = React.useMemo(
@@ -392,9 +392,11 @@ export function AppLayout({
             activeItem={activeItem}
             activeScene={activeScene}
             breadcrumbItems={breadcrumbItems}
+            currentWorkspaceScope={selectedWorkspaceScope}
             hasSessionCredential={hasSessionCredential}
             isMobile={isMobile}
             onLogout={onLogout}
+            onWorkspaceSelect={onWorkspaceSelect}
             sidebarState={sidebarState}
             onToggleSidebar={toggleSidebar}
             profileQuery={profileQuery}
