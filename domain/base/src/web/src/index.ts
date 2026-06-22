@@ -58,13 +58,23 @@ export {
 } from '#/lib/workspace-session.ts';
 export type { WorkspaceSelectionItem } from '#/lib/workspace-session.ts';
 export {
+  createI18nCatalog,
   formatMessage,
   getMessages,
+  i18nCatalog,
   languageStore,
   useLanguageStore,
   useTranslation,
 } from '#/lib/i18n/index.ts';
-export type { Messages, MessageParams, SupportedLanguage } from '#/lib/i18n/index.ts';
+export type {
+  I18nCatalog,
+  I18nCatalogMessages,
+  I18nMessageFormatter,
+  I18nMessageParams,
+  I18nTranslation,
+  Messages,
+  SupportedLanguage,
+} from '#/lib/i18n/index.ts';
 
 export { AppLayout, createAppNavConfig } from '#/components/layouts/app-layout/index.ts';
 export type {

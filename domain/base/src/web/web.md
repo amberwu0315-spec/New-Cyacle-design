@@ -250,6 +250,92 @@ export const webDomain = defineWebDomain()({
 })
 ```
 
+### Domain 多语言范式
+
+Domain 自己维护业务文案时，统一放 `src/lib/i18n`。领域内只用通用名：`i18nCatalog`、`getMessages`、`useTranslation`、`Messages`。
+
+```text
+domain/catalog/src/web/src/lib/i18n/
+├── i18n-catalog.ts
+├── index.ts
+└── messages/
+    ├── zh-CN/
+    │   └── index.ts     ← 导出 zhCN 和 type Messages = typeof zhCN
+    └── en-US/
+        └── index.ts     ← enUS satisfies Messages
+```
+
+```ts
+// domain/catalog/src/web/src/lib/i18n/i18n-catalog.ts
+import { createI18nCatalog } from '@example-app/web-base'
+
+import { enUS } from './messages/en-US'
+import type { Messages } from './messages/zh-CN'
+import { zhCN } from './messages/zh-CN'
+
+export const i18nCatalog = createI18nCatalog<Messages>({
+  'zh-CN': zhCN,
+  'en-US': enUS,
+})
+
+export const getMessages = i18nCatalog.getMessages
+export const useTranslation = i18nCatalog.useTranslation
+```
+
+```ts
+// domain/catalog/src/web/src/lib/i18n/index.ts
+export { formatMessage } from '@example-app/web-base'
+export {
+  getMessages,
+  i18nCatalog,
+  useTranslation,
+} from './i18n-catalog'
+export type { Messages } from './messages/zh-CN'
+```
+
+React 组件从本 domain 的 `useTranslation()` 取文案；需要插值时用 hook 返回的 `format`。
+
+```tsx
+import { useTranslation } from '../../lib/i18n'
+
+export function HomePage() {
+  const { t, format } = useTranslation()
+
+  return (
+    <section>
+      <h1>{t.home.title}</h1>
+      <p>{format(t.home.count, { count: 12 })}</p>
+    </section>
+  )
+}
+```
+
+非 React 场景显式传入语言，例如 nav factory：
+
+```ts
+import { getMessages } from '../lib/i18n'
+
+const createCatalogNavMeta: DomainNavMetaFactory = ({ language }) => {
+  const t = getMessages(language)
+
+  return {
+    label: t.common.nav.label,
+    // ...
+  }
+}
+```
+
+跨 domain 或 app 层同时消费多个 domain i18n 时，在 import 处取别名：
+
+```ts
+import { getMessages as getCatalogDomainMessages } from '@example-app/web-catalog'
+```
+
+**规则**
+- `index.ts` 只做 re-export，不写配置和工厂逻辑。
+- `zh-CN` 作为类型来源，其他语言用 `satisfies Messages` 校验结构。
+- 不在领域内 API 名里加 domain 前缀；跨 domain 使用时在 import 处 alias。
+
 高级写法可注册 app nav 和 root/shell outlet：
 
 ```tsx
@@ -262,7 +348,7 @@ import { Boxes } from 'lucide-react'
 import { createLoginRouteBranches } from './login-route'
 import { createHomeRouteTree } from './home-route'
 import { createReportsRouteTree } from './reports-route'
-import { getCatalogMessages } from '../lib/i18n'
+import { getMessages } from '../lib/i18n'
 
 const createCatalogRoutes: WebDomainRouteFactory = ({ parentRoute }) => {
   const domainRoute = createRoute({
@@ -280,7 +366,7 @@ const createCatalogRoutes: WebDomainRouteFactory = ({ parentRoute }) => {
 }
 
 const createCatalogNavMeta: DomainNavMetaFactory = ({ language }) => {
-  const t = getCatalogMessages(language)
+  const t = getMessages(language)
 
   return {
     label: t.common.nav.label,
