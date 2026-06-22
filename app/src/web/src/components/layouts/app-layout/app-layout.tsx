@@ -5,6 +5,7 @@ import {
   AgentCollaborationRoot,
   AssistantAgentUserContextProvider,
   clearAuthSessionSideEffects,
+  clearWorkspaceSelectionSideEffects,
   createAppNavConfig,
   getSessionCredential,
   getSessionWorkspaceId,
@@ -71,6 +72,7 @@ export function AppLayout() {
 
   const handleLogout = React.useCallback(() => {
     clearAuthSessionSideEffects()
+    clearWorkspaceSelectionSideEffects()
     void navigate({ to: '/uic/login' })
   }, [navigate])
 

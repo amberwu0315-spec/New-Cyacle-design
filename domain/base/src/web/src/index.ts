@@ -53,6 +53,7 @@ export {
   clearWorkspaceSelectionSideEffects,
   fetchAvailableWorkspaces,
   prepareWorkspaceSelectionAfterAuth,
+  getRememberedWorkspaceSelection,
   selectWorkspaceId,
   workspaceKeys,
 } from '#/lib/workspace-session.ts';

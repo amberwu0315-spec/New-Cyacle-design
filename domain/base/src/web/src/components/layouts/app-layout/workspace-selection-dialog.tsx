@@ -3,6 +3,7 @@ import {
   Building2Icon,
   CheckIcon,
   ChevronRightIcon,
+  LogOutIcon,
   RefreshCwIcon,
 } from 'lucide-react'
 
@@ -34,6 +35,7 @@ type WorkspaceSelectionDialogProps = {
   isError?: boolean
   isLoading?: boolean
   isSwitchError?: boolean
+  onLogout?: () => void
   onRetry?: () => void
   onSelect: (workspace: WorkspaceSelectionItem) => void | Promise<void>
   switchingWorkspaceId?: string | null
@@ -82,9 +84,6 @@ function WorkspaceOptionButton({
       disabled={isSwitching}
       onClick={handleSelect}
     >
-      <span className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-primary/10 text-primary">
-        <Building2Icon aria-hidden="true" className="size-4" />
-      </span>
       <span className="min-w-0 flex-1">
         <span className="flex min-w-0 items-center gap-2">
           <span className="truncate text-[15px] leading-5 font-medium text-foreground">
@@ -114,6 +113,7 @@ export function WorkspaceSelectionDialog({
   isError = false,
   isLoading = false,
   isSwitchError = false,
+  onLogout,
   onRetry,
   onSelect,
   open,
@@ -123,13 +123,14 @@ export function WorkspaceSelectionDialog({
   const { t } = useTranslation()
   const hasWorkspaces = workspaces.length > 0
   const isSwitchingWorkspace = Boolean(switchingWorkspaceId)
+  const isEmptyWorkspaceState = !isSwitchingWorkspace && !isError && !hasWorkspaces
   const showEmptyState = !isSwitchingWorkspace && (isError || !hasWorkspaces)
 
   return (
     <Dialog open={open}>
       <DialogContent
         showCloseButton={false}
-        className="gap-0 overflow-hidden p-0 shadow-xl sm:max-w-[580px]"
+        className="gap-0 overflow-hidden rounded-lg p-0 shadow-xl sm:max-w-[580px]"
       >
         <DialogHeader className="px-6 pt-6 pb-5">
           <DialogTitle>{t.common.workspace.title}</DialogTitle>
@@ -155,12 +156,22 @@ export function WorkspaceSelectionDialog({
                   {t.common.workspace.emptyDescription}
                 </EmptyDescription>
               </EmptyHeader>
-              {onRetry ? (
+              {onRetry || (isEmptyWorkspaceState && onLogout) ? (
                 <EmptyContent>
-                  <Button type="button" variant="outline" onClick={onRetry}>
-                    <RefreshCwIcon data-icon="inline-start" />
-                    {t.common.workspace.retry}
-                  </Button>
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {isEmptyWorkspaceState && onLogout ? (
+                      <Button type="button" onClick={onLogout}>
+                        <LogOutIcon data-icon="inline-start" />
+                        {t.common.workspace.logout}
+                      </Button>
+                    ) : null}
+                    {onRetry ? (
+                      <Button type="button" variant="outline" onClick={onRetry}>
+                        <RefreshCwIcon data-icon="inline-start" />
+                        {t.common.workspace.retry}
+                      </Button>
+                    ) : null}
+                  </div>
                 </EmptyContent>
               ) : null}
             </Empty>

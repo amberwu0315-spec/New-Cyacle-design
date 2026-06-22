@@ -9,6 +9,7 @@ import {
 import { vrpcClient } from '#/lib/vrpc-client.ts'
 
 const workspaceAppApiService = createWorkspaceAppApiService(vrpcClient)
+const REMEMBERED_WORKSPACE_ID_STORAGE_KEY = 'carbonnt.workspace.lastSelectedId'
 
 const getWorkspacesMeta = {
   serviceName: 'uic.WorkspaceAppApiService',
@@ -36,6 +37,30 @@ export const workspaceKeys = {
   ] as const,
 }
 
+function getRememberedWorkspaceId() {
+  if (typeof window === 'undefined') {
+    return null
+  }
+
+  try {
+    return window.localStorage.getItem(REMEMBERED_WORKSPACE_ID_STORAGE_KEY)?.trim() || null
+  } catch {
+    return null
+  }
+}
+
+function setRememberedWorkspaceId(workspaceId: string) {
+  if (typeof window === 'undefined') {
+    return
+  }
+
+  try {
+    window.localStorage.setItem(REMEMBERED_WORKSPACE_ID_STORAGE_KEY, workspaceId)
+  } catch {
+    // localStorage can be unavailable in private or restricted contexts.
+  }
+}
+
 function normalizeWorkspaceSelectionItem(
   workspace: WorkspaceApi,
 ): WorkspaceSelectionItem {
@@ -52,6 +77,22 @@ function normalizeWorkspaceSelectionItem(
   }
 }
 
+export function getRememberedWorkspaceSelection(
+  workspaces: Array<WorkspaceSelectionItem>,
+) {
+  const rememberedWorkspaceId = getRememberedWorkspaceId()
+
+  if (!rememberedWorkspaceId) {
+    return null
+  }
+
+  return (
+    workspaces.find(
+      (workspace) => workspace.id.trim() === rememberedWorkspaceId,
+    ) ?? null
+  )
+}
+
 export async function fetchAvailableWorkspaces() {
   const workspaces = await workspaceAppApiService.getWorkspaces(null, {
     suppressGlobalToast: true,
@@ -65,9 +106,12 @@ export async function prepareWorkspaceSelectionAfterAuth() {
   queryClient.clear()
 
   const workspaces = await fetchAvailableWorkspaces()
+  const workspaceToSelect =
+    getRememberedWorkspaceSelection(workspaces) ??
+    (workspaces.length === 1 ? workspaces[0] : null)
 
-  if (workspaces.length === 1) {
-    const selectedWorkspace = await selectWorkspaceId(workspaces[0])
+  if (workspaceToSelect) {
+    const selectedWorkspace = await selectWorkspaceId(workspaceToSelect)
 
     return {
       requiresSelection: false,
@@ -112,6 +156,7 @@ export async function selectWorkspaceId(
 
   setSessionScope(normalizedScope)
   setSessionWorkspaceId(normalizedWorkspaceId)
+  setRememberedWorkspaceId(normalizedWorkspaceId)
   queryClient.clear()
 
   return {

@@ -1,5 +1,5 @@
 import * as React from 'react'
-import { BoxIcon, CheckIcon, LogOut, RefreshCwIcon } from 'lucide-react'
+import { BoxIcon, CheckIcon, GlobeIcon, LogOut, RefreshCwIcon } from 'lucide-react'
 
 import { Button } from '#/components/ui/button.tsx'
 import {
@@ -14,7 +14,12 @@ import {
 } from '#/components/ui/dropdown-menu.tsx'
 import { Skeleton } from '#/components/ui/skeleton.tsx'
 import { Spinner } from '#/components/ui/spinner.tsx'
-import { useTranslation } from '#/lib/i18n/index.ts'
+import {
+  formatMessage,
+  languageStore,
+  useTranslation,
+} from '#/lib/i18n/index.ts'
+import type { SupportedLanguage } from '#/lib/i18n/index.ts'
 import { cn } from '#/lib/utils.ts'
 import { getSessionScope } from '#/lib/session-cookie.ts'
 import {
@@ -34,6 +39,8 @@ export type AccountPopoverProps = {
   profileQuery: AppLayoutAsyncState<AppLayoutUserProfile>
   workspaceQuery: AppLayoutAsyncState<Array<WorkspaceSelectionItem>>
 }
+
+const ACCOUNT_LANGUAGE_OPTIONS: Array<SupportedLanguage> = ['en-US', 'zh-CN']
 
 type WorkspaceMenuItemProps = {
   currentWorkspaceScope: string | null
@@ -98,6 +105,11 @@ function WorkspaceMenuItem({
           <span className="truncate text-sm leading-5 font-semibold text-foreground">
             {workspace.name}
           </span>
+          {isCurrent ? (
+            <span className="shrink-0 rounded-md bg-primary/10 px-1.5 py-0.5 text-[11px] leading-4 font-medium text-primary">
+              {t.common.workspace.current}
+            </span>
+          ) : null}
         </span>
         {secondaryText ? (
           <span className="mt-0.5 block truncate text-xs leading-4 text-muted-foreground">
@@ -118,7 +130,7 @@ export function AccountPopover({
   profileQuery,
   workspaceQuery,
 }: AccountPopoverProps) {
-  const { t } = useTranslation()
+  const { language, t } = useTranslation()
   const [switchingWorkspaceId, setSwitchingWorkspaceId] = React.useState<
     string | null
   >(null)
@@ -136,6 +148,22 @@ export function AccountPopover({
   const accountName = profile?.username?.trim() ?? ''
   const accountPhone = profile?.phone?.trim()
   const accountEmail = profile?.email?.trim()
+  const currentWorkspace = React.useMemo(() => {
+    if (!currentWorkspaceScope) {
+      return null
+    }
+
+    return (
+      workspaceOptions.find(
+        (workspace) => workspace.scope.trim() === currentWorkspaceScope,
+      ) ?? null
+    )
+  }, [currentWorkspaceScope, workspaceOptions])
+  const currentWorkspaceName = currentWorkspace?.name.trim() ?? ''
+  const currentLanguageName = t.common.language.names[language]
+  const languageMenuLabel = formatMessage(t.common.language.current, {
+    language: currentLanguageName,
+  })
 
   const handleWorkspaceRetry = React.useCallback(() => {
     setWorkspaceSwitchFailed(false)
@@ -161,6 +189,16 @@ export function AccountPopover({
       }
     },
     [switchingWorkspaceId],
+  )
+
+  const handleLanguageChange = React.useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      const nextLanguage = event.currentTarget.dataset
+        .language as SupportedLanguage
+
+      languageStore.setLanguage(nextLanguage)
+    },
+    [],
   )
 
   const isWorkspaceSubmenuDisabled = !hasSessionCredential
@@ -226,27 +264,21 @@ export function AccountPopover({
           <Button
             variant="ghost"
             aria-label={t.common.shell.account.menu}
-            className="h-8 min-w-[6.5rem] justify-start gap-2 px-2 active:translate-y-0"
+            className="h-10 min-w-0 max-w-[10rem] justify-start gap-2 px-2 active:translate-y-0"
           />
         }
       >
         {isProfileLoading ? (
-          <>
-            <Skeleton
-              aria-hidden="true"
-              className="size-6 shrink-0 rounded-full"
-            />
-            <Skeleton aria-hidden="true" className="h-4 w-14 shrink-0" />
-          </>
+          <Skeleton aria-hidden="true" className="h-10 w-24 rounded-lg" />
         ) : (
           <>
             <img
               src={defaultUserAvatar}
               alt=""
               aria-hidden="true"
-              className="size-6 shrink-0 rounded-full border border-border object-cover"
+              className="size-7 shrink-0 rounded-full border border-border object-cover"
             />
-            <span className="max-w-28 truncate text-sm font-medium text-foreground">
+            <span className="max-w-full truncate text-sm font-semibold text-foreground">
               {accountName}
             </span>
           </>
@@ -300,11 +332,20 @@ export function AccountPopover({
               disabled={isWorkspaceSubmenuDisabled}
               openOnHover
               delay={80}
-              className="h-10 cursor-pointer gap-2 rounded-lg px-2.5 text-[15px] font-semibold data-disabled:pointer-events-none data-disabled:opacity-50"
+              className="min-h-12 cursor-pointer gap-2 rounded-lg px-2.5 py-2 text-[15px] font-semibold data-disabled:pointer-events-none data-disabled:opacity-50"
             >
               <BoxIcon aria-hidden="true" className="text-muted-foreground" />
-              <span className="min-w-0 flex-1 truncate">
-                {t.common.shell.account.switchWorkspace}
+              <span className="min-w-0 flex-1 text-left">
+                <span className="block truncate">
+                  {t.common.shell.account.switchWorkspace}
+                </span>
+                {currentWorkspaceName ? (
+                  <span className="mt-0.5 inline-flex max-w-full rounded-md bg-muted px-1.5 py-0.5 text-[11px] leading-4 font-medium text-foreground/80">
+                    <span className="min-w-0 truncate">
+                      {currentWorkspaceName}
+                    </span>
+                  </span>
+                ) : null}
               </span>
             </DropdownMenuSubTrigger>
             <DropdownMenuSubContent
@@ -319,6 +360,58 @@ export function AccountPopover({
                 </div>
               ) : null}
               <div className="flex flex-col gap-1">{workspaceSubmenuContent}</div>
+            </DropdownMenuSubContent>
+          </DropdownMenuSub>
+
+          <DropdownMenuSub>
+            <DropdownMenuSubTrigger
+              openOnHover
+              delay={80}
+              aria-label={languageMenuLabel}
+              className="min-h-12 cursor-pointer gap-2 rounded-lg px-2.5 py-2 text-[15px] font-semibold"
+            >
+              <GlobeIcon aria-hidden="true" className="text-muted-foreground" />
+              <span className="min-w-0 flex-1 truncate text-left">
+                {t.common.shell.account.languageSettings}
+              </span>
+              <span className="max-w-20 shrink-0 truncate text-xs leading-4 font-medium text-muted-foreground">
+                {currentLanguageName}
+              </span>
+            </DropdownMenuSubTrigger>
+            <DropdownMenuSubContent
+              side="left"
+              align="start"
+              sideOffset={8}
+              className="w-44 rounded-lg border border-border/70 p-2 shadow-xl"
+            >
+              <div className="flex flex-col gap-1">
+                {ACCOUNT_LANGUAGE_OPTIONS.map((item) => {
+                  const isActive = item === language
+
+                  return (
+                    <DropdownMenuItem
+                      key={item}
+                      data-language={item}
+                      aria-current={isActive ? 'true' : undefined}
+                      className={cn(
+                        'h-9 cursor-pointer gap-2 rounded-lg px-2.5 text-sm',
+                        isActive && 'bg-primary/5 text-primary focus:bg-primary/10',
+                      )}
+                      onClick={handleLanguageChange}
+                    >
+                      <span className="min-w-0 flex-1 truncate">
+                        {t.common.language.names[item]}
+                      </span>
+                      {isActive ? (
+                        <CheckIcon
+                          aria-hidden="true"
+                          className="size-4 shrink-0 text-primary"
+                        />
+                      ) : null}
+                    </DropdownMenuItem>
+                  )
+                })}
+              </div>
             </DropdownMenuSubContent>
           </DropdownMenuSub>
 

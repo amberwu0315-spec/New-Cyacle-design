@@ -27,6 +27,7 @@ export const common = {
     account: {
       menu: '账号菜单',
       switchWorkspace: '切换空间',
+      languageSettings: '语言设置',
       logout: '退出登录',
     },
     profileBootstrap: {
@@ -44,6 +45,7 @@ export const common = {
     emptyTitle: '暂无可用空间',
     emptyDescription: '当前账号没有可进入的工作空间，请联系管理员处理。',
     retry: '重新加载',
+    logout: '退出登录',
     current: '当前空间',
     personal: '个人空间',
     organization: '企业空间',

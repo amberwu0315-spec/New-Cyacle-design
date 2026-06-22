@@ -29,6 +29,7 @@ export const common = {
     account: {
       menu: 'Account menu',
       switchWorkspace: 'Switch workspace',
+      languageSettings: 'Language',
       logout: 'Log out',
     },
     profileBootstrap: {
@@ -46,6 +47,7 @@ export const common = {
     emptyTitle: 'No available workspaces',
     emptyDescription: 'This account does not have access to a workspace. Contact an administrator.',
     retry: 'Reload',
+    logout: 'Log out',
     current: 'Current workspace',
     personal: 'Personal workspace',
     organization: 'Organization workspace',
