@@ -1,3 +1,5 @@
+import * as React from 'react'
+
 import type { SupportedLanguage } from './language-store'
 import { languageStore, useLanguageStore } from './language-store'
 
@@ -48,7 +50,10 @@ export function createI18nCatalog<TMessages>(
     const language = useLanguageStore()
     const t = getMessages(language)
 
-    return { language, t, format: formatMessage }
+    return React.useMemo(
+      () => ({ language, t, format: formatMessage }),
+      [language, t],
+    )
   }
 
   return {
