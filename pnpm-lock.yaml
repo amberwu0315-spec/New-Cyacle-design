@@ -27,13 +27,13 @@ importers:
         specifier: workspace:*
         version: link:../../../domain/uic/src/web
       '@tanstack/react-router':
-        specifier: ^1.170.14
+        specifier: 1.170.15
         version: 1.170.15(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       react:
-        specifier: ^19.2.0
+        specifier: 19.2.7
         version: 19.2.7
       react-dom:
-        specifier: ^19.2.0
+        specifier: 19.2.7
         version: 19.2.7(react@19.2.7)
     devDependencies:
       '@tailwindcss/vite':
@@ -52,10 +52,10 @@ importers:
         specifier: ^22.10.2
         version: 22.19.21
       '@types/react':
-        specifier: ^19.2.0
+        specifier: 19.2.17
         version: 19.2.17
       '@types/react-dom':
-        specifier: ^19.2.0
+        specifier: 19.2.3
         version: 19.2.3(@types/react@19.2.17)
       '@vitejs/plugin-react':
         specifier: ^6.0.2
@@ -127,8 +127,8 @@ importers:
         specifier: ^1.170.14
         version: 1.170.15(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@yorun-ai/vrpc':
-        specifier: ^3.1.1
-        version: 3.1.1
+        specifier: 4.0.0
+        version: 4.0.0
       class-variance-authority:
         specifier: ^0.7.1
         version: 0.7.1
@@ -492,6 +492,9 @@ importers:
       '@carbonnt-cyacle/web-base':
         specifier: workspace:*
         version: link:../../../base/src/web
+      '@carbonnt-cyacle/web-uic':
+        specifier: workspace:*
+        version: link:../../../uic/src/web
       '@crew-ui/base':
         specifier: ^2.0.7
         version: 2.0.7(@date-fns/tz@1.5.0)(@types/react@19.2.17)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -2383,6 +2386,9 @@ packages:
 
   '@yorun-ai/vrpc@3.1.1':
     resolution: {integrity: sha512-1T0G8bUqnpWnlqoWjOyXZIw3tRj7m3BpBolDjy1UUd0hv4TDYGDdtazhq8orSgKP4mRIN+9kVrpH0e20s277vQ==}
+
+  '@yorun-ai/vrpc@4.0.0':
+    resolution: {integrity: sha512-ef9wIpAlEqjwKSBmZUUV9L034z2VqenjgGsHQDHiGg9LY67Wdbyn90h3VLNY/mtq+9aG7EOUj1kNRYhJYG//CQ==}
 
   abbrev@1.1.1:
     resolution: {integrity: sha512-nne9/IiQ/hzIhY6pdDnbBtz7DjPTKrY00P/zvPSm5pOFkl6xuGrGnXn/VtTNNfNtAfZ9/1RtehkszU9qcTii0Q==, tarball: https://npm.cew.io/repository/npm/abbrev/-/abbrev-1.1.1.tgz}
@@ -6750,6 +6756,8 @@ snapshots:
       d3-zoom: 3.0.0
 
   '@yorun-ai/vrpc@3.1.1': {}
+
+  '@yorun-ai/vrpc@4.0.0': {}
 
   abbrev@1.1.1:
     optional: true
