@@ -10,8 +10,6 @@
     /* Bundler mode */
     "moduleResolution": "bundler",
     "paths": {
-      "#/features/cfp/*": ["../../../domain/lca.core/src/web/src/features/cfp/*"],
-      "#/routes/detail-route": ["../../../domain/lca.core/src/web/src/routes/detail-route.tsx"],
       "react": ["./node_modules/@types/react"],
       "react/jsx-runtime": ["./node_modules/@types/react/jsx-runtime"],
       "react/jsx-dev-runtime": ["./node_modules/@types/react/jsx-dev-runtime"]

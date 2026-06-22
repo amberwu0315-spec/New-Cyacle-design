@@ -49,6 +49,8 @@
     "./globals.css": "./src/styles/globals.css",
     "./hooks/*": "./src/hooks/*.ts",
     "./lib/*": "./src/lib/*",
+    "./lib/upload-services/core/document-service": "./src/lib/upload-services/core/document-service.ts",
+    "./lib/upload-services/core/upload-pool": "./src/lib/upload-services/core/upload-pool.ts",
     "./lib/query-client": "./src/lib/query-client.tsx",
     "./package.json": "./package.json"
   },
