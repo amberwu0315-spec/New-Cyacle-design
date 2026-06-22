@@ -11,6 +11,9 @@ importers:
       '@carbonnt-cyacle/web-base':
         specifier: workspace:*
         version: link:../../../domain/base/src/web
+      '@carbonnt-cyacle/web-category':
+        specifier: workspace:*
+        version: link:../../../domain/category/src/web
       '@carbonnt-cyacle/web-factor':
         specifier: workspace:*
         version: link:../../../domain/factor/src/web

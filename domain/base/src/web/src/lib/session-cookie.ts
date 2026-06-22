@@ -157,9 +157,4 @@ export function clearSessionCredential() {
     sameSite: 'lax',
     secure,
   })
-  Cookies.remove(SESSION_COOKIE_KEY, {
-    path: '/',
-    sameSite: 'lax',
-    secure,
-  })
 }
