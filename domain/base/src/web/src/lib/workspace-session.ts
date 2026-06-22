@@ -1,5 +1,6 @@
-import type { WorkspaceApi } from '@carbonnt-cyacle/skeled-uicpub'
-import { createWorkspaceAppApiService } from '@carbonnt-cyacle/skeled-uicpub'
+// TODO: fix deep import uicoub
+import type { WorkspaceApi } from '../../../../../uic/skeled/typescript'
+import { createWorkspaceAppApiService } from '../../../../../uic/skeled/typescript'
 
 import { queryClient } from '#/lib/query-client.tsx'
 import {
