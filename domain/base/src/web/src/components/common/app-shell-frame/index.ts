@@ -1,0 +1,83 @@
+import {
+  AppShellFrameBody,
+  AppShellFrameContent,
+  AppShellFrameMain,
+  AppShellFrameNav,
+  AppShellFrameOverlays,
+  AppShellFrameRoot,
+} from './widgets/root'
+import {
+  AppShellFrameSidebar,
+  AppShellFrameSidebarBrand,
+  AppShellFrameSidebarNav,
+} from './widgets/sidebar'
+import {
+  AppShellFrameBreadcrumbs,
+  AppShellFrameSidebarTrigger,
+  AppShellFrameTopbar,
+  AppShellFrameTopbarEnd,
+  AppShellFrameTopbarStart,
+} from './widgets/topbar'
+
+export const AppShellFrame = Object.assign(AppShellFrameRoot, {
+  Body: AppShellFrameBody,
+  Content: AppShellFrameContent,
+  Breadcrumbs: AppShellFrameBreadcrumbs,
+  Main: AppShellFrameMain,
+  Nav: AppShellFrameNav,
+  Overlays: AppShellFrameOverlays,
+  Sidebar: AppShellFrameSidebar,
+  SidebarBrand: AppShellFrameSidebarBrand,
+  SidebarNav: AppShellFrameSidebarNav,
+  SidebarTrigger: AppShellFrameSidebarTrigger,
+  Topbar: AppShellFrameTopbar,
+  TopbarEnd: AppShellFrameTopbarEnd,
+  TopbarStart: AppShellFrameTopbarStart,
+})
+
+export {
+  AppShellFrameBreadcrumbs,
+  AppShellFrameBody,
+  AppShellFrameContent,
+  AppShellFrameMain,
+  AppShellFrameNav,
+  AppShellFrameOverlays,
+  AppShellFrameRoot,
+  AppShellFrameSidebar,
+  AppShellFrameSidebarBrand,
+  AppShellFrameSidebarNav,
+  AppShellFrameSidebarTrigger,
+  AppShellFrameTopbar,
+  AppShellFrameTopbarEnd,
+  AppShellFrameTopbarStart,
+}
+export { useAppShellFrame, useAppShellFrameNav } from './widgets/contexts'
+export type {
+  AppShellBreadcrumbItem,
+  AppShellFrameBreadcrumbsProps,
+  AppShellFrameBodyProps,
+  AppShellFrameContentProps,
+  AppShellFrameContextValue,
+  AppShellFrameMainProps,
+  AppShellFrameNavContextValue,
+  AppShellFrameNavProps,
+  AppShellFrameOverlaysProps,
+  AppShellFrameProps,
+  AppShellFrameRootProps,
+  AppShellFrameSidebarBrandProps,
+  AppShellFrameSidebarNavLabels,
+  AppShellFrameSidebarNavProps,
+  AppShellFrameSidebarProps,
+  AppShellFrameSidebarTriggerLabels,
+  AppShellFrameSidebarTriggerProps,
+  AppShellSidebarState,
+  AppShellFrameTopbarEndProps,
+  AppShellFrameTopbarProps,
+  AppShellFrameTopbarStartProps,
+  AppShellIcon,
+  AppShellNavConfig,
+  AppShellNavGroup,
+  AppShellNavItem,
+  AppShellScene,
+  AppShellSceneCategory,
+} from './types'

@@ -96,6 +96,54 @@ export type {
 } from '#/components/layouts/module-layout/index.ts';
 export { BaseProviders } from '#/base-providers.tsx';
 export * from '#/components/assistant-workbench/index.ts';
+export {
+  AppShellFrame,
+  AppShellFrameBreadcrumbs,
+  AppShellFrameBody,
+  AppShellFrameContent,
+  AppShellFrameMain,
+  AppShellFrameNav,
+  AppShellFrameOverlays,
+  AppShellFrameRoot,
+  AppShellFrameSidebar,
+  AppShellFrameSidebarBrand,
+  AppShellFrameSidebarNav,
+  AppShellFrameSidebarTrigger,
+  AppShellFrameTopbar,
+  AppShellFrameTopbarEnd,
+  AppShellFrameTopbarStart,
+  useAppShellFrame,
+  useAppShellFrameNav,
+} from '#/components/common/app-shell-frame/index.ts';
+export type {
+  AppShellBreadcrumbItem,
+  AppShellFrameBreadcrumbsProps,
+  AppShellFrameBodyProps,
+  AppShellFrameContentProps,
+  AppShellFrameContextValue,
+  AppShellFrameMainProps,
+  AppShellFrameNavContextValue,
+  AppShellFrameNavProps,
+  AppShellFrameOverlaysProps,
+  AppShellFrameProps,
+  AppShellFrameRootProps,
+  AppShellFrameSidebarBrandProps,
+  AppShellFrameSidebarNavLabels,
+  AppShellFrameSidebarNavProps,
+  AppShellFrameSidebarProps,
+  AppShellFrameSidebarTriggerLabels,
+  AppShellFrameSidebarTriggerProps,
+  AppShellSidebarState,
+  AppShellFrameTopbarEndProps,
+  AppShellFrameTopbarProps,
+  AppShellFrameTopbarStartProps,
+  AppShellIcon,
+  AppShellNavConfig,
+  AppShellNavGroup,
+  AppShellNavItem,
+  AppShellScene,
+  AppShellSceneCategory,
+} from '#/components/common/app-shell-frame/index.ts';
 export * from '#/components/common/document-preview/index.ts';
 export * from '#/components/common/workbench-sidebar/index.ts';
 export {

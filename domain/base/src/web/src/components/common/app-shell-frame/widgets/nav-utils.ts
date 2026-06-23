@@ -1,14 +1,26 @@
-import { getSceneById } from '#/components/layouts/app-layout/nav-config.tsx'
-import type { AppNavConfig, AppNavItem, AppScene } from '#/components/layouts/app-layout/nav-config.tsx'
+import type * as React from 'react'
 
-export interface BreadcrumbItem {
-  label: string
-  href?: string | null
+import type {
+  AppShellBreadcrumbItem,
+  AppShellFrameSidebarNavLabels,
+  AppShellNavConfig,
+  AppShellNavItem,
+  AppShellScene,
+  AppShellSidebarState,
+} from '../types'
+
+export function getCategorizedScenes(navConfig: AppShellNavConfig) {
+  return navConfig.categories.map((category) => ({
+    title: category.title,
+    scenes: category.sceneIds
+      .map((sceneId) =>
+        navConfig.scenes.find((scene) => scene.id === sceneId),
+      )
+      .filter((scene): scene is AppShellScene => scene !== undefined),
+  }))
 }
 
-export type SidebarDisplayState = 'expanded' | 'collapsed'
-
-export function normalizePath(pathname: string) {
+function normalizePath(pathname: string) {
   if (!pathname) {
     return '/'
   }
@@ -38,9 +50,13 @@ function getMatchedPrefixLength(pathname: string, target: string) {
   return -1
 }
 
-function getActiveMatch(navConfig: AppNavConfig, pathname: string) {
-  let activeScene: AppScene | null = null
-  let activeItem: AppNavItem | null = null
+function getSceneById(navConfig: AppShellNavConfig, sceneId: string) {
+  return navConfig.scenes.find((scene) => scene.id === sceneId) ?? null
+}
+
+export function getActiveNavMatch(navConfig: AppShellNavConfig, pathname: string) {
+  let activeScene: AppShellScene | null = null
+  let activeItem: AppShellNavItem | null = null
   let bestLength = -1
 
   for (const scene of navConfig.scenes) {
@@ -66,21 +82,11 @@ function getActiveMatch(navConfig: AppNavConfig, pathname: string) {
   }
 }
 
-export function getActiveScene(navConfig: AppNavConfig, pathname: string) {
-  return getActiveMatch(navConfig, pathname).activeScene
-}
-
-export function getActiveNavItem(navConfig: AppNavConfig, pathname: string) {
-  return getActiveMatch(navConfig, pathname).activeItem
-}
-
 export function getBreadcrumbItems(
-  navConfig: AppNavConfig,
-  pathname: string,
-  sidebarState: SidebarDisplayState,
-): Array<BreadcrumbItem> {
-  const { activeItem, activeScene } = getActiveMatch(navConfig, pathname)
-
+  activeScene: AppShellScene,
+  activeItem: AppShellNavItem | null,
+  sidebarState: AppShellSidebarState,
+): Array<AppShellBreadcrumbItem> {
   if (!activeItem || activeItem.label === activeScene.label) {
     return [{ label: activeScene.label, href: activeScene.defaultTo }]
   }
@@ -95,11 +101,26 @@ export function getBreadcrumbItems(
   ]
 }
 
-export function getCategorizedScenes(navConfig: AppNavConfig) {
-  return navConfig.categories.map((category) => ({
-    title: category.title,
-    scenes: category.sceneIds
-      .map((sceneId) => getSceneById(navConfig, sceneId))
-      .filter((scene): scene is AppScene => scene !== null),
-  }))
+export function resolveScenePickerLabel(
+  label: AppShellFrameSidebarNavLabels['scenePicker'],
+  scene: AppShellScene,
+) {
+  if (typeof label === 'function') {
+    return label(scene)
+  }
+
+  return label
+}
+
+export function shouldUseBrowserNavigation(
+  event: React.MouseEvent<HTMLAnchorElement>,
+) {
+  return (
+    event.defaultPrevented ||
+    event.button !== 0 ||
+    event.metaKey ||
+    event.altKey ||
+    event.ctrlKey ||
+    event.shiftKey
+  )
 }

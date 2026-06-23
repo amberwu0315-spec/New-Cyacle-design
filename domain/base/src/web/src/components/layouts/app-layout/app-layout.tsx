@@ -1,50 +1,20 @@
 import * as React from 'react'
-import { useLocation } from '@tanstack/react-router'
-import Cookies from 'js-cookie'
+import { useLocation, useNavigate } from '@tanstack/react-router'
 import { AlertTriangleIcon, LogOutIcon, RefreshCwIcon } from 'lucide-react'
 
-import { AppSidebar } from '#/components/layouts/app-layout/app-sidebar.tsx'
-import { AppTopbar } from '#/components/layouts/app-layout/app-topbar.tsx'
+import { AppShellFrame } from '#/components/common/app-shell-frame/index.ts'
+import { AccountPopover } from '#/components/layouts/app-layout/account-popover.tsx'
 import { WorkspaceSelectionDialog } from './workspace-selection-dialog.tsx'
-import {
-  getActiveNavItem,
-  getActiveScene,
-  getBreadcrumbItems,
-} from './nav-matching.ts'
 import type { AppNavConfig } from './nav-config.tsx'
 import { Button } from '#/components/ui/button.tsx'
 import { Spinner } from '#/components/ui/spinner.tsx'
-import { useTranslation } from '#/lib/i18n/index.ts'
+import { formatMessage, useTranslation } from '#/lib/i18n/index.ts'
 import type {
   WorkspaceAutoSelectionResolver,
   WorkspaceSelectionItem,
   WorkspaceSelectionResult,
 } from './workspace-selection.ts'
-
-const SIDEBAR_COOKIE_NAME = 'sidebar_state'
-const MOBILE_MEDIA_QUERY = '(max-width: 1023px)'
-
-type SidebarState = 'expanded' | 'collapsed'
-
-function getCookieSidebarState() {
-  return Cookies.get(SIDEBAR_COOKIE_NAME) !== 'false'
-}
-
-function getInitialIsMobile() {
-  if (typeof window === 'undefined') {
-    return false
-  }
-
-  return window.matchMedia(MOBILE_MEDIA_QUERY).matches
-}
-
-function persistSidebarState(isOpen: boolean) {
-  Cookies.set(SIDEBAR_COOKIE_NAME, String(isOpen), {
-    path: '/',
-    expires: 7,
-    sameSite: 'lax',
-  })
-}
+import cyacleLogo from './assets/brand/cyacle.png'
 
 type SessionBootstrapErrorProps = {
   actionHint: string
@@ -147,13 +117,10 @@ export function AppLayout({
   workspaceQuery,
 }: AppLayoutProps) {
   const { t } = useTranslation()
+  const navigate = useNavigate()
   const pathname = useLocation({
     select: (location) => location.pathname,
   })
-  const [isMobile, setIsMobile] = React.useState(getInitialIsMobile)
-  const [isSidebarOpen, setIsSidebarOpen] = React.useState(
-    getCookieSidebarState,
-  )
   const [selectedWorkspaceScope, setSelectedWorkspaceScope] = React.useState(
     () => currentWorkspaceScope?.trim() || null,
   )
@@ -164,8 +131,6 @@ export function AppLayout({
     Array<WorkspaceSelectionItem>
   >([])
   const [workspaceSwitchFailed, setWorkspaceSwitchFailed] = React.useState(false)
-  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = React.useState(false)
-  const [isScenePanelOpen, setIsScenePanelOpen] = React.useState(false)
   const {
     data: currentUserProfile,
     isError: isProfileError,
@@ -217,34 +182,6 @@ export function AppLayout({
     return availableWorkspaces ?? []
   }, [availableWorkspaces, lastAvailableWorkspaces, switchingWorkspaceId])
 
-  const setPersistedSidebarOpen = React.useCallback((getNext: (current: boolean) => boolean) => {
-    setIsSidebarOpen((current) => {
-      const next = getNext(current)
-      persistSidebarState(next)
-      return next
-    })
-  }, [])
-
-  React.useEffect(() => {
-    const mediaQuery = window.matchMedia(MOBILE_MEDIA_QUERY)
-
-    function handleMediaQueryChange(event: MediaQueryListEvent) {
-      setIsMobile(event.matches)
-    }
-
-    setIsMobile(mediaQuery.matches)
-    mediaQuery.addEventListener('change', handleMediaQueryChange)
-
-    return () => {
-      mediaQuery.removeEventListener('change', handleMediaQueryChange)
-    }
-  }, [])
-
-  React.useEffect(() => {
-    setIsMobileSidebarOpen(false)
-    setIsScenePanelOpen(false)
-  }, [pathname])
-
   React.useEffect(() => {
     if (availableWorkspaces?.length) {
       setLastAvailableWorkspaces(availableWorkspaces)
@@ -254,35 +191,6 @@ export function AppLayout({
   React.useEffect(() => {
     setSelectedWorkspaceScope(currentWorkspaceScope?.trim() || null)
   }, [currentWorkspaceScope])
-
-  React.useEffect(() => {
-    function handleKeyDown(event: KeyboardEvent) {
-      if (event.key === 'b' && (event.metaKey || event.ctrlKey)) {
-        event.preventDefault()
-        if (window.matchMedia(MOBILE_MEDIA_QUERY).matches) {
-          setIsMobileSidebarOpen((current) => !current)
-          return
-        }
-
-        setPersistedSidebarOpen((current) => !current)
-      }
-    }
-
-    window.addEventListener('keydown', handleKeyDown)
-
-    return () => {
-      window.removeEventListener('keydown', handleKeyDown)
-    }
-  }, [setPersistedSidebarOpen])
-
-  const toggleSidebar = React.useCallback(() => {
-    if (isMobile) {
-      setIsMobileSidebarOpen((current) => !current)
-      return
-    }
-
-    setPersistedSidebarOpen((current) => !current)
-  }, [isMobile, setPersistedSidebarOpen])
 
   const handleWorkspaceSelect = React.useCallback(
     async (workspace: WorkspaceSelectionItem) => {
@@ -315,6 +223,13 @@ export function AppLayout({
   const handleProfileRetry = React.useCallback(() => {
     void refetchProfile()
   }, [refetchProfile])
+
+  const handleNavigate = React.useCallback(
+    (to: string) => {
+      void navigate({ to })
+    },
+    [navigate],
+  )
 
   React.useEffect(() => {
     if (!shouldRequireWorkspaceSelection || !autoSelectedWorkspace) {
@@ -355,89 +270,96 @@ export function AppLayout({
     }
   }, [autoSelectedWorkspace, onWorkspaceSelect, shouldRequireWorkspaceSelection])
 
-  const sidebarState: SidebarState = isSidebarOpen ? 'expanded' : 'collapsed'
-  const activeScene = React.useMemo(
-    () => getActiveScene(navConfig, pathname),
-    [navConfig, pathname],
-  )
-  const activeItem = React.useMemo(
-    () => getActiveNavItem(navConfig, pathname),
-    [navConfig, pathname],
-  )
-  const breadcrumbItems = React.useMemo(
-    () => getBreadcrumbItems(navConfig, pathname, sidebarState),
-    [navConfig, pathname, sidebarState],
-  )
-
   const isProfileBootstrapError =
     !hasCurrentUserProfile && (isProfileError || isProfileSuccess)
 
   return (
-    <div className="h-dvh overflow-hidden bg-background text-foreground">
-      <div className="flex h-full min-h-0 w-full">
-        <AppSidebar
-          activeItem={activeItem}
-          activeScene={activeScene}
-          navConfig={navConfig}
-          isMobile={isMobile}
-          isMobileOpen={isMobileSidebarOpen}
-          isScenePanelOpen={isScenePanelOpen}
-          sidebarState={sidebarState}
-          onCloseMobile={() => setIsMobileSidebarOpen(false)}
-          onScenePanelOpenChange={setIsScenePanelOpen}
-        />
+    <AppShellFrame routeKey={pathname}>
+      <AppShellFrame.Nav navConfig={navConfig} pathname={pathname}>
+        <AppShellFrame.Body>
+          <AppShellFrame.Sidebar
+            resizeLabel={t.common.shell.sidebar.resizeLabel}
+            resizeHint={t.common.shell.sidebar.resizeHint}
+          >
+            <AppShellFrame.SidebarBrand
+              href="/"
+              label={t.common.shell.sidebar.brandName}
+              homeLabel={t.common.shell.sidebar.homeLink}
+              logoSrc={cyacleLogo}
+              onNavigate={handleNavigate}
+            />
+            <AppShellFrame.SidebarNav
+              labels={{
+                scenePicker: (scene) =>
+                  formatMessage(t.common.shell.sidebar.scenePickerLabel, {
+                    label: scene.label,
+                  }),
+              }}
+              onNavigate={handleNavigate}
+            />
+          </AppShellFrame.Sidebar>
 
-        <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
-          <AppTopbar
-            activeItem={activeItem}
-            activeScene={activeScene}
-            breadcrumbItems={breadcrumbItems}
-            currentWorkspaceScope={selectedWorkspaceScope}
-            hasSessionCredential={hasSessionCredential}
-            isMobile={isMobile}
-            onLogout={onLogout}
-            onWorkspaceSelect={onWorkspaceSelect}
-            sidebarState={sidebarState}
-            onToggleSidebar={toggleSidebar}
-            profileQuery={profileQuery}
-            workspaceQuery={workspaceQuery}
-          />
+          <AppShellFrame.Content>
+            <AppShellFrame.Topbar>
+              <AppShellFrame.TopbarStart>
+                <AppShellFrame.SidebarTrigger
+                  labels={{
+                    open: t.common.shell.topbar.openSidebar,
+                    expand: t.common.shell.topbar.expandSidebar,
+                    collapse: t.common.shell.topbar.collapseSidebar,
+                  }}
+                />
+                <AppShellFrame.Breadcrumbs />
+              </AppShellFrame.TopbarStart>
 
-          <main className="flex min-h-0 flex-1 flex-col overflow-auto bg-background">
-            {children}
-          </main>
-        </div>
-      </div>
+              <AppShellFrame.TopbarEnd>
+                <AccountPopover
+                  currentWorkspaceScope={selectedWorkspaceScope}
+                  hasSessionCredential={hasSessionCredential}
+                  onLogout={onLogout}
+                  onWorkspaceSelect={onWorkspaceSelect}
+                  profileQuery={profileQuery}
+                  workspaceQuery={workspaceQuery}
+                />
+              </AppShellFrame.TopbarEnd>
+            </AppShellFrame.Topbar>
 
-      <WorkspaceSelectionDialog
-        open={shouldOpenWorkspaceSelectionDialog}
-        currentWorkspaceScope={selectedWorkspaceScope}
-        workspaces={workspaceSelectionOptions}
-        isLoading={
-          isWorkspaceLoading ||
-          (isWorkspaceFetching && !availableWorkspaces?.length) ||
-          (Boolean(switchingWorkspaceId) && !workspaceSelectionOptions.length)
-        }
-        isError={isWorkspaceError}
-        isSwitchError={workspaceSwitchFailed}
-        onLogout={onLogout}
-        onRetry={handleWorkspaceRetry}
-        onSelect={handleWorkspaceSelect}
-        switchingWorkspaceId={switchingWorkspaceId}
-      />
+            <AppShellFrame.Main>{children}</AppShellFrame.Main>
+          </AppShellFrame.Content>
+        </AppShellFrame.Body>
+      </AppShellFrame.Nav>
 
-      {isProfileBootstrapError ? (
-        <SessionBootstrapError
-          title={t.common.shell.profileBootstrap.errorTitle}
-          description={t.common.shell.profileBootstrap.errorDescription}
-          actionHint={t.common.shell.profileBootstrap.actionHint}
-          retryLabel={t.common.shell.profileBootstrap.retry}
-          logoutLabel={t.common.shell.profileBootstrap.logout}
-          isRetrying={isProfileFetching}
-          onRetry={handleProfileRetry}
+      <AppShellFrame.Overlays>
+        <WorkspaceSelectionDialog
+          open={shouldOpenWorkspaceSelectionDialog}
+          currentWorkspaceScope={selectedWorkspaceScope}
+          workspaces={workspaceSelectionOptions}
+          isLoading={
+            isWorkspaceLoading ||
+            (isWorkspaceFetching && !availableWorkspaces?.length) ||
+            (Boolean(switchingWorkspaceId) && !workspaceSelectionOptions.length)
+          }
+          isError={isWorkspaceError}
+          isSwitchError={workspaceSwitchFailed}
           onLogout={onLogout}
+          onRetry={handleWorkspaceRetry}
+          onSelect={handleWorkspaceSelect}
+          switchingWorkspaceId={switchingWorkspaceId}
         />
-      ) : null}
-    </div>
+
+        {isProfileBootstrapError ? (
+          <SessionBootstrapError
+            title={t.common.shell.profileBootstrap.errorTitle}
+            description={t.common.shell.profileBootstrap.errorDescription}
+            actionHint={t.common.shell.profileBootstrap.actionHint}
+            retryLabel={t.common.shell.profileBootstrap.retry}
+            logoutLabel={t.common.shell.profileBootstrap.logout}
+            isRetrying={isProfileFetching}
+            onRetry={handleProfileRetry}
+            onLogout={onLogout}
+          />
+        ) : null}
+      </AppShellFrame.Overlays>
+    </AppShellFrame>
   )
 }
