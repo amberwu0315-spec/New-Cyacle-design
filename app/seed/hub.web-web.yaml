@@ -4,6 +4,7 @@ portalSites:
     actorSkelName: base.UserActor
     actorVia: client
     webName: app.WebWeb
+    override: true
 
 portalRules:
   - name: app.WebWeb-web

@@ -4,6 +4,7 @@ portalSites:
     actorSkelName: base.UserActor
     actorVia: client
     webName: ""
+    override: true
 
 portalRules:
   - name: base.UserActor-client-rpc
