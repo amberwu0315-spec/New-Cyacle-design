@@ -33,6 +33,7 @@
 /domain/meta
 /domain/notice
 /domain/pcf.factor.api
+/domain/project
 /domain/project.data
 /domain/record
 /domain/uic

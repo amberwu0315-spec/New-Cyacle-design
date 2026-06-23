@@ -31,6 +31,9 @@ domains:
   - name: unit
     source: REMOTE
     gitUrl: https://git.cew.io/carbonnt/cyacle/domain/unit.git
+  - name: project
+    source: REMOTE
+    gitUrl: https://git.cew.io/carbonnt/cyacle/domain/project.git
   - name: formula
     source: REMOTE
     gitUrl: https://git.cew.io/carbonnt/cyacle/domain/formula.git
