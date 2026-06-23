@@ -647,7 +647,7 @@ function WorkbenchSidebarItem({
       data-active={active ? 'true' : 'false'}
       data-slot="workbench-sidebar-item"
       className={cn(
-        'group/workbench-sidebar-item flex min-w-0 cursor-pointer items-center rounded-md text-left font-medium outline-none transition-[background-color,color,box-shadow,transform] duration-150 focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-45 active:scale-[0.99]',
+        'group/workbench-sidebar-item flex min-w-0 cursor-pointer items-center rounded-md text-left font-medium outline-none transition-[background-color,color,box-shadow] duration-150 focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-45',
         expanded
           ? 'h-8 w-full gap-2 px-2 text-sm'
           : 'mx-auto size-[52px] flex-col justify-center gap-1 px-1 text-sm',
