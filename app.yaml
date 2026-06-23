@@ -13,6 +13,9 @@ domains:
     - name: file
       source: REMOTE
       gitUrl: https://git.cew.io/carbonnt/cyacle/domain/file.git
+    - name: audit
+      source: REMOTE
+      gitUrl: https://git.cew.io/carbonnt/cyacle/domain/audit.git
     - name: history
       source: REMOTE
       gitUrl: https://git.cew.io/carbonnt/cyacle/domain/history.git

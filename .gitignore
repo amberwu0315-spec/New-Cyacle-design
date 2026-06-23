@@ -23,6 +23,7 @@
 /app/src/server
 /app/src/web/package.json
 /dev.yaml
+/domain/audit
 /domain/category
 /domain/factor
 /domain/file
