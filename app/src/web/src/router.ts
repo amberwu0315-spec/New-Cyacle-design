@@ -2,6 +2,7 @@ import '#/project-config.ts'
 
 import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
 import {
+  createWorkbenchSidebarDemoRoute,
   defineWebDomainRouteOutlets,
   resolveWebDomainRouteMount,
 } from '@carbonnt-cyacle/web-base'
@@ -40,6 +41,7 @@ const routeTree = RootRoute.addChildren([
   ...rootDomainRoutes,
   ShellRoute.addChildren([
     createHomeRoute({ parentRoute: ShellRoute }),
+    createWorkbenchSidebarDemoRoute({ parentRoute: ShellRoute }),
     ...shellDomainRoutes,
   ]),
 ])
