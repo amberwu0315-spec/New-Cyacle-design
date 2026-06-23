@@ -1,9 +1,16 @@
 import * as React from 'react'
 import { ChevronDown, ChevronsLeft, ChevronsRight } from 'lucide-react'
 
+import {
+  createPopoverHandle,
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from '#/components/ui/popover.tsx'
 import { cn } from '#/lib/utils.ts'
 
 export type WorkbenchSidebarIcon = React.ElementType<{ className?: string }>
+export type WorkbenchSidebarCollapsedGroupBehavior = 'groups' | 'items'
 
 export interface WorkbenchSidebarItemSelectPayload {
   id: string
@@ -18,6 +25,8 @@ export interface WorkbenchSidebarLabels {
 export interface WorkbenchSidebarRootProps
   extends Omit<React.ComponentPropsWithoutRef<'aside'>, 'onSelect'> {
   activeItemId?: string | null
+  /** Defaults to groups, so collapsed grouped menus show group entries first. */
+  collapsedGroupBehavior?: WorkbenchSidebarCollapsedGroupBehavior
   collapsedWidth?: number | string
   defaultExpanded?: boolean
   expanded?: boolean
@@ -36,9 +45,14 @@ export interface WorkbenchSidebarContentProps
 
 export interface WorkbenchSidebarGroupProps
   extends Omit<React.ComponentPropsWithoutRef<'section'>, 'title'> {
+  active?: boolean
   collapsed?: boolean
+  collapsedBehavior?: WorkbenchSidebarCollapsedGroupBehavior
   collapsible?: boolean
+  /** Short label for the collapsed group entry when collapsed behavior is groups. */
+  compactLabel?: React.ReactNode
   defaultCollapsed?: boolean
+  icon?: WorkbenchSidebarIcon
   onCollapsedChange?: (collapsed: boolean) => void
   title?: React.ReactNode
 }
@@ -55,6 +69,10 @@ export type WorkbenchSidebarFooterProps = React.ComponentPropsWithoutRef<'div'>
 export interface WorkbenchSidebarItemProps
   extends Omit<React.ComponentPropsWithoutRef<'button'>, 'children' | 'onSelect'> {
   active?: boolean
+  /**
+   * Short label used when items are shown directly while collapsed.
+   * Usually unnecessary for grouped items in the default groups behavior.
+   */
   compactLabel?: React.ReactNode
   icon: WorkbenchSidebarIcon
   id: string
@@ -62,8 +80,18 @@ export interface WorkbenchSidebarItemProps
   children: React.ReactNode
 }
 
+interface WorkbenchSidebarCollapsedGroupPayload {
+  children: React.ReactNode
+  contentId: string
+}
+
+type WorkbenchSidebarCollapsedGroupPopoverHandle =
+  ReturnType<typeof createPopoverHandle>
+
 interface WorkbenchSidebarContextValue {
   activeItemId: string | null
+  collapsedGroupPopoverHandle: WorkbenchSidebarCollapsedGroupPopoverHandle
+  collapsedGroupBehavior: WorkbenchSidebarCollapsedGroupBehavior
   expanded: boolean
   labels: Required<WorkbenchSidebarLabels>
   onExpandedChange: (expanded: boolean) => void
@@ -80,11 +108,14 @@ const DEFAULT_LABELS: Required<WorkbenchSidebarLabels> = {
   expand: '展开菜单',
   navigation: '工作区菜单',
 }
+const DEFAULT_COLLAPSED_GROUP_BEHAVIOR: WorkbenchSidebarCollapsedGroupBehavior =
+  'groups'
 const DEFAULT_EXPANDED_WIDTH = '12rem'
 const DEFAULT_COLLAPSED_WIDTH = '5rem'
 const EDGE_TOGGLE_HOVER_DELAY_MS = 120
 const SCROLL_EDGE_THRESHOLD = 1
 const SCROLLBAR_HIDE_DELAY_MS = 900
+const COLLAPSED_GROUP_POPOVER_CLOSE_DELAY_MS = 120
 
 const WorkbenchSidebarContext =
   React.createContext<WorkbenchSidebarContextValue | null>(null)
@@ -145,6 +176,7 @@ function WorkbenchSidebarRoot({
   activeItemId = null,
   children,
   className,
+  collapsedGroupBehavior = DEFAULT_COLLAPSED_GROUP_BEHAVIOR,
   collapsedWidth,
   defaultExpanded = true,
   expanded: controlledExpanded,
@@ -165,6 +197,11 @@ function WorkbenchSidebarRoot({
     () => ({ ...DEFAULT_LABELS, ...labels }),
     [labels],
   )
+  const collapsedGroupPopoverHandle =
+    React.useMemo<WorkbenchSidebarCollapsedGroupPopoverHandle>(
+      () => createPopoverHandle(),
+      [],
+    )
   const handleExpandedChange = React.useCallback(
     (nextExpanded: boolean) => {
       if (controlledExpanded === undefined) {
@@ -179,6 +216,8 @@ function WorkbenchSidebarRoot({
   const contextValue = React.useMemo<WorkbenchSidebarContextValue>(
     () => ({
       activeItemId,
+      collapsedGroupPopoverHandle,
+      collapsedGroupBehavior,
       expanded,
       labels: resolvedLabels,
       onExpandedChange: handleExpandedChange,
@@ -186,6 +225,8 @@ function WorkbenchSidebarRoot({
     }),
     [
       activeItemId,
+      collapsedGroupPopoverHandle,
+      collapsedGroupBehavior,
       expanded,
       handleExpandedChange,
       onItemSelect,
@@ -217,6 +258,7 @@ function WorkbenchSidebarRoot({
         {showEdgeToggle ? <WorkbenchSidebarEdgeToggle /> : null}
         {children}
       </aside>
+      <WorkbenchSidebarCollapsedGroupPopover />
     </WorkbenchSidebarContext.Provider>
   )
 }
@@ -466,26 +508,207 @@ function WorkbenchSidebarFooter({
   )
 }
 
+function hasActiveWorkbenchSidebarItem(
+  children: React.ReactNode,
+  activeItemId: string | null,
+) {
+  let hasActiveItem = false
+
+  React.Children.forEach(children, (child) => {
+    if (hasActiveItem || !React.isValidElement(child)) {
+      return
+    }
+
+    const childProps = child.props as {
+      active?: boolean
+      children?: React.ReactNode
+      id?: string
+    }
+
+    if (
+      child.type === WorkbenchSidebarItem &&
+      (childProps.active === true ||
+        (childProps.active === undefined && childProps.id === activeItemId))
+    ) {
+      hasActiveItem = true
+      return
+    }
+
+    if (childProps.children) {
+      hasActiveItem = hasActiveWorkbenchSidebarItem(
+        childProps.children,
+        activeItemId,
+      )
+    }
+  })
+
+  return hasActiveItem
+}
+
+function getTextTitle(value: React.ReactNode) {
+  return typeof value === 'string' || typeof value === 'number'
+    ? String(value)
+    : undefined
+}
+
+function WorkbenchSidebarCollapsedGroupPopover() {
+  const context = useRequiredWorkbenchSidebarContext(
+    'WorkbenchSidebar.CollapsedGroupPopover',
+  )
+  const { collapsedGroupPopoverHandle, expanded } = context
+  const handlePopoverItemSelect = React.useCallback(
+    (payload: WorkbenchSidebarItemSelectPayload) => {
+      collapsedGroupPopoverHandle.close()
+      context.onItemSelect?.(payload)
+    },
+    [collapsedGroupPopoverHandle, context.onItemSelect],
+  )
+  const popoverContextValue = React.useMemo<WorkbenchSidebarContextValue>(
+    () => ({
+      ...context,
+      expanded: true,
+      onItemSelect: handlePopoverItemSelect,
+    }),
+    [context, handlePopoverItemSelect],
+  )
+
+  React.useEffect(() => {
+    if (expanded) {
+      collapsedGroupPopoverHandle.close()
+    }
+  }, [collapsedGroupPopoverHandle, expanded])
+
+  return (
+    <Popover handle={collapsedGroupPopoverHandle}>
+      {({ payload }) => {
+        const groupPayload = payload as
+          | WorkbenchSidebarCollapsedGroupPayload
+          | undefined
+
+        if (!groupPayload) {
+          return null
+        }
+
+        return (
+          <PopoverContent
+            id={groupPayload.contentId}
+            align="start"
+            side="right"
+            sideOffset={10}
+            className="w-44 gap-1 rounded-md bg-popover p-2 text-popover-foreground shadow-md ring-1 ring-foreground/10"
+            data-slot="workbench-sidebar-collapsed-group-popover"
+          >
+            <WorkbenchSidebarContext.Provider value={popoverContextValue}>
+              <div className="flex min-w-0 flex-col gap-0.5">
+                {groupPayload.children}
+              </div>
+            </WorkbenchSidebarContext.Provider>
+          </PopoverContent>
+        )
+      }}
+    </Popover>
+  )
+}
+
+function WorkbenchSidebarCollapsedGroup({
+  active,
+  children,
+  compactLabel,
+  contentId,
+  icon: Icon,
+  title,
+}: {
+  active: boolean
+  children: React.ReactNode
+  compactLabel?: React.ReactNode
+  contentId: string
+  icon?: WorkbenchSidebarIcon
+  title: React.ReactNode
+}) {
+  const { collapsedGroupPopoverHandle } = useRequiredWorkbenchSidebarContext(
+    'WorkbenchSidebar.CollapsedGroup',
+  )
+  const label = compactLabel ?? title
+  const accessibleLabel = getTextTitle(title) ?? getTextTitle(label)
+  const triggerId = React.useId()
+  const payload = React.useMemo<WorkbenchSidebarCollapsedGroupPayload>(
+    () => ({
+      children,
+      contentId,
+    }),
+    [children, contentId],
+  )
+
+  return (
+    <PopoverTrigger
+      id={triggerId}
+      type="button"
+      aria-label={accessibleLabel}
+      aria-current={active ? 'page' : undefined}
+      closeDelay={COLLAPSED_GROUP_POPOVER_CLOSE_DELAY_MS}
+      data-active={active ? 'true' : 'false'}
+      data-slot="workbench-sidebar-collapsed-group-trigger"
+      delay={80}
+      handle={collapsedGroupPopoverHandle}
+      openOnHover
+      payload={payload}
+      className={cn(
+        'group/workbench-sidebar-collapsed-group mx-auto flex size-[52px] cursor-pointer flex-col items-center justify-center gap-1 rounded-md text-sm font-medium outline-none transition-[background-color,color,box-shadow] duration-150 focus-visible:ring-2 focus-visible:ring-ring',
+        active
+          ? 'bg-primary text-primary-foreground font-semibold shadow-sm shadow-primary/25'
+          : 'text-sidebar-foreground/72 hover:bg-muted hover:text-foreground',
+      )}
+    >
+      {Icon ? (
+        <span
+          className={cn(
+            'flex size-5 shrink-0 items-center justify-center transition-colors',
+            active
+              ? 'text-primary-foreground'
+              : 'text-sidebar-foreground/72 group-hover/workbench-sidebar-collapsed-group:text-foreground',
+          )}
+        >
+          <Icon className="size-4 shrink-0" />
+        </span>
+      ) : null}
+      <span className="max-w-full truncate text-[13px] leading-none">
+        {label}
+      </span>
+    </PopoverTrigger>
+  )
+}
+
 function WorkbenchSidebarGroup({
+  active: activeProp,
   children,
   className,
   collapsed: controlledCollapsed,
+  collapsedBehavior,
   collapsible = true,
+  compactLabel,
   defaultCollapsed = false,
+  icon,
   onCollapsedChange,
   title,
   ...props
 }: WorkbenchSidebarGroupProps) {
-  const { expanded } = useRequiredWorkbenchSidebarContext(
-    'WorkbenchSidebar.Group',
-  )
+  const { activeItemId, collapsedGroupBehavior, expanded } =
+    useRequiredWorkbenchSidebarContext('WorkbenchSidebar.Group')
   const [uncontrolledCollapsed, setUncontrolledCollapsed] = React.useState(
     defaultCollapsed,
   )
   const collapsed = controlledCollapsed ?? uncontrolledCollapsed
+  const resolvedCollapsedBehavior = collapsedBehavior ?? collapsedGroupBehavior
+  const active = React.useMemo(
+    () => activeProp ?? hasActiveWorkbenchSidebarItem(children, activeItemId),
+    [activeItemId, activeProp, children],
+  )
   const contentId = React.useId()
   const titleIsCollapsible = Boolean(title) && collapsible
-  const showChildren = !expanded || !collapsed
+  const shouldRenderCollapsedGroup =
+    !expanded && resolvedCollapsedBehavior === 'groups' && Boolean(title)
+  const showChildren =
+    !expanded && resolvedCollapsedBehavior === 'items' ? true : !collapsed
   const handleCollapsedChange = React.useCallback(
     (nextCollapsed: boolean) => {
       if (controlledCollapsed === undefined) {
@@ -511,7 +734,17 @@ function WorkbenchSidebarGroup({
         className,
       )}
     >
-      {title && expanded ? (
+      {shouldRenderCollapsedGroup && title ? (
+        <WorkbenchSidebarCollapsedGroup
+          active={active}
+          compactLabel={compactLabel}
+          contentId={contentId}
+          icon={icon}
+          title={title}
+        >
+          {children}
+        </WorkbenchSidebarCollapsedGroup>
+      ) : title && expanded ? (
         titleIsCollapsible ? (
           <button
             type="button"
@@ -535,16 +768,18 @@ function WorkbenchSidebarGroup({
           </p>
         )
       ) : null}
-      <div
-        id={contentId}
-        hidden={!showChildren}
-        className={cn(
-          'flex w-full min-w-0 flex-col',
-          expanded ? 'gap-0.5' : 'items-center gap-1',
-        )}
-      >
-        {children}
-      </div>
+      {shouldRenderCollapsedGroup ? null : (
+        <div
+          id={contentId}
+          hidden={!showChildren}
+          className={cn(
+            'flex w-full min-w-0 flex-col',
+            expanded ? 'gap-0.5' : 'items-center gap-1',
+          )}
+        >
+          {children}
+        </div>
+      )}
     </section>
   )
 }

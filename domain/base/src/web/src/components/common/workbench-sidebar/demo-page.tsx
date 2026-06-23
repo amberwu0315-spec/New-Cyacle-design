@@ -27,7 +27,7 @@ import type { WorkbenchSidebarIcon } from './workbench-sidebar'
 type DemoMode = 'simple' | 'professional'
 
 interface DemoMenuItem {
-  compactLabel: string
+  compactLabel?: string
   disabled?: boolean
   icon: WorkbenchSidebarIcon
   id: string
@@ -35,77 +35,80 @@ interface DemoMenuItem {
 }
 
 interface DemoMenuGroup {
+  compactLabel: string
+  icon: WorkbenchSidebarIcon
   items: Array<DemoMenuItem>
   title: string
 }
 
 const DEMO_MENU_GROUPS: Array<DemoMenuGroup> = [
   {
+    compactLabel: '信息',
+    icon: Info,
     title: '核算信息',
     items: [
-      { id: 'basic', label: '基础信息', compactLabel: '基础', icon: Info },
-      { id: 'output', label: '输出产品', compactLabel: '产品', icon: Package2 },
-      { id: 'settings', label: '核算设置', compactLabel: '设置', icon: Settings },
+      { id: 'basic', label: '基础信息', icon: Info },
+      { id: 'output', label: '输出产品', icon: Package2 },
+      { id: 'settings', label: '核算设置', icon: Settings },
     ],
   },
   {
+    compactLabel: '计算',
+    icon: BarChart3,
     title: '计算分析',
     items: [
       {
         id: 'model-detail',
         label: '模型详情',
-        compactLabel: '详情',
         icon: SlidersHorizontal,
       },
       {
         id: 'model-canvas',
         label: '模型画布',
-        compactLabel: '画布',
         icon: GitBranch,
       },
       {
         id: 'analysis-tools',
         label: '分析工具',
-        compactLabel: '分析',
         icon: BarChart3,
       },
     ],
   },
   {
+    compactLabel: '透视',
+    icon: FlaskConical,
     title: '数据透视',
     items: [
       {
         id: 'activity-data',
         label: '活动数据',
-        compactLabel: '活动',
         icon: ScrollText,
       },
       {
         id: 'factor-data',
         label: '因子数据',
-        compactLabel: '因子',
         icon: FlaskConical,
       },
     ],
   },
   {
+    compactLabel: '成果',
+    icon: FileText,
     title: '交付成果',
     items: [
-      { id: 'export-values', label: '导出数值', compactLabel: '导出', icon: Scale },
+      { id: 'export-values', label: '导出数值', icon: Scale },
       {
         id: 'report-charts',
         label: '核算图表',
-        compactLabel: '图表',
         icon: BarChart3,
       },
       {
         id: 'lci-results',
         label: 'LCI结果',
-        compactLabel: 'LCI',
         icon: FileSpreadsheet,
         disabled: true,
       },
-      { id: 'report', label: '核算报告', compactLabel: '报告', icon: FileText },
+      { id: 'report', label: '核算报告', icon: FileText },
     ],
   },
 ]
@@ -233,11 +236,15 @@ export function WorkbenchSidebarDemoPage() {
         >
           <WorkbenchSidebar.Content>
             {DEMO_MENU_GROUPS.map((group) => (
-              <WorkbenchSidebar.Group key={group.title} title={group.title}>
+              <WorkbenchSidebar.Group
+                key={group.title}
+                compactLabel={group.compactLabel}
+                icon={group.icon}
+                title={group.title}
+              >
                 {group.items.map((item) => (
                   <WorkbenchSidebar.Item
                     key={item.id}
-                    compactLabel={item.compactLabel}
                     disabled={item.disabled}
                     icon={item.icon}
                     id={item.id}

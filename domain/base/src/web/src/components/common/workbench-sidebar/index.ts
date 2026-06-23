@@ -12,6 +12,7 @@ export {
 } from './workbench-sidebar'
 export type {
   WorkbenchSidebarBottomProps,
+  WorkbenchSidebarCollapsedGroupBehavior,
   WorkbenchSidebarContentProps,
   WorkbenchSidebarFooterProps,
   WorkbenchSidebarGroupProps,

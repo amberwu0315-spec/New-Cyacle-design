@@ -6,7 +6,7 @@
 - 上方 `Content` 滚动到顶部/底部时自动显示或隐藏的渐变阴影。
 - 和旧项目一致的原生滚动条；滚动条只在滚动发生时显示，停止滚动后自动隐藏。
 - 分组标题默认可点击折叠/展开，折叠箭头只在标题 hover 或键盘聚焦时显示。
-- 展开态与折叠态两套菜单项布局。
+- 展开态与折叠态两套菜单项布局；折叠态默认显示分组入口，hover/focus 分组入口时通过浮层展示该组子菜单。
 - 默认使用 `bg-sidebar` 作为背景色，不强加右侧边框。
 - `Bottom` 自定义区域，适合放模式切换、账号入口、状态按钮等。
 
@@ -28,20 +28,23 @@ export function AccountingSidebar() {
       onItemSelect={({ id }) => setActiveItemId(id)}
     >
       <WorkbenchSidebar.Content>
-        <WorkbenchSidebar.Group title="核算信息">
-          <WorkbenchSidebar.Item id="basic" icon={Info} compactLabel="基础">
+        <WorkbenchSidebar.Group title="核算信息" icon={Info} compactLabel="信息">
+          <WorkbenchSidebar.Item id="basic" icon={Info}>
             基础信息
           </WorkbenchSidebar.Item>
-          <WorkbenchSidebar.Item id="output" icon={Package2} compactLabel="产品">
+          <WorkbenchSidebar.Item id="output" icon={Package2}>
             输出产品
           </WorkbenchSidebar.Item>
         </WorkbenchSidebar.Group>
 
-        <WorkbenchSidebar.Group title="计算分析">
+        <WorkbenchSidebar.Group
+          title="计算分析"
+          icon={BarChart3}
+          compactLabel="计算"
+        >
           <WorkbenchSidebar.Item
             id="analysis-tools"
             icon={BarChart3}
-            compactLabel="分析"
           >
             分析工具
           </WorkbenchSidebar.Item>
@@ -170,6 +173,49 @@ const labels = React.useMemo<WorkbenchSidebarLabels>(
 
 如果某个标题只作为静态分隔文案，传入 `collapsible={false}` 即可。
 
+## 折叠态分组模式
+
+`WorkbenchSidebar` 默认使用 `collapsedGroupBehavior="groups"`：侧边栏收起时，`Content` 区域只显示每个分组的入口；用户 hover 或键盘 focus 分组入口时，会在滚动区外通过浮层显示该组子菜单。这更接近旧项目的交互，也能避免折叠后把所有子菜单打平造成信息密度过高。
+
+这个模式下建议每个 `Group` 都传入：
+
+- `icon`：折叠态分组入口的图标。
+- `compactLabel`：折叠态分组入口的短标签，例如 `信息`、`计算`、`透视`。
+- `active`：可选。未传时组件会根据子菜单 `id` 和 `activeItemId` 自动推断该分组是否 active。
+
+这种默认分组模式下，`Content` 内分组子菜单的 `WorkbenchSidebar.Item compactLabel` 通常不用写：收起时显示的是 `Group compactLabel`，hover/focus 浮层里会按展开态显示 `Item` 的完整 children。只有当根组件或某个分组切到 `collapsedGroupBehavior="items"` / `collapsedBehavior="items"` 时，分组子菜单的 `Item compactLabel` 才会用于折叠态短标签。
+
+```tsx
+<WorkbenchSidebar activeItemId={activeItemId}>
+  <WorkbenchSidebar.Content>
+    <WorkbenchSidebar.Group title="计算分析" icon={BarChart3} compactLabel="计算">
+      <WorkbenchSidebar.Item id="model-detail" icon={SlidersHorizontal}>
+        模型详情
+      </WorkbenchSidebar.Item>
+      <WorkbenchSidebar.Item id="analysis-tools" icon={BarChart3}>
+        分析工具
+      </WorkbenchSidebar.Item>
+    </WorkbenchSidebar.Group>
+  </WorkbenchSidebar.Content>
+</WorkbenchSidebar>
+```
+
+如果某个页面更适合旧的“折叠后直接显示所有子菜单”效果，可以在根组件上切换为 `items`：
+
+```tsx
+<WorkbenchSidebar collapsedGroupBehavior="items">
+  {/* 折叠态会隐藏 Group 标题，直接显示 Group 内的 Item */}
+</WorkbenchSidebar>
+```
+
+也可以只覆盖某个分组：
+
+```tsx
+<WorkbenchSidebar.Group title="快速入口" collapsedBehavior="items">
+  {/* ... */}
+</WorkbenchSidebar.Group>
+```
+
 ## 自定义 bottom 区域
 
 `WorkbenchSidebar.Footer` 不在滚动区内，适合放下方未分组菜单和 bottom。`WorkbenchSidebar.Bottom` 不限制内容。自定义内容如果需要知道当前是否折叠，可以在子组件里使用 `useWorkbenchSidebar()`：
@@ -190,13 +236,16 @@ function YourModeSwitch() {
 - `onItemSelect`：点击菜单项后的统一回调。
 - `expanded` / `defaultExpanded` / `onExpandedChange`：展开状态控制。
 - `expandedWidth` / `collapsedWidth`：展开和折叠宽度，支持数字或 CSS 尺寸字符串。
+- `collapsedGroupBehavior`：折叠态分组行为，默认 `groups`；传 `items` 可恢复旧的打平子菜单模式。
 - `className` / `style`：覆盖根节点样式，可用于自定义 sidebar 背景色。
 - `labels`：覆盖无障碍文案，如 `collapse`、`expand`、`navigation`。
 - `WorkbenchSidebar.Content`：唯一的滚动区域，推荐只放上方分组菜单。
 - `WorkbenchSidebar.Footer`：滚动区域外的底部区域，推荐放 `Ungrouped` 和 `Bottom`。
 - `WorkbenchSidebar.Group` 的 `defaultCollapsed` / `collapsed` / `onCollapsedChange`：控制单个分组的折叠状态。
 - `WorkbenchSidebar.Group` 的 `collapsible`：是否允许点击分组标题折叠，默认 `true`。
-- `WorkbenchSidebar.Item` 的 `compactLabel`：折叠态显示的短标签；未传时使用完整菜单文案。
+- `WorkbenchSidebar.Group` 的 `icon` / `compactLabel` / `active`：折叠态分组入口展示与 active 控制。
+- `WorkbenchSidebar.Group` 的 `collapsedBehavior`：单个分组覆盖根组件的折叠态行为。
+- `WorkbenchSidebar.Item` 的 `compactLabel`：折叠态直接显示 item 时的短标签；默认分组模式下，`Content` 内分组子菜单通常不需要传，`Ungrouped` 或 `items` 模式下再传。
 - `WorkbenchSidebar.Item` 的 `disabled`：禁用菜单项，适合截图中灰态的 `LCI结果`。
 
 ## Demo route

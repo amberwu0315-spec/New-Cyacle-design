@@ -44,6 +44,86 @@ function AccountPopover() {
 }
 ```
 
+### Detached Trigger 浮层写法
+
+Base UI 的 `Menu`、`Popover`、`PreviewCard` 都支持 detached trigger：触发点可以放在列表、表格、卡片内部，`Root` 和 `Popup/Content/Card` 可以只在外层渲染一次。多个触发点共享一个浮层时，创建一个 `handle`，同时传给 `Trigger` 和 `Root`，并用 `payload` 传当前行、当前卡片或当前节点的数据。
+
+优先使用 detached trigger 的场景：表格行操作菜单、列表项更多操作、hover 预览卡、侧边栏收起态子菜单、虚拟列表或大量重复 item 中的浮层。简单的一对一浮层仍然就近组合 `Root + Trigger + Content`，不必抽成 detached。
+
+`Menu` 只建议给顶层菜单使用 detached trigger；子菜单 trigger 仍放在 `SubmenuRoot` 内部。
+
+表格行操作菜单：多个行按钮共享一个 `Menu.Root`。
+
+```tsx
+const rowMenu = React.useMemo(() => Menu.createHandle(), [])
+
+return (
+  <>
+    {rows.map((row) => (
+      <Menu.Trigger key={row.id} id={row.id} handle={rowMenu} payload={row}>
+        更多
+      </Menu.Trigger>
+    ))}
+
+    <Menu.Root handle={rowMenu}>
+      {({ payload }) => {
+        const row = payload as Row | undefined
+
+        return row ? (
+          <Menu.Portal>
+            <Menu.Positioner side="bottom" align="end">
+              <Menu.Popup>
+                <Menu.Item onClick={() => editRow(row)}>编辑</Menu.Item>
+                <Menu.Item onClick={() => copyRow(row)}>复制</Menu.Item>
+              </Menu.Popup>
+            </Menu.Positioner>
+          </Menu.Portal>
+        ) : null
+      }}
+    </Menu.Root>
+  </>
+)
+```
+
+列表项详情预览：多个链接共享一个 `PreviewCard.Root`。
+
+```tsx
+const previewCard = React.useMemo(() => PreviewCard.createHandle(), [])
+
+return (
+  <>
+    {items.map((item) => (
+      <PreviewCard.Trigger
+        key={item.id}
+        id={item.id}
+        handle={previewCard}
+        payload={item}
+      >
+        {item.name}
+      </PreviewCard.Trigger>
+    ))}
+
+    <PreviewCard.Root handle={previewCard}>
+      {({ payload }) => {
+        const item = payload as Item | undefined
+
+        return item ? (
+          <PreviewCard.Portal>
+            <PreviewCard.Positioner side="right" align="start">
+              <PreviewCard.Popup>
+                <ItemPreviewCard item={item} />
+              </PreviewCard.Popup>
+            </PreviewCard.Positioner>
+          </PreviewCard.Portal>
+        ) : null
+      }}
+    </PreviewCard.Root>
+  </>
+)
+```
+
+表格里的轻量信息浮层也同理使用 `Popover.createHandle()`，把统计说明、状态详情、快捷编辑面板等 `Popover.Content` 放在外层单例里，通过 `payload` 渲染当前行内容。
+
 ---
 
 ## Lazy Route 写法
