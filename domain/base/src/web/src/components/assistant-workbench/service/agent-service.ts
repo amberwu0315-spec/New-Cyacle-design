@@ -292,6 +292,171 @@ function normalizeMessage(
   }
 }
 
+function hasVisibleNormalizedMessagePayload(
+  message: AssistantWorkbenchMessage,
+) {
+  return Boolean(
+    message.title?.trim() ||
+    message.content.trim() ||
+    message.thinking?.content.trim() ||
+    (message.attachments?.length ?? 0) > 0,
+  )
+}
+
+function hasToolSummaries(message: AssistantWorkbenchMessage) {
+  return Boolean(
+    (message.toolCalls?.length ?? 0) > 0 ||
+    (message.toolResults?.length ?? 0) > 0,
+  )
+}
+
+function isToolSummaryOnlyMessage(message: AssistantWorkbenchMessage) {
+  return (
+    message.role !== 'user' &&
+    hasToolSummaries(message) &&
+    !hasVisibleNormalizedMessagePayload(message)
+  )
+}
+
+function buildToolSummaryKey(summary: {
+  id?: string | null
+  name: string
+  input?: string | null
+  output?: string | null
+}) {
+  return [
+    summary.id?.trim() ?? '',
+    summary.name.trim(),
+    summary.input?.trim() ?? '',
+    summary.output?.trim() ?? '',
+  ].join('\u0000')
+}
+
+function mergeToolSummaries<
+  T extends {
+    id?: string | null
+    name: string
+    input?: string | null
+    output?: string | null
+  },
+>(current: Array<T> | undefined, incoming: Array<T> | undefined) {
+  const merged: Array<T> = []
+  const visited = new Set<string>()
+  const items = [...(current ?? []), ...(incoming ?? [])]
+
+  items.forEach((item) => {
+    const key = buildToolSummaryKey(item)
+
+    if (visited.has(key)) {
+      return
+    }
+
+    visited.add(key)
+    merged.push(item)
+  })
+
+  return merged
+}
+
+function mergeRunToolSummaryMessages(
+  messages: Array<AssistantWorkbenchMessage>,
+) {
+  const toolSummariesByRunId = new Map<
+    string,
+    {
+      toolCalls: NonNullable<AssistantWorkbenchMessage['toolCalls']>
+      toolResults: NonNullable<AssistantWorkbenchMessage['toolResults']>
+    }
+  >()
+
+  messages.forEach((message) => {
+    const runId = message.runId?.trim()
+
+    if (!runId || message.role === 'user' || !hasToolSummaries(message)) {
+      return
+    }
+
+    const current = toolSummariesByRunId.get(runId) ?? {
+      toolCalls: [],
+      toolResults: [],
+    }
+
+    toolSummariesByRunId.set(runId, {
+      toolCalls: mergeToolSummaries(current.toolCalls, message.toolCalls),
+      toolResults: mergeToolSummaries(current.toolResults, message.toolResults),
+    })
+  })
+
+  if (toolSummariesByRunId.size === 0) {
+    return messages
+  }
+
+  const targetMessageIdByRunId = new Map<string, string>()
+  const reversedMessages = [...messages].reverse()
+
+  toolSummariesByRunId.forEach((_summaries, runId) => {
+    const target =
+      reversedMessages.find(
+        (message) =>
+          message.runId?.trim() === runId &&
+          message.role === 'assistant' &&
+          !isToolSummaryOnlyMessage(message),
+      ) ??
+      reversedMessages.find(
+        (message) =>
+          message.runId?.trim() === runId && message.role === 'assistant',
+      ) ??
+      reversedMessages.find(
+        (message) =>
+          message.runId?.trim() === runId &&
+          message.role !== 'user' &&
+          !isToolSummaryOnlyMessage(message),
+      ) ??
+      reversedMessages.find(
+        (message) => message.runId?.trim() === runId && message.role !== 'user',
+      )
+
+    if (target) {
+      targetMessageIdByRunId.set(runId, target.id)
+    }
+  })
+
+  return messages.flatMap((message) => {
+    const runId = message.runId?.trim()
+    const targetMessageId = runId ? targetMessageIdByRunId.get(runId) : null
+
+    if (
+      runId &&
+      targetMessageId &&
+      message.id !== targetMessageId &&
+      isToolSummaryOnlyMessage(message)
+    ) {
+      return []
+    }
+
+    if (!runId || message.id !== targetMessageId) {
+      return [message]
+    }
+
+    const summaries = toolSummariesByRunId.get(runId)
+
+    if (!summaries) {
+      return [message]
+    }
+
+    return [
+      {
+        ...message,
+        toolCalls: mergeToolSummaries(message.toolCalls, summaries.toolCalls),
+        toolResults: mergeToolSummaries(
+          message.toolResults,
+          summaries.toolResults,
+        ),
+      },
+    ]
+  })
+}
+
 export interface AssistantAgentRequestContext {
   operatorId: string
   workspaceId?: string | null
@@ -374,7 +539,9 @@ function resolveAgentLang(language?: AppLanguage | null) {
 }
 
 function buildSendMessagePayload(input: AssistantSendMessageInput) {
-  const attachmentIds = input.documentIds?.length ? input.documentIds : undefined
+  const attachmentIds = input.documentIds?.length
+    ? input.documentIds
+    : undefined
 
   return {
     threadId: input.threadId || undefined,
@@ -532,11 +699,13 @@ export const assistantAgentService = {
     const payload = await agentService.getMessages(threadId, metas)
     const documentInfoById = await resolveMessageDocumentInfoMap(payload)
 
-    return payload.map((message) =>
-      normalizeMessage(message, {
-        ...options,
-        documentInfoById,
-      }),
+    return mergeRunToolSummaryMessages(
+      payload.map((message) =>
+        normalizeMessage(message, {
+          ...options,
+          documentInfoById,
+        }),
+      ),
     )
   },
 

@@ -64,17 +64,16 @@ function formatToolDetail(value: string) {
 
 function shouldRenderMessage(
   record: AssistantWorkbenchMessage,
-  runProgressStateByRunId?: Record<string, AssistantRunProgressLoadState>,
+  runProgressEchoMessageIds?: Set<string>,
 ) {
   if (record.status === 'running') {
     return true
   }
 
-  const runProgressState = record.runId?.trim()
-    ? runProgressStateByRunId?.[record.runId.trim()]
-    : undefined
-  const hasRunProgressCandidate =
-    record.role !== 'user' && Boolean(record.runId?.trim())
+  const shouldAttachRunProgressEcho =
+    record.role !== 'user' &&
+    Boolean(record.runId?.trim()) &&
+    (!runProgressEchoMessageIds || runProgressEchoMessageIds.has(record.id))
 
   return Boolean(
     hasVisibleText(record.title) ||
@@ -83,10 +82,33 @@ function shouldRenderMessage(
     (record.attachments?.length ?? 0) > 0 ||
     getRenderableToolCalls(record).length > 0 ||
     getRenderableToolResults(record).length > 0 ||
-    hasRunProgressCandidate ||
-    (runProgressState?.status === 'loaded' &&
-      runProgressState.groups.length > 0),
+    shouldAttachRunProgressEcho,
   )
+}
+
+function resolveRunProgressEchoMessageIds(
+  messages: Array<AssistantWorkbenchMessage>,
+) {
+  const messageIds = new Set<string>()
+  const visitedRunIds = new Set<string>()
+
+  for (let index = messages.length - 1; index >= 0; index -= 1) {
+    const message = messages[index]
+    const runId = message.runId?.trim()
+
+    if (message.role === 'user' || !runId) {
+      continue
+    }
+
+    if (visitedRunIds.has(runId)) {
+      continue
+    }
+
+    visitedRunIds.add(runId)
+    messageIds.add(message.id)
+  }
+
+  return messageIds
 }
 
 const CHAT_MARKDOWN_COMPONENTS: Components = {
@@ -646,6 +668,7 @@ function AssistantMessageBubble(props: {
   onPreviewAttachment?: (attachment: AssistantAnchorChatAttachmentItem) => void
   runProgressStateByRunId?: Record<string, AssistantRunProgressLoadState>
   onLoadRunProgress?: (runId: string) => Promise<unknown>
+  showRunProgressEcho?: boolean
   viewportRef?: React.RefObject<HTMLDivElement | null>
   renderRunProgressContent?: (
     args: RunProgressContentRenderArgs,
@@ -670,7 +693,7 @@ function AssistantMessageBubble(props: {
         })
       : null
   const runProgressEcho =
-    props.record.role === 'user' ? null : (
+    props.record.role === 'user' || !props.showRunProgressEcho ? null : (
       <MessageRunProgressEcho
         runId={props.record.runId}
         runProgressState={runProgressState}
@@ -824,6 +847,7 @@ const MemoizedAssistantMessageBubble = React.memo(
     prevProps.onPreviewAttachment === nextProps.onPreviewAttachment &&
     prevProps.runProgressStateByRunId === nextProps.runProgressStateByRunId &&
     prevProps.onLoadRunProgress === nextProps.onLoadRunProgress &&
+    prevProps.showRunProgressEcho === nextProps.showRunProgressEcho &&
     prevProps.viewportRef === nextProps.viewportRef &&
     prevProps.renderRunProgressContent === nextProps.renderRunProgressContent,
 )
@@ -836,6 +860,7 @@ const MemoizedMessageChunk = React.memo(
     ) => void
     runProgressStateByRunId?: Record<string, AssistantRunProgressLoadState>
     onLoadRunProgress?: (runId: string) => Promise<unknown>
+    runProgressEchoMessageIds: Set<string>
     viewportRef?: React.RefObject<HTMLDivElement | null>
     renderRunProgressContent?: (
       args: RunProgressContentRenderArgs,
@@ -848,6 +873,7 @@ const MemoizedMessageChunk = React.memo(
         onPreviewAttachment={props.onPreviewAttachment}
         runProgressStateByRunId={props.runProgressStateByRunId}
         onLoadRunProgress={props.onLoadRunProgress}
+        showRunProgressEcho={props.runProgressEchoMessageIds.has(record.id)}
         viewportRef={props.viewportRef}
         renderRunProgressContent={props.renderRunProgressContent}
       />
@@ -858,6 +884,8 @@ const MemoizedMessageChunk = React.memo(
       prevProps.onPreviewAttachment !== nextProps.onPreviewAttachment ||
       prevProps.runProgressStateByRunId !== nextProps.runProgressStateByRunId ||
       prevProps.onLoadRunProgress !== nextProps.onLoadRunProgress ||
+      prevProps.runProgressEchoMessageIds !==
+        nextProps.runProgressEchoMessageIds ||
       prevProps.viewportRef !== nextProps.viewportRef ||
       prevProps.renderRunProgressContent !==
         nextProps.renderRunProgressContent ||
@@ -885,12 +913,16 @@ export function AssistantAnchorChatMessageList(props: {
 }) {
   const { messages } = useOptionalI18n()
   const assistantMessages = messages.assistantWorkbench
+  const runProgressEchoMessageIds = React.useMemo(
+    () => resolveRunProgressEchoMessageIds(props.messages),
+    [props.messages],
+  )
   const visibleMessages = React.useMemo(
     () =>
       props.messages.filter((message) =>
-        shouldRenderMessage(message, props.runProgressStateByRunId),
+        shouldRenderMessage(message, runProgressEchoMessageIds),
       ),
-    [props.messages, props.runProgressStateByRunId],
+    [props.messages, runProgressEchoMessageIds],
   )
 
   const liveMessage = React.useMemo(() => {
@@ -916,6 +948,7 @@ export function AssistantAnchorChatMessageList(props: {
         onPreviewAttachment={props.onPreviewAttachment}
         runProgressStateByRunId={props.runProgressStateByRunId}
         onLoadRunProgress={props.onLoadRunProgress}
+        runProgressEchoMessageIds={runProgressEchoMessageIds}
         viewportRef={props.viewportRef}
         renderRunProgressContent={props.renderRunProgressContent}
       />
@@ -925,6 +958,7 @@ export function AssistantAnchorChatMessageList(props: {
           onPreviewAttachment={props.onPreviewAttachment}
           runProgressStateByRunId={props.runProgressStateByRunId}
           onLoadRunProgress={props.onLoadRunProgress}
+          showRunProgressEcho={runProgressEchoMessageIds.has(liveMessage.id)}
           viewportRef={props.viewportRef}
           renderRunProgressContent={props.renderRunProgressContent}
         />

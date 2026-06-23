@@ -9,12 +9,10 @@ import {
   getSessionCredential,
   type AssistantAgentUserContext,
   type AppLayoutUserProfile,
-  type WebDomain,
   useLanguageStore,
 } from '@carbonnt-cyacle/web-base'
 import {
   clearWorkspaceSelectionSideEffects,
-  documentManagementNavDomain,
   getSelectedWorkspaceId,
   getSelectedWorkspaceScope,
   getWorkspaceAutoSelection,
@@ -34,20 +32,9 @@ export function AppLayout() {
   const navigate = useNavigate()
   const language = useLanguageStore()
   const hasSessionCredential = Boolean(getSessionCredential())
-  const navDomains = React.useMemo<Array<WebDomain>>(() => {
-    const nextDomains: Array<WebDomain> = [...webModules]
-    const factorIndex = nextDomains.findIndex(
-      (domain) => domain.id === 'factor',
-    )
-    const insertAt = factorIndex >= 0 ? factorIndex + 1 : nextDomains.length
-
-    nextDomains.splice(insertAt, 0, documentManagementNavDomain)
-
-    return nextDomains
-  }, [])
   const navConfig = React.useMemo(
-    () => createAppNavConfig(navDomains, { language }),
-    [language, navDomains],
+    () => createAppNavConfig(webModules, { language }),
+    [language],
   )
   const profileQuery = useCurrentUserProfile({
     enabled: hasSessionCredential,

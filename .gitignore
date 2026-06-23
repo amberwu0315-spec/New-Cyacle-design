@@ -34,6 +34,7 @@
 /domain/notice
 /domain/pcf.factor.api
 /domain/project.data
+/domain/record
 /domain/uic
 /domain/unit
 /go.work
