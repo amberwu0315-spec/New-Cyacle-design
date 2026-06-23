@@ -22,6 +22,7 @@
 /app/skeled
 /app/src/server
 /app/src/web/package.json
+/app/src/web/pnpm-lock.yaml
 /dev.yaml
 /domain/audit
 /domain/category
@@ -40,11 +41,11 @@
 /domain/unit
 /go.work
 /go.work.sum
+/pnpm-lock.yaml
 /pnpm-workspace.yaml
 __unconfig*
 dist
 dist-ssr
 node_modules
-pnpm-lock.yaml
 todos.json
 # vined - end
