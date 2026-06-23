@@ -11,7 +11,8 @@ domains:
     - name: base
       source: LOCAL
     - name: audit
-      source: LOCAL
+      source: REMOTE
+      gitUrl: https://git.cew.io/carbonnt/cyacle/domain/audit.git
     - name: file
       source: REMOTE
       gitUrl: https://git.cew.io/carbonnt/cyacle/domain/file.git
