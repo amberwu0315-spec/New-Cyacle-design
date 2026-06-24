@@ -51,7 +51,7 @@ domains:
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/lca.core.git
     - name: pcf.factor.api
       source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/pcf.factor.api
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/pcf.factor.api.git
     - name: record
       source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/record
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/record.git
