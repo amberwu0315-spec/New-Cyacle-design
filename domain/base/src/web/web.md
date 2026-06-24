@@ -15,6 +15,24 @@
 
 命名规则：`@example-app/*` 是中性示例包名；`@example-app/web-base` 表示共享 app Web 包占位，真实项目以 `domain/base/src/web/package.json` 的 `name` 和 `exports` 为准。
 
+### 本领域包源码导入
+
+`#/` 指向当前 app 或当前 domain 的 `src/web/src`，只用于本 app/domain web 包内部源码引用；跨 domain 或跨 package 复用时使用 package exports，例如 `@example-app/web-catalog/pub`。本领域包内跨目录引用优先使用当前 `package.json` 配置的 `imports` 别名 `#/`，避免多层相对路径变形；路径需要带 `.ts` / `.tsx` 文件后缀。
+
+相对路径仍可以用于局部强绑定文件：同目录工具、同一个页面目录下拆出的组件、同一个组件目录内的子组件、样式或 schema 等。
+
+```tsx
+// 推荐：本 app/domain 包内跨目录引用
+import { AuthGuard } from '#/components/guards/auth-guard/auth-guard.tsx'
+
+// 可以：同页面或同组件目录内的邻近文件
+import { validateLoginRouteSearch } from './redirect.ts'
+```
+
+### 本领域包对外导出
+
+需要给其它 domain 或 app 层复用的组件、hook、i18n helper、业务工具等，先从本 domain 的 `src/pub/index.ts` 显式导出，再由消费方通过 `@example-app/web-xxx/pub` 导入；不要跨 domain 引用对方 `#/`、相对源码路径或 package 根出口里的非稳定能力。新增 pub 依赖前检查依赖方向，避免 `catalog/pub -> inventory/pub -> catalog/pub` 这类循环。
+
 ---
 
 ## React 性能写法
@@ -408,13 +426,17 @@ const createCatalogNavMeta: DomainNavMetaFactory = ({ language }) => {
 跨 domain 或 app 层同时消费多个 domain i18n 时，在 import 处取别名：
 
 ```ts
-import { getMessages as getCatalogDomainMessages } from '@example-app/web-catalog'
+// domain/catalog/src/web/src/pub/index.ts
+export { getMessages } from '#/lib/i18n/index.ts'
+
+// 消费方
+import { getMessages as getCatalogDomainMessages } from '@example-app/web-catalog/pub'
 ```
 
 **规则**
 - `index.ts` 只做 re-export，不写配置和工厂逻辑。
 - `zh-CN` 作为类型来源，其他语言用 `satisfies Messages` 校验结构。
-- 不在领域内 API 名里加 domain 前缀；跨 domain 使用时在 import 处 alias。
+- 不在领域内 API 名里加 domain 前缀；需要暴露给其它 domain/app 时通过 `pub` 导出，跨 domain 使用时在 import 处 alias，并避免新增循环依赖。
 
 高级写法可注册 app nav 和 root/shell outlet：
 
@@ -1002,8 +1024,8 @@ export function CreateTaskDialog({ projectId }: { projectId: string }) {
 
 ```tsx
 // domain/catalog/src/web/src/pub/index.ts
-export { ProductNameLink } from '../features/product/components/product-name-link'
-export type { ProductNameLinkProps } from '../features/product/components/product-name-link'
+export { ProductNameLink } from '#/features/product/components/product-name-link.tsx'
+export type { ProductNameLinkProps } from '#/features/product/components/product-name-link.tsx'
 ```
 
 其它领域通过 package 的 `./pub` export 引用，不相对引用源码。
@@ -1014,6 +1036,12 @@ import { ProductNameLink } from '@example-app/web-catalog/pub'
 export function InventoryProductCell({ productId }: { productId: string }) {
   return <ProductNameLink productId={productId} />
 }
+```
+
+app 层消费 feature domain 对外能力时也走 `./pub`，例如顶层 shell 使用 UIC 的登录态守卫：
+
+```tsx
+import { AuthGuard } from '@example-app/web-uic/pub'
 ```
 
 pub 只内聚内置功能，跨领域互相 import 前先检查循环依赖。

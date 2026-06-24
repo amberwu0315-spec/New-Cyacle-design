@@ -20,6 +20,9 @@ const skeledRecordPubEntry = fileURLToPath(
 const webRecordPubEntry = fileURLToPath(
   new URL('../../../domain/record/src/web/src/pub/index.ts', import.meta.url),
 )
+const webUicPubEntry = fileURLToPath(
+  new URL('../../../domain/uic/src/web/src/pub/index.ts', import.meta.url),
+)
 const webUicEntry = fileURLToPath(
   new URL('../../../domain/uic/src/web/src/index.ts', import.meta.url),
 )
@@ -64,6 +67,10 @@ const config = defineConfig({
       {
         find: /^@carbonnt-cyacle\/web-record\/pub$/,
         replacement: webRecordPubEntry,
+      },
+      {
+        find: /^@carbonnt-cyacle\/web-uic\/pub$/,
+        replacement: webUicPubEntry,
       },
       {
         find: /^@carbonnt-cyacle\/web-uic$/,

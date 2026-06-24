@@ -17,6 +17,7 @@
       "@carbonnt-cyacle/web-meta": ["../../../domain/meta/src/web/src/index.ts"],
       "@carbonnt-cyacle/web-project-data/pub": ["../../../domain/project.data/src/web/src/pub/index.ts"],
       "@carbonnt-cyacle/web-record/pub": ["../../../domain/record/src/web/src/pub/index.ts"],
+      "@carbonnt-cyacle/web-uic/pub": ["../../../domain/uic/src/web/src/pub/index.ts"],
       "@carbonnt-cyacle/web-uic": ["../../../domain/uic/src/web/src/index.ts"]
     },
     "allowImportingTsExtensions": true,

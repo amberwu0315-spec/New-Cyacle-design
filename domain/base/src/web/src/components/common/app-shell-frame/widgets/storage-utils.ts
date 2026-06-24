@@ -85,6 +85,6 @@ export function writeStoredSidebarOpen(
   Cookies.set(sidebarCookieName, String(open), {
     path: '/',
     expires: sidebarCookieExpiresDays,
-    sameSite: 'lax',
+    sameSite: 'none',
   })
 }

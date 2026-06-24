@@ -62,7 +62,7 @@ function persistLanguage(language: SupportedLanguage) {
     expires: 365,
     domain: getSharedCookieDomain(),
     secure: window.location.protocol === 'https:',
-    sameSite: 'lax',
+    sameSite: 'none',
   })
 }
 

@@ -10,6 +10,7 @@ import {
   type AssistantAgentUserContext,
   type AppLayoutUserProfile,
   useLanguageStore,
+  getWebProjectConfig,
 } from '@carbonnt-cyacle/web-base'
 import {
   clearWorkspaceSelectionSideEffects,
@@ -20,6 +21,7 @@ import {
   useAvailableWorkspaces,
   useCurrentUserProfile,
 } from '@carbonnt-cyacle/web-uic'
+import { AuthGuard } from '@carbonnt-cyacle/web-uic/pub'
 
 import { webModules } from '#/vineModules.gen.ts'
 
@@ -64,24 +66,26 @@ export function AppLayout() {
   const handleLogout = React.useCallback(() => {
     clearAuthSessionSideEffects()
     clearWorkspaceSelectionSideEffects()
-    void navigate({ to: '/uic/login' })
+    void navigate({ to: getWebProjectConfig().routes.loginPath })
   }, [navigate])
 
   return (
-    <AssistantAgentUserContextProvider value={assistantUserContext}>
-      <BaseAppLayout
-        currentWorkspaceScope={currentWorkspaceScope}
-        getWorkspaceAutoSelection={getWorkspaceAutoSelection}
-        hasSessionCredential={hasSessionCredential}
-        navConfig={navConfig}
-        onLogout={handleLogout}
-        onWorkspaceSelect={selectWorkspaceId}
-        profileQuery={profileQuery}
-        workspaceQuery={workspaceQuery}
-      >
-        <Outlet />
-      </BaseAppLayout>
-      <AgentCollaborationRoot />
-    </AssistantAgentUserContextProvider>
+    <AuthGuard>
+      <AssistantAgentUserContextProvider value={assistantUserContext}>
+        <BaseAppLayout
+          currentWorkspaceScope={currentWorkspaceScope}
+          getWorkspaceAutoSelection={getWorkspaceAutoSelection}
+          hasSessionCredential={hasSessionCredential}
+          navConfig={navConfig}
+          onLogout={handleLogout}
+          onWorkspaceSelect={selectWorkspaceId}
+          profileQuery={profileQuery}
+          workspaceQuery={workspaceQuery}
+        >
+          <Outlet />
+        </BaseAppLayout>
+        <AgentCollaborationRoot />
+      </AssistantAgentUserContextProvider>
+    </AuthGuard>
   )
 }

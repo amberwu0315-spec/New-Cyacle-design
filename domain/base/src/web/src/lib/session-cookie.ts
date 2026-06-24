@@ -3,8 +3,8 @@ import Cookies from 'js-cookie'
 export const SESSION_COOKIE_KEY = 'NSID'
 export const SESSION_COOKIE_EXPIRES_DAYS = 365
 export const SESSION_SCOPE_CREDENTIAL_EMPTY = '-'
-const LOCAL_WORKSPACE_ID_STORAGE_KEY = 'carbonnt.workspace.lastSelectedId'
-const LOCAL_WORKSPACE_SCOPE_STORAGE_KEY = 'carbonnt.workspace.lastSelectedScope'
+const LOCAL_WORKSPACE_ID_STORAGE_KEY = 'uic.workspace.lastSelectedId'
+const LOCAL_WORKSPACE_SCOPE_STORAGE_KEY = 'uic.workspace.lastSelectedScope'
 
 const LOCAL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1'])
 
@@ -119,7 +119,7 @@ export function setSessionCredential(sessionId: string) {
     domain,
     expires: SESSION_COOKIE_EXPIRES_DAYS,
     path: '/',
-    sameSite: 'lax',
+    sameSite: 'none',
     secure,
   })
 }
@@ -154,7 +154,7 @@ export function clearSessionCredential() {
   Cookies.remove(SESSION_COOKIE_KEY, {
     domain,
     path: '/',
-    sameSite: 'lax',
+    sameSite: 'none',
     secure,
   })
 }
