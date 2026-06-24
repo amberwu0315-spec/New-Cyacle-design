@@ -66,6 +66,19 @@ export type {
   Messages,
   SupportedLanguage,
 } from '#/lib/i18n/index.ts';
+export {
+  DEFAULT_FORMULA_FUNCTIONS,
+  FormulaEditor,
+  collectReferencedVariables,
+  validateFormula,
+} from '@cew-lib/cyacle-replace-symbols';
+export type {
+  FormulaEditorValue,
+  FormulaEditorToolbarApi,
+  FormulaFunctionOption,
+  FormulaSuggestionSection,
+  FormulaVariableSection,
+} from '@cew-lib/cyacle-replace-symbols';
 
 export { AppLayout, createAppNavConfig } from '#/components/layouts/app-layout/index.ts';
 export type {
