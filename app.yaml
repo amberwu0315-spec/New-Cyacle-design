@@ -61,3 +61,9 @@ domains:
     - name: ai.model
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/ai.model.git
+    - name: report
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/report.git
+    - name: accounting.core
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/accounting.core.git
