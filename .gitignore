@@ -25,7 +25,6 @@
 /dev.yaml
 /domain/ai.flow
 /domain/ai.model
-/domain/accounting.core
 /domain/audit
 /domain/category
 /domain/factor
@@ -33,6 +32,9 @@
 /domain/formula
 /domain/history
 /domain/lca.core
+/domain/lca.api
+/domain/accounting.core
+/domain/accounting.api
 /domain/meta
 /domain/notice
 /domain/pcf.factor.api
@@ -52,3 +54,4 @@ node_modules
 pnpm-lock.yaml
 todos.json
 # vined - end
+/scripts/
