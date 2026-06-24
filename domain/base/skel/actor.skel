@@ -1,18 +1,23 @@
 domain base
 
-@desc("user")
+@desc("用户参与者")
 pub actor UserActor {
     via client {}
 
     auth {
         credential {
+            @desc("会话")
             session: string
+            @desc("应用权限范围 多个用,隔开")
             scope: string
         }
 
         info {
+            @desc("接收人用户ID")
             userId: int
+            @desc("用户名字段名称")
             username: string
+            @desc("工作空间ID")
             workspaceId: string
         }
     }

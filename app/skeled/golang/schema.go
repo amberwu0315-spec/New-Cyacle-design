@@ -8,16 +8,17 @@ func init() {
 
 var _DomainSchema = &skel.DomainSchema{
 	Domain: "app",
-	Hash:   "99468fe4",
+	Hash:   "3809ccf9",
 	Full:   true,
 	Generated: &skel.GeneratedInfo{
 		CompilerVersion: "v1.1.33",
 	},
 	Webs: []*skel.WebSchema{
 		{
-			Name:     "WebWeb",
-			SkelName: "app.WebWeb",
-			Hash:     "12e0f763",
+			Name:        "WebWeb",
+			SkelName:    "app.WebWeb",
+			Description: "WebWeb入口",
+			Hash:        "f11b8fad",
 			Allows: []*skel.ActorAllowSchema{
 				{Name: "UserActor", SkelName: "base.UserActor", Via: skel.ActorViaClient},
 			},

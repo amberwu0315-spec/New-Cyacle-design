@@ -10,10 +10,12 @@ func init() {
 	web.Register(_WebWebSpec)
 }
 
+// WebWebServer WebWeb入口
+
 var _WebWebSpec = &web.WebSpec{
 	Name:              "WebWeb",
 	SkelName:          "app.WebWeb",
-	Hash:              "12e0f763",
+	Hash:              "f11b8fad",
 	ServerType:        reflect.TypeFor[WebWebServer](),
 	DefaultServerType: reflect.TypeFor[*DefaultWebWebServer](),
 }
