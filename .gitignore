@@ -39,6 +39,7 @@
 /domain/project
 /domain/project.data
 /domain/record
+/domain/report
 /domain/uic
 /domain/unit
 /go.work
