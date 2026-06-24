@@ -23,6 +23,8 @@
 /app/src/server
 /app/src/web/package.json
 /dev.yaml
+/domain/ai.flow
+/domain/ai.model
 /domain/audit
 /domain/category
 /domain/factor

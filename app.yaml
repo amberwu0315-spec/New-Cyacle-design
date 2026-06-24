@@ -55,3 +55,9 @@ domains:
     - name: record
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/record.git
+    - name: ai.flow
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/ai.flow.git
+    - name: ai.model
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/ai.model.git
