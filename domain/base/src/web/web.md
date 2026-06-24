@@ -885,20 +885,18 @@ Query hooks 放到 `queries.ts`，保持 server state 入口稳定。
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { vrpcClient } from '@example-app/web-base'
-import { createCatalogHomeService } from '@example-app/skeled-catalog'
+import {
+  CatalogHomeServiceSpec,
+  createCatalogHomeService,
+} from '@example-app/skeled-catalog'
 
 const homeService = createCatalogHomeService(vrpcClient)
-const overviewMethod = {
-  serviceName: 'catalog.CatalogHomeService',
-  methodName: 'getOverview',
-} as const
-const createTaskMethod = {
-  serviceName: 'catalog.CatalogHomeService',
-  methodName: 'createTask',
-} as const
 
 export const homeKeys = {
-  overview: () => [overviewMethod.serviceName, overviewMethod.methodName] as const,
+  overview: () => [
+    CatalogHomeServiceSpec.serviceName,
+    CatalogHomeServiceSpec.methods.getOverview,
+  ] as const,
 }
 
 export function useHomeOverview() {
@@ -912,7 +910,11 @@ export function useCreateTask(projectId: string) {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationKey: [createTaskMethod.serviceName, createTaskMethod.methodName, projectId],
+    mutationKey: [
+      CatalogHomeServiceSpec.serviceName,
+      CatalogHomeServiceSpec.methods.createTask,
+      projectId,
+    ],
     mutationFn: () => homeService.createTask({ projectId }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: homeKeys.overview() })
@@ -921,28 +923,19 @@ export function useCreateTask(projectId: string) {
 }
 ```
 
-使用 skel service 的 `serviceName` 和 `methodName` 组成 query key；不要为了 key 新建 `api.ts`。
+使用 skel `spec.ts` 导出的 `serviceName` 和 `methods` 组成 query key；不要为了 key 新建 `api.ts`，也不要再手写一份接口名。
 
 ### QueryKey 取值
 
-`queryKey` / `mutationKey` 的前两段固定取 RPC 方法身份：`[serviceName, methodName]`。当前 skelc 不再生成 `meta.ts`，也没有导出 `xxxServiceMeta`；generated `service.ts` 只在 `client.invoke(...)` 中内联 `serviceName` 和 `methodName`。不要手改 generated `service.ts`，需要 query key 时在对应 `queries.ts` 附近集中手写方法身份常量。
+`queryKey` / `mutationKey` 的前两段固定取 RPC 方法身份：`[serviceName, methodName]`。skel 生成的 TypeScript 包会从 `spec.ts` 导出 `XxxServiceSpec`，其中包含 `serviceName` 和 `methods`；generated `service.ts` 也使用同一个 `Spec.serviceName` / `Spec.methods.xxx` 调用 RPC。绝大多数 query key 直接 import 对应的 `XxxServiceSpec`，不要在业务代码里重复手写 `{ serviceName: '...', methodName: '...' }`，避免接口改名后 key 和 generated service 漂移。
 
 ```ts
-import { createCatalogReportService } from '@example-app/skeled-catalog'
+import {
+  CatalogReportServiceSpec,
+  createCatalogReportService,
+} from '@example-app/skeled-catalog'
 
 const catalogReportService = createCatalogReportService(vrpcClient)
-const listReportsMethod = {
-  serviceName: 'catalog.CatalogReportService',
-  methodName: 'list',
-} as const
-const getReportMethod = {
-  serviceName: 'catalog.CatalogReportService',
-  methodName: 'get',
-} as const
-const archiveReportMethod = {
-  serviceName: 'catalog.CatalogReportService',
-  methodName: 'archive',
-} as const
 
 type ReportFilters = {
   status?: string
@@ -955,12 +948,19 @@ function normalizeReportFilters(filters: ReportFilters) {
 }
 
 export const catalogReportKeys = {
-  listRoot: () => [listReportsMethod.serviceName, listReportsMethod.methodName] as const,
+  listRoot: () => [
+    CatalogReportServiceSpec.serviceName,
+    CatalogReportServiceSpec.methods.list,
+  ] as const,
   list: (filters: ReportFilters) => [
     ...catalogReportKeys.listRoot(),
     normalizeReportFilters(filters),
   ] as const,
-  detail: (id: string) => [getReportMethod.serviceName, getReportMethod.methodName, id] as const,
+  detail: (id: string) => [
+    CatalogReportServiceSpec.serviceName,
+    CatalogReportServiceSpec.methods.get,
+    id,
+  ] as const,
 }
 
 export function useCatalogReports(filters: ReportFilters) {
@@ -974,7 +974,10 @@ export function useArchiveCatalogReport() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationKey: [archiveReportMethod.serviceName, archiveReportMethod.methodName],
+    mutationKey: [
+      CatalogReportServiceSpec.serviceName,
+      CatalogReportServiceSpec.methods.archive,
+    ],
     mutationFn: (id: string) => catalogReportService.archive({ id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: catalogReportKeys.listRoot() })
@@ -985,11 +988,12 @@ export function useArchiveCatalogReport() {
 
 取值规则：
 
-- 前缀用 RPC 方法身份常量里的 `serviceName`、`methodName`，保证跨 domain 不冲突。
+- 前缀优先用 skel `spec.ts` 导出的 `XxxServiceSpec.serviceName` 和 `XxxServiceSpec.methods.xxx`，保证跨 domain 不冲突，并和 generated service 使用同一份方法身份。
+- 不要为了 query key 在 `queries.ts` 里再手写 `const xxxMethod = { serviceName: '...', methodName: '...' }`；只有本地封装服务、非 skel RPC、历史手写 client 等没有 `Spec` 导出的场景才手写，并在常量旁说明来源。
 - 方法后追加资源维度，例如 `id`、`workspaceId`、分页、筛选和排序；只追加可序列化且稳定的值，不放函数、组件实例、未规范化的 `Date` 或临时对象。
 - 列表接口保留 `listRoot()` 这类不带筛选参数的 root key，用于新增、删除、归档后批量失效；具体列表查询再在 root 后追加规范化后的 filters。
 - 详情接口用对应详情方法的 key 前缀加资源 id，不要复用列表方法的 key 前缀。
-- 跨领域调用时使用被调用服务的真实 skel 名，例如 `uic.WorkspaceAppApiService`；调用 pub service 时同样按 generated `service.ts` 中的 `serviceName` / `methodName` 填写。
+- 跨领域调用时 import 被调用包导出的真实 `Spec`，例如从 `@example-app/skeled-uicpub` 使用 `WorkspaceAppApiServiceSpec`；调用 pub service 时同样以 pub skel 包导出的 `Spec` 为准。
 
 Dialog 组件放到 `dialogs/`，只暴露页面需要的 props。
 
@@ -1065,29 +1069,33 @@ app 的项目级配置，优先让 `app/src/web/src/project-config.ts` 通过 ba
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { vrpcClient } from '@example-app/web-base'
-import { createCatalogReportService } from '@example-app/skeled-catalog'
+import {
+  CatalogReportServiceSpec,
+  createCatalogReportService,
+} from '@example-app/skeled-catalog'
 
 const catalogReportService = createCatalogReportService(vrpcClient)
-const listReportsMethod = {
-  serviceName: 'catalog.CatalogReportService',
-  methodName: 'list',
-} as const
-const archiveReportMethod = {
-  serviceName: 'catalog.CatalogReportService',
-  methodName: 'archive',
-} as const
 
-// 使用 skel service 的 serviceName 和 methodName 组成 query key。
+// 使用 skel spec.ts 导出的 serviceName 和 methods 组成 query key。
 
 type ReportFilters = {
   status?: string
 }
 
+function normalizeReportFilters(filters: ReportFilters) {
+  return {
+    status: filters.status ?? 'all',
+  }
+}
+
 export const catalogReportKeys = {
-  listRoot: () => [listReportsMethod.serviceName, listReportsMethod.methodName] as const,
+  listRoot: () => [
+    CatalogReportServiceSpec.serviceName,
+    CatalogReportServiceSpec.methods.list,
+  ] as const,
   list: (filters: ReportFilters) => [
     ...catalogReportKeys.listRoot(),
-    filters,
+    normalizeReportFilters(filters),
   ] as const,
 }
 
@@ -1102,7 +1110,10 @@ export function useArchiveCatalogReport() {
   const queryClient = useQueryClient()
 
   return useMutation({
-    mutationKey: [archiveReportMethod.serviceName, archiveReportMethod.methodName],
+    mutationKey: [
+      CatalogReportServiceSpec.serviceName,
+      CatalogReportServiceSpec.methods.archive,
+    ],
     mutationFn: (id: string) => catalogReportService.archive({ id }),
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: catalogReportKeys.listRoot() })
