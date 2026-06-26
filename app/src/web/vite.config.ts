@@ -1,4 +1,3 @@
-import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
 
 import { devtools } from '@tanstack/devtools-vite';

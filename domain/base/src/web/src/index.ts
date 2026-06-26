@@ -49,6 +49,12 @@ export {
   setSessionWorkspaceId,
 } from '#/lib/session-cookie.ts';
 export {
+  getSelectedWorkspaceId,
+  getSelectedWorkspaceScope,
+  SELECTED_WORKSPACE_ID_STORAGE_KEY,
+  SELECTED_WORKSPACE_SCOPE_STORAGE_KEY,
+} from '#/lib/workspace-selection.ts';
+export {
   createI18nCatalog,
   formatMessage,
   getMessages,

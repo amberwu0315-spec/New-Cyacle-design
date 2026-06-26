@@ -24,8 +24,8 @@
 /app/src/server
 /app/src/web/package.json
 /dev.yaml
-/domain/accounting.core
 /domain/accounting.api
+/domain/accounting.core
 /domain/ai.flow
 /domain/ai.model
 /domain/audit
