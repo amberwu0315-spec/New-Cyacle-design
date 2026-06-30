@@ -3,7 +3,9 @@ import { useLocation, useNavigate } from '@tanstack/react-router'
 import { AlertTriangleIcon, LogOutIcon, RefreshCwIcon } from 'lucide-react'
 
 import { AppShellFrame } from '#/components/common/app-shell-frame/index.ts'
+import type { AppShellBreadcrumbItem } from '#/components/common/app-shell-frame/index.ts'
 import { AccountPopover } from '#/components/layouts/app-layout/account-popover.tsx'
+import { AppLayoutBreadcrumbsProvider } from './breadcrumbs.tsx'
 import { WorkspaceSelectionDialog } from './workspace-selection-dialog.tsx'
 import type { AppNavConfig } from './nav-config.tsx'
 import { Button } from '#/components/ui/button.tsx'
@@ -121,6 +123,13 @@ export function AppLayout({
   const pathname = useLocation({
     select: (location) => location.pathname,
   })
+  const [breadcrumbItems, setBreadcrumbItems] = React.useState<
+    Array<AppShellBreadcrumbItem> | null
+  >(null)
+  const breadcrumbsContextValue = React.useMemo(
+    () => ({ setBreadcrumbItems }),
+    [],
+  )
   const [selectedWorkspaceScope, setSelectedWorkspaceScope] = React.useState(
     () => currentWorkspaceScope?.trim() || null,
   )
@@ -274,92 +283,96 @@ export function AppLayout({
     !hasCurrentUserProfile && (isProfileError || isProfileSuccess)
 
   return (
-    <AppShellFrame routeKey={pathname}>
-      <AppShellFrame.Nav navConfig={navConfig} pathname={pathname}>
-        <AppShellFrame.Body>
-          <AppShellFrame.Sidebar
-            resizeLabel={t.common.shell.sidebar.resizeLabel}
-            resizeHint={t.common.shell.sidebar.resizeHint}
-          >
-            <AppShellFrame.SidebarBrand
-              href="/"
-              label={t.common.shell.sidebar.brandName}
-              homeLabel={t.common.shell.sidebar.homeLink}
-              logoSrc={cyacleLogo}
-              onNavigate={handleNavigate}
-            />
-            <AppShellFrame.SidebarNav
-              labels={{
-                scenePicker: (scene) =>
-                  formatMessage(t.common.shell.sidebar.scenePickerLabel, {
-                    label: scene.label,
-                  }),
-              }}
-              onNavigate={handleNavigate}
-            />
-          </AppShellFrame.Sidebar>
+    <AppLayoutBreadcrumbsProvider value={breadcrumbsContextValue}>
+      <AppShellFrame routeKey={pathname}>
+        <AppShellFrame.Nav navConfig={navConfig} pathname={pathname}>
+          <AppShellFrame.Body>
+            <AppShellFrame.Sidebar
+              resizeLabel={t.common.shell.sidebar.resizeLabel}
+              resizeHint={t.common.shell.sidebar.resizeHint}
+            >
+              <AppShellFrame.SidebarBrand
+                href="/"
+                label={t.common.shell.sidebar.brandName}
+                homeLabel={t.common.shell.sidebar.homeLink}
+                logoSrc={cyacleLogo}
+                onNavigate={handleNavigate}
+              />
+              <AppShellFrame.SidebarNav
+                labels={{
+                  scenePicker: (scene) =>
+                    formatMessage(t.common.shell.sidebar.scenePickerLabel, {
+                      label: scene.label,
+                    }),
+                }}
+                onNavigate={handleNavigate}
+              />
+            </AppShellFrame.Sidebar>
 
-          <AppShellFrame.Content>
-            <AppShellFrame.Topbar>
-              <AppShellFrame.TopbarStart>
-                <AppShellFrame.SidebarTrigger
-                  labels={{
-                    open: t.common.shell.topbar.openSidebar,
-                    expand: t.common.shell.topbar.expandSidebar,
-                    collapse: t.common.shell.topbar.collapseSidebar,
-                  }}
-                />
-                <AppShellFrame.Breadcrumbs />
-              </AppShellFrame.TopbarStart>
+            <AppShellFrame.Content>
+              <AppShellFrame.Topbar>
+                <AppShellFrame.TopbarStart>
+                  <AppShellFrame.SidebarTrigger
+                    labels={{
+                      open: t.common.shell.topbar.openSidebar,
+                      expand: t.common.shell.topbar.expandSidebar,
+                      collapse: t.common.shell.topbar.collapseSidebar,
+                    }}
+                  />
+                  <AppShellFrame.Breadcrumbs
+                    items={breadcrumbItems ?? undefined}
+                  />
+                </AppShellFrame.TopbarStart>
 
-              <AppShellFrame.TopbarEnd>
-                <AccountPopover
-                  currentWorkspaceScope={selectedWorkspaceScope}
-                  hasSessionCredential={hasSessionCredential}
-                  onLogout={onLogout}
-                  onWorkspaceSelect={onWorkspaceSelect}
-                  profileQuery={profileQuery}
-                  workspaceQuery={workspaceQuery}
-                />
-              </AppShellFrame.TopbarEnd>
-            </AppShellFrame.Topbar>
+                <AppShellFrame.TopbarEnd>
+                  <AccountPopover
+                    currentWorkspaceScope={selectedWorkspaceScope}
+                    hasSessionCredential={hasSessionCredential}
+                    onLogout={onLogout}
+                    onWorkspaceSelect={onWorkspaceSelect}
+                    profileQuery={profileQuery}
+                    workspaceQuery={workspaceQuery}
+                  />
+                </AppShellFrame.TopbarEnd>
+              </AppShellFrame.Topbar>
 
-            <AppShellFrame.Main>{children}</AppShellFrame.Main>
-          </AppShellFrame.Content>
-        </AppShellFrame.Body>
-      </AppShellFrame.Nav>
+              <AppShellFrame.Main>{children}</AppShellFrame.Main>
+            </AppShellFrame.Content>
+          </AppShellFrame.Body>
+        </AppShellFrame.Nav>
 
-      <AppShellFrame.Overlays>
-        <WorkspaceSelectionDialog
-          open={shouldOpenWorkspaceSelectionDialog}
-          currentWorkspaceScope={selectedWorkspaceScope}
-          workspaces={workspaceSelectionOptions}
-          isLoading={
-            isWorkspaceLoading ||
-            (isWorkspaceFetching && !availableWorkspaces?.length) ||
-            (Boolean(switchingWorkspaceId) && !workspaceSelectionOptions.length)
-          }
-          isError={isWorkspaceError}
-          isSwitchError={workspaceSwitchFailed}
-          onLogout={onLogout}
-          onRetry={handleWorkspaceRetry}
-          onSelect={handleWorkspaceSelect}
-          switchingWorkspaceId={switchingWorkspaceId}
-        />
-
-        {isProfileBootstrapError ? (
-          <SessionBootstrapError
-            title={t.common.shell.profileBootstrap.errorTitle}
-            description={t.common.shell.profileBootstrap.errorDescription}
-            actionHint={t.common.shell.profileBootstrap.actionHint}
-            retryLabel={t.common.shell.profileBootstrap.retry}
-            logoutLabel={t.common.shell.profileBootstrap.logout}
-            isRetrying={isProfileFetching}
-            onRetry={handleProfileRetry}
+        <AppShellFrame.Overlays>
+          <WorkspaceSelectionDialog
+            open={shouldOpenWorkspaceSelectionDialog}
+            currentWorkspaceScope={selectedWorkspaceScope}
+            workspaces={workspaceSelectionOptions}
+            isLoading={
+              isWorkspaceLoading ||
+              (isWorkspaceFetching && !availableWorkspaces?.length) ||
+              (Boolean(switchingWorkspaceId) && !workspaceSelectionOptions.length)
+            }
+            isError={isWorkspaceError}
+            isSwitchError={workspaceSwitchFailed}
             onLogout={onLogout}
+            onRetry={handleWorkspaceRetry}
+            onSelect={handleWorkspaceSelect}
+            switchingWorkspaceId={switchingWorkspaceId}
           />
-        ) : null}
-      </AppShellFrame.Overlays>
-    </AppShellFrame>
+
+          {isProfileBootstrapError ? (
+            <SessionBootstrapError
+              title={t.common.shell.profileBootstrap.errorTitle}
+              description={t.common.shell.profileBootstrap.errorDescription}
+              actionHint={t.common.shell.profileBootstrap.actionHint}
+              retryLabel={t.common.shell.profileBootstrap.retry}
+              logoutLabel={t.common.shell.profileBootstrap.logout}
+              isRetrying={isProfileFetching}
+              onRetry={handleProfileRetry}
+              onLogout={onLogout}
+            />
+          ) : null}
+        </AppShellFrame.Overlays>
+      </AppShellFrame>
+    </AppLayoutBreadcrumbsProvider>
   )
 }

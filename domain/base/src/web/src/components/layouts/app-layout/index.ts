@@ -4,6 +4,11 @@ export type {
   AppLayoutProps,
   AppLayoutUserProfile,
 } from './app-layout'
+export { useAppLayoutBreadcrumbs } from './breadcrumbs'
+export type {
+  AppLayoutBreadcrumbItems,
+  AppLayoutBreadcrumbsContextValue,
+} from './breadcrumbs'
 export type {
   WorkspaceAutoSelectionResolver,
   WorkspaceSelectionItem,

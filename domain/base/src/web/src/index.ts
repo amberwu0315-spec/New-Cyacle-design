@@ -1,6 +1,8 @@
 export { cn } from '#/lib/utils.ts';
 export { Button } from '#/components/ui/button.tsx';
 export { RadioGroup, RadioGroupItem } from '#/components/ui/radio-group.tsx';
+export { KatexFormula } from '#/components/common/katex-formula.tsx';
+export type { KatexFormulaProps } from '#/components/common/katex-formula.tsx';
 export { queryClient, TanstackQueryRootProvider } from '#/lib/query-client.tsx';
 export { vrpcClient, vrpcHttpClient } from '#/lib/vrpc-client.ts';
 export {
@@ -73,21 +75,34 @@ export type {
   SupportedLanguage,
 } from '#/lib/i18n/index.ts';
 export {
+  DEFAULT_PLAIN_TEXT_ITEM_TYPE,
   DEFAULT_FORMULA_FUNCTIONS,
   FormulaEditor,
+  ReplaceDisplay,
+  ReplaceEditor,
   collectReferencedVariables,
   validateFormula,
 } from '@cew-lib/cyacle-replace-symbols';
+export { renderToString as renderKatexToString } from 'katex';
 export type {
   FormulaEditorValue,
   FormulaEditorToolbarApi,
   FormulaFunctionOption,
   FormulaSuggestionSection,
   FormulaVariableSection,
+  ReplaceSuggestionSection,
+  ReplaceTokenOption,
+  ReplaceValueSegment,
 } from '@cew-lib/cyacle-replace-symbols';
 
-export { AppLayout, createAppNavConfig } from '#/components/layouts/app-layout/index.ts';
+export {
+  AppLayout,
+  createAppNavConfig,
+  useAppLayoutBreadcrumbs,
+} from '#/components/layouts/app-layout/index.ts';
 export type {
+  AppLayoutBreadcrumbItems,
+  AppLayoutBreadcrumbsContextValue,
   AppLayoutDomainCapabilities,
   AppLayoutAsyncState,
   AppLayoutProps,
