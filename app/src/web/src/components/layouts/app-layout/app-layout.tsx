@@ -13,6 +13,7 @@ import {
   getWebProjectConfig,
 } from '@carbonnt-cyacle/web-base'
 import {
+  AuthGuard,
   clearWorkspaceSelectionSideEffects,
   getSelectedWorkspaceId,
   getSelectedWorkspaceScope,
@@ -20,8 +21,7 @@ import {
   selectWorkspaceId,
   useAvailableWorkspaces,
   useCurrentUserProfile,
-} from '@carbonnt-cyacle/web-uic'
-import { AuthGuard } from '@carbonnt-cyacle/web-uic/pub'
+} from '@carbonnt-cyacle/web-uic/pub'
 
 import { webModules } from '#/vineModules.gen.ts'
 

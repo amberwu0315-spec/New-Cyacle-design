@@ -3,8 +3,8 @@ import Cookies from 'js-cookie'
 export const SESSION_COOKIE_KEY = 'NSID'
 export const SESSION_COOKIE_EXPIRES_DAYS = 365
 export const SESSION_SCOPE_CREDENTIAL_EMPTY = '-'
-const LOCAL_WORKSPACE_ID_STORAGE_KEY = 'uic.workspace.lastSelectedId'
 const LOCAL_WORKSPACE_SCOPE_STORAGE_KEY = 'uic.workspace.lastSelectedScope'
+const LEGACY_WORKSPACE_SCOPE_STORAGE_KEY = 'carbonnt.workspace.lastSelectedScope'
 
 const LOCAL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1'])
 
@@ -85,11 +85,10 @@ export function getSessionCredential() {
 }
 
 export function getSessionScope() {
-  return getLocalStorageItem(LOCAL_WORKSPACE_SCOPE_STORAGE_KEY)
-}
-
-export function getSessionWorkspaceId() {
-  return getLocalStorageItem(LOCAL_WORKSPACE_ID_STORAGE_KEY)
+  return (
+    getLocalStorageItem(LOCAL_WORKSPACE_SCOPE_STORAGE_KEY) ??
+    getLocalStorageItem(LEGACY_WORKSPACE_SCOPE_STORAGE_KEY)
+  )
 }
 
 export function getSessionScopeCredential() {
@@ -129,22 +128,11 @@ export function setSessionScope(scope: string) {
 
   if (!normalizedScope) {
     removeLocalStorageItem(LOCAL_WORKSPACE_SCOPE_STORAGE_KEY)
-    removeLocalStorageItem(LOCAL_WORKSPACE_ID_STORAGE_KEY)
+    removeLocalStorageItem(LEGACY_WORKSPACE_SCOPE_STORAGE_KEY)
     return
   }
 
   setLocalStorageItem(LOCAL_WORKSPACE_SCOPE_STORAGE_KEY, normalizedScope)
-}
-
-export function setSessionWorkspaceId(workspaceId: string) {
-  const normalizedWorkspaceId = workspaceId.trim()
-
-  if (!normalizedWorkspaceId) {
-    removeLocalStorageItem(LOCAL_WORKSPACE_ID_STORAGE_KEY)
-    return
-  }
-
-  setLocalStorageItem(LOCAL_WORKSPACE_ID_STORAGE_KEY, normalizedWorkspaceId)
 }
 
 export function clearSessionCredential() {
