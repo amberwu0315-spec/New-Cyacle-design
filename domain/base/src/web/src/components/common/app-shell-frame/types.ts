@@ -141,6 +141,7 @@ export interface AppShellFrameSidebarTriggerProps
 export interface AppShellFrameBreadcrumbsProps
   extends React.ComponentPropsWithoutRef<'div'> {
   items?: Array<AppShellBreadcrumbItem>
+  onNavigate?: (to: string) => void
 }
 
 export type AppShellFrameTopbarEndProps = React.ComponentPropsWithoutRef<'div'>

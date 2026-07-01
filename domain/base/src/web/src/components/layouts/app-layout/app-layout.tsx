@@ -235,7 +235,7 @@ export function AppLayout({
 
   const handleNavigate = React.useCallback(
     (to: string) => {
-      void navigate({ to })
+      void navigate({ href: to })
     },
     [navigate],
   )
@@ -321,6 +321,7 @@ export function AppLayout({
                   />
                   <AppShellFrame.Breadcrumbs
                     items={breadcrumbItems ?? undefined}
+                    onNavigate={handleNavigate}
                   />
                 </AppShellFrame.TopbarStart>
 

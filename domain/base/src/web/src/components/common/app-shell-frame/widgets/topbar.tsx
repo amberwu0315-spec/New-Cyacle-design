@@ -9,7 +9,7 @@ import {
   useRequiredAppShellFrameContext,
   useRequiredAppShellFrameNavContext,
 } from './contexts'
-import { getBreadcrumbItems } from './nav-utils'
+import { getBreadcrumbItems, shouldUseBrowserNavigation } from './nav-utils'
 import type {
   AppShellFrameBreadcrumbsProps,
   AppShellFrameSidebarTriggerProps,
@@ -132,6 +132,7 @@ export function AppShellFrameSidebarTrigger({
 export function AppShellFrameBreadcrumbs({
   className,
   items,
+  onNavigate,
   ...props
 }: AppShellFrameBreadcrumbsProps) {
   const { sidebarState } = useRequiredAppShellFrameContext(
@@ -156,22 +157,43 @@ export function AppShellFrameBreadcrumbs({
     >
       {breadcrumbItems.map((item, index) => {
         const isLast = index === breadcrumbItems.length - 1
+        const href = item.href?.trim()
+        const itemClassName = cn(
+          'truncate',
+          isLast ? 'font-semibold text-foreground' : 'text-muted-foreground',
+        )
+        const content = href ? (
+          <a
+            href={href}
+            className={cn(
+              itemClassName,
+              'rounded-sm outline-none transition-colors hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring',
+            )}
+            onClick={(event) => {
+              if (shouldUseBrowserNavigation(event)) {
+                return
+              }
+
+              if (!onNavigate) {
+                return
+              }
+
+              event.preventDefault()
+              onNavigate(href)
+            }}
+          >
+            {item.label}
+          </a>
+        ) : (
+          <span className={itemClassName}>{item.label}</span>
+        )
 
         return (
           <React.Fragment key={`${String(item.label)}-${index}`}>
             {index > 0 ? (
               <ChevronRight className="size-4 shrink-0 text-muted-foreground" />
             ) : null}
-            <span
-              className={cn(
-                'truncate',
-                isLast
-                  ? 'font-semibold text-foreground'
-                  : 'text-muted-foreground',
-              )}
-            >
-              {item.label}
-            </span>
+            {content}
           </React.Fragment>
         )
       })}
