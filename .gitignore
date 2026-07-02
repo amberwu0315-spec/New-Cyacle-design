@@ -29,6 +29,7 @@
 /domain/ai.flow
 /domain/ai.model
 /domain/audit
+/domain/calculation.core
 /domain/category
 /domain/factor
 /domain/file
