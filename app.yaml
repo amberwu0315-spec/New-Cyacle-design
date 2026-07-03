@@ -49,9 +49,9 @@ domains:
     - name: lca.core
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/lca.core.git
-    - name: lca.api
+    - name: lca
       source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/lca.api.git
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/lca.git
     - name: pcf.factor.api
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/pcf.factor.api.git
