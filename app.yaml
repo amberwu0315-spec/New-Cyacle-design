@@ -70,9 +70,9 @@ domains:
     - name: accounting.core
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/accounting.core.git
-    - name: accounting.api
+    - name: accounting
       source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/accounting.api.git
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/accounting.git
     - name: calculation.core
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/calculation.core.git
