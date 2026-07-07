@@ -76,3 +76,6 @@ domains:
     - name: calculation.core
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/calculation.core.git
+    - name: cfo
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/cfo.git

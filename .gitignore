@@ -32,6 +32,7 @@
 /domain/authorization
 /domain/calculation.core
 /domain/category
+/domain/cfo
 /domain/factor
 /domain/file
 /domain/formula
