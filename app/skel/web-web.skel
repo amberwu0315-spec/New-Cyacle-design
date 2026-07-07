@@ -4,5 +4,5 @@ import base
 
 @desc("WebWeb入口")
 web WebWeb {
-    allow base.UserActor via client
+    for base.UserActor via client
 }
