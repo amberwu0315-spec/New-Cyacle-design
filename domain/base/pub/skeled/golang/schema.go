@@ -8,10 +8,10 @@ func init() {
 
 var _DomainSchema = &skel.DomainSchema{
 	Domain: "base",
-	Hash:   "c93f62ab",
+	Hash:   "c18accce",
 	Full:   false,
 	Generated: &skel.GeneratedInfo{
-		CompilerVersion: "v1.1.33",
+		CompilerVersion: "v1.1.38",
 	},
 	Enums: []*skel.EnumSchema{
 		{
@@ -265,8 +265,8 @@ var _DomainSchema = &skel.DomainSchema{
 		{
 			Name:        "UserActor",
 			SkelName:    "base.UserActor",
-			Description: "user",
-			Hash:        "324d538a",
+			Description: "用户参与者",
+			Hash:        "023d183d",
 			Vias: []skel.ActorVia{
 				skel.ActorViaClient,
 			},
@@ -274,17 +274,19 @@ var _DomainSchema = &skel.DomainSchema{
 			AuthCredential: &skel.DataSchema{
 				Name:     "UserActorCredential",
 				SkelName: "base.UserActorCredential",
-				Hash:     "55837485",
+				Hash:     "3e83beeb",
 				Members: []*skel.MemberSchema{
 					{
-						Name: "session",
+						Name:        "session",
+						Description: "会话",
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarString,
 						},
 					},
 					{
-						Name: "scope",
+						Name:        "scope",
+						Description: "应用权限范围 多个用,隔开",
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarString,
@@ -295,24 +297,27 @@ var _DomainSchema = &skel.DomainSchema{
 			AuthInfo: &skel.DataSchema{
 				Name:     "UserActorInfo",
 				SkelName: "base.UserActorInfo",
-				Hash:     "a6220f18",
+				Hash:     "cb58a5c7",
 				Members: []*skel.MemberSchema{
 					{
-						Name: "userId",
+						Name:        "userId",
+						Description: "接收人用户ID",
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarInt,
 						},
 					},
 					{
-						Name: "username",
+						Name:        "username",
+						Description: "用户名字段名称",
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarString,
 						},
 					},
 					{
-						Name: "workspaceId",
+						Name:        "workspaceId",
+						Description: "工作空间ID",
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarString,

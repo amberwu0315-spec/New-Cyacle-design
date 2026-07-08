@@ -1,0 +1,115 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+: "${APP_NAME:?missing APP_NAME}"
+: "${APP_VERSION:?missing APP_VERSION}"
+: "${BIN_NAME:?missing BIN_NAME}"
+: "${IMAGE_CONTEXT_DIR:?missing IMAGE_CONTEXT_DIR}"
+
+export GOBIN="${GOBIN:-$(go env GOPATH)/bin}"
+export PATH="${GOBIN}:${PATH}"
+
+export GOPROXY="https://goproxy.cew.io"
+export GONOPROXY="none"
+export GONOSUMDB="go.cew.io/*,go.yorun.ai/*"
+
+go install "go.yorun.ai/plot/cmd/plot@latest"
+go install "go.yorun.ai/skelc/cmd/skelc@latest"
+go install "go.yorun.ai/vine/cmd/vine@latest"
+
+VRPC_CLIENT_VERSION="$(vine version | awk '$1 == "Version" { print $2; exit }')"
+
+HUB_ENDPOINT="${HUB_ENDPOINT:-http://vine-hub-dev.sh.hwc.cew.host:7071}"
+INGRESS_LISTEN="${INGRESS_LISTEN:-127.0.0.1:7082}"
+SERVER_DIR="app/src/server"
+WEB_DIR="app/src/web"
+WEB_ARTIFACT="${WEB_ARTIFACT:-web}"
+SERVER_ASSETS_DIR="${SERVER_DIR}/impl/assets"
+WEB_ASSETS_DIR="${SERVER_ASSETS_DIR}/${WEB_ARTIFACT}"
+OUTPUT="${IMAGE_CONTEXT_DIR}/${BIN_NAME}"
+
+mkdir -p "${IMAGE_CONTEXT_DIR}"
+
+cat > dev.yaml <<EOF
+run:
+  mode: LINKED
+  linkedParams:
+    hubEndpoint: ${HUB_ENDPOINT}
+    ingressListen: ${INGRESS_LISTEN}
+EOF
+
+plot dom generate --migrate
+plot app apply
+
+PPROF_CI_FILE="${SERVER_DIR}/cmd/cyacle/pprof_ci.go"
+WEB_ASSETS_CI_FILE="${SERVER_DIR}/impl/web_assets_ci.go"
+trap 'rm -f "${PPROF_CI_FILE}" "${WEB_ASSETS_CI_FILE}"' EXIT
+
+cat > "${PPROF_CI_FILE}" <<'EOF'
+package main
+
+import (
+	"log"
+	"net/http"
+	_ "net/http/pprof"
+	"os"
+)
+
+const pprofAddrEnv = "CYACLE_PPROF_ADDR"
+
+func init() {
+	addr := os.Getenv(pprofAddrEnv)
+	if addr == "" {
+		return
+	}
+
+	go func() {
+		log.Printf("pprof listening on %s", addr)
+		if err := http.ListenAndServe(addr, nil); err != nil {
+			log.Printf("pprof stopped: %v", err)
+		}
+	}()
+}
+EOF
+
+cat > "${WEB_ASSETS_CI_FILE}" <<'EOF'
+//go:build production
+
+package impl
+
+func (h *WebWebImpl) Serve() {
+	h.embedAssetsServer.Serve()
+}
+EOF
+
+export GOOS="${GOOS:-linux}"
+export CGO_ENABLED="${CGO_ENABLED:-1}"
+
+LDFLAGS="-X \"go.cew.io/fx/vine/app.ldName=${APP_NAME}\""
+LDFLAGS="${LDFLAGS} -X \"go.cew.io/fx/vine/app.ldVersion=${APP_VERSION}\""
+LDFLAGS="${LDFLAGS} -X \"go.cew.io/fx/vine/app.ldGitCommit=$(git rev-parse --short HEAD)\""
+LDFLAGS="${LDFLAGS} -X \"go.cew.io/fx/vine/app.ldBuiltBy=ci.go.app\""
+LDFLAGS="${LDFLAGS} -X \"go.cew.io/fx/vine/app.ldBuiltTime=$(date -u +%Y-%m-%dT%H:%M:%SZ)\""
+
+go build -tags production -ldflags "${LDFLAGS}" -o "${OUTPUT}" "./${SERVER_DIR}/cmd/cyacle"
+
+(
+  cd "${WEB_DIR}"
+  pnpm install
+
+  pnpm build -- --vrpcClientVersion="${VRPC_CLIENT_VERSION}"
+)
+
+mkdir -p "${SERVER_ASSETS_DIR}"
+rm -rf "${WEB_ASSETS_DIR}"
+cp -R "${WEB_DIR}/dist" "${WEB_ASSETS_DIR}"
+
+go build -tags production -ldflags "${LDFLAGS}" -o "${OUTPUT}" "./${SERVER_DIR}/cmd/cyacle"
+
+cat > "${IMAGE_CONTEXT_DIR}/Dockerfile" <<EOF
+FROM \${IMAGE_BASE}
+
+COPY ${BIN_NAME} /usr/local/bin/${BIN_NAME}
+
+ENTRYPOINT ["${BIN_NAME}"]
+EOF
