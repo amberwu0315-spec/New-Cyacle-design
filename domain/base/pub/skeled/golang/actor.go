@@ -13,14 +13,14 @@ func init() {
 	meta.RegisterActor(meta.ActorSpec{
 		Name:         "UserActor",
 		SkelName:     "base.UserActor",
-		Hash:         "324d538a",
+		Hash:         "023d183d",
 		InfoSkelName: "base.UserActorInfo",
 		InfoType:     reflect.TypeFor[*UserActorInfo](),
 	})
 	rpc.Register(_UserActorAuthServiceSpec)
 }
 
-// UserActor user
+// UserActor 用户参与者
 type UserActor struct {
 	skel.ActorBase
 }
@@ -40,13 +40,18 @@ func (UserActor) Vias() []skel.ActorVia {
 }
 
 type UserActorCredential struct {
+	// Session 会话
 	Session string `json:"session"`
-	Scope   string `json:"scope"`
+	// Scope 应用权限范围 多个用,隔开
+	Scope string `json:"scope"`
 }
 
 type UserActorInfo struct {
-	UserId      int    `json:"userId"`
-	Username    string `json:"username"`
+	// UserId 接收人用户ID
+	UserId int `json:"userId"`
+	// Username 用户名字段名称
+	Username string `json:"username"`
+	// WorkspaceId 工作空间ID
 	WorkspaceId string `json:"workspaceId"`
 }
 
