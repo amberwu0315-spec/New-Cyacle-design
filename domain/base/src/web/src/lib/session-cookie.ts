@@ -24,6 +24,17 @@ function getCookieSecureOption() {
   return typeof window !== 'undefined' && window.location.protocol === 'https:'
 }
 
+function getSessionCookieAttributes() {
+  const secure = getCookieSecureOption()
+
+  return {
+    domain: resolveSessionCookieDomain(),
+    path: '/',
+    sameSite: secure ? 'none' : 'lax',
+    secure,
+  } as const
+}
+
 function getLocalStorageItem(key: string) {
   if (typeof window === 'undefined') {
     return null
@@ -111,15 +122,9 @@ export function getSessionAuthorizationHeader() {
 }
 
 export function setSessionCredential(sessionId: string) {
-  const domain = resolveSessionCookieDomain()
-  const secure = getCookieSecureOption()
-
   Cookies.set(SESSION_COOKIE_KEY, sessionId, {
-    domain,
+    ...getSessionCookieAttributes(),
     expires: SESSION_COOKIE_EXPIRES_DAYS,
-    path: '/',
-    sameSite: 'none',
-    secure,
   })
 }
 
@@ -136,13 +141,5 @@ export function setSessionScope(scope: string) {
 }
 
 export function clearSessionCredential() {
-  const domain = resolveSessionCookieDomain()
-  const secure = getCookieSecureOption()
-
-  Cookies.remove(SESSION_COOKIE_KEY, {
-    domain,
-    path: '/',
-    sameSite: 'none',
-    secure,
-  })
+  Cookies.remove(SESSION_COOKIE_KEY, getSessionCookieAttributes())
 }
