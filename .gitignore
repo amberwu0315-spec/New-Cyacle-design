@@ -47,7 +47,6 @@
 /domain/report
 /domain/uic
 /domain/unit
-domain/authorization
 /go.work
 /go.work.sum
 /pnpm-workspace.yaml
