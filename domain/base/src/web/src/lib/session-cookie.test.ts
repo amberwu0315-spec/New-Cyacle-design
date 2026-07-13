@@ -45,7 +45,8 @@ describe('setSessionCredential', () => {
 
     setSessionCredential('session-1')
 
-    expect(cookiesMock.set).toHaveBeenCalledWith(SESSION_COOKIE_KEY, 'session-1', {
+    expect(SESSION_COOKIE_KEY).toBe('NSID_SE')
+    expect(cookiesMock.set).toHaveBeenCalledWith('NSID_SE', 'session-1', {
       domain: '.cyacle-dev.cn',
       expires: SESSION_COOKIE_EXPIRES_DAYS,
       path: '/',
@@ -61,14 +62,14 @@ describe('setSessionCredential', () => {
 
     clearSessionCredential()
 
-    expect(cookiesMock.set).toHaveBeenCalledWith(SESSION_COOKIE_KEY, 'session-1', {
+    expect(cookiesMock.set).toHaveBeenCalledWith('NSID_SE', 'session-1', {
       domain: '.cyacle-dev.cn',
       expires: SESSION_COOKIE_EXPIRES_DAYS,
       path: '/',
       sameSite: 'none',
       secure: true,
     })
-    expect(cookiesMock.remove).toHaveBeenCalledWith(SESSION_COOKIE_KEY, {
+    expect(cookiesMock.remove).toHaveBeenCalledWith('NSID_SE', {
       domain: '.cyacle-dev.cn',
       path: '/',
       sameSite: 'none',

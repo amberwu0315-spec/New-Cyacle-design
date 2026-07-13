@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie'
 
-export const SESSION_COOKIE_KEY = 'NSID'
+export const SESSION_COOKIE_KEY = 'NSID_SE'
 export const SESSION_COOKIE_EXPIRES_DAYS = 365
 export const SESSION_SCOPE_CREDENTIAL_EMPTY = '-'
 const LOCAL_WORKSPACE_SCOPE_STORAGE_KEY = 'uic.workspace.lastSelectedScope'
