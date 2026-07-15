@@ -39,6 +39,8 @@ run:
     ingressListen: ${INGRESS_LISTEN}
 EOF
 
+echo "pnpm store: $(pnpm store path --store-dir /cache/pnpm-store)"
+
 # plot dom generate --migrate
 plot app apply
 
