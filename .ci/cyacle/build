@@ -39,7 +39,7 @@ run:
     ingressListen: ${INGRESS_LISTEN}
 EOF
 
-plot dom generate --migrate
+# plot dom generate --migrate
 plot app apply
 
 PPROF_CI_FILE="${SERVER_DIR}/cmd/cyacle/pprof_ci.go"
@@ -94,8 +94,7 @@ LDFLAGS="${LDFLAGS} -X \"go.cew.io/fx/vine/app.ldBuiltTime=$(date -u +%Y-%m-%dT%
 
 (
   cd "${WEB_DIR}"
-  pnpm install
-
+  pnpm install --frozen-lockfile --filter @carbonnt-cyacle/web-app...
   pnpm build -- --vrpcClientVersion="${VRPC_CLIENT_VERSION}"
 )
 
