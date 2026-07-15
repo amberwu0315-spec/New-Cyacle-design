@@ -18,7 +18,7 @@
 
 ### domain/base/src/web
 
-- 只提供稳定基础能力：`BaseProviders`、`BaseAppLayout`、基础 UI、session 工具、route manifest 工具、通用 capability 收集工具。
+- 只提供稳定基础能力： `BaseProviders`、`BaseAppLayout`、基础 UI、session 工具、route manifest 工具、通用 capability 收集工具。
 - 不依赖 UIC，不直接调用 `getProfile`、workspace 查询等业务接口。
 - `BaseAppLayout` 只接收上层注入的数据和配置，例如 `navConfig`、`profileQuery`、`workspaceQuery`、`onLogout`。
 - `root-layout.tsx`、`mount.tsx`、base 内置 home route 等应用级文件应移出 base 或删除。
