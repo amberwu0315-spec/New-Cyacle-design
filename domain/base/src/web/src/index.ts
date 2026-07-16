@@ -3,6 +3,8 @@ export { Button } from '#/components/ui/button.tsx';
 export { RadioGroup, RadioGroupItem } from '#/components/ui/radio-group.tsx';
 export { KatexFormula } from '#/components/common/katex-formula.tsx';
 export type { KatexFormulaProps } from '#/components/common/katex-formula.tsx';
+export { SelectedFileItem } from '#/components/common/selected-file-item.tsx';
+export type { SelectedFileItemProps } from '#/components/common/selected-file-item.tsx';
 export { queryClient, TanstackQueryRootProvider } from '#/lib/query-client.tsx';
 export { vrpcClient, vrpcHttpClient } from '#/lib/vrpc-client.ts';
 export {
