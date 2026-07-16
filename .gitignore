@@ -27,6 +27,7 @@
 /dev.yaml
 /domain/accounting
 /domain/accounting.core
+/domain/agent
 /domain/ai.flow
 /domain/ai.model
 /domain/audit
