@@ -8,6 +8,7 @@ import {
   uploadDocumentFile,
 } from '#/lib/upload-services/core/document-service.ts'
 import {
+  fetchFileDownloadBlob,
   getFileDownloadUrl,
   uploadPublicFile,
 } from '#/lib/upload-services/core/file-service.ts'
@@ -68,6 +69,31 @@ describe('getFileDownloadUrl', () => {
 
   it('returns undefined when recordId is empty', () => {
     expect(getFileDownloadUrl(undefined)).toBeUndefined()
+  })
+
+  it('attaches session authorization when fetching private file blobs', async () => {
+    setSessionCredential('session-1')
+    setSessionScope('scope-1')
+
+    const fetchSpy = vi.spyOn(globalThis, 'fetch').mockResolvedValue(
+      new Response('file-content', {
+        status: 200,
+      }),
+    )
+
+    const blob = await fetchFileDownloadBlob('file-1')
+    const requestInit = fetchSpy.mock.calls[0]?.[1] as RequestInit
+    const headers = new Headers(requestInit.headers)
+
+    expect(blob.size).toBe(12)
+    expect(fetchSpy).toHaveBeenCalledWith(
+      '/file.FileWeb/FileService/download?recordId=file-1',
+      expect.objectContaining({
+        cache: 'no-cache',
+        credentials: 'include',
+      }),
+    )
+    expect(headers.get('Authorization')).toBe('session session-1, scope scope-1')
   })
 
   it('uses the normalized upload url when posting public files', async () => {

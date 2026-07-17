@@ -4,8 +4,13 @@ import {
   uploadFileWithFormData,
 } from './upload-service.shared'
 import { getWebProjectConfig } from '#/lib/web-project-config.ts'
+import { getSessionAuthorizationHeader } from '#/lib/session-cookie.ts'
 
 export const FILE_SERVICE_PATH_PREFIX = '/file.FileWeb/FileService'
+
+export interface FetchFileDownloadBlobOptions {
+  signal?: AbortSignal
+}
 
 function getFilePublicUploadPath() {
   return getWebProjectConfig().uploadServices.file.publicUploadPath
@@ -27,6 +32,71 @@ export function getFileDownloadUrl(recordId?: string | null, host?: string) {
   const params = new URLSearchParams({ recordId })
 
   return `${resolveServiceUrl(getFilePrivateDownloadPath(), host)}?${params.toString()}`
+}
+
+async function readResponseErrorMessage(response: Response) {
+  const bodyText = await response.text().catch(() => '')
+
+  if (!bodyText) {
+    return null
+  }
+
+  try {
+    const payload = JSON.parse(bodyText) as unknown
+
+    if (
+      payload &&
+      typeof payload === 'object' &&
+      'message' in payload &&
+      typeof payload.message === 'string' &&
+      payload.message.trim()
+    ) {
+      return payload.message
+    }
+  } catch {
+    return bodyText
+  }
+
+  return bodyText
+}
+
+export async function fetchFileDownloadBlob(
+  recordId?: string | null,
+  options: FetchFileDownloadBlobOptions = {},
+) {
+  const downloadUrl = getFileDownloadUrl(recordId)
+
+  if (!downloadUrl) {
+    throw new Error('文件 ID 不能为空。')
+  }
+
+  const headers = new Headers()
+  const authorization = getSessionAuthorizationHeader()
+
+  if (authorization) {
+    headers.set('Authorization', authorization)
+  }
+
+  const response = await fetch(downloadUrl, {
+    cache: 'no-cache',
+    credentials: 'include',
+    headers,
+    signal: options.signal,
+  })
+
+  if (!response.ok) {
+    throw new Error(
+      (await readResponseErrorMessage(response)) || '文件下载失败，请稍后重试。',
+    )
+  }
+
+  const blob = await response.blob()
+
+  if (!blob.size) {
+    throw new Error('文件内容为空。')
+  }
+
+  return blob
 }
 
 export async function uploadPublicFile(file: File, host?: string) {

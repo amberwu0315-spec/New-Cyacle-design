@@ -278,6 +278,38 @@ function withViewerObjectUrl(
   }
 }
 
+function isRelativeUrl(url: string) {
+  return url.startsWith('/')
+}
+
+function isSameOriginUrl(url: string) {
+  if (isRelativeUrl(url)) {
+    return true
+  }
+
+  if (typeof window === 'undefined') {
+    return false
+  }
+
+  try {
+    return new URL(url, window.location.href).origin === window.location.origin
+  } catch {
+    return false
+  }
+}
+
+function shouldFetchAuthorizedPreviewUrl(item: DocumentsPreviewItem | null) {
+  if (!item?.url) {
+    return false
+  }
+
+  if (item.source === 'document') {
+    return true
+  }
+
+  return item.source === 'file' && isSameOriginUrl(item.url)
+}
+
 function useAuthorizedDocumentPreviewItem(
   open: boolean,
   item: DocumentsPreviewItem | null,
@@ -285,11 +317,11 @@ function useAuthorizedDocumentPreviewItem(
   const [state, setState] = React.useState<AuthorizedDocumentPreviewState>(
     AUTHORIZED_DOCUMENT_PREVIEW_IDLE_STATE,
   )
-  const documentPreviewUrl =
-    open && item?.source === 'document' ? item.url : undefined
+  const authorizedPreviewUrl =
+    open && shouldFetchAuthorizedPreviewUrl(item) ? item?.url : undefined
 
   React.useEffect(() => {
-    if (!documentPreviewUrl) {
+    if (!authorizedPreviewUrl) {
       setState(AUTHORIZED_DOCUMENT_PREVIEW_IDLE_STATE)
       return undefined
     }
@@ -299,7 +331,7 @@ function useAuthorizedDocumentPreviewItem(
 
     setState({ error: null, loading: true, objectUrl: null })
 
-    void fetchDocumentBlobByUrl(documentPreviewUrl, {
+    void fetchDocumentBlobByUrl(authorizedPreviewUrl, {
       signal: abortController.signal,
     })
       .then((blob) => {
@@ -326,10 +358,10 @@ function useAuthorizedDocumentPreviewItem(
       abortController.abort()
       revokeObjectUrl(objectUrl)
     }
-  }, [documentPreviewUrl])
+  }, [authorizedPreviewUrl])
 
   return React.useMemo(() => {
-    if (item?.source !== 'document') {
+    if (!shouldFetchAuthorizedPreviewUrl(item)) {
       return {
         error: null,
         item,

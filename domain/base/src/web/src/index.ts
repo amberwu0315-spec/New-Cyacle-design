@@ -5,6 +5,19 @@ export { KatexFormula } from '#/components/common/katex-formula.tsx';
 export type { KatexFormulaProps } from '#/components/common/katex-formula.tsx';
 export { SelectedFileItem } from '#/components/common/selected-file-item.tsx';
 export type { SelectedFileItemProps } from '#/components/common/selected-file-item.tsx';
+export {
+  createDocumentPreviewItem,
+  createDocumentPreviewItemFromDocument,
+  createDocumentPreviewItemFromVersion,
+  createFilePreviewItem,
+  openDocumentPreview,
+} from '#/components/common/document-preview/index.ts';
+export type {
+  DocumentsPreviewDocumentEntry,
+  DocumentsPreviewItem,
+  DocumentsPreviewSource,
+  DocumentsPreviewVersion,
+} from '#/components/common/document-preview/index.ts';
 export { queryClient, TanstackQueryRootProvider } from '#/lib/query-client.tsx';
 export { vrpcClient, vrpcHttpClient } from '#/lib/vrpc-client.ts';
 export {
@@ -30,7 +43,15 @@ export {
   uploadPublicFile,
   validateAvatarImageFile,
 } from '#/lib/upload-services/file-service.ts';
-export type { UploadedFileResource } from '#/lib/upload-services/file-service.ts';
+export type {
+  UploadedFileResource,
+} from '#/lib/upload-services/file-service.ts';
+export {
+  fetchFileDownloadBlob,
+} from '#/lib/upload-services/core/file-service.ts';
+export type {
+  FetchFileDownloadBlobOptions,
+} from '#/lib/upload-services/core/file-service.ts';
 export {
   fetchDocumentDownloadBlob,
   getDocumentDownloadUrl,
