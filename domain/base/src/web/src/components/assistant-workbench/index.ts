@@ -4,8 +4,10 @@ export {
   useAssistantWorkbenchController,
 } from './controller'
 export {
+  assistantAgentService,
   AssistantAgentUserContextProvider,
   configureAssistantAgentRuntime,
+  type AssistantSendMessageInput,
   type AssistantAgentRequestContext,
   type AssistantAgentRuntimeConfig,
   type AssistantAgentUserContext,

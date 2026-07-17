@@ -4,6 +4,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 
 import {
   clearSessionCredential,
+  getSessionAuthorizationHeader,
   SESSION_COOKIE_EXPIRES_DAYS,
   SESSION_COOKIE_KEY,
   setSessionCredential,
@@ -37,6 +38,27 @@ afterEach(() => {
   vi.unstubAllGlobals()
 })
 
+describe('getSessionAuthorizationHeader', () => {
+  it('uses NSID as the session credential', () => {
+    cookiesMock.get.mockImplementation((key: string) =>
+      key === 'NSID' ? 'session-1' : undefined,
+    )
+
+    expect(getSessionAuthorizationHeader()).toBe('session session-1, scope -')
+    expect(cookiesMock.get).toHaveBeenCalledWith('NSID')
+  })
+
+  it('does not fall back to NSID_SE', () => {
+    cookiesMock.get.mockImplementation((key: string) =>
+      key === 'NSID_SE' ? 'legacy-session' : undefined,
+    )
+
+    expect(getSessionAuthorizationHeader()).toBeNull()
+    expect(cookiesMock.get).toHaveBeenCalledWith('NSID')
+    expect(cookiesMock.get).not.toHaveBeenCalledWith('NSID_SE')
+  })
+})
+
 describe('setSessionCredential', () => {
   it('uses SameSite=Lax for http deployments', () => {
     stubWindowLocation(
@@ -45,8 +67,8 @@ describe('setSessionCredential', () => {
 
     setSessionCredential('session-1')
 
-    expect(SESSION_COOKIE_KEY).toBe('NSID_SE')
-    expect(cookiesMock.set).toHaveBeenCalledWith('NSID_SE', 'session-1', {
+    expect(SESSION_COOKIE_KEY).toBe('NSID')
+    expect(cookiesMock.set).toHaveBeenCalledWith('NSID', 'session-1', {
       domain: '.cyacle-dev.cn',
       expires: SESSION_COOKIE_EXPIRES_DAYS,
       path: '/',
@@ -62,14 +84,14 @@ describe('setSessionCredential', () => {
 
     clearSessionCredential()
 
-    expect(cookiesMock.set).toHaveBeenCalledWith('NSID_SE', 'session-1', {
+    expect(cookiesMock.set).toHaveBeenCalledWith('NSID', 'session-1', {
       domain: '.cyacle-dev.cn',
       expires: SESSION_COOKIE_EXPIRES_DAYS,
       path: '/',
       sameSite: 'none',
       secure: true,
     })
-    expect(cookiesMock.remove).toHaveBeenCalledWith('NSID_SE', {
+    expect(cookiesMock.remove).toHaveBeenCalledWith('NSID', {
       domain: '.cyacle-dev.cn',
       path: '/',
       sameSite: 'none',
