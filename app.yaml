@@ -80,4 +80,5 @@ domains:
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/cfo.git
     - name: agent
-      source: LOCAL
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/agent.git
