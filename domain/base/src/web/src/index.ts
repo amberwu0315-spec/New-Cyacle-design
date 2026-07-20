@@ -10,6 +10,7 @@ export {
   createDocumentPreviewItemFromDocument,
   createDocumentPreviewItemFromVersion,
   createFilePreviewItem,
+  InlineDocumentPreview,
   openDocumentPreview,
 } from '#/components/common/document-preview/index.ts';
 export type {
@@ -17,6 +18,7 @@ export type {
   DocumentsPreviewItem,
   DocumentsPreviewSource,
   DocumentsPreviewVersion,
+  InlineDocumentPreviewProps,
 } from '#/components/common/document-preview/index.ts';
 export { queryClient, TanstackQueryRootProvider } from '#/lib/query-client.tsx';
 export { vrpcClient, vrpcHttpClient } from '#/lib/vrpc-client.ts';
