@@ -3,6 +3,10 @@ export {
   type DocumentPreviewDialogProps,
 } from './document-preview-dialog'
 export {
+  InlineDocumentPreview,
+  type InlineDocumentPreviewProps,
+} from './inline-document-preview'
+export {
   closeDocumentPreview,
   configureDocumentPreviewDialogRenderer,
   DocumentPreviewHost,
