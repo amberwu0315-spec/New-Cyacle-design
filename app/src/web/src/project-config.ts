@@ -10,7 +10,7 @@ import {
   uploadDocumentFile,
 } from '@carbonnt-cyacle/web-uic'
 
-import { createLcaAssistantAgentRuntimeConfig } from '#/adapters/lca-assistant-agent-adapter.ts'
+import { createAssistantAgentRuntimeConfig } from '#/adapters/assistant-agent-adapter.ts'
 
 function buildAuthorizationHeader() {
   const sessionCredential = getSessionCredential()
@@ -67,7 +67,7 @@ const webProjectConfig = {
 configureWebProjectConfig(webProjectConfig)
 
 configureAssistantAgentRuntime({
-  ...createLcaAssistantAgentRuntimeConfig(),
+  ...createAssistantAgentRuntimeConfig(),
   getAgentEventHeaders: buildEventStreamHeaders,
   getDocumentDownloadUrl,
   getDocumentInfoByIds: () => [],
