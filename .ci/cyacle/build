@@ -16,7 +16,9 @@ set -euo pipefail
 # go install "go.yorun.ai/plot/cmd/plot@latest"
 # go install "go.yorun.ai/skelc/cmd/skelc@latest"
 # go install "go.yorun.ai/vine/cmd/vine@latest"
-plot upgrade
+plot version
+skelc version
+vine version
 
 VRPC_CLIENT_VERSION="$(vine version | awk '$1 == "Version" { print $2; exit }')"
 
