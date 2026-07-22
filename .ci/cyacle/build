@@ -43,7 +43,7 @@ EOF
 
 echo "pnpm store: $(pnpm store path --store-dir /cache/pnpm-store)"
 
-plot dom generate --migrate
+plot dom generate
 plot app apply
 
 PPROF_CI_FILE="${SERVER_DIR}/cmd/cyacle/pprof_ci.go"
