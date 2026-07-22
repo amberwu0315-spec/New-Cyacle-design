@@ -8,11 +8,12 @@ func init() {
 
 var _DomainSchema = &skel.DomainSchema{
 	Domain: "base",
-	Hash:   "c18accce",
+	Hash:   "dce78875",
 	Full:   false,
 	Generated: &skel.GeneratedInfo{
-		CompilerVersion: "v1.1.38",
+		CompilerVersion: "v0.9.2",
 	},
+
 	Enums: []*skel.EnumSchema{
 		{
 			Name:        "ItemType",
@@ -35,6 +36,7 @@ var _DomainSchema = &skel.DomainSchema{
 			},
 		},
 	},
+
 	Data: []*skel.DataSchema{
 		{
 			Name:        "Item",
@@ -67,7 +69,7 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "MMacroText",
 			SkelName:    "base.MMacroText",
 			Description: "多语言宏文本",
-			Hash:        "59b5a5cd",
+			Hash:        "092327ae",
 			Members: []*skel.MemberSchema{
 				{
 					Name:        "zh",
@@ -109,7 +111,7 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "MString",
 			SkelName:    "base.MString",
 			Description: "多语言普通文本",
-			Hash:        "f694c159",
+			Hash:        "9f79b9e0",
 			Members: []*skel.MemberSchema{
 				{
 					Name:        "zh",
@@ -149,7 +151,7 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "MStringItem",
 			SkelName:    "base.MStringItem",
 			Description: "多语言中的单一语言内容",
-			Hash:        "11cb03e8",
+			Hash:        "ad48046e",
 			TypeParameters: []string{
 				"TItem",
 			},
@@ -207,7 +209,7 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "PageResp",
 			SkelName:    "base.PageResp",
 			Description: "分页结果",
-			Hash:        "42f7831b",
+			Hash:        "f67b8d77",
 			TypeParameters: []string{
 				"TItem",
 			},
@@ -261,6 +263,7 @@ var _DomainSchema = &skel.DomainSchema{
 			},
 		},
 	},
+
 	Actors: []*skel.ActorSchema{
 		{
 			Name:        "UserActor",
