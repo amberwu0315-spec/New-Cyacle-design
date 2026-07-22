@@ -100,7 +100,7 @@ type _UserActorAuthServiceAuthArguments struct {
 // UserActorAuthService / Server
 
 type UserActorAuthServiceServer interface {
-	// Auth。
+	// Auth.
 	Auth(credential UserActorCredential) UserActorInfo
 
 	mustBeUserActorAuthServiceServer()
