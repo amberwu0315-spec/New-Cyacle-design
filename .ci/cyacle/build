@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
+
 : "${APP_NAME:?missing APP_NAME}"
 : "${APP_VERSION:?missing APP_VERSION}"
 : "${BIN_NAME:?missing BIN_NAME}"
