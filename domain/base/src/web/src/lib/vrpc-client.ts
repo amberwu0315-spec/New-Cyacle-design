@@ -5,8 +5,10 @@ import {
 } from '@yorun-ai/vrpc/client'
 import { createHttpClient } from '@yorun-ai/vrpc/http'
 import type {
+  HttpInvokeContext,
   HttpTransport,
   HttpTransportResponse,
+  VrpcInvokeContext,
 } from '@yorun-ai/vrpc/client'
 import { toast } from 'sonner'
 
@@ -28,13 +30,13 @@ function isRecord(value: unknown): value is Record<string, unknown> {
   return Boolean(value) && typeof value === 'object'
 }
 
-function parseResponseBody(bodyText: string | null) {
-  if (!bodyText) {
+function parseResponseBody(body: Uint8Array | null) {
+  if (!body?.length) {
     return null
   }
 
   try {
-    return JSON.parse(bodyText) as unknown
+    return JSON.parse(new TextDecoder().decode(body)) as unknown
   } catch {
     return null
   }
@@ -47,7 +49,7 @@ function hasEnvelopeError(payload: unknown) {
 function normalizeEnvelopeErrorResponse(
   response: HttpTransportResponse,
 ): HttpTransportResponse {
-  if (!hasEnvelopeError(parseResponseBody(response.bodyText))) {
+  if (!hasEnvelopeError(parseResponseBody(response.body))) {
     return response
   }
 
@@ -103,23 +105,31 @@ function attachSessionAuthorization(context: { init: RequestInit }) {
 
 function handleClientError(
   error: unknown,
-  context: { suppressGlobalToast?: boolean, path: string },
+  context: VrpcInvokeContext | HttpInvokeContext,
 ) {
   console.error('VRPC Error:', error)
 
   if (isAuthenticationError(error)) {
     // 只针对用户信息接口报错跳登录页面，其他接口如果报 401 可能是权限问题或者配置问题，不直接跳登录
-    if (context.path.includes('getProfile')) {
+    if (getRequestPath(context).includes('getProfile')) {
       redirectToLoginWithCurrentLocation()
     }
     return
   }
 
-  if (context.suppressGlobalToast) {
+  if (context.options.suppressGlobalToast) {
     return
   }
 
   toast.error(error instanceof Error ? error.message : 'Request failed')
+}
+
+function getRequestPath(context: VrpcInvokeContext | HttpInvokeContext) {
+  if ('path' in context.request) {
+    return context.request.path
+  }
+
+  return `${context.request.serviceName}/${context.request.methodName}`
 }
 
 export const vrpcClient = createVrpcClient({
@@ -134,7 +144,7 @@ export const vrpcClient = createVrpcClient({
 
 export const vrpcHttpClient = createHttpClient({
   prefixUrl: '/',
-  fetchOptions: {
+  requestInit: {
     credentials: 'include',
   },
 })

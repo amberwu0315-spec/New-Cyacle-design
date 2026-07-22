@@ -11,8 +11,9 @@ var _DomainSchema = &skel.DomainSchema{
 	Hash:   "3809ccf9",
 	Full:   true,
 	Generated: &skel.GeneratedInfo{
-		CompilerVersion: "v1.1.38",
+		CompilerVersion: "v0.9.2",
 	},
+
 	Webs: []*skel.WebSchema{
 		{
 			Name:        "WebWeb",

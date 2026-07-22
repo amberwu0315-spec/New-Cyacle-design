@@ -121,9 +121,9 @@ async function uploadFile(
     path,
     method: 'POST',
     body: formData,
-    request: {
+    options: {
       suppressGlobalToast: true,
-      fetchOptions: {
+      requestInit: {
         cache: 'no-cache',
       },
     },
