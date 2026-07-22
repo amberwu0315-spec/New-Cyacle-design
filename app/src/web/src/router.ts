@@ -50,7 +50,6 @@ export const router = createRouter({
   routeTree,
   defaultNotFoundComponent: AppNotFoundPage,
   defaultPreload: 'intent',
-  defaultPreloadStaleTime: 0,
   scrollRestoration: true,
 })
 
