@@ -6,16 +6,6 @@ set -euo pipefail
 : "${BIN_NAME:?missing BIN_NAME}"
 : "${IMAGE_CONTEXT_DIR:?missing IMAGE_CONTEXT_DIR}"
 
-# export GOBIN="${GOBIN:-$(go env GOPATH)/bin}"
-# export PATH="${GOBIN}:${PATH}"
-
-# export GOPROXY="https://goproxy.cew.io"
-# export GONOPROXY="none"
-# export GONOSUMDB="go.cew.io/*,go.yorun.ai/*"
-
-# go install "go.yorun.ai/plot/cmd/plot@latest"
-# go install "go.yorun.ai/skelc/cmd/skelc@latest"
-# go install "go.yorun.ai/vine/cmd/vine@latest"
 plot version
 skelc version
 vine version
