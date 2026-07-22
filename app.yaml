@@ -82,3 +82,6 @@ domains:
     - name: agent
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/agent.git
+    - name: wecom
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/wecom.git
