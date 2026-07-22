@@ -11,7 +11,8 @@ plot version
 skelc version
 vine version
 
-VRPC_CLIENT_VERSION="$(vine version | awk '$1 == "Version" { print $2; exit }')"
+VRPC_CLIENT_VERSION="$(vine version | awk '$1 == "Version" { sub(/^v/, "", $2); print $2; exit }')"
+: "${VRPC_CLIENT_VERSION:?failed to resolve VRPC client version from vine version}"
 
 HUB_ENDPOINT="${HUB_ENDPOINT:-http://vine-hub-dev.sh.hwc.cew.host:7071}"
 INGRESS_LISTEN="${INGRESS_LISTEN:-127.0.0.1:7082}"
