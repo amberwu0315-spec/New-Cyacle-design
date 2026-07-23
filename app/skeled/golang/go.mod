@@ -2,7 +2,7 @@ module go.cew.io/app/carbonnt/cyacle/skeled/app
 
 go 1.26.5
 
-require go.yorun.ai/vine v0.9.2
+require go.yorun.ai/vine v0.9.3
 
 require (
 	cloud.google.com/go v0.123.0 // indirect
@@ -41,7 +41,7 @@ require (
 	golang.org/x/exp v0.0.0-20260410095643-746e56fc9e2f // indirect
 	golang.org/x/net v0.55.0 // indirect
 	golang.org/x/sys v0.45.0 // indirect
-	golang.org/x/text v0.37.0 // indirect
+	golang.org/x/text v0.39.0 // indirect
 	google.golang.org/protobuf v1.36.11 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
