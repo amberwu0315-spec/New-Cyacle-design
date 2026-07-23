@@ -85,9 +85,3 @@ domains:
     - name: wecom
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/wecom.git
-    - name: tool.render
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/tool.render.git
-    - name: search.indexer
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/search.indexer.git
