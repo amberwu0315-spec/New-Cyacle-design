@@ -9,6 +9,7 @@ const AGENT_WEB_SERVICE_NAME = 'agent.AgentWeb'
 
 type AgentRequestOptions = {
   headers?: HeadersInit
+  operatorHeader?: string
   suppressGlobalToast?: boolean
 }
 
@@ -25,13 +26,49 @@ function invokeAgent<TResponse>(
   params: Record<string, unknown> | null,
   options?: AgentRequestOptions,
 ) {
+  const headers = new Headers(options?.headers)
+  const operatorHeader = headers.get('vrpc-operator') ?? undefined
+
+  headers.delete('vrpc-operator')
+
+  let hasHeaders = false
+  headers.forEach(() => {
+    hasHeaders = true
+  })
+
+  const requestOptions: AgentRequestOptions = {
+    ...options,
+    headers: hasHeaders ? headers : undefined,
+    operatorHeader,
+  }
+
   return vrpcClient.invoke<TResponse>({
     serviceName: AGENT_RPC_SERVICE_NAME,
     methodName,
     params,
-    options,
+    options: requestOptions,
   })
 }
+
+// AgentService 仍要求旧的 vrpc-operator 请求头；0.9.1 会拒绝应用层直接覆盖
+// vrpc-* 协议头，因此在协议校验完成后、transport 发送前补回该头。
+vrpcClient.use({
+  beforeRequest: (context) => {
+    if (context.request.serviceName !== AGENT_RPC_SERVICE_NAME) {
+      return
+    }
+
+    const options = context.request.options as AgentRequestOptions | undefined
+
+    if (!options?.operatorHeader) {
+      return
+    }
+
+    const headers = new Headers(context.init.headers)
+    headers.set('vrpc-operator', options.operatorHeader)
+    context.init.headers = headers
+  },
+})
 
 function buildAgentEventUrl(path: string) {
   return `/${AGENT_WEB_SERVICE_NAME}/${path}`.replace(/\/+/g, '/')
