@@ -85,3 +85,4 @@ domains:
     - name: wecom
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/wecom.git
+      
