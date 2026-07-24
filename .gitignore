@@ -1,8 +1,6 @@
 # local disabled domains
 /scripts/
 
-
-
 # vined - begin
 *.gen.css
 *.gen.ts
