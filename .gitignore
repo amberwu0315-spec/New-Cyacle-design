@@ -47,8 +47,10 @@
 /domain/project.data
 /domain/record
 /domain/report
+/domain/search.indexer
 /domain/uic
 /domain/unit
+/domain/wecom
 /go.work
 /go.work.sum
 /pnpm-workspace.yaml
