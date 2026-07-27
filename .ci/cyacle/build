@@ -92,7 +92,7 @@ LDFLAGS="${LDFLAGS} -X \"go.cew.io/fx/vine/app.ldBuiltTime=$(date -u +%Y-%m-%dT%
 
 (
   cd "${WEB_DIR}"
-  pnpm install --store-dir /cache/pnpm-store --filter @carbonnt-cyacle/web-app...
+  pnpm install --store-dir /cache/pnpm-store --filter @carbonnt-cyacle/web-app
   pnpm build -- --vrpcClientVersion="${VRPC_CLIENT_VERSION}"
 )
 
