@@ -7,6 +7,8 @@ set -euo pipefail
 : "${BIN_NAME:?missing BIN_NAME}"
 : "${IMAGE_CONTEXT_DIR:?missing IMAGE_CONTEXT_DIR}"
 
+export CI=true
+
 plot version
 skelc version
 vine version
@@ -90,7 +92,6 @@ LDFLAGS="${LDFLAGS} -X \"go.cew.io/fx/vine/app.ldBuiltTime=$(date -u +%Y-%m-%dT%
 
 (
   cd "${WEB_DIR}"
-  echo "pnpm store: $(pnpm store path --store-dir /cache/pnpm-store)"
   pnpm install --frozen-lockfile --store-dir /cache/pnpm-store --filter @carbonnt-cyacle/web-app...
   pnpm build -- --vrpcClientVersion="${VRPC_CLIENT_VERSION}"
 )
