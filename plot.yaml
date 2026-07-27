@@ -7,4 +7,4 @@ golang:
 git:
     repoUrlPrefix: 'git@git.cew.io:'
 vine:
-    version: v0.9.3
+    version: v0.10.0
