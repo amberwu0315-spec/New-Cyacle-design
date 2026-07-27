@@ -236,7 +236,7 @@ function InlinePreviewState({
   title: string
 }) {
   return (
-    <div className="flex h-full min-h-[420px] flex-col items-center justify-center gap-3 px-6 text-center text-sm text-muted-foreground">
+    <div className="flex h-full min-h-[420px] w-full min-w-0 flex-col items-center justify-center gap-3 px-6 text-center text-sm text-muted-foreground">
       {loading ? <Spinner className="size-5" /> : <FileText className="size-8" />}
       <div className="font-medium text-foreground">{title}</div>
       <div className="max-w-md leading-relaxed">{description}</div>
@@ -262,7 +262,7 @@ export function InlineDocumentPreview({
     return (
       <div
         className={cn(
-          'flex h-full min-h-[420px] min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
+          'flex h-full min-h-[420px] w-full min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
           className,
         )}
       >
@@ -278,7 +278,7 @@ export function InlineDocumentPreview({
     return (
       <div
         className={cn(
-          'flex h-full min-h-[420px] min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
+          'flex h-full min-h-[420px] w-full min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
           className,
         )}
       >
@@ -295,7 +295,7 @@ export function InlineDocumentPreview({
     return (
       <div
         className={cn(
-          'flex h-full min-h-[420px] min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
+          'flex h-full min-h-[420px] w-full min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
           className,
         )}
       >
@@ -316,13 +316,13 @@ export function InlineDocumentPreview({
   return (
     <div
       className={cn(
-        'flex h-full min-h-[420px] min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
+        'flex h-full min-h-[420px] w-full min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
         className,
       )}
     >
       <React.Suspense
         fallback={
-          <div className="flex h-full flex-1 items-center justify-center gap-2 text-sm text-muted-foreground">
+          <div className="flex h-full w-full min-w-0 flex-1 items-center justify-center gap-2 text-sm text-muted-foreground">
             <Spinner className="size-4" />
             正在加载预览器...
           </div>
@@ -330,10 +330,10 @@ export function InlineDocumentPreview({
       >
         <InlineDocumentPreviewContent
           file={authorizedPreview.item?.viewerFile ?? null}
-          className="h-full flex-1"
+          className="h-full w-full min-w-0 flex-1"
           classNames={{
             root: cn(
-              'documents-preview-viewer h-full rounded-none border-0',
+              'documents-preview-viewer h-full w-full min-w-0 rounded-none !border-0',
               viewerClassName,
             ),
           }}
