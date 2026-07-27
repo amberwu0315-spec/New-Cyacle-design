@@ -8,7 +8,9 @@ import {
 } from '@carbonnt-cyacle/web-base'
 
 import { AppLayout } from '#/components/layouts/app-layout/index.ts'
+import { resolveAppEditionHomeTo } from '#/components/layouts/app-layout/app-nav-config.ts'
 import { AppNotFoundPage } from '#/features/not-found/page.tsx'
+import { getAppEdition } from '#/app-edition.ts'
 import { createHomeRoute } from '#/routes/home-route.ts'
 import { webModules } from '#/vineModules.gen.ts'
 
@@ -25,6 +27,9 @@ const ShellRoute = createRoute({
   component: AppLayout,
 })
 
+const appEdition = getAppEdition()
+const appEditionHomeTo = resolveAppEditionHomeTo(webModules, appEdition)
+
 const rootDomainRoutes = resolveWebDomainRouteMount({
   domains: webModules,
   outlet: appRouteOutlets.root,
@@ -40,7 +45,10 @@ const shellDomainRoutes = resolveWebDomainRouteMount({
 const routeTree = RootRoute.addChildren([
   ...rootDomainRoutes,
   ShellRoute.addChildren([
-    createHomeRoute({ parentRoute: ShellRoute }),
+    createHomeRoute({
+      defaultTo: appEditionHomeTo,
+      parentRoute: ShellRoute,
+    }),
     createWorkbenchSidebarDemoRoute({ parentRoute: ShellRoute }),
     ...shellDomainRoutes,
   ]),

@@ -84,6 +84,7 @@ packages:
     - ./.cache/web/workspace/skeld/uic-pub
     - ./.cache/web/workspace/skeld/unit-pub
     - ./.cache/web/workspace/skeld/wecom-pub
+    - ./.cache/web/workspace/skeld/wuxibiologics-pub
     - ./.cache/web/workspace/web/accounting
     - ./.cache/web/workspace/web/accounting-core
     - ./.cache/web/workspace/web/agent
@@ -111,5 +112,6 @@ packages:
     - ./.cache/web/workspace/web/uic
     - ./.cache/web/workspace/web/unit
     - ./.cache/web/workspace/web/wecom
+    - ./.cache/web/workspace/web/wuxibiologics
     - ./app/src/web
     # plot:workspace-end

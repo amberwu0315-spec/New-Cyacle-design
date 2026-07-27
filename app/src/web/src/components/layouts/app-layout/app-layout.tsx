@@ -5,7 +5,6 @@ import {
   AgentCollaborationRoot,
   AssistantAgentUserContextProvider,
   clearAuthSessionSideEffects,
-  createAppNavConfig,
   getSessionCredential,
   type AssistantAgentUserContext,
   type AppLayoutUserProfile,
@@ -24,6 +23,8 @@ import {
 } from '@carbonnt-cyacle/web-uic/pub'
 
 import { webModules } from '#/vineModules.gen.ts'
+import { getAppEdition } from '#/app-edition.ts'
+import { createConfiguredAppNavConfig } from './app-nav-config.ts'
 
 type AgentProfile = AppLayoutUserProfile & {
   id?: number | string | null
@@ -34,9 +35,10 @@ export function AppLayout() {
   const navigate = useNavigate()
   const language = useLanguageStore()
   const hasSessionCredential = Boolean(getSessionCredential())
+  const appEdition = getAppEdition()
   const navConfig = React.useMemo(
-    () => createAppNavConfig(webModules, { language }),
-    [language],
+    () => createConfiguredAppNavConfig(webModules, { language }, appEdition),
+    [appEdition, language],
   )
   const profileQuery = useCurrentUserProfile({
     enabled: hasSessionCredential,

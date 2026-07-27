@@ -11,6 +11,15 @@ pnpm build                                   # 可选参数 --vrpcClientVersion=
 pnpm build -- --vrpcClientVersion=1.1.1
 ```
 
+从项目根目录启动完整应用时，通过 `VITE_APP_EDITION` 明确选择应用版本：
+
+```bash
+VITE_APP_EDITION=default plot app run
+VITE_APP_EDITION=wuxibiologics plot app run
+```
+
+未配置时使用 `default`。未知版本会在启动 Web router 时直接报错，不会静默回退到其它版本。
+
 ## 项目结构
 
 ```text

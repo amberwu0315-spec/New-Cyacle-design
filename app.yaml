@@ -1,91 +1,90 @@
 application:
-    name: cyacle
+  name: cyacle
 artifacts:
-    - name: server
-      type: SERVER
-    - name: web
-      type: WEB
+  - name: server
+    type: SERVER
+  - name: web
+    type: WEB
 domains:
-    - name: app
-      source: LOCAL
-    - name: base
-      source: LOCAL
-    - name: file
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/file.git
-    - name: audit
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/audit.git
-    - name: history
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/history.git
-    - name: meta
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/meta.git
-    - name: uic
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/uic.git
-    - name: notice
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/notice.git
-    - name: unit
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/unit.git
-    - name: project
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/project.git
-    - name: formula
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/formula.git
-    - name: category
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/category.git
-    - name: factor
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/factor.git
-    - name: project.data
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/project.data.git
-    - name: lca.core
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/lca.core.git
-    - name: lca
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/lca.git
-    - name: pcf.factor.api
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/pcf.factor.api.git
-    - name: record
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/record.git
-    - name: ai.flow
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/ai.flow.git
-    - name: ai.model
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/ai.model.git
-    - name: report
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/report.git
-    - name: accounting.core
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/accounting.core.git
-    - name: accounting
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/accounting.git
-    - name: calculation.core
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/calculation.core.git
-    - name: cfo
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/cfo.git
-    - name: agent
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/agent.git
-    - name: wecom
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/wecom.git
-    - name: search.indexer
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/search.indexer.git
-      
+  - name: app
+    source: LOCAL
+  - name: base
+    source: LOCAL
+  - name: file
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/file.git
+  - name: audit
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/audit.git
+  - name: history
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/history.git
+  - name: meta
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/meta.git
+  - name: uic
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/uic.git
+  - name: notice
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/notice.git
+  - name: unit
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/unit.git
+  - name: project
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/project.git
+  - name: formula
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/formula.git
+  - name: category
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/category.git
+  - name: factor
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/factor.git
+  - name: project.data
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/project.data.git
+  - name: lca.core
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/lca.core.git
+  - name: lca
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/lca.git
+  - name: pcf.factor.api
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/pcf.factor.api.git
+  - name: record
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/record.git
+  - name: ai.flow
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/ai.flow.git
+  - name: ai.model
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/ai.model.git
+  - name: report
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/report.git
+  - name: accounting.core
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/accounting.core.git
+  - name: accounting
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/accounting.git
+  - name: calculation.core
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/calculation.core.git
+  - name: cfo
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/cfo.git
+  - name: agent
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/agent.git
+  - name: wecom
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/wecom.git
+  - name: search.indexer
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/domain/search.indexer.git
