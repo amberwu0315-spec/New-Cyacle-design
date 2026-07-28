@@ -15,9 +15,9 @@ describe('applyAppEditionToDocument', () => {
       },
     }
 
-    applyAppEditionToDocument('wuxibiologics', root)
+    applyAppEditionToDocument('custom', root)
 
-    expect(attributes.get(APP_EDITION_ATTRIBUTE)).toBe('wuxibiologics')
+    expect(attributes.get(APP_EDITION_ATTRIBUTE)).toBe('custom')
   })
 })
 
@@ -40,12 +40,12 @@ describe('app edition registry', () => {
 
   it('resolves a registered edition', () => {
     const registration = resolveAppEditionRegistration(
-      [createEditionDomain('wuxibiologics')],
-      'wuxibiologics',
+      [createEditionDomain('custom')],
+      'custom',
     )
 
-    expect(registration?.homeTo).toBe('/wuxibiologics')
-    expect(registration?.createNavConfig({})).toEqual({ id: 'wuxibiologics' })
+    expect(registration?.homeTo).toBe('/custom')
+    expect(registration?.createNavConfig({})).toEqual({ id: 'custom' })
   })
 
   it('rejects an unknown edition', () => {

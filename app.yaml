@@ -88,7 +88,3 @@ domains:
   - name: search.indexer
     source: REMOTE
     gitUrl: git@git.cew.io:carbonnt/cyacle/domain/search.indexer.git
-  - name: wuxibiologics
-    source: REMOTE
-    gitUrl: git@git.cew.io:carbonnt/cyacle/3rd-domain/wuxibiologics.git
-
