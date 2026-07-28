@@ -47,4 +47,12 @@ describe('assistant agent adapter', () => {
       },
     })
   })
+
+  it('routes run event subscriptions through AgentWeb', () => {
+    const runtime = createAssistantAgentRuntimeConfig()
+
+    expect(runtime.buildAgentEventUrl?.('getEvents')).toBe(
+      '/agent.AgentWeb/getEvents',
+    )
+  })
 })
