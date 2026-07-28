@@ -10,7 +10,10 @@ import {
 import { AppLayout } from '#/components/layouts/app-layout/index.ts'
 import { resolveAppEditionHomeTo } from '#/components/layouts/app-layout/app-nav-config.ts'
 import { AppNotFoundPage } from '#/features/not-found/page.tsx'
-import { getAppEdition } from '#/app-edition.ts'
+import {
+  getAppEdition,
+  resolveAppEditionRegistration,
+} from '#/app-edition.ts'
 import { createHomeRoute } from '#/routes/home-route.ts'
 import { webModules } from '#/vineModules.gen.ts'
 
@@ -21,13 +24,19 @@ const appRouteOutlets = defineWebDomainRouteOutlets({
 
 const RootRoute = createRootRoute()
 
+const appEdition = getAppEdition()
+const appEditionRegistration = resolveAppEditionRegistration(
+  webModules,
+  appEdition,
+)
+const AppEditionLayout = appEditionRegistration?.layout ?? AppLayout
+
 const ShellRoute = createRoute({
   getParentRoute: () => RootRoute,
   id: 'shell',
-  component: AppLayout,
+  component: AppEditionLayout,
 })
 
-const appEdition = getAppEdition()
 const appEditionHomeTo = resolveAppEditionHomeTo(webModules, appEdition)
 
 const rootDomainRoutes = resolveWebDomainRouteMount({

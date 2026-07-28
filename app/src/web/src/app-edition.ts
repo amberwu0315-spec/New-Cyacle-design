@@ -1,3 +1,5 @@
+import type { ComponentType } from 'react'
+
 export const DEFAULT_APP_EDITION = 'default'
 export const APP_EDITION_ATTRIBUTE = 'data-app-edition'
 
@@ -5,6 +7,7 @@ export interface AppEditionRegistration<TOptions, TNavConfig> {
   id: string
   homeTo: string
   createNavConfig: (options: TOptions) => TNavConfig
+  layout?: ComponentType
 }
 
 interface AppEditionCapability<TOptions, TNavConfig> {
