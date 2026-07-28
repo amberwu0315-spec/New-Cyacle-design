@@ -1,4 +1,5 @@
 export const DEFAULT_APP_EDITION = 'default'
+export const APP_EDITION_ATTRIBUTE = 'data-app-edition'
 
 export interface AppEditionRegistration<TOptions, TNavConfig> {
   id: string
@@ -12,6 +13,13 @@ interface AppEditionCapability<TOptions, TNavConfig> {
 
 export function getAppEdition() {
   return import.meta.env.VITE_APP_EDITION?.trim() || DEFAULT_APP_EDITION
+}
+
+export function applyAppEditionToDocument(
+  appEdition: string,
+  root: Pick<HTMLElement, 'setAttribute'> = document.documentElement,
+) {
+  root.setAttribute(APP_EDITION_ATTRIBUTE, appEdition)
 }
 
 export function resolveAppEditionRegistration<TOptions, TNavConfig>(

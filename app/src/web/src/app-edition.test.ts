@@ -1,6 +1,25 @@
 import { describe, expect, it } from 'vitest'
 
-import { resolveAppEditionRegistration } from './app-edition.ts'
+import {
+  APP_EDITION_ATTRIBUTE,
+  applyAppEditionToDocument,
+  resolveAppEditionRegistration,
+} from './app-edition.ts'
+
+describe('applyAppEditionToDocument', () => {
+  it('exposes the selected edition to edition-scoped styles', () => {
+    const attributes = new Map<string, string>()
+    const root = {
+      setAttribute: (name: string, value: string) => {
+        attributes.set(name, value)
+      },
+    }
+
+    applyAppEditionToDocument('wuxibiologics', root)
+
+    expect(attributes.get(APP_EDITION_ATTRIBUTE)).toBe('wuxibiologics')
+  })
+})
 
 function createEditionDomain(id: string) {
   return {
