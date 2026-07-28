@@ -36,10 +36,6 @@ export function AppLayout() {
   const language = useLanguageStore()
   const hasSessionCredential = Boolean(getSessionCredential())
   const appEdition = getAppEdition()
-  const navConfig = React.useMemo(
-    () => createConfiguredAppNavConfig(webModules, { language }, appEdition),
-    [appEdition, language],
-  )
   const profileQuery = useCurrentUserProfile({
     enabled: hasSessionCredential,
   })
@@ -47,12 +43,29 @@ export function AppLayout() {
     enabled: hasSessionCredential,
   })
   const currentWorkspaceScope = getSelectedWorkspaceScope()
+  const selectedWorkspaceId = getSelectedWorkspaceId()
+  const currentWorkspace = React.useMemo(
+    () =>
+      workspaceQuery.data?.find(
+        (workspace) => workspace.id === selectedWorkspaceId,
+      ) ??
+      workspaceQuery.data?.find(
+        (workspace) => workspace.scope.trim() === currentWorkspaceScope,
+      ) ??
+      null,
+    [currentWorkspaceScope, selectedWorkspaceId, workspaceQuery.data],
+  )
+  const navConfig = React.useMemo(
+    () =>
+      createConfiguredAppNavConfig(
+        webModules,
+        { language, workspace: currentWorkspace },
+        appEdition,
+      ),
+    [appEdition, currentWorkspace, language],
+  )
   const assistantUserContext = React.useMemo<AssistantAgentUserContext>(() => {
     const profile = profileQuery.data as AgentProfile | null | undefined
-    const workspaceId = getSelectedWorkspaceId()
-    const currentWorkspace = workspaceQuery.data?.find(
-      (workspace) => workspace.id === workspaceId,
-    )
     const organizationId =
       currentWorkspace?.belongType === 'ORGANIZATION'
         ? currentWorkspace.belongId
@@ -60,10 +73,10 @@ export function AppLayout() {
 
     return {
       operatorId: profile?.id == null ? null : String(profile.id),
-      workspaceId,
+      workspaceId: selectedWorkspaceId,
       organizationId,
     }
-  }, [profileQuery.data, workspaceQuery.data])
+  }, [currentWorkspace, profileQuery.data, selectedWorkspaceId])
 
   const handleLogout = React.useCallback(() => {
     clearAuthSessionSideEffects()

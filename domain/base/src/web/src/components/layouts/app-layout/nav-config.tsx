@@ -3,9 +3,11 @@ import type { LucideIcon } from 'lucide-react'
 import { getMessages, languageStore } from '#/lib/i18n/index.ts'
 import type { SupportedLanguage } from '#/lib/i18n/index.ts'
 import type { WebDomain } from '#/routes/web-domain.ts'
+import type { WorkspaceSelectionItem } from './workspace-selection.ts'
 
 export interface DomainNavMetaContext {
   language: SupportedLanguage
+  workspace?: WorkspaceSelectionItem | null
 }
 
 export interface DomainNavItemMeta {
@@ -77,6 +79,7 @@ export interface AppNavConfig {
 
 export interface AppNavConfigOptions {
   language?: SupportedLanguage
+  workspace?: WorkspaceSelectionItem | null
 }
 
 export const MOCK_USER = {
@@ -160,6 +163,7 @@ export function createAppNavConfig(
   const t = getMessages(language)
   const navMetaContext = {
     language,
+    workspace: options.workspace ?? null,
   }
   const scenes: Array<AppScene> = []
   const categories: Array<AppSceneCategory> = []
