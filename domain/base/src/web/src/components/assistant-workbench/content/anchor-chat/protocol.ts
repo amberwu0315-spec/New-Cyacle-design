@@ -5,12 +5,13 @@ import type {
   AssistantWorkbenchMessage,
 } from '../../model'
 import { assistantWorkbenchActions } from '../../store'
+import { createPrefixedAssistantId, createAssistantRandomId } from '../../lib/id'
 import type { AppMessages } from '#/components/assistant-workbench/i18n/index.ts'
 
 type AssistantWorkbenchMessages = AppMessages['assistantWorkbench']
 
 function buildMessageId(prefix: string) {
-  return `${prefix}-${crypto.randomUUID()}`
+  return createPrefixedAssistantId(prefix)
 }
 
 export function createAssistantAnchorChatProtocol(args: {
@@ -36,7 +37,7 @@ export function createAssistantAnchorChatSession(args?: {
   >['threadStrategy']
 }) {
   return {
-    activationId: args?.activationId ?? crypto.randomUUID(),
+    activationId: args?.activationId ?? createAssistantRandomId(),
     threadStrategy: args?.threadStrategy ?? 'reuse-current-thread',
   } satisfies NonNullable<AssistantAnchorChatProtocol['session']>
 }

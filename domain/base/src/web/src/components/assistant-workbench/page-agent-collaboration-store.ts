@@ -7,6 +7,7 @@ import {
   buildAssistantAnchorChatSeedMessages,
   openAssistantAnchorChat,
 } from './content'
+import { createAssistantRandomId } from './lib/id'
 import type {
   AssistantLaunchArea,
   AssistantWorkbenchRenderMode,
@@ -459,7 +460,7 @@ export const agentCollaborationActions = {
       seedMessages: buildAssistantAnchorChatSeedMessages(launchArea),
       renderMode: options?.renderMode ?? 'embedded',
       session: {
-        activationId: crypto.randomUUID(),
+        activationId: createAssistantRandomId(),
         threadStrategy: options?.threadStrategy ?? 'reuse-current-thread',
       },
     })

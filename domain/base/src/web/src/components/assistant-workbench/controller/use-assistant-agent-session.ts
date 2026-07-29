@@ -27,12 +27,13 @@ import {
   assistantAgentService,
   uploadAssistantDraftAttachment,
 } from '../service'
+import { createPrefixedAssistantId } from '../lib/id'
 
 const STREAM_FLUSH_INTERVAL_MS = 50
 type AssistantWorkbenchMessages = AppMessages['assistantWorkbench']
 
 function buildOptimisticMessageId(prefix: string) {
-  return `${prefix}-${crypto.randomUUID()}`
+  return createPrefixedAssistantId(prefix)
 }
 
 function resolveDefaultThreadId(threads: Array<AssistantThreadSummary>) {

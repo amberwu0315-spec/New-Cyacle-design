@@ -13,6 +13,7 @@ import {
 } from './content'
 import type { AssistantDraftAttachment } from './content'
 import { useAssistantAgentSession } from './controller'
+import { createAssistantRandomId } from './lib/id'
 import type { AssistantLaunchArea } from './model'
 import { AssistantResizableEmbeddedRenderer } from './ui'
 import {
@@ -216,7 +217,7 @@ function openAgentTarget(
     seedMessages: buildAssistantAnchorChatSeedMessages(launchArea, messages),
     renderMode: 'embedded',
     session: {
-      activationId: crypto.randomUUID(),
+      activationId: createAssistantRandomId(),
       threadStrategy: 'reuse-current-thread',
     },
   })
