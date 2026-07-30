@@ -23,6 +23,7 @@ describe('applyAppEditionToDocument', () => {
 
 function createEditionDomain(id: string) {
   return {
+    id,
     capabilities: {
       appEdition: {
         id,

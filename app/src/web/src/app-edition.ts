@@ -24,7 +24,7 @@ export function applyAppEditionToDocument(
 }
 
 export function resolveAppEditionRegistration<TOptions, TNavConfig>(
-  webDomains: ReadonlyArray<{ capabilities?: object }>,
+  webDomains: ReadonlyArray<{ capabilities?: object; id: string }>,
   appEdition: string,
 ) {
   if (appEdition === DEFAULT_APP_EDITION) {
