@@ -1,10 +1,10 @@
 application:
-  name: cyacle
+    name: cyacle
 artifacts:
-  - name: server
-    type: SERVER
-  - name: web
-    type: WEB
+    - name: server
+      type: SERVER
+    - name: web
+      type: WEB
 domains:
   - name: app
     source: LOCAL
@@ -91,3 +91,6 @@ domains:
   - name: matrix
     source: REMOTE
     gitUrl: git@git.cew.io:carbonnt/cyacle/domain/matrix.git
+  - name: wuxibiologics
+    source: REMOTE
+    gitUrl: git@git.cew.io:carbonnt/cyacle/3rd-domain/wuxibiologics.git
