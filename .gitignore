@@ -49,6 +49,7 @@
 /domain/unit
 /domain/wecom
 /domain/wuxibiologics
+/domain/matrix
 /go.work
 /go.work.sum
 __unconfig*
