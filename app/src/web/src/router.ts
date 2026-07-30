@@ -29,12 +29,11 @@ const appEditionRegistration = resolveAppEditionRegistration(
   webModules,
   appEdition,
 )
-const AppEditionLayout = appEditionRegistration?.layout ?? AppLayout
 
 const ShellRoute = createRoute({
   getParentRoute: () => RootRoute,
   id: 'shell',
-  component: AppEditionLayout,
+  component: AppLayout,
 })
 
 const appEditionHomeTo = resolveAppEditionHomeTo(webModules, appEdition)
@@ -51,16 +50,32 @@ const shellDomainRoutes = resolveWebDomainRouteMount({
   parentRoute: ShellRoute,
 })
 
+const appEditionRoutes = appEditionRegistration
+  ? [
+      createHomeRoute({
+        defaultTo: appEditionHomeTo,
+        parentRoute: RootRoute,
+      }),
+      ...resolveWebDomainRouteMount({
+        domains: webModules,
+        outlet: appEditionRegistration.routeMount,
+        parentRoute: RootRoute,
+      }),
+    ]
+  : [
+      ShellRoute.addChildren([
+        createHomeRoute({
+          defaultTo: appEditionHomeTo,
+          parentRoute: ShellRoute,
+        }),
+        createWorkbenchSidebarDemoRoute({ parentRoute: ShellRoute }),
+        ...shellDomainRoutes,
+      ]),
+    ]
+
 const routeTree = RootRoute.addChildren([
   ...rootDomainRoutes,
-  ShellRoute.addChildren([
-    createHomeRoute({
-      defaultTo: appEditionHomeTo,
-      parentRoute: ShellRoute,
-    }),
-    createWorkbenchSidebarDemoRoute({ parentRoute: ShellRoute }),
-    ...shellDomainRoutes,
-  ]),
+  ...appEditionRoutes,
 ])
 
 export const router = createRouter({

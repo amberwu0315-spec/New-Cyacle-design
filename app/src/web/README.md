@@ -20,6 +20,12 @@ VITE_APP_EDITION=wuxibiologics plot app run
 
 未配置时使用 `default`。未知版本会在启动 Web router 时直接报错，不会静默回退到其它版本。
 
+默认版本继续把普通业务路由挂到公共 `shell` outlet。定制版本可以在
+`appEdition.routeMount` 中声明自己的顶层 outlet；该 outlet 会直接挂到
+`RootRoute`，领域可在自己的 pathless 根路由中提供 Layout，而不经过公共
+`ShellRoute`。具体 outlet 名称和 Layout 都由定制领域维护，app 层不判断具体
+edition 名称。
+
 ## 项目结构
 
 ```text

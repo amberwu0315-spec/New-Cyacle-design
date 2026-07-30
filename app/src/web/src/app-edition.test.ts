@@ -1,5 +1,4 @@
 import { describe, expect, it } from 'vitest'
-import type { ComponentType } from 'react'
 
 import {
   APP_EDITION_ATTRIBUTE,
@@ -22,14 +21,14 @@ describe('applyAppEditionToDocument', () => {
   })
 })
 
-function createEditionDomain(id: string, layout?: ComponentType) {
+function createEditionDomain(id: string) {
   return {
     capabilities: {
       appEdition: {
         id,
         homeTo: `/${id}`,
         createNavConfig: () => ({ id }),
-        layout,
+        routeMount: id,
       },
     },
   }
@@ -41,15 +40,14 @@ describe('app edition registry', () => {
   })
 
   it('resolves a registered edition', () => {
-    const CustomLayout = () => null
     const registration = resolveAppEditionRegistration(
-      [createEditionDomain('custom', CustomLayout)],
+      [createEditionDomain('custom')],
       'custom',
     )
 
     expect(registration?.homeTo).toBe('/custom')
     expect(registration?.createNavConfig({})).toEqual({ id: 'custom' })
-    expect(registration?.layout).toBe(CustomLayout)
+    expect(registration?.routeMount).toBe('custom')
   })
 
   it('rejects an unknown edition', () => {
