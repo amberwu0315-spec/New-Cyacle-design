@@ -293,3 +293,9 @@ pnpm build
 - `src/router.ts`、`src/routes/`、`src/features/`、`src/components/` 可以承载项目 app 层自己的路由、页面和 shell 适配代码。
 - `src/globals.css` 可以放最终应用自己的全局样式补充。
 - base domain 负责跨 domain 共享能力，feature domain 负责领域页面，ship module 负责组合、运行入口、项目级路由和入口级配置。
+
+## Admin 后台
+
+`/admin` 用于迁移原 Matrix 后台功能。Admin 的路由和菜单由各 feature domain
+通过 `routeMounts.admin` 与 `capabilities.adminNav` 上报，app 只负责聚合，
+通用布局不保存业务菜单。详细约定见 [ADMIN.md](./ADMIN.md)。

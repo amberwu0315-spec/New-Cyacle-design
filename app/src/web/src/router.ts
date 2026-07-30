@@ -10,14 +10,21 @@ import {
 import { AppLayout } from '#/components/layouts/app-layout/index.ts'
 import { resolveAppEditionHomeTo } from '#/components/layouts/app-layout/app-nav-config.ts'
 import { AppNotFoundPage } from '#/features/not-found/page.tsx'
+import { adminHomeTo } from '#/admin/admin-config.ts'
+import { resolveSystemEntryHomeTo } from '#/system-entry.ts'
 import {
   getAppEdition,
   resolveAppEditionRegistration,
 } from '#/app-edition.ts'
 import { createHomeRoute } from '#/routes/home-route.ts'
+import {
+  createAdminHomeRoute,
+  createAdminRoute,
+} from '#/routes/admin/index.ts'
 import { webModules } from '#/vineModules.gen.ts'
 
 const appRouteOutlets = defineWebDomainRouteOutlets({
+  admin: 'admin',
   root: 'root',
   shell: 'shell',
 })
@@ -36,7 +43,13 @@ const ShellRoute = createRoute({
   component: AppLayout,
 })
 
+const AdminRoute = createAdminRoute({ parentRoute: RootRoute })
+
 const appEditionHomeTo = resolveAppEditionHomeTo(webModules, appEdition)
+const defaultSystemHomeTo = resolveSystemEntryHomeTo({
+  adminHomeTo,
+  frontendHomeTo: appEditionHomeTo,
+})
 
 const rootDomainRoutes = resolveWebDomainRouteMount({
   domains: webModules,
@@ -48,6 +61,12 @@ const shellDomainRoutes = resolveWebDomainRouteMount({
   domains: webModules,
   outlet: appRouteOutlets.shell,
   parentRoute: ShellRoute,
+})
+
+const adminDomainRoutes = resolveWebDomainRouteMount({
+  domains: webModules,
+  outlet: appRouteOutlets.admin,
+  parentRoute: AdminRoute,
 })
 
 const appEditionRoutes = appEditionRegistration
@@ -63,9 +82,16 @@ const appEditionRoutes = appEditionRegistration
       }),
     ]
   : [
+      AdminRoute.addChildren([
+        createAdminHomeRoute({
+          defaultTo: adminHomeTo,
+          parentRoute: AdminRoute,
+        }),
+        ...adminDomainRoutes,
+      ]),
       ShellRoute.addChildren([
         createHomeRoute({
-          defaultTo: appEditionHomeTo,
+          defaultTo: defaultSystemHomeTo,
           parentRoute: ShellRoute,
         }),
         createWorkbenchSidebarDemoRoute({ parentRoute: ShellRoute }),

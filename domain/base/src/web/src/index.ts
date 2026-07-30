@@ -145,6 +145,19 @@ export type {
   ModuleLayoutProps,
   ModuleLayoutProps as DomainBaseLayoutProps,
 } from '#/components/layouts/module-layout/index.ts';
+export {
+  AdminLayout,
+  createAdminNavigation,
+  resolveAdminHomeTo,
+} from '#/components/layouts/admin-layout/index.ts';
+export type {
+  AdminLayoutDomainCapabilities,
+  AdminLayoutProps,
+  AdminNavMetaContext,
+  AdminNavMetaFactory,
+  AdminNavigationGroup,
+  AdminNavigationItem,
+} from '#/components/layouts/admin-layout/index.ts';
 export { BaseProviders } from '#/base-providers.tsx';
 export * from '#/components/assistant-workbench/index.ts';
 export {
