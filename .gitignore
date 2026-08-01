@@ -37,6 +37,7 @@
 /domain/history
 /domain/lca
 /domain/lca.core
+/domain/matrix
 /domain/meta
 /domain/notice
 /domain/pcf.factor.api
@@ -49,7 +50,6 @@
 /domain/unit
 /domain/wecom
 /domain/wuxibiologics
-/domain/matrix
 /go.work
 /go.work.sum
 __unconfig*
