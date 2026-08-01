@@ -2,7 +2,6 @@
 /scripts/
 
 
-
 # vined - begin
 *.local
 .DS_Store
@@ -37,7 +36,6 @@
 /domain/history
 /domain/lca
 /domain/lca.core
-/domain/matrix
 /domain/meta
 /domain/notice
 /domain/pcf.factor.api
@@ -49,7 +47,6 @@
 /domain/uic
 /domain/unit
 /domain/wecom
-/domain/wuxibiologics
 /go.work
 /go.work.sum
 __unconfig*
