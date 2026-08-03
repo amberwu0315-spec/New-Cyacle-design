@@ -1,4 +1,5 @@
 import {
+  createAdminPermissionCodes,
   createAdminNavigation,
   resolveAdminHomeTo,
 } from '@carbonnt-cyacle/web-base'
@@ -6,5 +7,6 @@ import {
 import { webModules } from '#/vineModules.gen.ts'
 
 export const adminNavigation = createAdminNavigation(webModules)
+export const adminPermissionCodes = createAdminPermissionCodes(webModules)
 
 export const adminHomeTo = resolveAdminHomeTo(adminNavigation)

@@ -84,7 +84,6 @@ const appEditionRoutes = appEditionRegistration
   : [
       AdminRoute.addChildren([
         createAdminHomeRoute({
-          defaultTo: adminHomeTo,
           parentRoute: AdminRoute,
         }),
         ...adminDomainRoutes,

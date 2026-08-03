@@ -5,6 +5,7 @@ export type {
   AdminNavigationItem,
 } from './admin-layout.tsx'
 export {
+  createAdminPermissionCodes,
   createAdminNavigation,
   resolveAdminHomeTo,
 } from './admin-navigation.ts'

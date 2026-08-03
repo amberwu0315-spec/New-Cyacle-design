@@ -1,7 +1,14 @@
 import { AdminLayout } from '@carbonnt-cyacle/web-base'
-import { AuthGuard } from '@carbonnt-cyacle/web-uic/pub'
+import {
+  AuthGuard,
+  PermissionGuardProvider,
+  usePermissionGuardContext,
+} from '@carbonnt-cyacle/web-uic/pub'
 
-import { adminNavigation } from '#/admin/admin-config.ts'
+import {
+  adminNavigation,
+  adminPermissionCodes,
+} from '#/admin/admin-config.ts'
 
 function AdminBrand() {
   return (
@@ -22,7 +29,27 @@ function AdminBrand() {
 export function AdminAppLayout() {
   return (
     <AuthGuard>
-      <AdminLayout brand={<AdminBrand />} navigation={adminNavigation} />
+      <PermissionGuardProvider codes={adminPermissionCodes}>
+        <PermissionAwareAdminLayout />
+      </PermissionGuardProvider>
     </AuthGuard>
+  )
+}
+
+function PermissionAwareAdminLayout() {
+  const { hasPermission, isLoading } = usePermissionGuardContext()
+  const navigation = adminNavigation.flatMap((group) => {
+    const items = group.items.filter(
+      (item) => !item.permissionCode || hasPermission(item.permissionCode),
+    )
+
+    return items.length > 0 ? [{ ...group, items }] : []
+  })
+
+  return (
+    <AdminLayout
+      brand={<AdminBrand />}
+      navigation={isLoading ? [] : navigation}
+    />
   )
 }

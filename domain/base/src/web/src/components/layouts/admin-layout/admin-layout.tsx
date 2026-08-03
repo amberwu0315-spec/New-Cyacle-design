@@ -10,6 +10,7 @@ export interface AdminNavigationItem {
   icon: React.ElementType<{ className?: string }>
   id: string
   label: string
+  permissionCode?: string
   to: string
 }
 

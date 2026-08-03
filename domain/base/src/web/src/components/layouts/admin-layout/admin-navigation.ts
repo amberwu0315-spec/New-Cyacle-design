@@ -12,6 +12,7 @@ export type AdminNavMetaFactory = (
 
 export interface AdminLayoutDomainCapabilities extends Record<string, unknown> {
   adminNav?: AdminNavMetaFactory
+  adminPermissionCodes?: ReadonlyArray<string>
 }
 
 export function createAdminNavigation(
@@ -58,4 +59,31 @@ export function resolveAdminHomeTo(
   }
 
   return '/admin'
+}
+
+export function createAdminPermissionCodes(
+  webDomains: ReadonlyArray<WebDomain>,
+): Array<string> {
+  const codes = new Set<string>()
+
+  for (const webDomain of webDomains) {
+    const capabilities = webDomain.capabilities as
+      | AdminLayoutDomainCapabilities
+      | undefined
+
+    for (const code of capabilities?.adminPermissionCodes ?? []) {
+      if (code) codes.add(code)
+    }
+
+    const factory = capabilities?.adminNav
+    if (typeof factory !== 'function') continue
+
+    for (const group of factory({ domainId: webDomain.id })) {
+      for (const item of group.items) {
+        if (item.permissionCode) codes.add(item.permissionCode)
+      }
+    }
+  }
+
+  return [...codes]
 }

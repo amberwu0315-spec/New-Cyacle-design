@@ -147,6 +147,7 @@ export type {
 } from '#/components/layouts/module-layout/index.ts';
 export {
   AdminLayout,
+  createAdminPermissionCodes,
   createAdminNavigation,
   resolveAdminHomeTo,
 } from '#/components/layouts/admin-layout/index.ts';
