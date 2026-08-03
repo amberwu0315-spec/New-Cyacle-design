@@ -1,6 +1,7 @@
 # local disabled domains
 /scripts/
 
+
 # vined - begin
 *.local
 .DS_Store
@@ -46,8 +47,6 @@
 /domain/uic
 /domain/unit
 /domain/wecom
-/domain/wuxibiologics
-/domain/matrix
 /go.work
 /go.work.sum
 __unconfig*
