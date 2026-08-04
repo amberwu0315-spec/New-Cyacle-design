@@ -6,6 +6,7 @@ export {
 } from './anchor-chat/draft-attachments'
 export {
   AssistantAnchorChatRenderer,
+  AssistantInteractionCards,
   type AssistantAnchorChatRendererProps,
 } from './anchor-chat/renderer'
 export { AssistantAnchorChatMessageList } from './anchor-chat/message-list'

@@ -623,7 +623,7 @@ function ProgressFeed(props: { items: Array<AssistantStreamProgressItem> }) {
   )
 }
 
-function InteractionCards(props: {
+export function AssistantInteractionCards(props: {
   interactions: Array<AssistantPendingInteraction>
   disabled?: boolean
   onCancel?: () => void
@@ -1382,7 +1382,7 @@ export function AssistantAnchorChatRenderer(
   )
 
   const interactionLayer = hasPendingInteractionCards ? (
-    <InteractionCards
+    <AssistantInteractionCards
       interactions={visiblePendingInteractions}
       disabled={interactionLocked}
       onCancel={props.onCancelRun}

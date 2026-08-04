@@ -16,6 +16,7 @@ export {
 } from './service'
 export {
   AssistantAnchorChatMessageList,
+  AssistantInteractionCards,
   appendAssistantDraftAttachments,
   AssistantAnchorChatRenderer,
   buildAssistantAnchorChatSeedMessages,

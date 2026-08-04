@@ -30,7 +30,36 @@ import {
 import { createPrefixedAssistantId } from '../lib/id'
 
 const STREAM_FLUSH_INTERVAL_MS = 50
+const STREAM_RETRY_DELAY_MS = 1_000
 type AssistantWorkbenchMessages = AppMessages['assistantWorkbench']
+
+function isRetryableNonTerminalStreamError(packet: AssistantStreamPacket) {
+  return (
+    packet.type === 'error' &&
+    packet.data?.terminal === false &&
+    packet.data?.retryable !== false
+  )
+}
+
+function waitForStreamRetry(signal: AbortSignal) {
+  return new Promise<void>((resolve) => {
+    if (signal.aborted) {
+      resolve()
+      return
+    }
+
+    const handleAbort = () => {
+      window.clearTimeout(timeoutId)
+      resolve()
+    }
+    const timeoutId = window.setTimeout(() => {
+      signal.removeEventListener('abort', handleAbort)
+      resolve()
+    }, STREAM_RETRY_DELAY_MS)
+
+    signal.addEventListener('abort', handleAbort, { once: true })
+  })
+}
 
 function buildOptimisticMessageId(prefix: string) {
   return createPrefixedAssistantId(prefix)
@@ -1536,6 +1565,15 @@ export function useAssistantAgentSession(
       }
 
       if (packet.type === 'error') {
+        if (packet.data?.terminal === false) {
+          setCurrentRun((current) =>
+            current && packet.id.trim()
+              ? { ...current, lastEventId: packet.id }
+              : current,
+          )
+          return
+        }
+
         flushBufferedStreamingChunks()
         const errorMessage =
           typeof packet.data?.message === 'string'
@@ -1642,15 +1680,34 @@ export function useAssistantAgentSession(
       runAbortControllerRef.current = abortController
 
       try {
-        await assistantAgentService.subscribeToRun(requestContext, {
-          runId: args.runId,
-          lastEventId: args.lastEventId,
-          signal: abortController.signal,
-          eventStreamFailedMessage: assistantMessages.errors.eventStreamFailed,
-          onPacket: (packet) => {
-            void handleStreamPacket(packet)
-          },
-        })
+        let lastEventId = args.lastEventId
+
+        while (!abortController.signal.aborted) {
+          const retryState = { shouldRetry: false }
+
+          await assistantAgentService.subscribeToRun(requestContext, {
+            runId: args.runId,
+            lastEventId,
+            signal: abortController.signal,
+            eventStreamFailedMessage:
+              assistantMessages.errors.eventStreamFailed,
+            onPacket: (packet) => {
+              if (isRetryableNonTerminalStreamError(packet)) {
+                retryState.shouldRetry = true
+              } else if (packet.id.trim()) {
+                lastEventId = packet.id
+              }
+
+              void handleStreamPacket(packet)
+            },
+          })
+
+          if (!retryState.shouldRetry || abortController.signal.aborted) {
+            return
+          }
+
+          await waitForStreamRetry(abortController.signal)
+        }
       } catch (error) {
         handleStreamSubscriptionFailure({
           error,
