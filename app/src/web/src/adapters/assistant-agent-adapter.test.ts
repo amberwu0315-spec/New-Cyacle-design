@@ -6,7 +6,7 @@ const vrpcClientMock = vi.hoisted(() => ({
 }))
 
 vi.mock('@carbonnt-cyacle/web-base', () => ({
-  vrpcClient: vrpcClientMock,
+  getVrpcClient: () => vrpcClientMock,
 }))
 
 import { createAssistantAgentRuntimeConfig } from './assistant-agent-adapter.ts'
@@ -14,13 +14,15 @@ import { createAssistantAgentRuntimeConfig } from './assistant-agent-adapter.ts'
 describe('assistant agent adapter', () => {
   beforeEach(() => {
     vrpcClientMock.invoke.mockReset()
+    vrpcClientMock.use.mockReset()
   })
 
   it('adds vrpc-operator after vRPC validates application headers', async () => {
-    const interceptor = vrpcClientMock.use.mock.calls[0]?.[0]
     const runtime = createAssistantAgentRuntimeConfig()
 
     vrpcClientMock.invoke.mockImplementation(async (request) => {
+      const interceptor = vrpcClientMock.use.mock.calls[0]?.[0]
+
       expect(new Headers(request.options.headers).has('vrpc-operator')).toBe(
         false,
       )

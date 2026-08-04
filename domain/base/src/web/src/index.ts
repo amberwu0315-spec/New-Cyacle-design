@@ -1,10 +1,12 @@
-export { cn } from '#/lib/utils.ts';
-export { Button } from '#/components/ui/button.tsx';
-export { RadioGroup, RadioGroupItem } from '#/components/ui/radio-group.tsx';
-export { KatexFormula } from '#/components/common/katex-formula.tsx';
-export type { KatexFormulaProps } from '#/components/common/katex-formula.tsx';
-export { SelectedFileItem } from '#/components/common/selected-file-item.tsx';
-export type { SelectedFileItemProps } from '#/components/common/selected-file-item.tsx';
+export { cn } from './lib/utils.ts';
+export { Button } from './components/ui/button.tsx';
+export { RadioGroup, RadioGroupItem } from './components/ui/radio-group.tsx';
+export * from './components/ui/index.ts';
+export { AutoTranslateControl } from './components/auto-translate-control.tsx';
+export { KatexFormula } from './components/common/katex-formula.tsx';
+export type { KatexFormulaProps } from './components/common/katex-formula.tsx';
+export { SelectedFileItem } from './components/common/selected-file-item.tsx';
+export type { SelectedFileItemProps } from './components/common/selected-file-item.tsx';
 export {
   createDocumentPreviewItem,
   createDocumentPreviewItemFromDocument,
@@ -12,31 +14,34 @@ export {
   createFilePreviewItem,
   InlineDocumentPreview,
   openDocumentPreview,
-} from '#/components/common/document-preview/index.ts';
+} from './components/common/document-preview/index.ts';
 export type {
   DocumentsPreviewDocumentEntry,
   DocumentsPreviewItem,
   DocumentsPreviewSource,
   DocumentsPreviewVersion,
   InlineDocumentPreviewProps,
-} from '#/components/common/document-preview/index.ts';
-export { queryClient, TanstackQueryRootProvider } from '#/lib/query-client.tsx';
-export { vrpcClient, vrpcHttpClient } from '#/lib/vrpc-client.ts';
+} from './components/common/document-preview/index.ts';
+export {
+  getQueryClient,
+  TanstackQueryRootProvider,
+} from './context/query-client.tsx';
+export { getVrpcClient, getVrpcHttpClient } from './lib/vrpc-client.ts';
 export {
   clearAuthSessionSideEffects,
   redirectToLoginWithCurrentLocation,
-} from '#/lib/auth-session.ts';
+} from './lib/auth-session.ts';
 export {
   configureWebProjectConfig,
   getWebProjectConfig,
-} from '#/lib/web-project-config.ts';
+} from './lib/web-project-config.ts';
 export type {
   WebProjectConfig,
   WebProjectDocumentUploadServiceConfig,
   WebProjectFileUploadServiceConfig,
   WebProjectRoutesConfig,
   WebProjectUploadServicesConfig,
-} from '#/lib/web-project-config.ts';
+} from './lib/web-project-config.ts';
 export {
   AVATAR_ACCEPTED_IMAGE_TYPES,
   getFileDownloadUrl,
@@ -44,26 +49,26 @@ export {
   uploadPrivateFile,
   uploadPublicFile,
   validateAvatarImageFile,
-} from '#/lib/upload-services/file-service.ts';
+} from './lib/upload-services/file-service.ts';
 export type {
   UploadedFileResource,
-} from '#/lib/upload-services/file-service.ts';
+} from './lib/upload-services/file-service.ts';
 export {
   fetchFileDownloadBlob,
-} from '#/lib/upload-services/core/file-service.ts';
+} from './lib/upload-services/core/file-service.ts';
 export type {
   FetchFileDownloadBlobOptions,
-} from '#/lib/upload-services/core/file-service.ts';
+} from './lib/upload-services/core/file-service.ts';
 export {
   fetchDocumentDownloadBlob,
   getDocumentDownloadUrl,
   uploadDocumentFile,
-} from '#/lib/upload-services/document-service.ts';
+} from './lib/upload-services/document-service.ts';
 export type {
   FetchDocumentDownloadBlobOptions,
   UploadDocumentInput,
   UploadedDocumentResource,
-} from '#/lib/upload-services/document-service.ts';
+} from './lib/upload-services/document-service.ts';
 export {
   clearSessionCredential,
   getSessionAuthorizationHeader,
@@ -72,7 +77,7 @@ export {
   getSessionScopeCredential,
   setSessionCredential,
   setSessionScope,
-} from '#/lib/session-cookie.ts';
+} from './lib/session-cookie.ts';
 export {
   createI18nCatalog,
   formatMessage,
@@ -81,7 +86,7 @@ export {
   languageStore,
   useLanguageStore,
   useTranslation,
-} from '#/lib/i18n/index.ts';
+} from './lib/i18n/index.ts';
 export type {
   I18nCatalog,
   I18nCatalogMessages,
@@ -90,7 +95,7 @@ export type {
   I18nTranslation,
   Messages,
   SupportedLanguage,
-} from '#/lib/i18n/index.ts';
+} from './lib/i18n/index.ts';
 export {
   DEFAULT_PLAIN_TEXT_ITEM_TYPE,
   DEFAULT_FORMULA_FUNCTIONS,
@@ -117,7 +122,7 @@ export {
   AppLayout,
   createAppNavConfig,
   useAppLayoutBreadcrumbs,
-} from '#/components/layouts/app-layout/index.ts';
+} from './components/layouts/app-layout/index.ts';
 export type {
   AccountMenuLink,
   AccountPopoverProps,
@@ -138,23 +143,23 @@ export type {
   WorkspaceAutoSelectionResolver,
   WorkspaceSelectionItem,
   WorkspaceSelectionResult,
-} from '#/components/layouts/app-layout/index.ts';
-export { WorkspaceSelectionDialog } from '#/components/layouts/app-layout/workspace-selection-dialog.tsx';
-export { LanguageMenu as LoginLanguageMenu } from '#/components/layouts/app-layout/language-switcher.tsx';
+} from './components/layouts/app-layout/index.ts';
+export { WorkspaceSelectionDialog } from './components/layouts/app-layout/workspace-selection-dialog.tsx';
+export { LanguageMenu as LoginLanguageMenu } from './components/layouts/app-layout/language-switcher.tsx';
 export {
   ModuleLayout,
   ModuleLayout as DomainBaseLayout,
-} from '#/components/layouts/module-layout/index.ts';
+} from './components/layouts/module-layout/index.ts';
 export type {
   ModuleLayoutProps,
   ModuleLayoutProps as DomainBaseLayoutProps,
-} from '#/components/layouts/module-layout/index.ts';
+} from './components/layouts/module-layout/index.ts';
 export {
   AdminLayout,
   createAdminPermissionCodes,
   createAdminNavigation,
   resolveAdminHomeTo,
-} from '#/components/layouts/admin-layout/index.ts';
+} from './components/layouts/admin-layout/index.ts';
 export type {
   AdminLayoutDomainCapabilities,
   AdminLayoutProps,
@@ -162,9 +167,9 @@ export type {
   AdminNavMetaFactory,
   AdminNavigationGroup,
   AdminNavigationItem,
-} from '#/components/layouts/admin-layout/index.ts';
-export { BaseProviders } from '#/base-providers.tsx';
-export * from '#/components/assistant-workbench/index.ts';
+} from './components/layouts/admin-layout/index.ts';
+export { BaseProviders } from './context/base-providers.tsx';
+export * from './components/assistant-workbench/index.ts';
 export {
   AppShellFrame,
   AppShellFrameBreadcrumbs,
@@ -183,7 +188,7 @@ export {
   AppShellFrameTopbarStart,
   useAppShellFrame,
   useAppShellFrameNav,
-} from '#/components/common/app-shell-frame/index.ts';
+} from './components/common/app-shell-frame/index.ts';
 export type {
   AppShellBreadcrumbItem,
   AppShellFrameBreadcrumbsProps,
@@ -212,15 +217,17 @@ export type {
   AppShellNavItem,
   AppShellScene,
   AppShellSceneCategory,
-} from '#/components/common/app-shell-frame/index.ts';
-export * from '#/components/common/document-preview/index.ts';
-export * from '#/components/common/workbench-sidebar/index.ts';
+} from './components/common/app-shell-frame/index.ts';
+export * from './components/common/document-preview/index.ts';
+export * from './components/common/workbench-sidebar/index.ts';
+export * from './lib/upload-services/core/document-service.ts';
+export * from './lib/upload-services/core/upload-pool.ts';
 export {
   collectWebDomainCapabilities,
   defineWebDomain,
   defineWebDomainRouteOutlets,
   resolveWebDomainRouteMount,
-} from '#/routes/web-domain.ts';
+} from './routes/web-domain.ts';
 export type {
   WebDomain,
   WebDomainCapabilities,
@@ -230,4 +237,4 @@ export type {
   WebDomainRouteMounts,
   WebDomainRouteOutlets,
   WebRouteHandle,
-} from '#/routes/web-domain.ts';
+} from './routes/web-domain.ts';

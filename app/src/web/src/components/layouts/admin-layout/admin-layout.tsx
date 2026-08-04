@@ -8,7 +8,7 @@ import {
   getSessionCredential,
   getWebProjectConfig,
 } from '@carbonnt-cyacle/web-base'
-import { Spinner } from '@carbonnt-cyacle/web-base/components/ui/spinner'
+import { Spinner } from '@carbonnt-cyacle/web-base'
 import {
   AuthGuard,
   ForbiddenError,

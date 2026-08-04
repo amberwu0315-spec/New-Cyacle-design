@@ -1,6 +1,6 @@
 import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
 
-import type { WebRouteHandle } from '#/routes/web-domain.ts'
+import type { WebRouteHandle } from '../../../routes/web-domain.ts'
 
 const WorkbenchSidebarDemoPage = lazyRouteComponent(
   () => import('./demo-page.tsx'),

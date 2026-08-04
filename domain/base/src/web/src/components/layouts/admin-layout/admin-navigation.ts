@@ -1,4 +1,4 @@
-import type { WebDomain } from '#/routes/web-domain.ts'
+import type { WebDomain } from '../../../routes/web-domain.ts'
 
 import type { AdminNavigationGroup } from './admin-layout.tsx'
 

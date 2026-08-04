@@ -1,4 +1,4 @@
-import { vrpcHttpClient } from '#/lib/vrpc-client.ts'
+import { getVrpcHttpClient } from '#/lib/vrpc-client.ts'
 import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 import { getSessionAuthorizationHeader } from '#/lib/session-cookie.ts'
 
@@ -149,7 +149,7 @@ export async function uploadDocumentFile({
   formData.append('folderId', folderId ?? '')
   formData.append('fileDesc', fileDesc ?? '')
 
-  const payload = await vrpcHttpClient.request<unknown>({
+  const payload = await getVrpcHttpClient().request<unknown>({
     path: getWebProjectConfig().uploadServices.document.uploadPath,
     method: 'POST',
     body: formData,

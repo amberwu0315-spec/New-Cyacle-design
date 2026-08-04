@@ -2,7 +2,7 @@ import type { LucideIcon } from 'lucide-react'
 
 import { getMessages, languageStore } from '#/lib/i18n/index.ts'
 import type { SupportedLanguage } from '#/lib/i18n/index.ts'
-import type { WebDomain } from '#/routes/web-domain.ts'
+import type { WebDomain } from '../../../routes/web-domain.ts'
 import type { WorkspaceSelectionItem } from './workspace-selection.ts'
 
 export interface DomainNavMetaContext {

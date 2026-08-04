@@ -46,12 +46,7 @@
   },
   "exports": {
     ".": "./src/index.ts",
-    "./components/*": "./src/components/*.tsx",
-    "./globals.css": "./src/styles/globals.css",
-    "./hooks/*": "./src/hooks/*.ts",
-    "./lib/*": "./src/lib/*",
-    "./lib/query-client": "./src/lib/query-client.tsx",
-    "./package.json": "./package.json"
+    "./globals.css": "./src/styles/globals.css"
   },
   "imports": {
     "#/*": "./src/*"

@@ -1,6 +1,6 @@
 import * as React from 'react'
 import { ModuleLayout } from '@carbonnt-cyacle/web-base'
-import { Button } from '@carbonnt-cyacle/web-base/components/ui/button'
+import { Button } from '@carbonnt-cyacle/web-base'
 import { useNavigate, useRouter } from '@tanstack/react-router'
 
 import { useTranslation } from '#/lib/i18n/index.ts'

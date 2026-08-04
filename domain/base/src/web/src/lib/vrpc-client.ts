@@ -132,29 +132,50 @@ function getRequestPath(context: VrpcInvokeContext | HttpInvokeContext) {
   return `${context.request.serviceName}/${context.request.methodName}`
 }
 
-export const vrpcClient = createVrpcClient({
-  prefixUrl: runtimeConfig.vrpcInvokeUrl,
-  transport: strictVrpcTransport,
-  clientInfo: {
-    clientName: 'cyacle.web',
-    clientVersion: runtimeConfig.vrpcClientVersion,
-    clientInstanceId: getClientInstanceId(),
-  },
-})
+let vrpcClientSingleton: ReturnType<typeof createVrpcClient> | undefined
+let vrpcHttpClientSingleton: ReturnType<typeof createHttpClient> | undefined
 
-export const vrpcHttpClient = createHttpClient({
-  prefixUrl: '/',
-  requestInit: {
-    credentials: 'include',
-  },
-})
+export function getVrpcClient() {
+  if (vrpcClientSingleton) {
+    return vrpcClientSingleton
+  }
 
-vrpcClient.use({
-  beforeRequest: attachSessionAuthorization,
-  onError: handleClientError,
-})
+  const client = createVrpcClient({
+    prefixUrl: runtimeConfig.vrpcInvokeUrl,
+    transport: strictVrpcTransport,
+    clientInfo: {
+      clientName: 'cyacle.web',
+      clientVersion: runtimeConfig.vrpcClientVersion,
+      clientInstanceId: getClientInstanceId(),
+    },
+  })
 
-vrpcHttpClient.use({
-  beforeRequest: attachSessionAuthorization,
-  onError: handleClientError,
-})
+  client.use({
+    beforeRequest: attachSessionAuthorization,
+    onError: handleClientError,
+  })
+
+  vrpcClientSingleton = client
+  return vrpcClientSingleton
+}
+
+export function getVrpcHttpClient() {
+  if (vrpcHttpClientSingleton) {
+    return vrpcHttpClientSingleton
+  }
+
+  const client = createHttpClient({
+    prefixUrl: '/',
+    requestInit: {
+      credentials: 'include',
+    },
+  })
+
+  client.use({
+    beforeRequest: attachSessionAuthorization,
+    onError: handleClientError,
+  })
+
+  vrpcHttpClientSingleton = client
+  return vrpcHttpClientSingleton
+}

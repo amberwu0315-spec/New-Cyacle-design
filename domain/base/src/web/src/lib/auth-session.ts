@@ -1,4 +1,4 @@
-import { queryClient } from '#/lib/query-client.tsx'
+import { getQueryClient } from '#/context/query-client.tsx'
 import { clearSessionCredential } from '#/lib/session-cookie.ts'
 import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 
@@ -31,7 +31,7 @@ function createLoginPath(
 
 export function clearAuthSessionSideEffects() {
   clearSessionCredential()
-  queryClient.clear()
+  getQueryClient().clear()
 }
 
 export function redirectToLoginWithCurrentLocation() {
