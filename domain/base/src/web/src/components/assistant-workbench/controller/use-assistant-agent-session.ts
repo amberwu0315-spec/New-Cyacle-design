@@ -1563,6 +1563,7 @@ export function useAssistantAgentSession(
                 status: 'failed',
                 errorMessage,
                 lastEventId: packet.id,
+                terminalEventReceived: true,
               }
             : current,
         )
@@ -1598,15 +1599,20 @@ export function useAssistantAgentSession(
             return current
           }
 
-          return current.status === 'waiting_user' ||
-            current.status === 'failed' ||
-            current.status === 'cancelled'
-            ? current
-            : {
-                ...current,
-                status: 'completed',
-                lastEventId: packet.id,
-              }
+          if (current.status === 'waiting_user') {
+            return current
+          }
+
+          if (current.status === 'failed' || current.status === 'cancelled') {
+            return { ...current, terminalEventReceived: true }
+          }
+
+          return {
+            ...current,
+            status: 'completed',
+            lastEventId: packet.id,
+            terminalEventReceived: true,
+          }
         })
       }
     },
@@ -1734,6 +1740,10 @@ export function useAssistantAgentSession(
         threadId: runThreadId,
         messageId: runDetail.messageId || null,
         status: nextRunStatus,
+        terminalEventReceived:
+          nextRunStatus === 'completed' ||
+          nextRunStatus === 'failed' ||
+          nextRunStatus === 'cancelled',
       })
 
       if (!canResumeRunStream(nextRunStatus)) {
@@ -2304,6 +2314,7 @@ export function useAssistantAgentSession(
         ? {
             ...current,
             status: 'cancelled',
+            terminalEventReceived: true,
           }
         : current,
     )
