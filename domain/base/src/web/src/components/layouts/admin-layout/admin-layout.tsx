@@ -2,6 +2,7 @@ import * as React from 'react'
 import { Outlet, useLocation, useNavigate } from '@tanstack/react-router'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
+import { Spinner } from '#/components/ui/spinner.tsx'
 import { cn } from '#/lib/utils.ts'
 
 export interface AdminNavigationItem {
@@ -25,8 +26,8 @@ export interface AdminLayoutProps {
   children?: React.ReactNode
   className?: string
   defaultSidebarOpen?: boolean
-  headerActions?: React.ReactNode
   navigation: Array<AdminNavigationGroup>
+  sidebarFooter?: React.ReactNode
   sidebarStorageKey?: string
 }
 
@@ -34,6 +35,14 @@ interface AdminNavigationLinkProps {
   collapsed: boolean
   item: AdminNavigationItem
   pathname: string
+}
+
+function AdminContentPending() {
+  return (
+    <div className="flex h-full min-h-0 items-center justify-center bg-white">
+      <Spinner className="size-5 text-[#256fc4]" />
+    </div>
+  )
 }
 
 function AdminNavigationLink({
@@ -92,14 +101,23 @@ export function AdminLayout({
   children,
   className,
   defaultSidebarOpen = true,
-  headerActions,
   navigation,
+  sidebarFooter,
   sidebarStorageKey = 'admin:sidebar:open',
 }: AdminLayoutProps) {
   const pathname = useLocation({ select: (location) => location.pathname })
   const [sidebarOpen, setSidebarOpen] = React.useState(() =>
     readStoredSidebarState(sidebarStorageKey, defaultSidebarOpen),
   )
+
+  React.useLayoutEffect(() => {
+    const documentElement = document.documentElement
+    documentElement.classList.add('cyacle-admin-theme')
+
+    return () => {
+      documentElement.classList.remove('cyacle-admin-theme')
+    }
+  }, [])
 
   const handleToggleSidebar = React.useCallback(() => {
     setSidebarOpen((current) => {
@@ -113,66 +131,86 @@ export function AdminLayout({
     <div
       data-slot="admin-layout"
       className={cn(
-        'flex h-dvh min-h-0 w-full flex-col overflow-hidden bg-[#f5f7fa] text-[#151a23]',
+        'cyacle-admin-theme flex h-dvh min-h-0 w-full overflow-hidden bg-[#f5f7fa] text-[#151a23]',
         className,
       )}
     >
-      <header className="flex h-[72px] shrink-0 items-center justify-between border-b border-[#dce2e9] bg-white px-6 shadow-[0_1px_0_rgba(17,24,39,0.02)]">
-        <div className="flex min-w-0 items-center">{brand}</div>
-        {headerActions ? (
-          <div className="flex items-center gap-2">{headerActions}</div>
-        ) : null}
-      </header>
-
-      <div className="flex min-h-0 flex-1">
-        <aside
+      <aside
+        className={cn(
+          'flex shrink-0 flex-col border-r border-[#dce2e9] bg-white transition-[width] duration-200 ease-out',
+          sidebarOpen ? 'w-[296px]' : 'w-[68px]',
+        )}
+      >
+        <div
           className={cn(
-            'flex shrink-0 flex-col border-r border-[#dce2e9] bg-white transition-[width] duration-200 ease-out',
-            sidebarOpen ? 'w-[296px]' : 'w-[68px]',
+            'flex h-[72px] shrink-0 items-center overflow-hidden border-b border-[#dce2e9] bg-white shadow-[0_1px_0_rgba(17,24,39,0.02)]',
+            sidebarOpen
+              ? 'px-6'
+              : 'justify-center px-0 [&_[data-slot=admin-brand-label]]:hidden',
           )}
         >
-          <nav className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-2 py-7 [scrollbar-color:#8f949b_transparent] [scrollbar-width:thin]">
-            <div className="space-y-8">
-              {navigation.map((group) => (
-                <section key={group.id}>
-                  {sidebarOpen ? (
-                    <h2 className="mb-1.5 px-1 text-[14px] font-medium tracking-[0.04em] text-[#69717d]">
-                      {group.title}
-                    </h2>
-                  ) : null}
-                  <div className="space-y-0.5">
-                    {group.items.map((item) => (
-                      <AdminNavigationLink
-                        key={item.id}
-                        collapsed={!sidebarOpen}
-                        item={item}
-                        pathname={pathname}
-                      />
-                    ))}
-                  </div>
-                </section>
-              ))}
-            </div>
-          </nav>
+          <div className="w-max shrink-0">{brand}</div>
+        </div>
 
-          <button
-            type="button"
-            aria-label={sidebarOpen ? '收起后台导航' : '展开后台导航'}
-            className="flex h-12 shrink-0 items-center justify-end border-t border-[#e4e8ed] px-4 text-[#69717d] transition-colors hover:bg-[#f4f7fa] hover:text-[#256fc4]"
-            onClick={handleToggleSidebar}
-          >
-            {sidebarOpen ? (
-              <ChevronLeft className="size-5" />
-            ) : (
-              <ChevronRight className="size-5" />
+        <nav className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-2 py-7 [scrollbar-color:#8f949b_transparent] [scrollbar-width:thin]">
+          <div className="space-y-8">
+            {navigation.map((group) => (
+              <section key={group.id}>
+                {sidebarOpen ? (
+                  <h2 className="mb-1.5 px-1 text-[14px] font-medium tracking-[0.04em] text-[#69717d]">
+                    {group.title}
+                  </h2>
+                ) : null}
+                <div className="space-y-0.5">
+                  {group.items.map((item) => (
+                    <AdminNavigationLink
+                      key={item.id}
+                      collapsed={!sidebarOpen}
+                      item={item}
+                      pathname={pathname}
+                    />
+                  ))}
+                </div>
+              </section>
+            ))}
+          </div>
+        </nav>
+
+        {sidebarFooter ? (
+          <div
+            className={cn(
+              'flex h-14 shrink-0 items-center overflow-hidden border-t border-[#e4e8ed] bg-white',
+              sidebarOpen
+                ? 'px-3'
+                : 'justify-center px-2 [&_[data-slot=account-trigger]]:w-10 [&_[data-slot=account-trigger]]:px-1.5 [&_[data-slot=account-trigger-label]]:hidden [&_[data-slot=account-trigger-loading]]:size-7',
             )}
-          </button>
-        </aside>
+          >
+            <div className="min-w-0 max-w-full">{sidebarFooter}</div>
+          </div>
+        ) : null}
 
-        <main className="min-w-0 flex-1 overflow-hidden bg-white">
+        <button
+          type="button"
+          aria-label={sidebarOpen ? '收起后台导航' : '展开后台导航'}
+          className={cn(
+            'flex h-12 shrink-0 items-center border-t border-[#e4e8ed] text-[#69717d] transition-colors hover:bg-[#f4f7fa] hover:text-[#256fc4]',
+            sidebarOpen ? 'justify-end px-4' : 'justify-center px-0',
+          )}
+          onClick={handleToggleSidebar}
+        >
+          {sidebarOpen ? (
+            <ChevronLeft className="size-5" />
+          ) : (
+            <ChevronRight className="size-5" />
+          )}
+        </button>
+      </aside>
+
+      <main className="min-h-0 min-w-0 flex-1 overflow-hidden bg-white">
+        <React.Suspense fallback={<AdminContentPending />}>
           {children ?? <Outlet />}
-        </main>
-      </div>
+        </React.Suspense>
+      </main>
     </div>
   )
 }

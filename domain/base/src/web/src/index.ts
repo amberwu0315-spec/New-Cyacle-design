@@ -113,11 +113,15 @@ export type {
 } from '@cew-lib/cyacle-replace-symbols';
 
 export {
+  AccountPopover,
   AppLayout,
   createAppNavConfig,
   useAppLayoutBreadcrumbs,
 } from '#/components/layouts/app-layout/index.ts';
 export type {
+  AccountMenuLink,
+  AccountPopoverProps,
+  AppLayoutAccountMenuLink,
   AppLayoutBreadcrumbItems,
   AppLayoutBreadcrumbsContextValue,
   AppLayoutDomainCapabilities,

@@ -120,32 +120,21 @@ src/
 ## 登录与系统入口
 
 前台和 Admin 共用 UIC 登录页、会话 Cookie 与工作空间选择流程。正式方案需要在
-登录成功并选定组织后，根据组织类型决定进入前台还是 Admin；组织类型接口尚未
-接入前，暂时由 app 入口读取 localStorage。
+登录成功并选定工作空间后，通过 `PCFUserApiService.getOrgProfile` 读取当前组织的
+`businessCodes`，再由 app 入口决定进入前台还是 Admin。UIC 登录领域只负责认证
+和工作空间选择，不包含 Admin 业务判断。
 
-临时配置键：
+入口规则：
 
-```text
-cyacle:system-entry
-```
+- `businessCodes` 只有 `MATRIX`：默认进入 `/admin`。
+- 同时包含 `MATRIX` 和其他 code：默认进入前台，并在前台账号菜单显示“进入后台管理”，新窗口打开 `/admin`。
+- 不包含 `MATRIX`，或者组织信息为空、读取失败：默认进入前台，不显示后台入口。
+- `UNSPECIFIED` 按其他 code 处理，只有严格的单一 `MATRIX` 才默认进入后台。
 
-支持的值：
-
-- `frontend`：登录后进入当前前台系统，也是缺省值。
-- `admin`：登录后进入 `/admin`，再跳到第一个已启用的 Admin 菜单。
-
-可以在浏览器控制台切换：
-
-```js
-localStorage.setItem('cyacle:system-entry', 'admin')
-localStorage.setItem('cyacle:system-entry', 'frontend')
-localStorage.removeItem('cyacle:system-entry')
-```
-
-登录成功且没有显式 `redirect` 参数时，UIC 会返回 `/`，app 在该入口读取上述值。
-如果登录链接携带了明确的 `redirect`，仍优先返回用户原本访问的地址。后续接入
-组织类型时，应替换 `app/src/web/src/system-entry.ts` 的读取逻辑，不在 UIC 登录
-领域中加入 Admin 业务判断。
+登录成功且没有显式 `redirect` 参数时，UIC 返回 `/`，app 在该入口执行上述判断。
+如果登录链接携带明确的 `redirect`，仍优先返回原地址。`/admin` 自身还会再次检查
+当前组织是否包含 `MATRIX`，避免通过手工输入 URL 绕过入口判断。旧的
+`cyacle:system-entry` localStorage 临时配置已经废弃。
 
 ## 禁止事项
 

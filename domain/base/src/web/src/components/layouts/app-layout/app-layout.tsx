@@ -5,6 +5,7 @@ import { AlertTriangleIcon, LogOutIcon, RefreshCwIcon } from 'lucide-react'
 import { AppShellFrame } from '#/components/common/app-shell-frame/index.ts'
 import type { AppShellBreadcrumbItem } from '#/components/common/app-shell-frame/index.ts'
 import { AccountPopover } from '#/components/layouts/app-layout/account-popover.tsx'
+import type { AccountMenuLink } from '#/components/layouts/app-layout/account-popover.tsx'
 import { AppLayoutBreadcrumbsProvider } from './breadcrumbs.tsx'
 import { WorkspaceSelectionDialog } from './workspace-selection-dialog.tsx'
 import type { AppNavConfig } from './nav-config.tsx'
@@ -45,7 +46,10 @@ export type AppLayoutUserProfile = {
   username?: string | null
 }
 
+export type AppLayoutAccountMenuLink = AccountMenuLink
+
 export interface AppLayoutProps {
+  accountMenuLinks?: Array<AppLayoutAccountMenuLink>
   children: React.ReactNode
   currentWorkspaceScope?: string | null
   getWorkspaceAutoSelection: WorkspaceAutoSelectionResolver
@@ -108,6 +112,7 @@ function SessionBootstrapError({
 }
 
 export function AppLayout({
+  accountMenuLinks,
   children,
   currentWorkspaceScope,
   getWorkspaceAutoSelection,
@@ -327,6 +332,7 @@ export function AppLayout({
 
                 <AppShellFrame.TopbarEnd>
                   <AccountPopover
+                    accountMenuLinks={accountMenuLinks}
                     currentWorkspaceScope={selectedWorkspaceScope}
                     hasSessionCredential={hasSessionCredential}
                     onLogout={onLogout}

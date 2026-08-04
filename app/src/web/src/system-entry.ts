@@ -1,33 +1,40 @@
-export const SYSTEM_ENTRY_STORAGE_KEY = 'cyacle:system-entry'
+import type { BusinessCode } from '@carbonnt-cyacle/skeled-uicpub'
 
 export type SystemEntry = 'admin' | 'frontend'
 
+export type SystemEntryAccess = {
+  canOpenAdmin: boolean
+  defaultEntry: SystemEntry
+  showAdminLink: boolean
+}
+
 export interface ResolveSystemEntryHomeToOptions {
   adminHomeTo: string
+  businessCodes?: ReadonlyArray<BusinessCode> | null
   frontendHomeTo: string
 }
 
-export function normalizeSystemEntry(value: unknown): SystemEntry {
-  return value === 'admin' ? 'admin' : 'frontend'
-}
+export function resolveSystemEntryAccess(
+  businessCodes?: ReadonlyArray<BusinessCode> | null,
+): SystemEntryAccess {
+  const codes = new Set(businessCodes ?? [])
+  const canOpenAdmin = codes.has('MATRIX')
+  const hasOtherBusiness = [...codes].some((code) => code !== 'MATRIX')
+  const isMatrixOnly = canOpenAdmin && !hasOtherBusiness
 
-export function getSystemEntry(): SystemEntry {
-  if (typeof window === 'undefined') {
-    return 'frontend'
-  }
-
-  try {
-    return normalizeSystemEntry(
-      window.localStorage.getItem(SYSTEM_ENTRY_STORAGE_KEY),
-    )
-  } catch {
-    return 'frontend'
+  return {
+    canOpenAdmin,
+    defaultEntry: isMatrixOnly ? 'admin' : 'frontend',
+    showAdminLink: canOpenAdmin && hasOtherBusiness,
   }
 }
 
 export function resolveSystemEntryHomeTo({
   adminHomeTo,
+  businessCodes,
   frontendHomeTo,
 }: ResolveSystemEntryHomeToOptions): string {
-  return getSystemEntry() === 'admin' ? adminHomeTo : frontendHomeTo
+  return resolveSystemEntryAccess(businessCodes).defaultEntry === 'admin'
+    ? adminHomeTo
+    : frontendHomeTo
 }

@@ -6,6 +6,7 @@ import {
   defineWebDomainRouteOutlets,
   resolveWebDomainRouteMount,
 } from '@carbonnt-cyacle/web-base'
+import { fetchOrganizationProfile } from '@carbonnt-cyacle/web-uic/pub'
 
 import { AppLayout } from '#/components/layouts/app-layout/index.ts'
 import { resolveAppEditionHomeTo } from '#/components/layouts/app-layout/app-nav-config.ts'
@@ -46,10 +47,21 @@ const ShellRoute = createRoute({
 const AdminRoute = createAdminRoute({ parentRoute: RootRoute })
 
 const appEditionHomeTo = resolveAppEditionHomeTo(webModules, appEdition)
-const defaultSystemHomeTo = resolveSystemEntryHomeTo({
-  adminHomeTo,
-  frontendHomeTo: appEditionHomeTo,
-})
+async function resolveDefaultSystemHomeTo() {
+  try {
+    const organizationProfile = await fetchOrganizationProfile({
+      suppressGlobalToast: true,
+    })
+
+    return resolveSystemEntryHomeTo({
+      adminHomeTo,
+      businessCodes: organizationProfile?.businessCodes,
+      frontendHomeTo: appEditionHomeTo,
+    })
+  } catch {
+    return appEditionHomeTo
+  }
+}
 
 const rootDomainRoutes = resolveWebDomainRouteMount({
   domains: webModules,
@@ -90,7 +102,7 @@ const appEditionRoutes = appEditionRegistration
       ]),
       ShellRoute.addChildren([
         createHomeRoute({
-          defaultTo: defaultSystemHomeTo,
+          defaultTo: resolveDefaultSystemHomeTo,
           parentRoute: ShellRoute,
         }),
         createWorkbenchSidebarDemoRoute({ parentRoute: ShellRoute }),

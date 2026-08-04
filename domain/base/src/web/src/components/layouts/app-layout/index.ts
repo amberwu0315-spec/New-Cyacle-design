@@ -1,9 +1,15 @@
 export { AppLayout } from './app-layout'
+export { AccountPopover } from './account-popover.tsx'
 export type {
+  AppLayoutAccountMenuLink,
   AppLayoutAsyncState,
   AppLayoutProps,
   AppLayoutUserProfile,
 } from './app-layout'
+export type {
+  AccountMenuLink,
+  AccountPopoverProps,
+} from './account-popover.tsx'
 export { useAppLayoutBreadcrumbs } from './breadcrumbs'
 export type {
   AppLayoutBreadcrumbItems,

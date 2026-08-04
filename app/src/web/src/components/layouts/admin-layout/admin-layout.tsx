@@ -1,7 +1,24 @@
-import { AdminLayout } from '@carbonnt-cyacle/web-base'
+import type { ReactNode } from 'react'
+import { Navigate, useNavigate } from '@tanstack/react-router'
+
+import {
+  AccountPopover,
+  AdminLayout,
+  clearAuthSessionSideEffects,
+  getSessionCredential,
+  getWebProjectConfig,
+} from '@carbonnt-cyacle/web-base'
+import { Spinner } from '@carbonnt-cyacle/web-base/components/ui/spinner'
 import {
   AuthGuard,
+  ForbiddenError,
   PermissionGuardProvider,
+  clearWorkspaceSelectionSideEffects,
+  getSelectedWorkspaceScope,
+  selectWorkspaceId,
+  useAvailableWorkspaces,
+  useCurrentOrganizationProfile,
+  useCurrentUserProfile,
   usePermissionGuardContext,
 } from '@carbonnt-cyacle/web-uic/pub'
 
@@ -9,6 +26,7 @@ import {
   adminNavigation,
   adminPermissionCodes,
 } from '#/admin/admin-config.ts'
+import { resolveSystemEntryAccess } from '#/system-entry.ts'
 
 function AdminBrand() {
   return (
@@ -19,7 +37,10 @@ function AdminBrand() {
         <span className="rounded-[1px] bg-white/45" />
         <span className="rounded-[1px] bg-white" />
       </span>
-      <span className="text-[28px] font-semibold leading-none tracking-[-0.035em] text-[#11151b]">
+      <span
+        data-slot="admin-brand-label"
+        className="text-[28px] font-semibold leading-none tracking-[-0.035em] text-[#11151b]"
+      >
         Admin
       </span>
     </div>
@@ -29,11 +50,46 @@ function AdminBrand() {
 export function AdminAppLayout() {
   return (
     <AuthGuard>
-      <PermissionGuardProvider codes={adminPermissionCodes}>
-        <PermissionAwareAdminLayout />
-      </PermissionGuardProvider>
+      <AdminBusinessGuard>
+        <PermissionGuardProvider codes={adminPermissionCodes}>
+          <PermissionAwareAdminLayout />
+        </PermissionGuardProvider>
+      </AdminBusinessGuard>
     </AuthGuard>
   )
+}
+
+function AdminBusinessGuard({ children }: { children: ReactNode }) {
+  const currentWorkspaceScope = getSelectedWorkspaceScope()
+  const organizationProfileQuery = useCurrentOrganizationProfile({
+    enabled: Boolean(currentWorkspaceScope),
+    workspaceScope: currentWorkspaceScope,
+  })
+
+  if (!currentWorkspaceScope) {
+    return <Navigate to="/" replace />
+  }
+
+  if (
+    organizationProfileQuery.isLoading ||
+    (organizationProfileQuery.isFetching && !organizationProfileQuery.data)
+  ) {
+    return (
+      <div className="flex min-h-dvh items-center justify-center bg-background">
+        <Spinner className="size-5" />
+      </div>
+    )
+  }
+
+  const access = resolveSystemEntryAccess(
+    organizationProfileQuery.data?.businessCodes,
+  )
+
+  if (organizationProfileQuery.isError || !access.canOpenAdmin) {
+    return <ForbiddenError />
+  }
+
+  return children
 }
 
 function PermissionAwareAdminLayout() {
@@ -50,6 +106,36 @@ function PermissionAwareAdminLayout() {
     <AdminLayout
       brand={<AdminBrand />}
       navigation={isLoading ? [] : navigation}
+      sidebarFooter={<AdminAccountActions />}
+    />
+  )
+}
+
+function AdminAccountActions() {
+  const navigate = useNavigate()
+  const hasSessionCredential = Boolean(getSessionCredential())
+  const currentWorkspaceScope = getSelectedWorkspaceScope()
+  const profileQuery = useCurrentUserProfile({
+    enabled: hasSessionCredential,
+  })
+  const workspaceQuery = useAvailableWorkspaces({
+    enabled: hasSessionCredential,
+  })
+
+  const handleLogout = () => {
+    clearAuthSessionSideEffects()
+    clearWorkspaceSelectionSideEffects()
+    void navigate({ to: getWebProjectConfig().routes.loginPath })
+  }
+
+  return (
+    <AccountPopover
+      currentWorkspaceScope={currentWorkspaceScope}
+      hasSessionCredential={hasSessionCredential}
+      onLogout={handleLogout}
+      onWorkspaceSelect={selectWorkspaceId}
+      profileQuery={profileQuery}
+      workspaceQuery={workspaceQuery}
     />
   )
 }

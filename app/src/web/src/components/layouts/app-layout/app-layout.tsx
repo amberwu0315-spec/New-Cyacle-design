@@ -1,11 +1,12 @@
 import * as React from 'react'
-import { Outlet, useNavigate } from '@tanstack/react-router'
+import { Navigate, Outlet, useNavigate } from '@tanstack/react-router'
 import {
   AppLayout as BaseAppLayout,
   AgentCollaborationRoot,
   AssistantAgentUserContextProvider,
   clearAuthSessionSideEffects,
   getSessionCredential,
+  type AppLayoutAccountMenuLink,
   type AssistantAgentUserContext,
   type AppLayoutUserProfile,
   useLanguageStore,
@@ -19,11 +20,13 @@ import {
   getWorkspaceAutoSelection,
   selectWorkspaceId,
   useAvailableWorkspaces,
+  useCurrentOrganizationProfile,
   useCurrentUserProfile,
 } from '@carbonnt-cyacle/web-uic/pub'
 
 import { webModules } from '#/vineModules.gen.ts'
 import { getAppEdition } from '#/app-edition.ts'
+import { resolveSystemEntryAccess } from '#/system-entry.ts'
 import { createConfiguredAppNavConfig } from './app-nav-config.ts'
 
 type AgentProfile = AppLayoutUserProfile & {
@@ -44,6 +47,10 @@ export function AppLayout() {
   })
   const currentWorkspaceScope = getSelectedWorkspaceScope()
   const selectedWorkspaceId = getSelectedWorkspaceId()
+  const organizationProfileQuery = useCurrentOrganizationProfile({
+    enabled: hasSessionCredential && Boolean(currentWorkspaceScope),
+    workspaceScope: currentWorkspaceScope,
+  })
   const currentWorkspace = React.useMemo(
     () =>
       workspaceQuery.data?.find(
@@ -63,6 +70,26 @@ export function AppLayout() {
         appEdition,
       ),
     [appEdition, currentWorkspace, language],
+  )
+  const systemEntryAccess = resolveSystemEntryAccess(
+    organizationProfileQuery.data?.businessCodes,
+  )
+  const accountMenuLinks = React.useMemo<Array<AppLayoutAccountMenuLink>>(
+    () =>
+      systemEntryAccess.showAdminLink
+        ? [
+            {
+              href: '/admin',
+              id: 'open-admin',
+              label:
+                language === 'en-US'
+                  ? 'Open admin management'
+                  : '进入后台管理',
+              target: '_blank',
+            },
+          ]
+        : [],
+    [language, systemEntryAccess.showAdminLink],
   )
   const assistantUserContext = React.useMemo<AssistantAgentUserContext>(() => {
     const profile = profileQuery.data as AgentProfile | null | undefined
@@ -84,10 +111,18 @@ export function AppLayout() {
     void navigate({ to: getWebProjectConfig().routes.loginPath })
   }, [navigate])
 
+  if (
+    organizationProfileQuery.isSuccess &&
+    systemEntryAccess.defaultEntry === 'admin'
+  ) {
+    return <Navigate to="/admin" replace />
+  }
+
   return (
     <AuthGuard>
       <AssistantAgentUserContextProvider value={assistantUserContext}>
         <BaseAppLayout
+          accountMenuLinks={accountMenuLinks}
           currentWorkspaceScope={currentWorkspaceScope}
           getWorkspaceAutoSelection={getWorkspaceAutoSelection}
           hasSessionCredential={hasSessionCredential}

@@ -1,5 +1,12 @@
 import * as React from 'react'
-import { BoxIcon, CheckIcon, GlobeIcon, LogOut, RefreshCwIcon } from 'lucide-react'
+import {
+  BoxIcon,
+  CheckIcon,
+  ExternalLinkIcon,
+  GlobeIcon,
+  LogOut,
+  RefreshCwIcon,
+} from 'lucide-react'
 
 import { Button } from '#/components/ui/button.tsx'
 import {
@@ -33,6 +40,7 @@ import type {
 } from '#/components/layouts/app-layout/app-layout.tsx'
 
 export type AccountPopoverProps = {
+  accountMenuLinks?: Array<AccountMenuLink>
   currentWorkspaceScope: string | null
   hasSessionCredential: boolean
   onLogout: () => void
@@ -41,6 +49,13 @@ export type AccountPopoverProps = {
   ) => Promise<WorkspaceSelectionResult>
   profileQuery: AppLayoutAsyncState<AppLayoutUserProfile>
   workspaceQuery: AppLayoutAsyncState<Array<WorkspaceSelectionItem>>
+}
+
+export type AccountMenuLink = {
+  href: string
+  id: string
+  label: string
+  target?: '_blank' | '_self'
 }
 
 const ACCOUNT_LANGUAGE_OPTIONS: Array<SupportedLanguage> = ['en-US', 'zh-CN']
@@ -128,6 +143,7 @@ function WorkspaceMenuItem({
 }
 
 export function AccountPopover({
+  accountMenuLinks = [],
   currentWorkspaceScope,
   hasSessionCredential,
   onLogout,
@@ -266,6 +282,7 @@ export function AccountPopover({
       <DropdownMenuTrigger
         render={
           <Button
+            data-slot="account-trigger"
             variant="ghost"
             aria-label={t.common.shell.account.menu}
             className="h-10 min-w-0 max-w-[10rem] justify-start gap-2 px-2 active:translate-y-0"
@@ -273,7 +290,11 @@ export function AccountPopover({
         }
       >
         {isProfileLoading ? (
-          <Skeleton aria-hidden="true" className="h-10 w-24 rounded-lg" />
+          <Skeleton
+            data-slot="account-trigger-loading"
+            aria-hidden="true"
+            className="h-10 w-24 rounded-lg"
+          />
         ) : (
           <>
             <img
@@ -282,7 +303,10 @@ export function AccountPopover({
               aria-hidden="true"
               className="size-7 shrink-0 rounded-full border border-border object-cover"
             />
-            <span className="max-w-full truncate text-sm font-semibold text-foreground">
+            <span
+              data-slot="account-trigger-label"
+              className="max-w-full truncate text-sm font-semibold text-foreground"
+            >
               {accountName}
             </span>
           </>
@@ -418,6 +442,30 @@ export function AccountPopover({
               </div>
             </DropdownMenuSubContent>
           </DropdownMenuSub>
+
+          {accountMenuLinks.map((link) => (
+            <DropdownMenuItem
+              key={link.id}
+              render={
+                <a
+                  href={link.href}
+                  target={link.target}
+                  rel={
+                    link.target === '_blank'
+                      ? 'noopener noreferrer'
+                      : undefined
+                  }
+                />
+              }
+              className="min-h-11 cursor-pointer gap-2 rounded-lg px-2.5 py-2 text-[15px] font-semibold"
+            >
+              <ExternalLinkIcon
+                aria-hidden="true"
+                className="size-4 text-muted-foreground"
+              />
+              <span className="min-w-0 flex-1 truncate">{link.label}</span>
+            </DropdownMenuItem>
+          ))}
 
           <DropdownMenuSeparator className="mx-0 my-1.5" />
 
