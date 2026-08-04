@@ -15,10 +15,11 @@ pnpm build -- --vrpcClientVersion=1.1.1
 
 ```bash
 VITE_APP_EDITION=default plot app run
-VITE_APP_EDITION=wuxibiologics plot app run
 ```
 
 未配置时使用 `default`。未知版本会在启动 Web router 时直接报错，不会静默回退到其它版本。
+装配了定制领域的部署分支可将 `VITE_APP_EDITION` 设置为该领域注册的 edition ID；
+具体 ID 和启动命令由对应领域文档维护。
 
 默认版本继续把普通业务路由挂到公共 `shell` outlet。定制版本可以在
 `appEdition.routeMount` 中声明自己的顶层 outlet；该 outlet 会直接挂到
