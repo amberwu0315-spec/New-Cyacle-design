@@ -31,3 +31,5 @@ export type {
   DomainNavMetaContext,
   DomainNavMetaFactory,
 } from './nav-config'
+export { LanguageMenu as LoginLanguageMenu } from './language-switcher.tsx'
+export { WorkspaceSelectionDialog } from './workspace-selection-dialog.tsx'

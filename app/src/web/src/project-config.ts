@@ -8,7 +8,7 @@ import {
 import {
   getDocumentDownloadUrl,
   uploadDocumentFile,
-} from '@carbonnt-cyacle/web-uic'
+} from '@carbonnt-cyacle/web-uic/pub'
 
 import { createAssistantAgentRuntimeConfig } from '#/adapters/assistant-agent-adapter.ts'
 
