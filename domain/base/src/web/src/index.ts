@@ -24,9 +24,15 @@ export type {
 } from './components/common/document-preview/index.ts';
 export {
   getQueryClient,
+  queryClient,
   TanstackQueryRootProvider,
 } from './context/query-client.tsx';
-export { getVrpcClient, getVrpcHttpClient } from './lib/vrpc-client.ts';
+export {
+  getVrpcClient,
+  getVrpcHttpClient,
+  vrpcClient,
+  vrpcHttpClient,
+} from './lib/vrpc-client.ts';
 export {
   clearAuthSessionSideEffects,
   redirectToLoginWithCurrentLocation,

@@ -20,6 +20,8 @@ export function getQueryClient() {
   return queryClientSingleton
 }
 
+export const queryClient = getQueryClient()
+
 type TanstackQueryRootProviderProps = PropsWithChildren
 
 export function TanstackQueryRootProvider({
