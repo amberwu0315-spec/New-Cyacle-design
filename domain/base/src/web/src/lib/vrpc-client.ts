@@ -179,3 +179,6 @@ export function getVrpcHttpClient() {
   vrpcHttpClientSingleton = client
   return vrpcHttpClientSingleton
 }
+
+export const vrpcClient = getVrpcClient()
+export const vrpcHttpClient = getVrpcHttpClient()
