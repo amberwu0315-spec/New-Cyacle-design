@@ -22,3 +22,22 @@ pub actor UserActor {
         }
     }
 }
+
+@desc("外部系统参与者")
+pub actor OpenActor {
+    via client {}
+
+    auth {
+        credential {
+            @desc("开放接口访问令牌")
+            token: string
+        }
+
+        info {
+            @desc("外部系统编码")
+            systemCode: string
+            @desc("外部系统客户端ID")
+            clientId: string
+        }
+    }
+}
