@@ -45,9 +45,11 @@ const AUTHORIZED_INLINE_PREVIEW_IDLE_STATE: AuthorizedInlinePreviewState = {
 
 export interface InlineDocumentPreviewProps {
   className?: string
+  download?: ViewerContentProps['download']
   emptyDescription?: string
   emptyTitle?: string
   item: DocumentsPreviewItem | null
+  toolbar?: ViewerContentProps['toolbar']
   viewerClassName?: string
 }
 
@@ -247,9 +249,11 @@ function InlinePreviewState({
 
 export function InlineDocumentPreview({
   className,
+  download,
   emptyDescription = '当前文件还没有可用的预览内容。',
   emptyTitle = '暂无文件预览',
   item,
+  toolbar,
   viewerClassName,
 }: InlineDocumentPreviewProps) {
   const [reloadToken, setReloadToken] = React.useState(0)
@@ -331,6 +335,8 @@ export function InlineDocumentPreview({
         <InlineDocumentPreviewContent
           file={authorizedPreview.item?.viewerFile ?? null}
           className="h-full w-full min-w-0 flex-1"
+          download={download}
+          toolbar={toolbar}
           classNames={{
             root: cn(
               'documents-preview-viewer h-full w-full min-w-0 rounded-none !border-0',
