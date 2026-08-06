@@ -3,6 +3,16 @@ import { clearSessionCredential } from '#/lib/session-cookie.ts'
 import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 
 let isRedirectingToLogin = false
+let loginPathOverride: string | undefined
+
+export function setAuthLoginPathOverride(loginPath?: string) {
+  const previousLoginPathOverride = loginPathOverride
+  loginPathOverride = loginPath
+
+  return () => {
+    loginPathOverride = previousLoginPathOverride
+  }
+}
 
 function getCurrentRedirectPath(loginPath: string) {
   if (typeof window === 'undefined') {
@@ -42,7 +52,7 @@ export function redirectToLoginWithCurrentLocation(loginPath?: string) {
   }
 
   const resolvedLoginPath =
-    loginPath ?? getWebProjectConfig().routes.loginPath
+    loginPath ?? loginPathOverride ?? getWebProjectConfig().routes.loginPath
 
   if (window.location.pathname === resolvedLoginPath) {
     return

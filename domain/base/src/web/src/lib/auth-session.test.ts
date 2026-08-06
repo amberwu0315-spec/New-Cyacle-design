@@ -47,4 +47,18 @@ describe('redirectToLoginWithCurrentLocation', () => {
       '/auth/external/start?redirect=%2Fcatalog%2Fitems%3Fpage%3D2%23section',
     )
   })
+
+  it('uses the configured runtime login route for global unauthorized redirects', async () => {
+    const {
+      redirectToLoginWithCurrentLocation,
+      setAuthLoginPathOverride,
+    } = await import('#/lib/auth-session.ts')
+
+    setAuthLoginPathOverride('/auth/runtime/start')
+    redirectToLoginWithCurrentLocation()
+
+    expect(mocks.replace).toHaveBeenCalledWith(
+      '/auth/runtime/start?redirect=%2Fcatalog%2Fitems%3Fpage%3D2%23section',
+    )
+  })
 })
