@@ -34,16 +34,17 @@ export function clearAuthSessionSideEffects() {
   getQueryClient().clear()
 }
 
-export function redirectToLoginWithCurrentLocation() {
+export function redirectToLoginWithCurrentLocation(loginPath?: string) {
   clearAuthSessionSideEffects()
 
   if (typeof window === 'undefined') {
     return
   }
 
-  const { loginPath } = getWebProjectConfig().routes
+  const resolvedLoginPath =
+    loginPath ?? getWebProjectConfig().routes.loginPath
 
-  if (window.location.pathname === loginPath) {
+  if (window.location.pathname === resolvedLoginPath) {
     return
   }
 
@@ -52,5 +53,5 @@ export function redirectToLoginWithCurrentLocation() {
   }
 
   isRedirectingToLogin = true
-  window.location.replace(createLoginPath(loginPath))
+  window.location.replace(createLoginPath(resolvedLoginPath))
 }
