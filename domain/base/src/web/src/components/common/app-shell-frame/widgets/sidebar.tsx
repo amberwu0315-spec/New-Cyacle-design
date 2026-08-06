@@ -560,7 +560,7 @@ export function AppShellFrameSidebarNav({
                             </span>
                             <span
                               className={cn(
-                                'mt-0.5 block line-clamp-2 text-xs leading-relaxed',
+                                'mt-0.5 block h-10 min-h-10 max-h-10 line-clamp-2 text-xs leading-5',
                                 isCurrent
                                   ? 'text-primary/80'
                                   : 'text-muted-foreground',
