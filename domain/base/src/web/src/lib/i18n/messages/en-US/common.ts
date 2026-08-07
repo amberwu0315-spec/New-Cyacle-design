@@ -88,7 +88,7 @@ export const common = {
     emptyDescription: 'This file does not have preview content yet.',
     retry: 'Retry',
     versionHistory: 'Version History',
-    restore: 'Restore',
+    restore: 'Restore This Version',
     loadingVersions: 'Loading versions...',
     noVersionHistory: 'No version history',
     unknownVersion: 'Unknown version',

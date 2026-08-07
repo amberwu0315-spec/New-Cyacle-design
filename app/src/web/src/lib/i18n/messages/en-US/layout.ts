@@ -2,10 +2,10 @@ import type { Messages } from '../zh-CN'
 
 export const layout = {
   account: {
-    openAdmin: 'Open admin management',
+    openAdmin: 'Open Admin Console',
   },
   admin: {
-    brandAriaLabel: 'Admin Management',
+    brandAriaLabel: 'Admin Console',
   },
   navCategories: {
     basis: 'Foundation',
