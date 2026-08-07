@@ -22,6 +22,7 @@ export const assistantWorkbenchMessages = {
     uploadMaterials: '上传材料',
     attachmentLimitHint: (maxCount: number, maxFileSizeMb: number) =>
       `最多添加 ${maxCount} 份材料，单个文件不超过 ${maxFileSizeMb} MB`,
+    defaultAttachmentOnlyPrompt: '请结合我上传的文件继续分析。',
   },
   attachments: {
     unnamedFile: '未命名文件',
@@ -49,6 +50,7 @@ export const assistantWorkbenchMessages = {
       remove: (name: string) => `移除文件 ${name}`,
     },
     validation: {
+      fallbackAttachmentName: (index: number) => `附件${index + 1}`,
       imagePreviewReadFailed: '图片预览读取失败。',
       duplicateFile: (fileName: string) =>
         `以下文件已在待发送列表中，已自动跳过：${fileName}`,
@@ -59,6 +61,11 @@ export const assistantWorkbenchMessages = {
       wrapFileName: (fileName: string) => `《${fileName}》`,
       uploadFailed: (fileName: string) => `附件上传失败：${fileName}`,
     },
+  },
+  documentPreview: {
+    attachmentPreview: '附件预览',
+    unsupportedAttachmentPreview: '当前附件暂不支持内嵌预览。',
+    downloadAttachment: '下载附件',
   },
   message: {
     thinkingInProgress: '思考中',

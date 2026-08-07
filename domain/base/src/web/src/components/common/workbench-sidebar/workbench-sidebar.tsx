@@ -7,6 +7,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '#/components/ui/popover.tsx'
+import { useTranslation } from '#/lib/i18n/index.ts'
 import { cn } from '#/lib/utils.ts'
 
 export type WorkbenchSidebarIcon = React.ElementType<{ className?: string }>
@@ -103,11 +104,6 @@ interface ScrollEdges {
   bottom: boolean
 }
 
-const DEFAULT_LABELS: Required<WorkbenchSidebarLabels> = {
-  collapse: '收起菜单',
-  expand: '展开菜单',
-  navigation: '工作区菜单',
-}
 const DEFAULT_COLLAPSED_GROUP_BEHAVIOR: WorkbenchSidebarCollapsedGroupBehavior =
   'groups'
 const DEFAULT_EXPANDED_WIDTH = '12rem'
@@ -189,13 +185,14 @@ function WorkbenchSidebarRoot({
   style,
   ...props
 }: WorkbenchSidebarRootProps) {
+  const { t: messages } = useTranslation()
   const [uncontrolledExpanded, setUncontrolledExpanded] = React.useState(() =>
     readStoredExpanded(storageKey, defaultExpanded),
   )
   const expanded = controlledExpanded ?? uncontrolledExpanded
   const resolvedLabels = React.useMemo<Required<WorkbenchSidebarLabels>>(
-    () => ({ ...DEFAULT_LABELS, ...labels }),
-    [labels],
+    () => ({ ...messages.common.workbenchSidebar, ...labels }),
+    [labels, messages.common.workbenchSidebar],
   )
   const collapsedGroupPopoverHandle =
     React.useMemo<WorkbenchSidebarCollapsedGroupPopoverHandle>(

@@ -3,6 +3,7 @@ import { Outlet, useLocation, useNavigate } from '@tanstack/react-router'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 
 import { Spinner } from '#/components/ui/spinner.tsx'
+import { useTranslation } from '#/lib/i18n/index.ts'
 import { cn } from '#/lib/utils.ts'
 
 export interface AdminNavigationItem {
@@ -105,6 +106,7 @@ export function AdminLayout({
   sidebarFooter,
   sidebarStorageKey = 'admin:sidebar:open',
 }: AdminLayoutProps) {
+  const { t: messages } = useTranslation()
   const pathname = useLocation({ select: (location) => location.pathname })
   const [sidebarOpen, setSidebarOpen] = React.useState(() =>
     readStoredSidebarState(sidebarStorageKey, defaultSidebarOpen),
@@ -191,7 +193,11 @@ export function AdminLayout({
 
         <button
           type="button"
-          aria-label={sidebarOpen ? '收起后台导航' : '展开后台导航'}
+          aria-label={
+            sidebarOpen
+              ? messages.common.admin.collapseNavigation
+              : messages.common.admin.expandNavigation
+          }
           className={cn(
             'flex h-12 shrink-0 items-center border-t border-[#e4e8ed] text-[#69717d] transition-colors hover:bg-[#f4f7fa] hover:text-[#256fc4]',
             sidebarOpen ? 'justify-end px-4' : 'justify-center px-0',

@@ -3,7 +3,9 @@ import type { Messages } from '../zh-CN'
 export const common = {
   actions: {
     cancel: 'Cancel',
+    download: 'Download',
     reset: 'Reset',
+    retry: 'Retry',
     save: 'Save',
   },
   language: {
@@ -57,5 +59,75 @@ export const common = {
     categories: {
       businessApps: 'Business Apps',
     },
+  },
+  admin: {
+    collapseNavigation: 'Collapse admin navigation',
+    expandNavigation: 'Expand admin navigation',
+  },
+  autoTranslate: {
+    label: 'Auto translate',
+  },
+  workbenchSidebar: {
+    collapse: 'Collapse menu',
+    expand: 'Expand menu',
+    navigation: 'Workspace menu',
+  },
+  documentPreview: {
+    attachmentPreview: 'Attachment Preview',
+    unsupportedAttachmentPreview:
+      'Inline preview is not available for this attachment.',
+    downloadAttachment: 'Download Attachment',
+    dialogTitle: 'Document Preview',
+    loadingDocument: 'Loading document preview...',
+    loadingViewer: 'Loading viewer...',
+    loadFailedTitle: 'Failed to load document preview',
+    loadFailedMessage: 'Failed to load document preview. Please try again later.',
+    unsupportedEnvironment:
+      'Document preview is not supported in the current environment.',
+    emptyTitle: 'No File Preview',
+    emptyDescription: 'This file does not have preview content yet.',
+    retry: 'Retry',
+    versionHistory: 'Version History',
+    restore: 'Restore',
+    loadingVersions: 'Loading versions...',
+    noVersionHistory: 'No version history',
+    unknownVersion: 'Unknown version',
+    current: 'Current',
+    original: 'Original',
+    downloadOriginalDocument: 'Download Original Document',
+    restoreConfirmTitle: 'Restore to this version?',
+    restoreConfirmDescription: (version) =>
+      `Restore the document to version ${version}. A new current version will be created after restoration.`,
+    restoreSuccess: 'Version restored successfully',
+    restoreFailed: (message) => `Version restore failed: ${message}`,
+    restoring: 'Restoring...',
+    info: {
+      documentTitle: 'Document Information',
+      fileTitle: 'File Information',
+      source: 'Source',
+      documentSource: 'Document Management',
+      fileSource: 'File Service',
+      version: 'Version',
+      size: 'Size',
+      createdAt: 'Created At',
+      updatedAt: 'Updated At',
+    },
+  },
+  upload: {
+    fileIdRequired: 'File ID is required.',
+    fileDownloadFailed: 'Failed to download file. Please try again later.',
+    fileContentEmpty: 'File content is empty.',
+    fileUploadFailed: 'Failed to upload file. Please try again later.',
+    documentIdRequired: 'Document ID is required.',
+    documentDownloadFailed:
+      'Failed to download document. Please try again later.',
+    documentPreviewUrlRequired: 'Document preview URL is required.',
+    documentLoadFailed:
+      'Failed to load document preview. Please try again later.',
+    documentContentEmpty: 'Document content is empty.',
+    documentUploadFailed: 'Failed to upload document. Please try again later.',
+    uploadCanceled: 'Upload canceled',
+    uploadFailed: 'Upload failed. Please try again later.',
+    duplicateTask: (taskId) => `Upload task already exists: ${taskId}`,
   },
 } satisfies Messages['common']

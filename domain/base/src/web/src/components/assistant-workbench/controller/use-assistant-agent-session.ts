@@ -2096,7 +2096,7 @@ export function useAssistantAgentSession(
         args.content.trim() ||
         (readyAttachments.length > 0
           ? (options.defaultAttachmentOnlyPrompt ??
-            '请结合我上传的文件继续分析。')
+            assistantMessages.composer.defaultAttachmentOnlyPrompt)
           : '')
 
       if (!normalizedContent) {

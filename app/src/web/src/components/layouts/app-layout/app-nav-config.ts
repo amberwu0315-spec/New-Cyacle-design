@@ -9,37 +9,44 @@ import {
   DEFAULT_APP_EDITION,
   resolveAppEditionRegistration,
 } from '#/app-edition.ts'
+import { getMessages } from '#/lib/i18n/index.ts'
 
-const APP_NAV_CATEGORIES = {
-  basis: '基础',
-  accounting: '核算',
-  management: '管理',
-  dashboard: '驾驶舱',
-  platform: '平台',
-  account: '账号',
-} as const
+function getAppNavCategories(language: AppNavConfigOptions['language']) {
+  const t = getMessages(language)
 
-const APP_NAV_CATEGORY_ORDER = [
-  APP_NAV_CATEGORIES.basis,
-  APP_NAV_CATEGORIES.accounting,
-  APP_NAV_CATEGORIES.management,
-  APP_NAV_CATEGORIES.dashboard,
-  APP_NAV_CATEGORIES.platform,
-  APP_NAV_CATEGORIES.account,
-]
-
-const APP_NAV_SCENE_CATEGORY_BY_ID: Record<string, string> = {
-  'domain-project': APP_NAV_CATEGORIES.basis,
-  'domain-pcf-factor-api': APP_NAV_CATEGORIES.basis,
-  'domain-accounting': APP_NAV_CATEGORIES.accounting,
-  'domain-cfo': APP_NAV_CATEGORIES.accounting,
-  'domain-document-management': APP_NAV_CATEGORIES.management,
-  'domain-uic': APP_NAV_CATEGORIES.account,
+  return {
+    basis: t.layout.navCategories.basis,
+    accounting: t.layout.navCategories.accounting,
+    management: t.layout.navCategories.management,
+    dashboard: t.layout.navCategories.dashboard,
+    platform: t.layout.navCategories.platform,
+    account: t.layout.navCategories.account,
+  } as const
 }
 
-function groupAppNavConfig(config: AppNavConfig): AppNavConfig {
+function groupAppNavConfig(
+  config: AppNavConfig,
+  options: AppNavConfigOptions = {},
+): AppNavConfig {
+  const appNavCategories = getAppNavCategories(options.language)
+  const appNavCategoryOrder = [
+    appNavCategories.basis,
+    appNavCategories.accounting,
+    appNavCategories.management,
+    appNavCategories.dashboard,
+    appNavCategories.platform,
+    appNavCategories.account,
+  ]
+  const appNavSceneCategoryById: Record<string, string> = {
+    'domain-project': appNavCategories.basis,
+    'domain-pcf-factor-api': appNavCategories.basis,
+    'domain-accounting': appNavCategories.accounting,
+    'domain-cfo': appNavCategories.accounting,
+    'domain-document-management': appNavCategories.management,
+    'domain-uic': appNavCategories.account,
+  }
   const scenes = config.scenes.map((scene) => {
-    const category = APP_NAV_SCENE_CATEGORY_BY_ID[scene.id] ?? scene.category
+    const category = appNavSceneCategoryById[scene.id] ?? scene.category
 
     if (category === scene.category) {
       return scene
@@ -66,7 +73,7 @@ function groupAppNavConfig(config: AppNavConfig): AppNavConfig {
   const orderedCategoryTitles: Array<string> = []
   const handledCategoryTitles = new Set<string>()
 
-  for (const categoryTitle of APP_NAV_CATEGORY_ORDER) {
+  for (const categoryTitle of appNavCategoryOrder) {
     if (!sceneIdsByCategory.has(categoryTitle)) {
       continue
     }
@@ -118,6 +125,7 @@ export function createConfiguredAppNavConfig(
   return groupAppNavConfig(
     registration?.createNavConfig(options) ??
       createAppNavConfig(webDomains, options),
+    options,
   )
 }
 

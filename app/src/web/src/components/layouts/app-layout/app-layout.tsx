@@ -27,6 +27,7 @@ import {
 import { webModules } from '#/vineModules.gen.ts'
 import { getAppEdition } from '#/app-edition.ts'
 import { resolveSystemEntryAccess } from '#/system-entry.ts'
+import { useTranslation } from '#/lib/i18n/index.ts'
 import { createConfiguredAppNavConfig } from './app-nav-config.ts'
 
 type AgentProfile = AppLayoutUserProfile & {
@@ -37,6 +38,7 @@ type AgentProfile = AppLayoutUserProfile & {
 export function AppLayout() {
   const navigate = useNavigate()
   const language = useLanguageStore()
+  const { t } = useTranslation()
   const hasSessionCredential = Boolean(getSessionCredential())
   const appEdition = getAppEdition()
   const profileQuery = useCurrentUserProfile({
@@ -81,10 +83,7 @@ export function AppLayout() {
             {
               href: '/admin',
               id: 'open-admin',
-              label:
-                language === 'en-US'
-                  ? 'Open admin management'
-                  : '进入后台管理',
+              label: t.layout.account.openAdmin,
               target: '_blank',
             },
           ]

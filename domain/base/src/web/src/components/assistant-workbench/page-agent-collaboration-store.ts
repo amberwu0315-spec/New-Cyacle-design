@@ -7,6 +7,10 @@ import {
   buildAssistantAnchorChatSeedMessages,
   openAssistantAnchorChat,
 } from './content'
+import {
+  getAssistantWorkbenchMessages,
+  getCurrentLanguage,
+} from './i18n/index.ts'
 import { createAssistantRandomId } from './lib/id'
 import type {
   AssistantLaunchArea,
@@ -201,12 +205,15 @@ function normalizeConfig(args: {
   openAssistantSource: AgentCollaborationPageConfig['openAssistant']
   renderPanelSource: AgentCollaborationPageConfig['renderPanel']
 }): RegisteredAgentCollaborationPageConfig {
+  const messages =
+    getAssistantWorkbenchMessages(getCurrentLanguage()).assistantWorkbench
+
   return {
     ...args.config,
     enabled: args.config.enabled !== false,
     showEntry: args.config.showEntry !== false,
     entryLabel: args.config.entryLabel?.trim() || 'AI',
-    entryTooltip: args.config.entryTooltip?.trim() || '青钥助手',
+    entryTooltip: args.config.entryTooltip?.trim() || messages.brand.entryTooltip,
     defaultTarget: args.config.defaultTarget ?? null,
     panelSlotElement: args.panelSlotElement,
     openAssistantSource: args.openAssistantSource,
@@ -454,10 +461,12 @@ export const agentCollaborationActions = {
     },
   ) {
     const launchArea = buildLaunchAreaFromTarget(target)
+    const messages =
+      getAssistantWorkbenchMessages(getCurrentLanguage()).assistantWorkbench
 
     openAssistantAnchorChat({
       launchArea,
-      seedMessages: buildAssistantAnchorChatSeedMessages(launchArea),
+      seedMessages: buildAssistantAnchorChatSeedMessages(launchArea, messages),
       renderMode: options?.renderMode ?? 'embedded',
       session: {
         activationId: createAssistantRandomId(),

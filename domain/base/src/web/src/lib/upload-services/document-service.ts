@@ -1,6 +1,7 @@
 import { getVrpcHttpClient } from '#/lib/vrpc-client.ts'
 import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 import { getSessionAuthorizationHeader } from '#/lib/session-cookie.ts'
+import { getMessages, languageStore } from '#/lib/i18n/index.ts'
 
 export interface UploadedDocumentResource {
   id: string
@@ -60,6 +61,10 @@ function normalizeServiceErrorMessage(payload: unknown, fallback: string) {
   return fallback
 }
 
+function getUploadMessages() {
+  return getMessages(languageStore.getSnapshot()).common.upload
+}
+
 export function getDocumentDownloadUrl(docId?: string | null) {
   const trimmedDocId = docId?.trim()
 
@@ -105,7 +110,7 @@ export async function fetchDocumentDownloadBlob(
   const downloadUrl = getDocumentDownloadUrl(docId)
 
   if (!downloadUrl) {
-    throw new Error('文档 ID 不能为空。')
+    throw new Error(getUploadMessages().documentIdRequired)
   }
 
   const headers = new Headers()
@@ -124,14 +129,15 @@ export async function fetchDocumentDownloadBlob(
 
   if (!response.ok) {
     throw new Error(
-      (await readResponseErrorMessage(response)) || '文档下载失败，请稍后重试。',
+      (await readResponseErrorMessage(response)) ||
+        getUploadMessages().documentDownloadFailed,
     )
   }
 
   const blob = await response.blob()
 
   if (!blob.size) {
-    throw new Error('文档内容为空。')
+    throw new Error(getUploadMessages().documentContentEmpty)
   }
 
   return blob
@@ -164,7 +170,12 @@ export async function uploadDocumentFile({
   const uploadedDocument = extractUploadedDocument(payload)
 
   if (!uploadedDocument) {
-    throw new Error(normalizeServiceErrorMessage(payload, '文档上传失败，请稍后重试。'))
+    throw new Error(
+      normalizeServiceErrorMessage(
+        payload,
+        getUploadMessages().documentUploadFailed,
+      ),
+    )
   }
 
   return uploadedDocument

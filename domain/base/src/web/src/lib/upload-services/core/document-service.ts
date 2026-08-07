@@ -5,6 +5,7 @@ import {
 } from './upload-service.shared'
 import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 import { getSessionAuthorizationHeader } from '#/lib/session-cookie.ts'
+import { getMessages, languageStore } from '#/lib/i18n/index.ts'
 
 export const DOCUMENT_SERVICE_PATH_PREFIX = '/uic.DocumentWeb/DocumentService'
 
@@ -14,6 +15,10 @@ function getDocumentUploadPath() {
 
 function getDocumentDownloadPath() {
   return getWebProjectConfig().uploadServices.document.downloadPath
+}
+
+function getUploadMessages() {
+  return getMessages(languageStore.getSnapshot()).common.upload
 }
 
 export interface DocumentDownloadUrlOptions {
@@ -90,7 +95,7 @@ export async function fetchDocumentBlobByUrl(
   options: FetchDocumentBlobByUrlOptions = {},
 ) {
   if (!url) {
-    throw new Error('文档预览地址不能为空。')
+    throw new Error(getUploadMessages().documentPreviewUrlRequired)
   }
 
   const response = await fetch(url, {
@@ -103,14 +108,14 @@ export async function fetchDocumentBlobByUrl(
   if (!response.ok) {
     throw new Error(
       (await readResponseErrorMessage(response)) ||
-        '文档预览加载失败，请稍后重试。',
+        getUploadMessages().documentLoadFailed,
     )
   }
 
   const blob = await response.blob()
 
   if (!blob.size) {
-    throw new Error('文档内容为空。')
+    throw new Error(getUploadMessages().documentContentEmpty)
   }
 
   return blob
@@ -179,7 +184,7 @@ export async function uploadDocumentFile(
       folderId,
       folderDesc,
     }),
-    '文档上传失败，请稍后重试。',
+    getUploadMessages().documentUploadFailed,
     host,
   )
 }
@@ -194,7 +199,7 @@ export function uploadDocumentFileWithProgress(
   return uploadFileWithFormDataByXhr(
     getDocumentUploadPath(),
     buildDocumentUploadFormData(input),
-    '文档上传失败，请稍后重试。',
+    getUploadMessages().documentUploadFailed,
     options,
   )
 }

@@ -513,7 +513,7 @@ export function AppShellFrameSidebarNav({
                   : 'w-fit max-w-[calc(100vw-2.75rem)]',
             )}
           >
-            <div className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-flow-col md:auto-cols-[16rem] md:grid-cols-none">
+            <div className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-flow-col md:auto-cols-[19rem] md:grid-cols-none">
               {categorizedScenes.map((category) => (
                 <section
                   key={category.title}
@@ -532,7 +532,7 @@ export function AppShellFrameSidebarNav({
                           href={scene.defaultTo}
                           data-to={scene.defaultTo}
                           className={cn(
-                            'group relative flex w-full cursor-pointer items-center gap-3.5 rounded-lg border border-border bg-card px-4 py-3.5 text-left transition-colors duration-200',
+                            'group relative flex min-h-24 w-full cursor-pointer items-start gap-3.5 rounded-lg border border-border bg-card px-4 py-3.5 text-left transition-colors duration-200',
                             isCurrent
                               ? 'border-primary/30 bg-primary/[0.06]'
                               : 'hover:bg-primary/[0.06] active:bg-primary/[0.08]',
@@ -551,16 +551,18 @@ export function AppShellFrameSidebarNav({
                           </span>
                           <span className="min-w-0 flex-1">
                             <span
+                              title={scene.label}
                               className={cn(
-                                'truncate text-sm font-semibold',
+                                'block line-clamp-2 text-sm leading-5 font-semibold break-words',
                                 isCurrent ? 'text-primary' : 'text-foreground',
                               )}
                             >
                               {scene.label}
                             </span>
                             <span
+                              title={scene.description}
                               className={cn(
-                                'mt-0.5 block h-10 min-h-10 max-h-10 line-clamp-2 text-xs leading-5',
+                                'mt-1 block line-clamp-2 text-xs leading-5 break-words',
                                 isCurrent
                                   ? 'text-primary/80'
                                   : 'text-muted-foreground',

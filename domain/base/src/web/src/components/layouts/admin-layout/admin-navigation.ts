@@ -1,9 +1,12 @@
 import type { WebDomain } from '../../../routes/web-domain.ts'
+import { languageStore } from '../../../lib/i18n/index.ts'
+import type { SupportedLanguage } from '../../../lib/i18n/index.ts'
 
 import type { AdminNavigationGroup } from './admin-layout.tsx'
 
 export interface AdminNavMetaContext {
   domainId: string
+  language: SupportedLanguage
 }
 
 export type AdminNavMetaFactory = (
@@ -15,9 +18,15 @@ export interface AdminLayoutDomainCapabilities extends Record<string, unknown> {
   adminPermissionCodes?: ReadonlyArray<string>
 }
 
+export interface AdminNavigationOptions {
+  language?: SupportedLanguage
+}
+
 export function createAdminNavigation(
   webDomains: ReadonlyArray<WebDomain>,
+  options: AdminNavigationOptions = {},
 ): Array<AdminNavigationGroup> {
+  const language = options.language ?? languageStore.getSnapshot()
   const groups = new Map<string, AdminNavigationGroup>()
 
   for (const webDomain of webDomains) {
@@ -29,7 +38,7 @@ export function createAdminNavigation(
       continue
     }
 
-    for (const group of factory({ domainId: webDomain.id })) {
+    for (const group of factory({ domainId: webDomain.id, language })) {
       const currentGroup = groups.get(group.id)
 
       if (currentGroup) {
@@ -78,7 +87,10 @@ export function createAdminPermissionCodes(
     const factory = capabilities?.adminNav
     if (typeof factory !== 'function') continue
 
-    for (const group of factory({ domainId: webDomain.id })) {
+    for (const group of factory({
+      domainId: webDomain.id,
+      language: languageStore.getSnapshot(),
+    })) {
       for (const item of group.items) {
         if (item.permissionCode) codes.add(item.permissionCode)
       }

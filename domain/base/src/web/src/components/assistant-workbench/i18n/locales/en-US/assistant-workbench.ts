@@ -24,6 +24,8 @@ export const assistantWorkbenchMessages: AssistantWorkbenchMessages = {
     uploadMaterials: 'Upload materials',
     attachmentLimitHint: (maxCount, maxFileSizeMb) =>
       `Add up to ${maxCount} materials. Each file must be no larger than ${maxFileSizeMb} MB.`,
+    defaultAttachmentOnlyPrompt:
+      'Please continue the analysis using the files I uploaded.',
   },
   attachments: {
     unnamedFile: 'Unnamed file',
@@ -51,6 +53,7 @@ export const assistantWorkbenchMessages: AssistantWorkbenchMessages = {
       remove: (name) => `Remove file ${name}`,
     },
     validation: {
+      fallbackAttachmentName: (index) => `Attachment ${index + 1}`,
       imagePreviewReadFailed: 'Failed to read image preview.',
       duplicateFile: (fileName) =>
         `The following file is already in the send list and was skipped automatically: ${fileName}`,
@@ -61,6 +64,12 @@ export const assistantWorkbenchMessages: AssistantWorkbenchMessages = {
       wrapFileName: (fileName) => `"${fileName}"`,
       uploadFailed: (fileName) => `Attachment upload failed: ${fileName}`,
     },
+  },
+  documentPreview: {
+    attachmentPreview: 'Attachment Preview',
+    unsupportedAttachmentPreview:
+      'Inline preview is not available for this attachment.',
+    downloadAttachment: 'Download Attachment',
   },
   message: {
     thinkingInProgress: 'Thinking',

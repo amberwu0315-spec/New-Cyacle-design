@@ -6,7 +6,11 @@ import type {
 } from '../../model'
 import { assistantWorkbenchActions } from '../../store'
 import { createPrefixedAssistantId, createAssistantRandomId } from '../../lib/id'
-import type { AppMessages } from '#/components/assistant-workbench/i18n/index.ts'
+import {
+  getAssistantWorkbenchMessages,
+  getCurrentLanguage,
+  type AppMessages,
+} from '#/components/assistant-workbench/i18n/index.ts'
 
 type AssistantWorkbenchMessages = AppMessages['assistantWorkbench']
 
@@ -95,17 +99,18 @@ export function buildAssistantAnchorChatSeedMessages(
   messages?: AssistantWorkbenchMessages,
 ): Array<AssistantWorkbenchMessage> {
   const now = Date.now()
-  const seedMessages = messages?.collaboration.seed
+  const seedMessages =
+    messages?.collaboration.seed ??
+    getAssistantWorkbenchMessages(getCurrentLanguage()).assistantWorkbench
+      .collaboration.seed
 
   return [
     {
       id: buildMessageId('assistant-anchor-seed'),
       role: 'system',
       kind: 'action',
-      title: seedMessages?.initializedTitle ?? '任务已初始化',
-      content:
-        seedMessages?.initializedContent(launchArea.area.title) ??
-        `已为「${launchArea.area.title}」创建协作入口，等待智能体和业务方继续协作。`,
+      title: seedMessages.initializedTitle,
+      content: seedMessages.initializedContent(launchArea.area.title),
       createdAt: new Date(now - 2 * 60 * 1000).toISOString(),
       anchorId: launchArea.area.id,
       status: 'completed',
@@ -114,10 +119,8 @@ export function buildAssistantAnchorChatSeedMessages(
       id: buildMessageId('assistant-anchor-seed'),
       role: 'agent',
       kind: 'action',
-      title: seedMessages?.completedTitle ?? '研究已完成',
-      content:
-        seedMessages?.completedContent ??
-        '智能体已完成首轮研究，并生成可继续定点优化的工作台内容。',
+      title: seedMessages.completedTitle,
+      content: seedMessages.completedContent,
       createdAt: new Date(now - 60 * 1000).toISOString(),
       anchorId: launchArea.area.id,
       status: 'completed',

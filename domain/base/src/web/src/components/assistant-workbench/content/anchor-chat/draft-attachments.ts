@@ -1,5 +1,9 @@
 import { formatFileSize } from '#/lib/formatters.ts'
-import type { AppMessages } from '#/components/assistant-workbench/i18n/index.ts'
+import {
+  getAssistantWorkbenchMessages,
+  getCurrentLanguage,
+  type AppMessages,
+} from '#/components/assistant-workbench/i18n/index.ts'
 
 export const ASSISTANT_MAX_ATTACHMENTS = 5
 export const ASSISTANT_MAX_FILE_SIZE = 20 * 1024 * 1024
@@ -8,6 +12,10 @@ const ASSISTANT_MAX_FILE_SIZE_MB = Math.floor(
 )
 
 type AssistantWorkbenchMessages = AppMessages['assistantWorkbench']
+
+function getFallbackMessages() {
+  return getAssistantWorkbenchMessages(getCurrentLanguage()).assistantWorkbench
+}
 
 export interface AssistantDraftFileAttachment {
   id: string
@@ -50,7 +58,7 @@ function readFileAsBase64(
     const reader = new FileReader()
     const errorMessage =
       messages?.attachments.validation.imagePreviewReadFailed ??
-      '图片预览读取失败。'
+      getFallbackMessages().attachments.validation.imagePreviewReadFailed
 
     reader.addEventListener('load', () => {
       if (typeof reader.result !== 'string') {
@@ -153,7 +161,10 @@ function wrapFileName(
   fileName: string,
   messages?: AssistantWorkbenchMessages,
 ) {
-  return messages?.attachments.validation.wrapFileName(fileName) ?? `《${fileName}》`
+  return (
+    messages?.attachments.validation.wrapFileName(fileName) ??
+    getFallbackMessages().attachments.validation.wrapFileName(fileName)
+  )
 }
 
 function appendDraftAttachment(args: {
@@ -222,22 +233,26 @@ export async function appendAssistantDraftAttachments(args: {
     }
     const wrappedFileName = wrapFileName(normalizedFile.name, args.messages)
     const validationMessages = args.messages?.attachments.validation
+    const fallbackValidationMessages = getFallbackMessages().attachments.validation
 
     const result = appendDraftAttachment({
       current: nextAttachments,
       candidate: draftFileAttachment,
       duplicateMessage:
         validationMessages?.duplicateFile(wrappedFileName) ??
-        `以下文件已在待发送列表中，已自动跳过：${wrappedFileName}`,
+        fallbackValidationMessages.duplicateFile(wrappedFileName),
       limitMessage:
         validationMessages?.attachmentLimit(ASSISTANT_MAX_ATTACHMENTS, 1) ??
-        `最多添加 ${ASSISTANT_MAX_ATTACHMENTS} 份补充文件，超出的 1 份已忽略。`,
+        fallbackValidationMessages.attachmentLimit(ASSISTANT_MAX_ATTACHMENTS, 1),
       oversizeMessage:
         validationMessages?.oversizeFile(
           ASSISTANT_MAX_FILE_SIZE_MB,
           wrappedFileName,
         ) ??
-        `以下文件超过 ${ASSISTANT_MAX_FILE_SIZE_MB} MB，暂不支持上传：${wrappedFileName}`,
+        fallbackValidationMessages.oversizeFile(
+          ASSISTANT_MAX_FILE_SIZE_MB,
+          wrappedFileName,
+        ),
     })
 
     if (result.addedCount > 0) {

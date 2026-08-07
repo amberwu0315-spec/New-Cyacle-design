@@ -7,6 +7,7 @@ import {
   clearAuthSessionSideEffects,
   getSessionCredential,
   getWebProjectConfig,
+  useLanguageStore,
 } from '@carbonnt-cyacle/web-base'
 import { Spinner } from '@carbonnt-cyacle/web-base'
 import {
@@ -23,14 +24,20 @@ import {
 } from '@carbonnt-cyacle/web-uic/pub'
 
 import {
-  adminNavigation,
   adminPermissionCodes,
+  getAdminNavigation,
 } from '#/admin/admin-config.ts'
+import { useTranslation } from '#/lib/i18n/index.ts'
 import { resolveSystemEntryAccess } from '#/system-entry.ts'
 
 function AdminBrand() {
+  const { t: messages } = useTranslation()
+
   return (
-    <div className="flex items-center gap-3" aria-label="Admin 后台管理">
+    <div
+      className="flex items-center gap-3"
+      aria-label={messages.layout.admin.brandAriaLabel}
+    >
       <span className="grid size-8 grid-cols-2 gap-[3px] rounded-[3px] bg-[#116ab6] p-[5px] shadow-[0_1px_2px_rgba(17,70,120,0.22)]">
         <span className="rounded-[1px] bg-white" />
         <span className="rounded-[1px] bg-white/45" />
@@ -94,6 +101,8 @@ function AdminBusinessGuard({ children }: { children: ReactNode }) {
 
 function PermissionAwareAdminLayout() {
   const { hasPermission, isLoading } = usePermissionGuardContext()
+  const language = useLanguageStore()
+  const adminNavigation = getAdminNavigation(language)
   const navigation = adminNavigation.flatMap((group) => {
     const items = group.items.filter(
       (item) => !item.permissionCode || hasPermission(item.permissionCode),

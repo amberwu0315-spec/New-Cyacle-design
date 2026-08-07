@@ -2,11 +2,15 @@ import {
   createAdminPermissionCodes,
   createAdminNavigation,
   resolveAdminHomeTo,
+  type SupportedLanguage,
 } from '@carbonnt-cyacle/web-base'
 
 import { webModules } from '#/vineModules.gen.ts'
 
-export const adminNavigation = createAdminNavigation(webModules)
+export function getAdminNavigation(language?: SupportedLanguage) {
+  return createAdminNavigation(webModules, { language })
+}
+
 export const adminPermissionCodes = createAdminPermissionCodes(webModules)
 
-export const adminHomeTo = resolveAdminHomeTo(adminNavigation)
+export const adminHomeTo = resolveAdminHomeTo(getAdminNavigation())

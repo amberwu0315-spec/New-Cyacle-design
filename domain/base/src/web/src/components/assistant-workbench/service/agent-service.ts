@@ -23,8 +23,16 @@ import type {
   AssistantAnchorDeclaration,
   AssistantThreadTag,
 } from '../model'
+import {
+  getAssistantWorkbenchMessages,
+  getCurrentLanguage,
+} from '../i18n/index.ts'
 
 const agentService = new AgentService()
+
+function getAssistantMessages() {
+  return getAssistantWorkbenchMessages(getCurrentLanguage()).assistantWorkbench
+}
 
 function buildOperatorHeader(operatorId: string) {
   return btoa(JSON.stringify({ id: Number(operatorId) }))
@@ -127,7 +135,8 @@ function normalizeMessageDocumentAttachment(
   index: number,
   documentInfo?: DocumentByIdEntry,
 ) {
-  const fallbackName = `附件${index + 1}`
+  const fallbackName =
+    getAssistantMessages().attachments.validation.fallbackAttachmentName(index)
   const name = documentInfo?.name.trim() || fallbackName
 
   return {
@@ -220,7 +229,7 @@ function normalizeMessage(
     content: contentValue,
     thinking: thinkingValue
       ? {
-          title: options?.thinkingTitle ?? '思考过程',
+          title: options?.thinkingTitle ?? getAssistantMessages().message.thinkingProcess,
           content: thinkingValue,
           rawContent: thinkingValue,
           collapsed: Boolean(contentValue.trim()),
@@ -514,7 +523,7 @@ function assertOperatorId(
   operatorId: string | null | undefined,
 ): asserts operatorId is string {
   if (!operatorId || !/^\d+$/.test(operatorId)) {
-    throw new Error('当前用户信息缺失，暂时无法初始化 AI 会话。')
+    throw new Error(getAssistantMessages().errors.missingUserForInit)
   }
 }
 
@@ -785,7 +794,7 @@ export const assistantAgentService = {
       title:
         typeof item.title === 'string'
           ? item.title
-          : (options?.defaultTitle ?? '待确认项'),
+          : (options?.defaultTitle ?? getAssistantMessages().errors.interactionTitle),
       body: toNullableString(item.body),
       selectionMode: normalizeInteractionSelectionMode(item.selectionMode),
       options: Array.isArray(item.options)
@@ -904,7 +913,8 @@ export const assistantAgentService = {
       if (!response.ok || !response.body) {
         await parseJsonResponse(
           response,
-          input.eventStreamFailedMessage ?? '助手事件流订阅失败，请稍后重试。',
+          input.eventStreamFailedMessage ??
+            getAssistantMessages().errors.eventStreamFailed,
         )
         return
       }

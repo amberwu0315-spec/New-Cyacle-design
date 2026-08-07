@@ -27,6 +27,8 @@ import { toast } from 'sonner'
 
 import { cn } from '#/lib/utils.ts'
 import { fetchDocumentBlobByUrl } from '#/lib/upload-services/core/document-service.ts'
+import { getMessages, languageStore, useTranslation } from '#/lib/i18n/index.ts'
+import type { Messages } from '#/lib/i18n/index.ts'
 
 import {
   formatDocumentDate,
@@ -89,8 +91,13 @@ export interface DocumentPreviewDialogProps {
   onVersionsRefresh?: () => void
 }
 
-function getVersionLabel(version: DocumentsPreviewVersion) {
-  return version.version || '未知版本'
+type DocumentPreviewMessages = Messages['common']['documentPreview']
+
+function getVersionLabel(
+  version: DocumentsPreviewVersion,
+  messages: DocumentPreviewMessages,
+) {
+  return version.version || messages.unknownVersion
 }
 
 function isSameVersion(
@@ -109,6 +116,7 @@ function DocumentPreviewVersionPanel({
   onSelectVersion,
   recovering,
   versions,
+  messages,
 }: {
   currentVersion: DocumentsPreviewVersion | null
   canRecoverVersion: boolean
@@ -118,6 +126,7 @@ function DocumentPreviewVersionPanel({
   onSelectVersion: (version: DocumentsPreviewVersion) => void
   recovering: boolean
   versions: Array<DocumentsPreviewVersion>
+  messages: DocumentPreviewMessages
 }) {
   const canRecover = Boolean(
     canRecoverVersion &&
@@ -131,7 +140,7 @@ function DocumentPreviewVersionPanel({
       <div className="flex h-12 shrink-0 items-center justify-between border-b px-4">
         <div className="flex items-center gap-2 text-sm font-medium">
           <History className="size-4" />
-          版本历史
+          {messages.versionHistory}
         </div>
         <Button
           type="button"
@@ -140,7 +149,7 @@ function DocumentPreviewVersionPanel({
           onClick={onRecover}
         >
           <RotateCcw className="size-4" />
-          恢复
+          {messages.restore}
         </Button>
       </div>
 
@@ -148,7 +157,7 @@ function DocumentPreviewVersionPanel({
         {loading ? (
           <div className="flex h-32 items-center justify-center gap-2 text-sm text-muted-foreground">
             <Spinner className="size-4" />
-            正在加载版本...
+            {messages.loadingVersions}
           </div>
         ) : versions.length ? (
           <div className="flex flex-col gap-2 p-3">
@@ -170,13 +179,15 @@ function DocumentPreviewVersionPanel({
                 >
                   <div className="flex items-center justify-between gap-2">
                     <span className="min-w-0 truncate text-sm font-medium">
-                      {getVersionLabel(version)}
+                      {getVersionLabel(version, messages)}
                     </span>
                     <div className="flex shrink-0 items-center gap-1">
                       {index === 0 ? (
-                        <Badge variant="secondary">当前</Badge>
+                        <Badge variant="secondary">{messages.current}</Badge>
                       ) : null}
-                      {isRaw ? <Badge variant="outline">原始</Badge> : null}
+                      {isRaw ? (
+                        <Badge variant="outline">{messages.original}</Badge>
+                      ) : null}
                     </div>
                   </div>
                   <div className="text-xs text-muted-foreground">
@@ -197,7 +208,7 @@ function DocumentPreviewVersionPanel({
         ) : (
           <div className="flex h-32 flex-col items-center justify-center gap-2 px-4 text-center text-sm text-muted-foreground">
             <FileClock className="size-6" />
-            暂无版本历史
+            {messages.noVersionHistory}
           </div>
         )}
       </ScrollArea>
@@ -232,12 +243,18 @@ function getPreviewErrorMessage(error: unknown) {
     return error.message
   }
 
-  return '文档预览加载失败，请稍后重试。'
+  return getMessages(
+    languageStore.getSnapshot(),
+  ).common.documentPreview.loadFailedMessage
 }
 
 function createObjectUrl(blob: Blob) {
   if (typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') {
-    throw new Error('当前环境不支持文档预览。')
+    throw new Error(
+      getMessages(
+        languageStore.getSnapshot(),
+      ).common.documentPreview.unsupportedEnvironment,
+    )
   }
 
   return URL.createObjectURL(blob)
@@ -377,20 +394,30 @@ function useAuthorizedDocumentPreviewItem(
   }, [item, state.error, state.loading, state.objectUrl])
 }
 
-function DocumentPreviewLoadingState() {
+function DocumentPreviewLoadingState({
+  messages,
+}: {
+  messages: DocumentPreviewMessages
+}) {
   return (
     <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center text-sm text-muted-foreground">
       <Spinner className="size-5" />
-      正在加载文档预览...
+      {messages.loadingDocument}
     </div>
   )
 }
 
-function DocumentPreviewErrorState({ message }: { message: string }) {
+function DocumentPreviewErrorState({
+  message,
+  messages,
+}: {
+  message: string
+  messages: DocumentPreviewMessages
+}) {
   return (
     <div className="flex h-full flex-col items-center justify-center gap-3 px-6 text-center text-sm text-muted-foreground">
       <FileText className="size-8" />
-      <div className="font-medium text-foreground">文档预览加载失败</div>
+      <div className="font-medium text-foreground">{messages.loadFailedTitle}</div>
       <div className="max-w-md leading-relaxed">{message}</div>
     </div>
   )
@@ -408,6 +435,8 @@ export function DocumentPreviewDialog({
   versionsLoading = false,
   onVersionsRefresh,
 }: DocumentPreviewDialogProps) {
+  const { t: messages } = useTranslation()
+  const previewMessages = messages.common.documentPreview
   const [historyOpen, setHistoryOpen] = React.useState(false)
   const [selectedVersion, setSelectedVersion] =
     React.useState<DocumentsPreviewVersion | null>(null)
@@ -445,7 +474,7 @@ export function DocumentPreviewDialog({
         <>
           {item?.source === 'document' ? (
             <ViewerIconButton
-              label="版本历史"
+              label={previewMessages.versionHistory}
               pressed={historyOpen}
               onClick={() => setHistoryOpen((currentOpen) => !currentOpen)}
             >
@@ -454,7 +483,7 @@ export function DocumentPreviewDialog({
           ) : null}
           {item?.source === 'document' && onDownload ? (
             <ViewerIconButton
-              label="下载原始文档"
+              label={previewMessages.downloadOriginalDocument}
               onClick={() => {
                 if (!effectiveItem) {
                   return
@@ -470,27 +499,30 @@ export function DocumentPreviewDialog({
         </>
       ),
     }),
-    [effectiveItem, historyOpen, item, onDownload],
+    [effectiveItem, historyOpen, item, onDownload, previewMessages],
   )
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="!top-0 !left-0 flex h-svh max-h-svh w-screen !max-w-none !translate-x-0 !translate-y-0 flex-col gap-0 overflow-hidden rounded-none p-0 sm:!max-w-none">
         <DialogHeader className="h-12 shrink-0 justify-center px-5 pr-12">
-          <DialogTitle>文档预览</DialogTitle>
+          <DialogTitle>{previewMessages.dialogTitle}</DialogTitle>
         </DialogHeader>
         <div className="flex min-h-0 flex-1 overflow-hidden bg-muted/20">
           <div className="min-w-0 flex-1 overflow-hidden">
             {authorizedPreview.loading ? (
-              <DocumentPreviewLoadingState />
+              <DocumentPreviewLoadingState messages={previewMessages} />
             ) : authorizedPreview.error ? (
-              <DocumentPreviewErrorState message={authorizedPreview.error} />
+              <DocumentPreviewErrorState
+                message={authorizedPreview.error}
+                messages={previewMessages}
+              />
             ) : (
               <React.Suspense
                 fallback={
                   <div className="flex h-full items-center justify-center gap-2 text-sm text-muted-foreground">
                     <Spinner className="size-4" />
-                    正在加载预览器...
+                    {previewMessages.loadingViewer}
                   </div>
                 }
               >
@@ -515,6 +547,7 @@ export function DocumentPreviewDialog({
               versions={versions}
               onSelectVersion={setSelectedVersion}
               onRecover={() => setRecoverVersion(selectedVersion)}
+              messages={previewMessages}
             />
           ) : null}
         </div>
@@ -528,14 +561,17 @@ export function DocumentPreviewDialog({
         >
           <AlertDialogContent>
             <AlertDialogHeader>
-              <AlertDialogTitle>恢复到此版本？</AlertDialogTitle>
+              <AlertDialogTitle>
+                {previewMessages.restoreConfirmTitle}
+              </AlertDialogTitle>
               <AlertDialogDescription>
-                将文档恢复到版本 {recoverVersion?.version || '-'}
-                ，恢复后会生成新的当前版本。
+                {previewMessages.restoreConfirmDescription(
+                  recoverVersion?.version || '-',
+                )}
               </AlertDialogDescription>
             </AlertDialogHeader>
             <AlertDialogFooter>
-              <AlertDialogCancel>取消</AlertDialogCancel>
+              <AlertDialogCancel>{messages.common.actions.cancel}</AlertDialogCancel>
               <AlertDialogAction
                 disabled={rollbackPending || !onRollbackVersion}
                 onClick={async () => {
@@ -548,17 +584,19 @@ export function DocumentPreviewDialog({
                       id: item.id,
                       version: recoverVersion.version,
                     })
-                    toast.success('版本恢复成功')
+                    toast.success(previewMessages.restoreSuccess)
                     setRecoverVersion(null)
                     setSelectedVersion(null)
                     onVersionRestored?.()
                     onVersionsRefresh?.()
                   } catch (error) {
-                    toast.error(`版本恢复失败：${(error as Error).message}`)
+                    toast.error(
+                      previewMessages.restoreFailed((error as Error).message),
+                    )
                   }
                 }}
               >
-                {rollbackPending ? '恢复中...' : '恢复'}
+                {rollbackPending ? previewMessages.restoring : previewMessages.restore}
               </AlertDialogAction>
             </AlertDialogFooter>
           </AlertDialogContent>

@@ -38,6 +38,18 @@ function getSharedCookieDomain() {
   return `.${labels.slice(-2).join('.')}`
 }
 
+function getLanguageCookieAttributes() {
+  const secure = typeof window !== 'undefined' && window.location.protocol === 'https:'
+
+  return {
+    path: '/',
+    expires: 365,
+    domain: getSharedCookieDomain(),
+    secure,
+    sameSite: secure ? 'none' : 'lax',
+  } as const
+}
+
 let currentLanguage = getCookieLanguage()
 
 function emitLanguageChange() {
@@ -58,11 +70,7 @@ function persistLanguage(language: SupportedLanguage) {
   }
 
   Cookies.set(LANGUAGE_COOKIE_NAME, language, {
-    path: '/',
-    expires: 365,
-    domain: getSharedCookieDomain(),
-    secure: window.location.protocol === 'https:',
-    sameSite: 'none',
+    ...getLanguageCookieAttributes(),
   })
 }
 

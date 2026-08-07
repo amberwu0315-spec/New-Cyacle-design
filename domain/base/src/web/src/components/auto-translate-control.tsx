@@ -1,4 +1,5 @@
 import { Switch } from '#/components/ui/switch.tsx'
+import { useTranslation } from '#/lib/i18n/index.ts'
 
 export function AutoTranslateControl({
   checked,
@@ -11,6 +12,8 @@ export function AutoTranslateControl({
   label: string
   onCheckedChange: (checked: boolean) => void
 }) {
+  const { t: messages } = useTranslation()
+
   return (
     <div className="flex shrink-0 items-center gap-2 text-xs text-muted-foreground">
       <Switch
@@ -20,7 +23,7 @@ export function AutoTranslateControl({
         disabled={disabled}
         onCheckedChange={onCheckedChange}
       />
-      自动翻译
+      {messages.common.autoTranslate.label}
     </div>
   )
 }
