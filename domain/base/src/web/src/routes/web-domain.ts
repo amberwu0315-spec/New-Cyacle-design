@@ -79,7 +79,7 @@ export function resolveWebDomainRouteMount<
   parentRoute,
 }: ResolveWebDomainRouteMountOptions<TMountKey>): Array<WebRouteHandle> {
   return domains.flatMap((domain) => {
-    const factories = domain.routeMounts[outlet] ?? []
+    const factories = domain.routeMounts?.[outlet] ?? []
 
     return factories.flatMap((factory) => {
       const result = factory({
