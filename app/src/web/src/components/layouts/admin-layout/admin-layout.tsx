@@ -7,7 +7,6 @@ import {
   clearAuthSessionSideEffects,
   getSessionCredential,
   getWebProjectConfig,
-  useLanguageStore,
 } from '@carbonnt-cyacle/web-base'
 import { Spinner } from '@carbonnt-cyacle/web-base'
 import {
@@ -101,8 +100,7 @@ function AdminBusinessGuard({ children }: { children: ReactNode }) {
 
 function PermissionAwareAdminLayout() {
   const { hasPermission, isLoading } = usePermissionGuardContext()
-  const language = useLanguageStore()
-  const adminNavigation = getAdminNavigation(language)
+  const adminNavigation = getAdminNavigation('zh-CN')
   const navigation = adminNavigation.flatMap((group) => {
     const items = group.items.filter(
       (item) => !item.permissionCode || hasPermission(item.permissionCode),

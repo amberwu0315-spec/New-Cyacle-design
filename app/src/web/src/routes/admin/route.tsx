@@ -1,7 +1,7 @@
 import type { AnyRoute } from '@tanstack/react-router'
 import { Navigate, createRoute } from '@tanstack/react-router'
 
-import { resolveAdminHomeTo, useLanguageStore } from '@carbonnt-cyacle/web-base'
+import { resolveAdminHomeTo } from '@carbonnt-cyacle/web-base'
 import {
   ForbiddenError,
   usePermissionGuardContext,
@@ -36,13 +36,12 @@ export function createAdminHomeRoute({
 
 function AdminHomeRedirect() {
   const { hasPermission, isLoading } = usePermissionGuardContext()
-  const language = useLanguageStore()
 
   if (isLoading) {
     return null
   }
 
-  const adminNavigation = getAdminNavigation(language)
+  const adminNavigation = getAdminNavigation('zh-CN')
   const permittedNavigation = adminNavigation.flatMap((group) => {
     const items = group.items.filter(
       (item) => !item.permissionCode || hasPermission(item.permissionCode),
