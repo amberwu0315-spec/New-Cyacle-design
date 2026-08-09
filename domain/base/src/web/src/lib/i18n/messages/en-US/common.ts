@@ -41,6 +41,13 @@ export const common = {
       retry: 'Reload',
       logout: 'Sign in again',
     },
+    permissionBootstrap: {
+      errorTitle: 'Unable to load your permissions',
+      errorDescription: 'The system could not retrieve your permissions for this workspace. Navigation and business actions are paused for now.',
+      actionHint: 'Try reloading first. If the issue continues, sign in again before entering the workspace.',
+      retry: 'Reload',
+      logout: 'Sign in again',
+    },
   },
   workspace: {
     title: 'Choose workspace',

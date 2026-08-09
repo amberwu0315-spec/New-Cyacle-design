@@ -18,6 +18,7 @@ import {
   selectWorkspaceId,
   useAvailableWorkspaces,
   useCurrentOrganizationProfile,
+  useCurrentPermissions,
   useCurrentUserProfile,
   usePermissionGuardContext,
 } from '@carbonnt-cyacle/web-uic/pub'
@@ -54,10 +55,17 @@ function AdminBrand() {
 }
 
 export function AdminAppLayout() {
+  const currentWorkspaceScope = getSelectedWorkspaceScope()
+  const permissionQuery = useCurrentPermissions({
+    codes: adminPermissionCodes,
+    enabled: Boolean(getSessionCredential() && currentWorkspaceScope),
+    workspaceScope: currentWorkspaceScope,
+  })
+
   return (
     <AuthGuard>
       <AdminBusinessGuard>
-        <PermissionGuardProvider codes={adminPermissionCodes}>
+        <PermissionGuardProvider permissionQuery={permissionQuery}>
           <PermissionAwareAdminLayout />
         </PermissionGuardProvider>
       </AdminBusinessGuard>

@@ -39,6 +39,13 @@ export const common = {
       retry: '重新加载',
       logout: '重新登录',
     },
+    permissionBootstrap: {
+      errorTitle: '无法加载当前权限',
+      errorDescription: '系统暂时无法获取当前账号在此工作空间的权限，菜单与业务操作已暂停。',
+      actionHint: '请先重新加载；如果多次重试仍未恢复，请重新登录后再进入。',
+      retry: '重新加载',
+      logout: '重新登录',
+    },
   },
   workspace: {
     title: '选择空间',

@@ -20,7 +20,7 @@ export type {
   WorkspaceSelectionItem,
   WorkspaceSelectionResult,
 } from './workspace-selection'
-export { createAppNavConfig } from './nav-config'
+export { createAppNavConfig, createAppPermissionCodes } from './nav-config'
 export type {
   AppLayoutDomainCapabilities,
   AppNavConfig,

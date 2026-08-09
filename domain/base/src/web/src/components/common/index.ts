@@ -1,4 +1,5 @@
 export * from '../auto-translate-control.tsx'
+export * from './access-guard.tsx'
 export * from './app-shell-frame/index.ts'
 export * from './document-preview/index.ts'
 export * from './errors/index.ts'

@@ -9,6 +9,8 @@ import type { AccountMenuLink } from '#/components/layouts/app-layout/account-po
 import { AppLayoutBreadcrumbsProvider } from './breadcrumbs.tsx'
 import { WorkspaceSelectionDialog } from './workspace-selection-dialog.tsx'
 import type { AppNavConfig } from './nav-config.tsx'
+import { PermissionProvider } from '#/context/permission-context.tsx'
+import type { PermissionCodeMap } from '#/context/permission-context.tsx'
 import { Button } from '#/components/ui/button.tsx'
 import { Spinner } from '#/components/ui/spinner.tsx'
 import { formatMessage, useTranslation } from '#/lib/i18n/index.ts'
@@ -48,6 +50,14 @@ export type AppLayoutUserProfile = {
 
 export type AppLayoutAccountMenuLink = AccountMenuLink
 
+const EMPTY_PERMISSION_QUERY: AppLayoutAsyncState<PermissionCodeMap> = {
+  data: {},
+  isError: false,
+  isFetching: false,
+  isSuccess: true,
+  refetch: () => undefined,
+}
+
 export interface AppLayoutProps {
   accountMenuLinks?: Array<AppLayoutAccountMenuLink>
   children: React.ReactNode
@@ -60,6 +70,7 @@ export interface AppLayoutProps {
     workspace: WorkspaceSelectionItem,
   ) => Promise<WorkspaceSelectionResult>
   profileQuery: AppLayoutAsyncState<AppLayoutUserProfile>
+  permissionQuery?: AppLayoutAsyncState<PermissionCodeMap>
   workspaceQuery: AppLayoutAsyncState<Array<WorkspaceSelectionItem>>
 }
 
@@ -120,11 +131,13 @@ export function AppLayout({
   navConfig,
   onLogout,
   onWorkspaceSelect,
+  permissionQuery,
   profileQuery,
   workspaceQuery,
 }: AppLayoutProps) {
   const { t } = useTranslation()
   const navigate = useNavigate()
+  const effectivePermissionQuery = permissionQuery ?? EMPTY_PERMISSION_QUERY
   const pathname = useLocation({
     select: (location) => location.pathname,
   })
@@ -238,6 +251,10 @@ export function AppLayout({
     void refetchProfile()
   }, [refetchProfile])
 
+  const handlePermissionRetry = React.useCallback(() => {
+    void effectivePermissionQuery.refetch()
+  }, [effectivePermissionQuery])
+
   const handleNavigate = React.useCallback(
     (to: string) => {
       void navigate({ to: to as never })
@@ -286,6 +303,8 @@ export function AppLayout({
 
   const isProfileBootstrapError =
     !hasCurrentUserProfile && (isProfileError || isProfileSuccess)
+  const isPermissionBootstrapError =
+    !effectivePermissionQuery.data && effectivePermissionQuery.isError
 
   return (
     <AppLayoutBreadcrumbsProvider value={breadcrumbsContextValue}>
@@ -343,7 +362,11 @@ export function AppLayout({
                 </AppShellFrame.TopbarEnd>
               </AppShellFrame.Topbar>
 
-              <AppShellFrame.Main>{children}</AppShellFrame.Main>
+              <AppShellFrame.Main>
+                <PermissionProvider permissionQuery={effectivePermissionQuery}>
+                  {children}
+                </PermissionProvider>
+              </AppShellFrame.Main>
             </AppShellFrame.Content>
           </AppShellFrame.Body>
         </AppShellFrame.Nav>
@@ -375,6 +398,17 @@ export function AppLayout({
               logoutLabel={t.common.shell.profileBootstrap.logout}
               isRetrying={isProfileFetching}
               onRetry={handleProfileRetry}
+              onLogout={onLogout}
+            />
+          ) : isPermissionBootstrapError ? (
+            <SessionBootstrapError
+              title={t.common.shell.permissionBootstrap.errorTitle}
+              description={t.common.shell.permissionBootstrap.errorDescription}
+              actionHint={t.common.shell.permissionBootstrap.actionHint}
+              retryLabel={t.common.shell.permissionBootstrap.retry}
+              logoutLabel={t.common.shell.permissionBootstrap.logout}
+              isRetrying={effectivePermissionQuery.isFetching}
+              onRetry={handlePermissionRetry}
               onLogout={onLogout}
             />
           ) : null}

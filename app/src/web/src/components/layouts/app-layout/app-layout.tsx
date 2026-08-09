@@ -21,6 +21,7 @@ import {
   selectWorkspaceId,
   useAvailableWorkspaces,
   useCurrentOrganizationProfile,
+  useCurrentPermissions,
   useCurrentUserProfile,
 } from '@carbonnt-cyacle/web-uic/pub'
 
@@ -29,6 +30,7 @@ import { getAppEdition } from '#/app-edition.ts'
 import { resolveSystemEntryAccess } from '#/system-entry.ts'
 import { useTranslation } from '#/lib/i18n/index.ts'
 import { createConfiguredAppNavConfig } from './app-nav-config.ts'
+import { appPermissionCodes } from '#/app-permissions.ts'
 
 type AgentProfile = AppLayoutUserProfile & {
   id?: number | string | null
@@ -64,14 +66,26 @@ export function AppLayout() {
       null,
     [currentWorkspaceScope, selectedWorkspaceId, workspaceQuery.data],
   )
+  const permissionQuery = useCurrentPermissions({
+    codes: appPermissionCodes,
+    enabled:
+      hasSessionCredential &&
+      Boolean(profileQuery.data) &&
+      Boolean(currentWorkspaceScope),
+    workspaceScope: currentWorkspaceScope,
+  })
   const navConfig = React.useMemo(
     () =>
       createConfiguredAppNavConfig(
         webModules,
-        { language, workspace: currentWorkspace },
+        {
+          language,
+          permissionCodeMap: permissionQuery.data ?? {},
+          workspace: currentWorkspace,
+        },
         appEdition,
       ),
-    [appEdition, currentWorkspace, language],
+    [appEdition, currentWorkspace, language, permissionQuery.data],
   )
   const systemEntryAccess = resolveSystemEntryAccess(
     organizationProfileQuery.data?.businessCodes,
@@ -128,6 +142,7 @@ export function AppLayout() {
           navConfig={navConfig}
           onLogout={handleLogout}
           onWorkspaceSelect={selectWorkspaceId}
+          permissionQuery={permissionQuery}
           profileQuery={profileQuery}
           workspaceQuery={workspaceQuery}
         >
