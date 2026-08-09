@@ -28,7 +28,7 @@ export const assistantWorkbenchMessages: AssistantWorkbenchMessages = {
       'Please continue the analysis using the files I uploaded.',
   },
   attachments: {
-    unnamedFile: 'Unnamed file',
+    unnamedFile: '<Untitled>',
     fileKinds: {
       excel: 'Spreadsheet',
       folder: 'Folder',

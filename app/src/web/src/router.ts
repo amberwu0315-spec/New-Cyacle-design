@@ -10,6 +10,7 @@ import { fetchOrganizationProfile } from '@carbonnt-cyacle/web-uic/pub'
 
 import { AppLayout } from '#/components/layouts/app-layout/index.ts'
 import { resolveAppEditionHomeTo } from '#/components/layouts/app-layout/app-nav-config.ts'
+import { AppRoutePendingFallback } from '#/components/routes/app-route-pending-fallback.tsx'
 import { AppNotFoundPage } from '#/features/not-found/page.tsx'
 import { adminHomeTo } from '#/admin/admin-config.ts'
 import { resolveSystemEntryHomeTo } from '#/system-entry.ts'
@@ -118,6 +119,9 @@ const routeTree = RootRoute.addChildren([
 export const router = createRouter({
   routeTree,
   defaultNotFoundComponent: AppNotFoundPage,
+  defaultPendingComponent: AppRoutePendingFallback,
+  defaultPendingMinMs: 300,
+  defaultPendingMs: 150,
   defaultPreload: 'intent',
   scrollRestoration: true,
 })

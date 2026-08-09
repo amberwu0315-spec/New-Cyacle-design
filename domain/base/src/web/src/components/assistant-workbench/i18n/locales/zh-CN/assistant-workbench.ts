@@ -25,7 +25,7 @@ export const assistantWorkbenchMessages = {
     defaultAttachmentOnlyPrompt: '请结合我上传的文件继续分析。',
   },
   attachments: {
-    unnamedFile: '未命名文件',
+    unnamedFile: '<未命名>',
     fileKinds: {
       excel: '表格',
       folder: '文件夹',

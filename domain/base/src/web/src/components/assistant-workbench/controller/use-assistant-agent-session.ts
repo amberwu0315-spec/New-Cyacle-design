@@ -31,6 +31,7 @@ import { createPrefixedAssistantId } from '../lib/id'
 
 const STREAM_FLUSH_INTERVAL_MS = 50
 const STREAM_RETRY_DELAY_MS = 1_000
+const RUN_STATUS_RECONCILIATION_INTERVAL_MS = 3_000
 type AssistantWorkbenchMessages = AppMessages['assistantWorkbench']
 
 function isRetryableNonTerminalStreamError(packet: AssistantStreamPacket) {
@@ -463,6 +464,18 @@ function canResumeRunStream(status: AssistantRunState['status']) {
   return status === 'queued' || status === 'running'
 }
 
+function shouldReconcileRunStatus(
+  status: AssistantRunState['status'],
+  terminalEventReceived?: boolean,
+) {
+  return (
+    status === 'queued' ||
+    status === 'running' ||
+    status === 'waiting_user' ||
+    (status === 'failed' && !terminalEventReceived)
+  )
+}
+
 function resolveResumeRunId(args: {
   preferredRunId?: string | null
   messages: Array<AssistantWorkbenchMessage>
@@ -567,6 +580,7 @@ export function useAssistantAgentSession(
     options.activeTarget,
   )
   const onMessageCompletedRef = React.useRef(options.onMessageCompleted)
+  const completedRunNotificationIdsRef = React.useRef<Set<string>>(new Set())
   const onRunProgressLoadedRef = React.useRef(options.onRunProgressLoaded)
   const handledThreadActivationIdRef = React.useRef<string | null>(null)
   const handledThreadScopeKeyRef = React.useRef<string | null>(null)
@@ -1208,6 +1222,159 @@ export function useAssistantAgentSession(
     threadScopeKey,
   ])
 
+  const notifyMessageCompleted = React.useCallback(async (runId: string) => {
+    const normalizedRunId = normalizeRunId(runId)
+
+    if (
+      normalizedRunId &&
+      completedRunNotificationIdsRef.current.has(normalizedRunId)
+    ) {
+      return
+    }
+
+    if (normalizedRunId) {
+      completedRunNotificationIdsRef.current.add(normalizedRunId)
+    }
+
+    if (onMessageCompletedRef.current) {
+      await onMessageCompletedRef.current(activeTargetRef.current)
+    }
+  }, [])
+
+  React.useEffect(() => {
+    const runId = normalizeRunId(currentRun?.runId)
+    const threadId = currentRun?.threadId.trim() ?? ''
+    const runStatus = currentRun?.status
+
+    if (
+      !requestContext ||
+      !runId ||
+      !threadId ||
+      !runStatus ||
+      !shouldReconcileRunStatus(
+        runStatus,
+        currentRun?.terminalEventReceived,
+      )
+    ) {
+      return
+    }
+
+    let disposed = false
+    let timeoutId: number | null = null
+
+    const scheduleNextReconciliation = () => {
+      if (disposed) {
+        return
+      }
+
+      timeoutId = window.setTimeout(() => {
+        void reconcileRunStatus()
+      }, RUN_STATUS_RECONCILIATION_INTERVAL_MS)
+    }
+
+    const reconcileRunStatus = async () => {
+      try {
+        const runDetail = await assistantAgentService.getRun(
+          requestContext,
+          runId,
+        )
+
+        if (
+          disposed ||
+          normalizeRunId(runDetail.id) !== runId ||
+          runDetail.threadId.trim() !== threadId
+        ) {
+          return
+        }
+
+        const nextRunStatus = normalizeRunDetailStatus(runDetail.status)
+
+        if (nextRunStatus === 'idle') {
+          return
+        }
+
+        if (nextRunStatus === 'waiting_user') {
+          setCurrentRun((current) =>
+            current?.runId === runId
+              ? { ...current, status: 'waiting_user' }
+              : current,
+          )
+
+          const hasPendingInteraction = pendingInteractionsRef.current.some(
+            (interaction) =>
+              interaction.runId === runId &&
+              isUnresolvedPendingInteraction(interaction),
+          )
+
+          if (runStatus !== 'waiting_user' || !hasPendingInteraction) {
+            await refreshCurrentThread().catch(() => undefined)
+          }
+          return
+        }
+
+        if (nextRunStatus === 'queued' || nextRunStatus === 'running') {
+          if (nextRunStatus !== runStatus) {
+            setCurrentRun((current) =>
+              current?.runId === runId
+                ? { ...current, status: nextRunStatus }
+                : current,
+            )
+          }
+          return
+        }
+
+        runAbortControllerRef.current?.abort()
+        runAbortControllerRef.current = null
+        flushBufferedStreamingChunks()
+        lastStreamingMessageIdRef.current = null
+        setLiveSyncThreadId((current) =>
+          current === threadId ? null : current,
+        )
+        setCurrentRun((current) =>
+          current?.runId === runId
+            ? {
+                ...current,
+                status: nextRunStatus,
+                terminalEventReceived: true,
+              }
+            : current,
+        )
+
+        await Promise.allSettled([
+          refreshCurrentThread(),
+          loadRunProgress(runId, { force: true }),
+        ])
+
+        if (nextRunStatus === 'completed') {
+          await notifyMessageCompleted(runId)
+        }
+      } catch {
+        // 状态校准只是 SSE 的兜底，临时失败时保留当前运行并等待下一轮。
+      } finally {
+        scheduleNextReconciliation()
+      }
+    }
+
+    scheduleNextReconciliation()
+
+    return () => {
+      disposed = true
+      if (timeoutId != null) {
+        window.clearTimeout(timeoutId)
+      }
+    }
+  }, [
+    currentRun?.runId,
+    currentRun?.status,
+    currentRun?.terminalEventReceived,
+    currentRun?.threadId,
+    flushBufferedStreamingChunks,
+    loadRunProgress,
+    notifyMessageCompleted,
+    refreshCurrentThread,
+    requestContext,
+  ])
+
   const settleStreamingAssistantMessageAfterCancel = React.useCallback(() => {
     flushBufferedStreamingChunks()
     const assistantMessageId = lastStreamingMessageIdRef.current
@@ -1558,9 +1725,7 @@ export function useAssistantAgentSession(
             : current,
         )
 
-        if (onMessageCompletedRef.current) {
-          await onMessageCompletedRef.current(activeTargetRef.current)
-        }
+        await notifyMessageCompleted(packet.runId)
         return
       }
 
@@ -1658,6 +1823,7 @@ export function useAssistantAgentSession(
       assistantMessages,
       flushBufferedStreamingChunks,
       loadRunProgress,
+      notifyMessageCompleted,
       refreshCurrentThread,
       scheduleStreamingFlush,
       setSyncedPendingInteractions,
