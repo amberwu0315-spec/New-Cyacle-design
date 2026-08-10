@@ -1,6 +1,6 @@
 {
   "dependencies": {
-    "@base-ui/react": "1.6.0",
+    "@base-ui/react": "1.7.0",
     "@carbonnt-cyacle/skeled-accounting-corepub": "workspace:*",
     "@carbonnt-cyacle/skeled-accountingpub": "workspace:*",
     "@carbonnt-cyacle/skeled-agentpub": "workspace:*",
@@ -55,7 +55,7 @@
     "@carbonnt-cyacle/web-uic": "workspace:*",
     "@carbonnt-cyacle/web-unit": "workspace:*",
     "@carbonnt-cyacle/web-wecom": "workspace:*",
-    "@cew-lib/cyacle-amap": "1.0.1",
+    "@cew-lib/amap": "1.0.2",
     "@cew-lib/cyacle-replace-symbols": "^1.0.3",
     "@cew-lib/file-viewer-base": "^1.1.0",
     "@cew-lib/file-viewer-excel": "^1.1.0",
@@ -63,7 +63,7 @@
     "@cew-lib/file-viewer-pdf": "^1.1.0",
     "@cew-lib/file-viewer-video": "^1.1.0",
     "@cew-lib/report-template": "0.0.6",
-    "@crew-ui/base": "^3.0.2",
+    "@crew-ui/base": "4.2.1",
     "@fontsource-variable/geist": "5.2.9",
     "@tanstack/react-query": "5.101.0",
     "@tanstack/react-router": "1.170.16",

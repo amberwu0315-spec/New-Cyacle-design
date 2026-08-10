@@ -113,3 +113,6 @@ packages:
     - ./.cache/web/workspace/web/wecom
     - ./app/src/web
     # plot:workspace-end
+minimumReleaseAgeExclude:
+    - '@cew-lib/amap@1.0.2'
+    - '@crew-ui/base@4.2.1'
