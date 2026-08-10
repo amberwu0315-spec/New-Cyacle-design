@@ -1,6 +1,17 @@
 export interface WebProjectConfig {
+  readonly capabilities: WebProjectCapabilitiesConfig
   readonly routes: WebProjectRoutesConfig
   readonly uploadServices: WebProjectUploadServicesConfig
+}
+
+export interface WebProjectCapabilitiesConfig {
+  readonly agent: WebProjectCapabilityConfig
+  readonly dataRecordMap: WebProjectCapabilityConfig
+  readonly languageSwitcher: WebProjectCapabilityConfig
+}
+
+export interface WebProjectCapabilityConfig {
+  readonly enabled: boolean
 }
 
 export interface WebProjectRoutesConfig {
@@ -42,6 +53,17 @@ export function getWebProjectConfig(): WebProjectConfig {
 
 function createWebProjectConfig(config: WebProjectConfig): WebProjectConfig {
   return Object.freeze({
+    capabilities: Object.freeze({
+      agent: createCapabilityConfig(config.capabilities.agent, 'agent'),
+      dataRecordMap: createCapabilityConfig(
+        config.capabilities.dataRecordMap,
+        'dataRecordMap',
+      ),
+      languageSwitcher: createCapabilityConfig(
+        config.capabilities.languageSwitcher,
+        'languageSwitcher',
+      ),
+    }),
     routes: Object.freeze({
       loginPath: normalizeRequiredPath(
         config.routes.loginPath,
@@ -79,6 +101,19 @@ function createWebProjectConfig(config: WebProjectConfig): WebProjectConfig {
       }),
     }),
   })
+}
+
+function createCapabilityConfig(
+  config: WebProjectCapabilityConfig,
+  configKey: keyof WebProjectCapabilitiesConfig,
+) {
+  if (typeof config.enabled !== 'boolean') {
+    throw new Error(
+      `Web project config capabilities.${configKey}.enabled must be a boolean.`,
+    )
+  }
+
+  return Object.freeze({ enabled: config.enabled })
 }
 
 function normalizeRequiredPath(path: string, configKey: string) {

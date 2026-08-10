@@ -16,6 +16,7 @@ import {
 } from '#/lib/i18n/index.ts'
 import type { SupportedLanguage } from '#/lib/i18n/index.ts'
 import { cn } from '#/lib/utils.ts'
+import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 
 const LANGUAGE_SWITCHER_OPTIONS: Array<SupportedLanguage> = ['en-US', 'zh-CN']
 
@@ -30,6 +31,14 @@ const LANGUAGE_MENU_LABELS: Record<SupportedLanguage, string> = {
 }
 
 export function LanguageSwitcher() {
+  if (!getWebProjectConfig().capabilities.languageSwitcher.enabled) {
+    return null
+  }
+
+  return <EnabledLanguageSwitcher />
+}
+
+function EnabledLanguageSwitcher() {
   const { language, t } = useTranslation()
 
   const getLanguageName = (value: SupportedLanguage) =>
@@ -84,6 +93,14 @@ export function LanguageSwitcher() {
 
 // 当前给登录页面 footer 使用的语言菜单，避免影响工作台顶部的紧凑切换组件。
 export function LanguageMenu() {
+  if (!getWebProjectConfig().capabilities.languageSwitcher.enabled) {
+    return null
+  }
+
+  return <EnabledLanguageMenu />
+}
+
+function EnabledLanguageMenu() {
   const { language, t } = useTranslation()
   const label = formatMessage(t.common.language.current, {
     language: LANGUAGE_MENU_LABELS[language],

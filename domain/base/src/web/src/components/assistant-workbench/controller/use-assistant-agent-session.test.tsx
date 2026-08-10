@@ -3,8 +3,9 @@
 import * as React from 'react'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
 import { cleanup, renderHook, waitFor } from '@testing-library/react'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 
+import { configureTestWebProjectConfig } from '#/test/web-project-config.ts'
 import { assistantAgentService } from '../service'
 import { useAssistantAgentSession } from './use-assistant-agent-session'
 
@@ -28,6 +29,10 @@ afterEach(() => {
   cleanup()
   window.localStorage.clear()
   vi.restoreAllMocks()
+})
+
+beforeEach(() => {
+  configureTestWebProjectConfig()
 })
 
 describe('useAssistantAgentSession run status reconciliation', () => {

@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { useOptionalI18n } from '#/components/assistant-workbench/i18n/index.ts'
 import type { AppMessages } from '#/components/assistant-workbench/i18n/index.ts'
+import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 
 import type {
   AssistantWorkbenchThreadStrategy,
@@ -533,7 +534,8 @@ export function useAssistantAgentSession(
   const assistantMessages = i18nMessages.assistantWorkbench
   const queryClient = useQueryClient()
   const assistantUserContext = useAssistantAgentUserContext()
-  const sessionEnabled = options.enabled !== false
+  const sessionEnabled =
+    getWebProjectConfig().capabilities.agent.enabled && options.enabled !== false
   const [currentThreadId, setCurrentThreadId] = React.useState<string | null>(
     null,
   )

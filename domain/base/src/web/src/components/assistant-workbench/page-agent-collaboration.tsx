@@ -30,6 +30,7 @@ import {
 } from '#/components/ui/tooltip.tsx'
 import { useOptionalI18n } from '#/components/assistant-workbench/i18n/index.ts'
 import { cn } from '#/lib/utils.ts'
+import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 
 import {
   agentCollaborationActions,
@@ -483,6 +484,14 @@ export function AgentAnchorButton({
 }
 
 export function AgentCollaborationRoot() {
+  if (!getWebProjectConfig().capabilities.agent.enabled) {
+    return null
+  }
+
+  return <EnabledAgentCollaborationRoot />
+}
+
+function EnabledAgentCollaborationRoot() {
   const config = useCurrentAgentCollaborationPageConfig()
   const assistantOpen = useAssistantWorkbenchSelector(
     (snapshot) => snapshot.open && snapshot.renderMode === 'embedded',
