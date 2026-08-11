@@ -2,6 +2,7 @@ import {
   createFetchTransport,
   createVrpcClient,
   getClientInstanceId,
+  isVrpcError,
 } from '@yorun-ai/vrpc/client'
 import { createHttpClient } from '@yorun-ai/vrpc/http'
 import type {
@@ -10,13 +11,13 @@ import type {
   HttpTransportResponse,
   VrpcInvokeContext,
 } from '@yorun-ai/vrpc/client'
-import { toast } from 'sonner'
 
 import { redirectToLoginWithCurrentLocation } from '#/lib/auth-session.ts'
 import { runtimeConfig } from '#/lib/runtime-config.ts'
 import {
   getSessionAuthorizationHeader,
 } from '#/lib/session-storage.ts'
+import { toast } from '#/components/ui/toast.tsx'
 
 const VRPC_STATUS_HEADER = 'vrpc-status'
 const VRPC_STATUS_ERROR = 'ERROR'
@@ -107,6 +108,10 @@ function handleClientError(
   error: unknown,
   context: VrpcInvokeContext | HttpInvokeContext,
 ) {
+  if (isVrpcError(error) && error.kind === "abort") {
+    return
+  }
+
   console.error('VRPC Error:', error)
 
   if (isAuthenticationError(error)) {
@@ -121,7 +126,10 @@ function handleClientError(
     return
   }
 
-  toast.error(error instanceof Error ? error.message : 'Request failed')
+   toast.add({
+    type: "error",
+    description: error instanceof Error ? error.message : "Request failed",
+  })
 }
 
 function getRequestPath(context: VrpcInvokeContext | HttpInvokeContext) {

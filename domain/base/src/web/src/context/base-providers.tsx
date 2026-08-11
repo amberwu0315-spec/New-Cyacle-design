@@ -1,6 +1,6 @@
 import type { PropsWithChildren } from 'react'
 
-import { Toaster } from '#/components/ui/sonner.tsx'
+import { Toaster } from '#/components/ui/toast.tsx'
 import { TooltipProvider } from '#/components/ui/tooltip.tsx'
 import { DocumentPreviewHost } from '#/components/common/document-preview/index.ts'
 import { TanstackQueryRootProvider } from '#/context/query-client.tsx'

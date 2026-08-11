@@ -23,7 +23,7 @@ import { Badge } from '#/components/ui/badge.tsx'
 import { Button } from '#/components/ui/button.tsx'
 import { ScrollArea } from '#/components/ui/scroll-area.tsx'
 import { Spinner } from '#/components/ui/spinner.tsx'
-import { toast } from 'sonner'
+import { toast } from '#/components/ui/toast.tsx'
 
 import { cn } from '#/lib/utils.ts'
 import { fetchDocumentBlobByUrl } from '#/lib/upload-services/core/document-service.ts'
@@ -584,15 +584,19 @@ export function DocumentPreviewDialog({
                       id: item.id,
                       version: recoverVersion.version,
                     })
-                    toast.success(previewMessages.restoreSuccess)
+                    toast.add({
+                      type: 'success',
+                      description: previewMessages.restoreSuccess,
+                    })
                     setRecoverVersion(null)
                     setSelectedVersion(null)
                     onVersionRestored?.()
                     onVersionsRefresh?.()
                   } catch (error) {
-                    toast.error(
-                      previewMessages.restoreFailed((error as Error).message),
-                    )
+                    toast.add({
+                      type: 'error',
+                      description: previewMessages.restoreFailed((error as Error).message),
+                    })
                   }
                 }}
               >
