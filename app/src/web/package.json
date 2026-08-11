@@ -88,7 +88,6 @@
     "recharts": "catalog:web",
     "remark-gfm": "catalog:web",
     "shadcn": "catalog:web",
-    "sonner": "catalog:web",
     "tailwind-merge": "catalog:web",
     "tw-animate-css": "catalog:web",
     "zod": "catalog:web"
