@@ -107,5 +107,8 @@ FROM \${IMAGE_BASE}
 
 COPY ${BIN_NAME} /usr/local/bin/${BIN_NAME}
 
+USER root
+WORKDIR /app/
+
 ENTRYPOINT ["${BIN_NAME}"]
 EOF
