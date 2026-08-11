@@ -1,8 +1,8 @@
+import * as React from 'react'
 import type { ReactNode } from 'react'
 import { Navigate, useNavigate } from '@tanstack/react-router'
 
 import {
-  AccountPopover,
   AdminLayout,
   clearAuthSessionSideEffects,
   getSessionCredential,
@@ -15,8 +15,6 @@ import {
   PermissionGuardProvider,
   clearWorkspaceSelectionSideEffects,
   getSelectedWorkspaceScope,
-  selectWorkspaceId,
-  useAvailableWorkspaces,
   useCurrentOrganizationProfile,
   useCurrentPermissions,
   useCurrentUserProfile,
@@ -29,6 +27,7 @@ import {
 } from '#/admin/admin-config.ts'
 import { useTranslation } from '#/lib/i18n/index.ts'
 import { resolveSystemEntryAccess } from '#/system-entry.ts'
+import { AdminAccountPopover } from './admin-account-popover.tsx'
 
 function AdminBrand() {
   const { t: messages } = useTranslation()
@@ -133,24 +132,26 @@ function AdminAccountActions() {
   const profileQuery = useCurrentUserProfile({
     enabled: hasSessionCredential,
   })
-  const workspaceQuery = useAvailableWorkspaces({
-    enabled: hasSessionCredential,
+  const organizationProfileQuery = useCurrentOrganizationProfile({
+    enabled: hasSessionCredential && Boolean(currentWorkspaceScope),
+    workspaceScope: currentWorkspaceScope,
   })
+  const access = resolveSystemEntryAccess(
+    organizationProfileQuery.data?.businessCodes,
+  )
 
-  const handleLogout = () => {
+  const handleLogout = React.useCallback(() => {
     clearAuthSessionSideEffects()
     clearWorkspaceSelectionSideEffects()
     void navigate({ to: getWebProjectConfig().routes.loginPath })
-  }
+  }, [navigate])
 
   return (
-    <AccountPopover
-      currentWorkspaceScope={currentWorkspaceScope}
+    <AdminAccountPopover
       hasSessionCredential={hasSessionCredential}
       onLogout={handleLogout}
-      onWorkspaceSelect={selectWorkspaceId}
       profileQuery={profileQuery}
-      workspaceQuery={workspaceQuery}
+      showFrontendLink={access.showFrontendLink}
     />
   )
 }

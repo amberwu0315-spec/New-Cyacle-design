@@ -160,6 +160,7 @@ export function AccountPopover({
   const profile = profileQuery.data
   const workspaceOptions = workspaceQuery.data ?? []
   const hasWorkspaceOptions = workspaceOptions.length > 0
+  const canSwitchWorkspace = workspaceOptions.length > 1
   const isWorkspaceLoading =
     workspaceQuery.isLoading || (workspaceQuery.isFetching && !hasWorkspaceOptions)
   const isProfileLoading =
@@ -358,41 +359,45 @@ export function AccountPopover({
         </div>
 
         <div className="mt-2.5 flex flex-col gap-1 border-t border-border/70 p-2.5">
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger
-              disabled={isWorkspaceSubmenuDisabled}
-              openOnHover
-              delay={80}
-              className="min-h-12 cursor-pointer gap-2 rounded-lg px-2.5 py-2 text-[15px] font-semibold data-disabled:pointer-events-none data-disabled:opacity-50"
-            >
-              <BoxIcon aria-hidden="true" className="text-muted-foreground" />
-              <span className="min-w-0 flex-1 text-left">
-                <span className="block truncate">
-                  {t.common.shell.account.switchWorkspace}
-                </span>
-                {currentWorkspaceName ? (
-                  <span className="mt-0.5 inline-flex max-w-full rounded-md bg-muted px-1.5 py-0.5 text-[11px] leading-4 font-medium text-foreground/80">
-                    <span className="min-w-0 truncate">
-                      {currentWorkspaceName}
-                    </span>
+          {canSwitchWorkspace ? (
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger
+                disabled={isWorkspaceSubmenuDisabled}
+                openOnHover
+                delay={80}
+                className="min-h-12 cursor-pointer gap-2 rounded-lg px-2.5 py-2 text-[15px] font-semibold data-disabled:pointer-events-none data-disabled:opacity-50"
+              >
+                <BoxIcon aria-hidden="true" className="text-muted-foreground" />
+                <span className="min-w-0 flex-1 text-left">
+                  <span className="block truncate">
+                    {t.common.shell.account.switchWorkspace}
                   </span>
+                  {currentWorkspaceName ? (
+                    <span className="mt-0.5 inline-flex max-w-full rounded-md bg-muted px-1.5 py-0.5 text-[11px] leading-4 font-medium text-foreground/80">
+                      <span className="min-w-0 truncate">
+                        {currentWorkspaceName}
+                      </span>
+                    </span>
+                  ) : null}
+                </span>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent
+                side="left"
+                align="start"
+                sideOffset={8}
+                className="max-h-[min(60dvh,380px)] w-[300px] rounded-lg border border-border/70 p-2 shadow-xl"
+              >
+                {workspaceSwitchFailed ? (
+                  <div className="mb-2 rounded-lg bg-destructive/10 px-3 py-2 text-xs leading-5 text-destructive">
+                    {t.common.workspace.switchFailed}
+                  </div>
                 ) : null}
-              </span>
-            </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent
-              side="left"
-              align="start"
-              sideOffset={8}
-              className="max-h-[min(60dvh,380px)] w-[300px] rounded-lg border border-border/70 p-2 shadow-xl"
-            >
-              {workspaceSwitchFailed ? (
-                <div className="mb-2 rounded-lg bg-destructive/10 px-3 py-2 text-xs leading-5 text-destructive">
-                  {t.common.workspace.switchFailed}
+                <div className="flex flex-col gap-1">
+                  {workspaceSubmenuContent}
                 </div>
-              ) : null}
-              <div className="flex flex-col gap-1">{workspaceSubmenuContent}</div>
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          ) : null}
 
           {languageSwitcherEnabled ? (
             <DropdownMenuSub>

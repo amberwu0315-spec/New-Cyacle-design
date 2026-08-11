@@ -5,6 +5,13 @@ export const layout = {
     openAdmin: 'Open Admin Console',
   },
   admin: {
+    account: {
+      contextLabel: 'Admin Console',
+      fallbackName: 'Admin account',
+      logout: 'Log out',
+      menu: 'Admin account menu',
+      openFrontend: 'Open Frontend',
+    },
     brandAriaLabel: 'Admin Console',
   },
   navCategories: {

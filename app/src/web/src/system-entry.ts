@@ -6,6 +6,7 @@ export type SystemEntryAccess = {
   canOpenAdmin: boolean
   defaultEntry: SystemEntry
   showAdminLink: boolean
+  showFrontendLink: boolean
 }
 
 export interface ResolveSystemEntryHomeToOptions {
@@ -26,6 +27,7 @@ export function resolveSystemEntryAccess(
     canOpenAdmin,
     defaultEntry: isMatrixOnly ? 'admin' : 'frontend',
     showAdminLink: canOpenAdmin && hasOtherBusiness,
+    showFrontendLink: canOpenAdmin && hasOtherBusiness,
   }
 }
 

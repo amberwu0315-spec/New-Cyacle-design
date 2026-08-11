@@ -3,6 +3,13 @@ export const layout = {
     openAdmin: '进入后台管理',
   },
   admin: {
+    account: {
+      contextLabel: '后台管理',
+      fallbackName: '后台账号',
+      logout: '退出登录',
+      menu: '后台账号菜单',
+      openFrontend: '进入前台',
+    },
     brandAriaLabel: 'Admin 后台管理',
   },
   navCategories: {

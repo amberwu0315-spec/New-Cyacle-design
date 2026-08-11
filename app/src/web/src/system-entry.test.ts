@@ -11,6 +11,7 @@ describe('resolveSystemEntryAccess', () => {
       canOpenAdmin: true,
       defaultEntry: 'admin',
       showAdminLink: false,
+      showFrontendLink: false,
     })
   })
 
@@ -19,6 +20,7 @@ describe('resolveSystemEntryAccess', () => {
       canOpenAdmin: true,
       defaultEntry: 'frontend',
       showAdminLink: true,
+      showFrontendLink: true,
     })
   })
 
@@ -27,6 +29,7 @@ describe('resolveSystemEntryAccess', () => {
       canOpenAdmin: true,
       defaultEntry: 'frontend',
       showAdminLink: true,
+      showFrontendLink: true,
     })
   })
 
@@ -37,6 +40,7 @@ describe('resolveSystemEntryAccess', () => {
         canOpenAdmin: false,
         defaultEntry: 'frontend',
         showAdminLink: false,
+        showFrontendLink: false,
       })
     },
   )
