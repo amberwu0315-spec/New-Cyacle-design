@@ -21,7 +21,7 @@ export { renderToString as renderKatexToString } from 'katex'
 
 export * from './auth-session.ts'
 export * from './i18n/index.ts'
-export * from './session-cookie.ts'
+export * from './session-storage.ts'
 export {
   DOCUMENT_SERVICE_PATH_PREFIX,
   fetchDocumentBlobByUrl,

@@ -1,5 +1,5 @@
 import { getQueryClient } from '#/context/query-client.tsx'
-import { clearSessionCredential } from '#/lib/session-cookie.ts'
+import { clearSessionCredential } from '#/lib/session-storage.ts'
 import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 
 let isRedirectingToLogin = false

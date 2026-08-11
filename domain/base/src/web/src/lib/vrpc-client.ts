@@ -16,7 +16,7 @@ import { redirectToLoginWithCurrentLocation } from '#/lib/auth-session.ts'
 import { runtimeConfig } from '#/lib/runtime-config.ts'
 import {
   getSessionAuthorizationHeader,
-} from '#/lib/session-cookie.ts'
+} from '#/lib/session-storage.ts'
 
 const VRPC_STATUS_HEADER = 'vrpc-status'
 const VRPC_STATUS_ERROR = 'ERROR'

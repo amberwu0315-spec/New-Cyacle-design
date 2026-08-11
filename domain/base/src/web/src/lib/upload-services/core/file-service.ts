@@ -4,7 +4,7 @@ import {
   uploadFileWithFormData,
 } from './upload-service.shared'
 import { getWebProjectConfig } from '#/lib/web-project-config.ts'
-import { getSessionAuthorizationHeader } from '#/lib/session-cookie.ts'
+import { getSessionAuthorizationHeader } from '#/lib/session-storage.ts'
 import { getMessages, languageStore } from '#/lib/i18n/index.ts'
 
 export const FILE_SERVICE_PATH_PREFIX = '/file.FileWeb/FileService'

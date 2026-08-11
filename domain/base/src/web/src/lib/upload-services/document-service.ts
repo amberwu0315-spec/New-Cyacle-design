@@ -1,6 +1,6 @@
 import { getVrpcHttpClient } from '#/lib/vrpc-client.ts'
 import { getWebProjectConfig } from '#/lib/web-project-config.ts'
-import { getSessionAuthorizationHeader } from '#/lib/session-cookie.ts'
+import { getSessionAuthorizationHeader } from '#/lib/session-storage.ts'
 import { getMessages, languageStore } from '#/lib/i18n/index.ts'
 
 export interface UploadedDocumentResource {

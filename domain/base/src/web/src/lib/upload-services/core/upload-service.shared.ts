@@ -1,4 +1,4 @@
-import { getSessionAuthorizationHeader } from '#/lib/session-cookie.ts'
+import { getSessionAuthorizationHeader } from '#/lib/session-storage.ts'
 
 import { UploadAbortError } from './upload-pool'
 

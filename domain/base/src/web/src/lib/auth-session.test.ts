@@ -10,7 +10,7 @@ vi.mock('#/context/query-client.tsx', () => ({
   getQueryClient: () => ({ clear: mocks.clearQueryClient }),
 }))
 
-vi.mock('#/lib/session-cookie.ts', () => ({
+vi.mock('#/lib/session-storage.ts', () => ({
   clearSessionCredential: mocks.clearSessionCredential,
 }))
 

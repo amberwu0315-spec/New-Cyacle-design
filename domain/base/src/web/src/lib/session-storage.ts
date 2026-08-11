@@ -1,39 +1,7 @@
-import Cookies from 'js-cookie'
-
-export const SESSION_COOKIE_KEY = 'NSID'
-export const SESSION_COOKIE_EXPIRES_DAYS = 365
+export const SESSION_STORAGE_KEY = 'NSID'
 export const SESSION_SCOPE_CREDENTIAL_EMPTY = '-'
 const LOCAL_WORKSPACE_SCOPE_STORAGE_KEY = 'uic.workspace.lastSelectedScope'
 const LEGACY_WORKSPACE_SCOPE_STORAGE_KEY = 'carbonnt.workspace.lastSelectedScope'
-
-const LOCAL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1'])
-
-function isIpAddress(hostname: string) {
-  return /^\d{1,3}(?:\.\d{1,3}){3}$/.test(hostname) || hostname.includes(':')
-}
-
-function getCurrentHostname() {
-  if (typeof window === 'undefined') {
-    return ''
-  }
-
-  return window.location.hostname
-}
-
-function getCookieSecureOption() {
-  return typeof window !== 'undefined' && window.location.protocol === 'https:'
-}
-
-function getSessionCookieAttributes() {
-  const secure = getCookieSecureOption()
-
-  return {
-    domain: resolveSessionCookieDomain(),
-    path: '/',
-    sameSite: secure ? 'none' : 'lax',
-    secure,
-  } as const
-}
 
 function getLocalStorageItem(key: string) {
   if (typeof window === 'undefined') {
@@ -71,28 +39,8 @@ function removeLocalStorageItem(key: string) {
   }
 }
 
-export function resolveSessionCookieDomain(hostname = getCurrentHostname()) {
-  const normalizedHostname = hostname.trim().toLowerCase()
-
-  if (
-    !normalizedHostname ||
-    LOCAL_HOSTNAMES.has(normalizedHostname) ||
-    isIpAddress(normalizedHostname)
-  ) {
-    return undefined
-  }
-
-  const domainParts = normalizedHostname.split('.').filter(Boolean)
-
-  if (domainParts.length < 2) {
-    return undefined
-  }
-
-  return `.${domainParts.slice(-2).join('.')}`
-}
-
 export function getSessionCredential() {
-  return Cookies.get(SESSION_COOKIE_KEY) ?? null
+  return getLocalStorageItem(SESSION_STORAGE_KEY)
 }
 
 export function getSessionScope() {
@@ -122,10 +70,7 @@ export function getSessionAuthorizationHeader() {
 }
 
 export function setSessionCredential(sessionId: string) {
-  Cookies.set(SESSION_COOKIE_KEY, sessionId, {
-    ...getSessionCookieAttributes(),
-    expires: SESSION_COOKIE_EXPIRES_DAYS,
-  })
+  setLocalStorageItem(SESSION_STORAGE_KEY, sessionId)
 }
 
 export function setSessionScope(scope: string) {
@@ -141,5 +86,5 @@ export function setSessionScope(scope: string) {
 }
 
 export function clearSessionCredential() {
-  Cookies.remove(SESSION_COOKIE_KEY, getSessionCookieAttributes())
+  removeLocalStorageItem(SESSION_STORAGE_KEY)
 }
