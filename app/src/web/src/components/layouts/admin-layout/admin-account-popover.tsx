@@ -1,4 +1,5 @@
 import {
+  ChevronsUpDownIcon,
   ExternalLinkIcon,
   LogOutIcon,
   ShieldCheckIcon,
@@ -52,7 +53,7 @@ export function AdminAccountPopover({
             data-slot="account-trigger"
             variant="ghost"
             aria-label={t.layout.admin.account.menu}
-            className="h-10 min-w-0 max-w-[16rem] justify-start gap-2.5 px-2 text-[#202632] hover:bg-[#edf4fb] hover:text-[#165fae] active:translate-y-0"
+            className="group h-10 w-full min-w-0 max-w-none justify-start gap-3 rounded-md px-3 text-[#202632] transition-colors duration-150 hover:bg-[#edf4fb] hover:text-[#165fae] data-popup-open:bg-[#e7f1fb] data-popup-open:text-[#165fae] active:translate-y-0"
           />
         }
       >
@@ -64,7 +65,7 @@ export function AdminAccountPopover({
           />
         ) : (
           <>
-            <span className="grid size-8 shrink-0 place-items-center rounded-md bg-[#e7f1fb] text-[#1766b3] ring-1 ring-[#c8def2]">
+            <span className="grid size-7 shrink-0 place-items-center rounded-[5px] bg-[#e7f1fb] text-[#1766b3] ring-1 ring-[#c8def2] transition-colors group-hover:bg-white group-data-popup-open:bg-white">
               <UserRoundIcon aria-hidden="true" className="size-[17px]" />
             </span>
             <span
@@ -73,6 +74,11 @@ export function AdminAccountPopover({
             >
               {accountName}
             </span>
+            <ChevronsUpDownIcon
+              data-slot="account-trigger-indicator"
+              aria-hidden="true"
+              className="ml-auto size-3.5 shrink-0 text-[#8a94a2] transition-colors group-hover:text-[#4f647c]"
+            />
           </>
         )}
       </DropdownMenuTrigger>

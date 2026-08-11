@@ -183,11 +183,11 @@ export function AdminLayout({
             className={cn(
               'flex h-14 shrink-0 items-center overflow-hidden border-t border-[#e4e8ed] bg-white',
               sidebarOpen
-                ? 'px-3'
-                : 'justify-center px-2 [&_[data-slot=account-trigger]]:w-10 [&_[data-slot=account-trigger]]:px-1.5 [&_[data-slot=account-trigger-label]]:hidden [&_[data-slot=account-trigger-loading]]:size-7',
+                ? 'px-2'
+                : 'justify-center px-2 [&_[data-slot=account-trigger]]:w-10 [&_[data-slot=account-trigger]]:px-1.5 [&_[data-slot=account-trigger-indicator]]:hidden [&_[data-slot=account-trigger-label]]:hidden [&_[data-slot=account-trigger-loading]]:size-7',
             )}
           >
-            <div className="min-w-0 max-w-full">{sidebarFooter}</div>
+            <div className="min-w-0 w-full">{sidebarFooter}</div>
           </div>
         ) : null}
 
