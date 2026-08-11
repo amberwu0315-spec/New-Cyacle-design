@@ -186,23 +186,21 @@ const routeTree = RootRoute.addChildren([
 export const router = createRouter({ routeTree })
 ```
 
+
 ### Lazy Route 写法
 
 路由文件默认只保留 `path`、`getParentRoute`、`loader`、`beforeLoad`、search 校验等匹配和加载所需的关键配置；页面组件从 `features/*/page.tsx` 通过 TanStack Router 的 `lazyRouteComponent` 按需加载。不要在 route 文件里静态 import 页面组件，除非该页面非常轻且确认需要进入首包。
 
 ```tsx
-import type { AnyRoute } from '@tanstack/react-router'
-import { createRoute, lazyRouteComponent } from '@tanstack/react-router'
+import type { AnyRoute } from "@tanstack/react-router"
+import { createRoute, lazyRouteComponent } from "@tanstack/react-router"
 
-const LoginPage = lazyRouteComponent(
-  () => import('#/features/login/page.tsx'),
-  'LoginPage',
-)
+const LoginPage = lazyRouteComponent(() => import("#/features/login/page.tsx"), "LoginPage")
 
 export function createLoginRouteBranches({ parentRoute }: { parentRoute: AnyRoute }) {
   return createRoute({
     getParentRoute: () => parentRoute,
-    path: 'uic/login',
+    path: "uic/login",
     component: LoginPage,
   })
 }
@@ -212,16 +210,68 @@ export function createLoginRouteBranches({ parentRoute }: { parentRoute: AnyRout
 
 ```tsx
 const UserAgreementPage = lazyRouteComponent(
-  () => import('#/features/terms/page.tsx'),
-  'UserAgreementPage',
+  () => import("#/features/terms/page.tsx"),
+  "UserAgreementPage",
 )
 const PrivacyPolicyPage = lazyRouteComponent(
-  () => import('#/features/terms/page.tsx'),
-  'PrivacyPolicyPage',
+  () => import("#/features/terms/page.tsx"),
+  "PrivacyPolicyPage",
 )
 ```
 
-当前 app router 已配置 `defaultPreload: 'intent'`，`lazyRouteComponent` 会暴露 preload 能力；用户 hover/focus 链接时 TanStack Router 可以提前加载目标页面 chunk。只有当某个 route 需要把 `component`、`pendingComponent`、`errorComponent` 等非关键配置拆成独立 lazy route 文件时，才考虑 code-based `.lazy(() => import('./xxx.lazy').then((d) => d.Route))`；使用这种写法前先固定 route id，避免 lazy route id 和主 route 不一致。
+当前 app router 已配置 `defaultPreload: 'intent'`，`lazyRouteComponent` 返回的组件会暴露 `.preload()`；用户 hover/focus 链接时，TanStack Router 会从 `route.options.component` 读取并调用这个 preload，从而提前加载目标页面 chunk。页面不需要额外适配 props 时，优先把 `lazyRouteComponent` 返回的组件直接赋给 route 的 `component`。
+
+不要在同步 wrapper 里面再渲染 lazy component。下面的页面仍会在实际渲染时懒加载，但 Router 看到的 `component` 是没有 `.preload()` 的匿名函数，所以 hover/focus 不会提前加载页面 chunk。
+
+```tsx
+// 避免：同步 wrapper 会隐藏 WorkspacePage.preload
+const WorkspacePage = lazyRouteComponent(
+  () => import("#/features/workspace/page.tsx"),
+  "WorkspacePage",
+)
+
+const workspaceRoute = createRoute({
+  getParentRoute: () => domainRoute,
+  path: "$appId",
+  component: () => {
+    const { appId } = workspaceRoute.useParams()
+
+    return <WorkspacePage appId={appId} />
+  },
+})
+```
+
+路由需要通过当前 route 实例读取 params/search 并把它们转换成页面 props 时，可以保留同步薄 wrapper，但必须把 lazy 页面的 `.preload` 转发给 wrapper。这样 `route.options.component` 仍然具有 preload 能力，同时继续使用 `route.useParams()` / `route.useSearch()` 的精确类型。
+
+```tsx
+const WorkspacePage = lazyRouteComponent(
+  () => import("#/features/workspace/page.tsx"),
+  "WorkspacePage",
+)
+
+export function createWorkspaceRoute({ domainRoute }: { domainRoute: AnyRoute }) {
+  function WorkspaceRouteComponent() {
+    const { appId } = workspaceRoute.useParams()
+    const { prompt } = workspaceRoute.useSearch()
+
+    return <WorkspacePage appId={appId} initialPrompt={prompt} />
+  }
+
+  const workspaceRoute = createRoute({
+    getParentRoute: () => domainRoute,
+    path: "$appId",
+    component: Object.assign(WorkspaceRouteComponent, {
+      preload: WorkspacePage.preload,
+    }),
+  })
+
+  return workspaceRoute
+}
+```
+
+不要为了把 wrapper 放进独立 lazy 模块而硬编码 `useParams({ from: '/workspace/$appId' })`。`from` 匹配的是完整 route id，不是浏览器 URL；code-based domain route 挂到 pathless `shell`、`settingsLayout` 等父路由后，实际 route id 会包含父级 id，而且更换 outlet 后还会改变。使用当前 factory 创建的 `route.useParams()` / `route.useSearch()` 不依赖最终挂载位置。
+
+只有当某个 route 需要把 `component`、`pendingComponent`、`errorComponent` 等非关键配置拆成独立 lazy route 文件时，才考虑 code-based `.lazy(() => import('./xxx.lazy').then((d) => d.Route))`；使用这种写法前先固定 route id，避免 lazy route id 和主 route 不一致。`path`、`validateSearch`、`beforeLoad` 和通常情况下的 `loader` 继续同步保留，避免先下载 route options 才能开始加载数据的额外瀑布。
 
 若项目使用 file-based route，则沿用项目约定创建 `.lazy.tsx`，并用 `createLazyFileRoute` 替代 `createLazyRoute`。
 
@@ -235,17 +285,17 @@ Domain 默认路由以领域名称开始，domain root 可同步承载 `Outlet`�
 
 ```tsx
 // domain/catalog/src/web/src/routes/index.tsx
-import { defineWebDomain, type WebDomainRouteFactory } from '@example-app/web-base'
-import { Outlet, createRoute } from '@tanstack/react-router'
+import { defineWebDomain, type WebDomainRouteFactory } from "@example-app/web-base"
+import { Outlet, createRoute } from "@tanstack/react-router"
 
-import { createHomeRouteTree } from './home-route'
-import { createReportsRouteTree } from './reports-route'
-import { createCatalogNavMeta } from './nav'
+import { createHomeRouteTree } from "./home-route"
+import { createReportsRouteTree } from "./reports-route"
+import { createCatalogNavMeta } from "./nav"
 
 const createCatalogRoutes: WebDomainRouteFactory = ({ parentRoute }) => {
   const domainRoute = createRoute({
     getParentRoute: () => parentRoute,
-    path: 'catalog',
+    path: "catalog",
     component: Outlet,
   })
 
@@ -258,7 +308,7 @@ const createCatalogRoutes: WebDomainRouteFactory = ({ parentRoute }) => {
 }
 
 export const webDomain = defineWebDomain()({
-  id: 'catalog',
+  id: "catalog",
   routeMounts: {
     shell: [createCatalogRoutes],
   },
@@ -272,7 +322,7 @@ export const webDomain = defineWebDomain()({
 // 非必要不要这样做：它会跳过 /catalog 前缀并占用全局 path。
 const publicCatalogRoute = createRoute({
   getParentRoute: () => RootRoute,
-  path: 'products',
+  path: "products",
 })
 ```
 
