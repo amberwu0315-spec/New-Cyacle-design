@@ -105,10 +105,10 @@ go build -tags production -ldflags "${LDFLAGS}" -o "${OUTPUT}" "./${SERVER_DIR}/
 cat > "${IMAGE_CONTEXT_DIR}/Dockerfile" <<EOF
 FROM \${IMAGE_BASE}
 
-COPY ${BIN_NAME} /usr/local/bin/${BIN_NAME}
+COPY ${BIN_NAME} /app/${BIN_NAME}
 
 USER root
 WORKDIR /app/
 
-ENTRYPOINT ["${BIN_NAME}"]
+ENTRYPOINT ["/app/${BIN_NAME}"]
 EOF
