@@ -1,5 +1,6 @@
 import type { PropsWithChildren } from 'react'
 import { FileViewerConfig } from '@cew-lib/file-viewer-base'
+import { CrewUiConfig } from '@crew-ui/base'
 
 import { Toaster } from '#/components/ui/toast.tsx'
 import { TooltipProvider } from '#/components/ui/tooltip.tsx'
@@ -14,6 +15,7 @@ export function BaseProviders({ children }: PropsWithChildren) {
     <TanstackQueryRootProvider>
       <TooltipProvider>
         <FileViewerConfig locale={language} />
+        <CrewUiConfig locale={language === 'en-US' ? 'en' : 'zh'} />
         {children}
         <DocumentPreviewHost />
         <Toaster position='top-center' />
