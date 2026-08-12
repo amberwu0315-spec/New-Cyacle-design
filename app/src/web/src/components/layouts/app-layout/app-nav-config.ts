@@ -28,6 +28,7 @@ function groupAppNavConfig(
   config: AppNavConfig,
   options: AppNavConfigOptions = {},
 ): AppNavConfig {
+  type AppScene = AppNavConfig['scenes'][number]
   const appNavCategories = getAppNavCategories(options.language)
   const appNavCategoryOrder = [
     appNavCategories.basis,
@@ -45,18 +46,76 @@ function groupAppNavConfig(
     'domain-document-management': appNavCategories.management,
     'domain-uic': appNavCategories.account,
   }
-  const scenes = config.scenes.map((scene) => {
-    const category = appNavSceneCategoryById[scene.id] ?? scene.category
+  const appNavCategoryByKey: Record<string, string> = {
+    basis: appNavCategories.basis,
+    accounting: appNavCategories.accounting,
+    management: appNavCategories.management,
+    dashboard: appNavCategories.dashboard,
+    platform: appNavCategories.platform,
+    account: appNavCategories.account,
+  }
+  const scenes = config.scenes.flatMap((scene) => {
+    const sceneCategory = appNavSceneCategoryById[scene.id] ?? scene.category
+    const groupsByCategory = new Map<string | null, AppScene['groups']>()
+    const sceneMetaByKey = new Map<
+      string | null,
+      {
+        categoryKey: string | null
+        firstItem: AppScene['groups'][number]['items'][number]
+      }
+    >()
 
-    if (category === scene.category) {
-      return scene
-    }
+    for (const group of scene.groups) {
+      for (const item of group.items) {
+        const categoryKey = item.category?.trim() || null
+        const sceneKey = item.standaloneScene
+          ? `${categoryKey ?? ''}::${item.id}`
+          : categoryKey
+        const groups = groupsByCategory.get(sceneKey) ?? []
+        let targetGroup = groups.find((candidate) => candidate.id === group.id)
 
-    return {
-      ...scene,
-      category,
+        if (!targetGroup) {
+          targetGroup = { ...group, items: [] }
+          groups.push(targetGroup)
+        }
+
+        targetGroup.items.push(item)
+        groupsByCategory.set(sceneKey, groups)
+        if (!sceneMetaByKey.has(sceneKey)) {
+          sceneMetaByKey.set(sceneKey, { categoryKey, firstItem: item })
+        }
+      }
     }
+    return Array.from(groupsByCategory.entries()).flatMap(
+      ([sceneKey, groups]) => {
+        const sceneMeta = sceneMetaByKey.get(sceneKey)
+        const firstItem = sceneMeta?.firstItem
+        const categoryKey = sceneMeta?.categoryKey ?? null
+
+        if (!firstItem) {
+          return []
+        }
+
+        if (categoryKey === null) {
+          return [{ ...scene, category: sceneCategory, groups }]
+        }
+
+        return [
+          {
+            ...scene,
+            id: `${scene.id}--${firstItem.id}`,
+            label: firstItem.label,
+            description: firstItem.description,
+            category: appNavCategoryByKey[categoryKey] ?? categoryKey,
+            icon: firstItem.icon,
+            defaultTo: firstItem.to,
+            groups,
+          },
+        ]
+      },
+    )
   })
+  const preferredSceneOrder = new Map([['domain-project--project-list', 0]])
   const sceneIdsByCategory = new Map<string, Array<string>>()
 
   for (const scene of scenes) {
@@ -68,6 +127,22 @@ function groupAppNavConfig(
     }
 
     sceneIdsByCategory.set(scene.category, [scene.id])
+  }
+
+  for (const sceneIds of sceneIdsByCategory.values()) {
+    sceneIds.sort((leftId, rightId) => {
+      const leftOrder = preferredSceneOrder.get(leftId)
+      const rightOrder = preferredSceneOrder.get(rightId)
+
+      if (leftOrder === undefined && rightOrder === undefined) {
+        return 0
+      }
+
+      return (
+        (leftOrder ?? Number.MAX_SAFE_INTEGER) -
+        (rightOrder ?? Number.MAX_SAFE_INTEGER)
+      )
+    })
   }
 
   const orderedCategoryTitles: Array<string> = []
@@ -105,6 +180,9 @@ function groupAppNavConfig(
   return {
     ...config,
     scenes,
+    defaultSceneId: scenes.some((scene) => scene.id === config.defaultSceneId)
+      ? config.defaultSceneId
+      : (scenes[0]?.id ?? ''),
     categories: orderedCategoryTitles.map((title) => ({
       title,
       sceneIds: sceneIdsByCategory.get(title) ?? [],

@@ -17,6 +17,8 @@ export interface DomainNavItemMeta {
   desc: string
   to: string
   icon: LucideIcon
+  category?: string
+  standaloneScene?: boolean
   permissionCode?: string
 }
 
@@ -53,6 +55,8 @@ export interface AppNavItem {
   description: string
   to: string
   icon: LucideIcon
+  category?: string
+  standaloneScene?: boolean
 }
 
 export interface AppNavGroup {
@@ -148,6 +152,8 @@ function normalizeDomainNavMeta(
         description: item.desc,
         to: normalizeNavPath(item.to),
         icon: item.icon,
+        category: item.category,
+        standaloneScene: item.standaloneScene,
       }))
 
     return items.length

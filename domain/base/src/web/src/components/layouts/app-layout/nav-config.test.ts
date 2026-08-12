@@ -48,6 +48,7 @@ function createDomain(): WebDomain {
                 desc: 'Visible item',
                 to: '/visible',
                 icon: TestIcon,
+                category: 'featured',
                 permissionCode: 'visible_view',
               },
             ],
@@ -74,6 +75,7 @@ describe('app navigation permissions', () => {
       'visible-group',
     ])
     expect(config.scenes[0]?.defaultTo).toBe('/visible')
+    expect(config.scenes[0]?.groups[0]?.items[0]?.category).toBe('featured')
   })
 
   it('hides a denied scene', () => {
