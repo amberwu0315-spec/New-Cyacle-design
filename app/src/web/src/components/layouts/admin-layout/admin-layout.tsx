@@ -34,10 +34,10 @@ function AdminBrand() {
 
   return (
     <div
-      className="flex items-center gap-3"
+      className="flex items-center gap-2.5"
       aria-label={messages.layout.admin.brandAriaLabel}
     >
-      <span className="grid size-8 grid-cols-2 gap-[3px] rounded-[3px] bg-[#116ab6] p-[5px] shadow-[0_1px_2px_rgba(17,70,120,0.22)]">
+      <span className="grid size-7 grid-cols-2 gap-0.5 rounded-[3px] bg-[#116ab6] p-1 shadow-[0_1px_2px_rgba(17,70,120,0.2)]">
         <span className="rounded-[1px] bg-white" />
         <span className="rounded-[1px] bg-white/45" />
         <span className="rounded-[1px] bg-white/45" />
@@ -45,7 +45,7 @@ function AdminBrand() {
       </span>
       <span
         data-slot="admin-brand-label"
-        className="text-[28px] font-semibold leading-none tracking-[-0.035em] text-[#11151b]"
+        className="text-[24px] font-semibold leading-none tracking-[-0.035em] text-[#11151b]"
       >
         Admin
       </span>

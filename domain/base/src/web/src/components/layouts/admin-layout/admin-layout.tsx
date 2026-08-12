@@ -69,17 +69,17 @@ function AdminNavigationLink({
       disabled={item.disabled}
       title={collapsed ? item.label : item.description}
       className={cn(
-        'group flex h-10 w-full items-center rounded-md text-left text-[15px] transition-colors duration-150',
-        collapsed ? 'justify-center px-2' : 'gap-3 px-3',
+        'group relative flex h-9 w-full items-center rounded-md text-left text-sm transition-[background-color,color,box-shadow] duration-150 before:absolute before:left-0.5 before:h-4 before:w-0.5 before:scale-y-50 before:rounded-full before:bg-[#2674c8] before:opacity-0 before:transition-[opacity,transform] before:duration-150',
+        collapsed ? 'justify-center px-1.5' : 'gap-2.5 px-2.5',
         selected
-          ? 'bg-[#256fc4] font-medium text-white shadow-[0_1px_2px_rgba(16,70,130,0.24)]'
-          : 'text-[#202632] hover:bg-[#edf4fb] hover:text-[#165fae]',
+          ? 'bg-[#eaf3fc] font-semibold text-[#145fae] shadow-[inset_0_0_0_1px_rgba(37,111,196,0.08)] before:scale-y-100 before:opacity-100'
+          : 'text-[#27303d] hover:bg-[#f1f5f9] hover:text-[#165fae]',
         item.disabled &&
           'cursor-not-allowed text-[#9aa3af] opacity-60 hover:bg-transparent hover:text-[#9aa3af]',
       )}
       onClick={handleClick}
     >
-      <Icon className="size-[19px] shrink-0 stroke-[2.1]" />
+      <Icon className="size-[17px] shrink-0 stroke-[2]" />
       {collapsed ? null : <span className="truncate">{item.label}</span>}
     </button>
   )
@@ -139,31 +139,31 @@ export function AdminLayout({
     >
       <aside
         className={cn(
-          'flex shrink-0 flex-col border-r border-[#dce2e9] bg-white transition-[width] duration-200 ease-out',
-          sidebarOpen ? 'w-[296px]' : 'w-[68px]',
+          'flex shrink-0 flex-col border-r border-[#dce2e9] bg-white shadow-[1px_0_0_rgba(17,24,39,0.01)] transition-[width] duration-200 ease-out',
+          sidebarOpen ? 'w-[240px]' : 'w-14',
         )}
       >
         <div
           className={cn(
-            'flex h-[72px] shrink-0 items-center overflow-hidden border-b border-[#dce2e9] bg-white shadow-[0_1px_0_rgba(17,24,39,0.02)]',
+            'flex h-16 shrink-0 items-center overflow-hidden border-b border-[#e2e7ed] bg-white',
             sidebarOpen
-              ? 'px-6'
+              ? 'px-5'
               : 'justify-center px-0 [&_[data-slot=admin-brand-label]]:hidden',
           )}
         >
           <div className="w-max shrink-0">{brand}</div>
         </div>
 
-        <nav className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-2 py-7 [scrollbar-color:#8f949b_transparent] [scrollbar-width:thin]">
-          <div className="space-y-8">
+        <nav className="min-h-0 flex-1 overflow-y-auto overflow-x-hidden px-2 py-5 [scrollbar-color:#aab2bd_transparent] [scrollbar-width:thin]">
+          <div className="space-y-6">
             {navigation.map((group) => (
               <section key={group.id}>
                 {sidebarOpen ? (
-                  <h2 className="mb-1.5 px-1 text-[14px] font-medium tracking-[0.04em] text-[#69717d]">
+                  <h2 className="mb-1 px-2 text-xs font-semibold tracking-[0.055em] text-[#7a8492]">
                     {group.title}
                   </h2>
                 ) : null}
-                <div className="space-y-0.5">
+                <div className="space-y-px">
                   {group.items.map((item) => (
                     <AdminNavigationLink
                       key={item.id}
@@ -181,10 +181,10 @@ export function AdminLayout({
         {sidebarFooter ? (
           <div
             className={cn(
-              'flex h-14 shrink-0 items-center overflow-hidden border-t border-[#e4e8ed] bg-white',
+              'flex h-[52px] shrink-0 items-center overflow-hidden border-t border-[#e4e8ed] bg-white',
               sidebarOpen
                 ? 'px-2'
-                : 'justify-center px-2 [&_[data-slot=account-trigger]]:w-10 [&_[data-slot=account-trigger]]:px-1.5 [&_[data-slot=account-trigger-indicator]]:hidden [&_[data-slot=account-trigger-label]]:hidden [&_[data-slot=account-trigger-loading]]:size-7',
+                : 'justify-center px-2 [&_[data-slot=account-trigger]]:w-9 [&_[data-slot=account-trigger]]:px-1.5 [&_[data-slot=account-trigger-indicator]]:hidden [&_[data-slot=account-trigger-label]]:hidden [&_[data-slot=account-trigger-loading]]:size-6',
             )}
           >
             <div className="min-w-0 w-full">{sidebarFooter}</div>
@@ -199,15 +199,15 @@ export function AdminLayout({
               : messages.common.admin.expandNavigation
           }
           className={cn(
-            'flex h-12 shrink-0 items-center border-t border-[#e4e8ed] text-[#69717d] transition-colors hover:bg-[#f4f7fa] hover:text-[#256fc4]',
-            sidebarOpen ? 'justify-end px-4' : 'justify-center px-0',
+            'flex h-10 shrink-0 items-center border-t border-[#e4e8ed] text-[#7a8492] transition-colors hover:bg-[#f4f7fa] hover:text-[#256fc4]',
+            sidebarOpen ? 'justify-end px-3.5' : 'justify-center px-0',
           )}
           onClick={handleToggleSidebar}
         >
           {sidebarOpen ? (
-            <ChevronLeft className="size-5" />
+            <ChevronLeft className="size-[18px]" />
           ) : (
-            <ChevronRight className="size-5" />
+            <ChevronRight className="size-[18px]" />
           )}
         </button>
       </aside>
