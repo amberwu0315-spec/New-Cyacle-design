@@ -89,4 +89,4 @@ domains:
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/search.indexer.git
 
-      
+    
