@@ -16,20 +16,20 @@ catalogs:
       specifier: ^1.0.3
       version: 1.0.3
     '@cew-lib/file-viewer-base':
-      specifier: ^1.1.0
-      version: 1.1.0
+      specifier: 2.0.0
+      version: 2.0.0
     '@cew-lib/file-viewer-excel':
-      specifier: ^1.1.0
-      version: 1.1.0
+      specifier: 2.0.0
+      version: 2.0.0
     '@cew-lib/file-viewer-image':
-      specifier: ^1.1.0
-      version: 1.1.0
+      specifier: 2.0.0
+      version: 2.0.0
     '@cew-lib/file-viewer-pdf':
-      specifier: ^1.1.0
-      version: 1.1.0
+      specifier: 2.0.0
+      version: 2.0.0
     '@cew-lib/file-viewer-video':
-      specifier: ^1.1.0
-      version: 1.1.0
+      specifier: 2.0.0
+      version: 2.0.0
     '@cew-lib/report-template':
       specifier: 0.0.6
       version: 0.0.6
@@ -337,19 +337,19 @@ importers:
         version: 1.0.3(@date-fns/tz@1.5.0)(@floating-ui/dom@1.8.0)(@tiptap/extensions@3.29.0(@tiptap/core@3.29.0(@tiptap/pm@3.29.0))(@tiptap/pm@3.29.0))(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@cew-lib/file-viewer-base':
         specifier: catalog:web
-        version: 1.1.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 2.0.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@cew-lib/file-viewer-excel':
         specifier: catalog:web
-        version: 1.1.0(@date-fns/tz@1.5.0)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 2.0.0(@date-fns/tz@1.5.0)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@cew-lib/file-viewer-image':
         specifier: catalog:web
-        version: 1.1.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 2.0.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@cew-lib/file-viewer-pdf':
         specifier: catalog:web
-        version: 1.1.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 2.0.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@cew-lib/file-viewer-video':
         specifier: catalog:web
-        version: 1.1.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+        version: 2.0.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@cew-lib/report-template':
         specifier: catalog:web
         version: 0.0.6(@date-fns/tz@1.5.0)(@types/react@19.2.17)(class-variance-authority@0.7.1)(date-fns@4.4.0)(katex@0.16.47)(lucide-react@1.30.0(react@19.2.7))(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
@@ -675,32 +675,32 @@ packages:
       react: '>=19'
       react-dom: '>=19'
 
-  '@cew-lib/file-viewer-base@1.1.0':
-    resolution: {integrity: sha512-8U+Eu2lIK85sh0lCDotnHLp07fVS35x3HlQAcRlfXgEw3ydREtwd4cuv5NUr9EcpH8tSrC+Ea4PXbpBS/pC6pw==, tarball: https://npm.cew.io/repository/npm/@cew-lib/file-viewer-base/-/file-viewer-base-1.1.0.tgz}
+  '@cew-lib/file-viewer-base@2.0.0':
+    resolution: {integrity: sha512-0j4EZsLL8J25mmHqDpvXVwsfAyckrEgelma8qp1vJk5QyaA4bquf30iSwm/51loCWpCyFDWVk4/u6PqSN3diZQ==, tarball: https://npm.cew.io/repository/npm/@cew-lib/file-viewer-base/-/file-viewer-base-2.0.0.tgz}
     peerDependencies:
       react: ^19.x
       react-dom: ^19.x
 
-  '@cew-lib/file-viewer-excel@1.1.0':
-    resolution: {integrity: sha512-PTGSTBuKvpVeOU8+iSxbTcJufIhtalHtzw9HhVd+CPeyr4f+Jc08te1pPm+1duZUm4JsG4Rg6JAy8SYzMerCug==, tarball: https://npm.cew.io/repository/npm/@cew-lib/file-viewer-excel/-/file-viewer-excel-1.1.0.tgz}
+  '@cew-lib/file-viewer-excel@2.0.0':
+    resolution: {integrity: sha512-OD6pfhRJKB0DZ714pUsdME7YeG1Bbq79NxvkGok9UvLGPBltq2YCo2FacEYCnMITeUDefC0M+JrP9KTtmKwTLg==, tarball: https://npm.cew.io/repository/npm/@cew-lib/file-viewer-excel/-/file-viewer-excel-2.0.0.tgz}
     peerDependencies:
       react: ^19.x
       react-dom: ^19.x
 
-  '@cew-lib/file-viewer-image@1.1.0':
-    resolution: {integrity: sha512-fY+CL9jln8v9VJjo+/3waJtCkho2cfjHZzLvBGjDJCQk9Qo/sHp46oHqeVAZ8cUQFwnxvf6m6swcknQhVcMUJg==, tarball: https://npm.cew.io/repository/npm/@cew-lib/file-viewer-image/-/file-viewer-image-1.1.0.tgz}
+  '@cew-lib/file-viewer-image@2.0.0':
+    resolution: {integrity: sha512-gX1pIk/w1rcGy7hSE1F7+EcxTRR3qm67LD3o2ahpQTcFEYoz9YYemWbuYIiuXIlFqiePGv/0Y3fd0480LKlWeA==, tarball: https://npm.cew.io/repository/npm/@cew-lib/file-viewer-image/-/file-viewer-image-2.0.0.tgz}
     peerDependencies:
       react: ^19.x
       react-dom: ^19.x
 
-  '@cew-lib/file-viewer-pdf@1.1.0':
-    resolution: {integrity: sha512-JABTKxru3t/IidMRFvuBlV+H7R2x61mBpTnxX6SEPENrb5PYhG3QIGZSuQTk5qg7CFEF/MyF3+wU8//b7NUa5g==, tarball: https://npm.cew.io/repository/npm/@cew-lib/file-viewer-pdf/-/file-viewer-pdf-1.1.0.tgz}
+  '@cew-lib/file-viewer-pdf@2.0.0':
+    resolution: {integrity: sha512-EC4xmo8K8JgW96CMAisy0Zg/UL4iNTM6gGAmdWkIYyWbEq0bbbZq0txp4NKcnYxnWu+22JG4vmQ6P7EQboj61w==, tarball: https://npm.cew.io/repository/npm/@cew-lib/file-viewer-pdf/-/file-viewer-pdf-2.0.0.tgz}
     peerDependencies:
       react: ^19.x
       react-dom: ^19.x
 
-  '@cew-lib/file-viewer-video@1.1.0':
-    resolution: {integrity: sha512-f/NUw7ZB+l421QI2CerHjY68iIDBJWj5VNxGG5R8+FiFiYvNoAcuC2bc0Cbia1hQStfSiUu0narv0Iacz5McPw==, tarball: https://npm.cew.io/repository/npm/@cew-lib/file-viewer-video/-/file-viewer-video-1.1.0.tgz}
+  '@cew-lib/file-viewer-video@2.0.0':
+    resolution: {integrity: sha512-2sitWJf8zE+pFqTi7cL+TFjYV07y/vYA2PGovdienVcD6+FuqnacTObfNLzn3zZhuZyxDvdVxTDvAIBIuHkfPQ==, tarball: https://npm.cew.io/repository/npm/@cew-lib/file-viewer-video/-/file-viewer-video-2.0.0.tgz}
     peerDependencies:
       react: ^19.x
       react-dom: ^19.x
@@ -4951,7 +4951,7 @@ snapshots:
       - '@types/react-dom'
       - date-fns
 
-  '@cew-lib/file-viewer-base@1.1.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@cew-lib/file-viewer-base@2.0.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
       '@base-ui/react': 1.7.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       class-variance-authority: 0.7.1
@@ -4965,9 +4965,9 @@ snapshots:
       - '@types/react'
       - date-fns
 
-  '@cew-lib/file-viewer-excel@1.1.0(@date-fns/tz@1.5.0)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@cew-lib/file-viewer-excel@2.0.0(@date-fns/tz@1.5.0)(@types/react-dom@19.2.3(@types/react@19.2.17))(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@cew-lib/file-viewer-base': 1.1.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@cew-lib/file-viewer-base': 2.0.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       '@sheet/core': 2.20240903.1
       '@univerjs/core': 0.13.0(react@19.2.7)(rxjs@7.8.2)
       '@univerjs/data-validation': 0.13.0(react@19.2.7)(rxjs@7.8.2)
@@ -5010,9 +5010,9 @@ snapshots:
       - '@types/react-dom'
       - date-fns
 
-  '@cew-lib/file-viewer-image@1.1.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@cew-lib/file-viewer-image@2.0.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@cew-lib/file-viewer-base': 1.1.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@cew-lib/file-viewer-base': 2.0.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       lucide-react: 1.30.0(react@19.2.7)
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
@@ -5021,9 +5021,9 @@ snapshots:
       - '@types/react'
       - date-fns
 
-  '@cew-lib/file-viewer-pdf@1.1.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@cew-lib/file-viewer-pdf@2.0.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@cew-lib/file-viewer-base': 1.1.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@cew-lib/file-viewer-base': 2.0.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       lucide-react: 1.30.0(react@19.2.7)
       pdfjs-dist: 4.4.168
       react: 19.2.7
@@ -5035,9 +5035,9 @@ snapshots:
       - encoding
       - supports-color
 
-  '@cew-lib/file-viewer-video@1.1.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
+  '@cew-lib/file-viewer-video@2.0.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)':
     dependencies:
-      '@cew-lib/file-viewer-base': 1.1.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
+      '@cew-lib/file-viewer-base': 2.0.0(@date-fns/tz@1.5.0)(@types/react@19.2.17)(date-fns@4.4.0)(react-dom@19.2.7(react@19.2.7))(react@19.2.7)
       lucide-react: 1.30.0(react@19.2.7)
       react: 19.2.7
       react-dom: 19.2.7(react@19.2.7)
