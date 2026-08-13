@@ -24,6 +24,8 @@
 
 表格型选择器优先使用 `DataView + DataGrid + SearchBox`，不要再为同类对象选择器手写一套 `Input + Table/按钮列表 + ScrollArea`。树、文件和主从预览场景不能合理表达为表格时可以使用专用内容组件，但弹框外壳和下面的交互合同保持一致。
 
+选择弹框中的搜索框聚焦时只保留 `border-ring` 边框反馈，不显示 Crew UI 默认的 3px focus ring，避免搜索框紧贴弹框头部时出现类似整块头部阴影的灰色外沿。实现时统一复用 Base 导出的样式：`DataView` / `SearchBox` 通过 `searchBoxProps.classNames={DATA_SELECTOR_SEARCH_BOX_CLASS_NAMES}`（compound 写法传给 `DataView.SearchBox.classNames`）；尚未迁移到 SearchBox 的旧式搜索输入通过 `className={cn(DATA_SELECTOR_SEARCH_INPUT_CLASS_NAME, ...)}` 覆盖。不要修改 Base `Input` / `InputGroup` 的全局焦点态，也不要完全移除边框反馈；普通表单和非选择器页面继续保留默认可访问性焦点 ring。
+
 ```tsx
 <DialogContent className="flex max-h-[88vh] flex-col overflow-hidden sm:!max-w-4xl">
   <DialogHeader className="shrink-0">
@@ -35,6 +37,9 @@
     <DataView
       className="h-full min-h-0 w-full"
       height="100%"
+      searchBoxProps={{
+        classNames: DATA_SELECTOR_SEARCH_BOX_CLASS_NAMES,
+      }}
       toolbarTrailingRight={(
         <div className="flex items-center gap-2">
           <Button variant="outline" onClick={handleRefresh}>刷新</Button>
@@ -77,6 +82,7 @@
 
 - [ ] 标题、说明、宽度、520px 内容高度和底部按钮位置与同类弹框一致。
 - [ ] 搜索/筛选在左侧，刷新和创建在右侧，按钮顺序和 variant 一致。
+- [ ] 搜索框聚焦时没有 3px 灰色 ring，仍保留焦点边框；样式复用 Base 选择器常量，没有影响普通表单输入框。
 - [ ] 初次加载、刷新中、加载失败、无数据、无搜索结果、缺少上下文都有明确状态。
 - [ ] 单击仅选中，双击与确认按钮走同一链路，取消不修改原值。
 - [ ] 表格内部纵向/横向滚动，Dialog、标题、工具栏、分页和 Footer 不跟随滚动。
