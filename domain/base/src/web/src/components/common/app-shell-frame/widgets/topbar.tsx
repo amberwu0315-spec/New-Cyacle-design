@@ -50,7 +50,7 @@ export function AppShellFrameTopbarStart({
     <div
       {...props}
       data-slot="app-shell-frame-topbar-start"
-      className={cn('flex min-w-0 items-center gap-3', className)}
+      className={cn('flex min-w-0 flex-1 items-center gap-3', className)}
     >
       {children}
     </div>
@@ -212,7 +212,7 @@ export function AppShellFrameTopbarEnd({
     <div
       {...props}
       data-slot="app-shell-frame-topbar-end"
-      className={cn('flex items-center gap-2', className)}
+      className={cn('flex shrink-0 items-center gap-2', className)}
     >
       {children}
     </div>
