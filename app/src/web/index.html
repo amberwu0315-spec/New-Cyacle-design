@@ -5,6 +5,34 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta name="vrpc:invoke-url" content="__VRPC_INVOKE_URL__" />
+    <script>
+      if (window.location.hostname.endsWith('.cyacle.cn')) {
+        void (function (e, t, n, a, o, i, m) {
+          (e._um_apm_namespace = o),
+            (e[o] =
+              e[o] ||
+              function () {
+                (e[o].q = e[o].q || []).push(arguments)
+              }),
+            (e[o].l = e[o].l || +new Date()),
+            (i = t.createElement(n)),
+            i.setAttribute('crossorigin', ''),
+            (i.src = a),
+            (m = t.getElementsByTagName(n)[0]),
+            m.parentNode.insertBefore(i, m)
+        })(
+          window,
+          document,
+          'script',
+          'https://g.alicdn.com/jssdk/apm/2.0.10/es5/uapm.iife.js',
+          '_apm',
+        )
+        _apm('create', {
+          pid: '6a7e8b72e87a8d65f0b6fee1',
+          pageFilter: { mode: 'ignore', rules: [] },
+        })
+      }
+    </script>
     <title>青钥</title>
   </head>
   <body>
