@@ -257,7 +257,7 @@ export function AppLayout({
 
   const handleNavigate = React.useCallback(
     (to: string) => {
-      void navigate({ to: to as never })
+      void navigate({ href: to })
     },
     [navigate],
   )
