@@ -17,7 +17,7 @@
   - [Feature 组织](docs/feature-organization.md)
 - Web 开发约定
   - [Domain 多语言](docs/domain-i18n.md)
-  - [业务展示与选择弹框](docs/business-display-and-selection.md)
+  - [业务展示、列表与选择弹框](docs/business-display-and-selection.md)
   - [React 组件写法](docs/react-components.md)
 - Web 数据与构建
   - [接口调用与 QueryKey](docs/api-and-query-key.md)
@@ -32,7 +32,7 @@
 | route 挂在哪个 outlet、页面如何懒加载、Layout 如何分层 | [路由与 Layout](docs/routing-and-layout.md) |
 | 页面、hook、query、组件和 dialog 如何拆分 | [Feature 组织](docs/feature-organization.md) |
 | Domain 文案目录和多语言 API 如何组织 | [Domain 多语言](docs/domain-i18n.md) |
-| 空名称如何展示、选择弹框和枚举候选项如何交互 | [业务展示与选择弹框](docs/business-display-and-selection.md) |
+| 空名称如何展示、列表工具栏如何布局、选择弹框和枚举候选项如何交互 | [业务展示、列表与选择弹框](docs/business-display-and-selection.md) |
 | JSX 回调、Dialog 弹框布局和 detached trigger 浮层如何写 | [React 组件写法](docs/react-components.md) |
 | API hook、QueryKey 和缓存失效如何组织 | [接口调用与 QueryKey](docs/api-and-query-key.md) |
 | 哪些聚合文件由 Plot 生成、CSS 如何进入最终应用 | [生成聚合文件与 CSS 链路](docs/generated-files-and-css.md) |
