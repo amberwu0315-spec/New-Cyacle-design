@@ -20,7 +20,7 @@ catalogs:
     '@cew-lib/file-viewer-pdf': '2.0.0'
     '@cew-lib/file-viewer-video': '2.0.0'
     '@cew-lib/report-template': '0.0.6'
-    '@crew-ui/base': '4.2.1'
+    '@crew-ui/base': '5.0.0'
     '@fontsource-variable/geist': '^5.2.9'
     '@tailwindcss/vite': '^4.3.2'
     '@tanstack/devtools-vite': '^0.8.1'

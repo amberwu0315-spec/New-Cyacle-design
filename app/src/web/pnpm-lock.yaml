@@ -34,8 +34,8 @@ catalogs:
       specifier: 0.0.6
       version: 0.0.6
     '@crew-ui/base':
-      specifier: 4.2.1
-      version: 4.2.1
+      specifier: 5.0.0
+      version: 5.0.0
     '@fontsource-variable/geist':
       specifier: ^5.2.9
       version: 5.3.0
@@ -355,7 +355,7 @@ importers:
         version: 0.0.6(@date-fns/tz@1.5.0)(@types/react@19.2.18)(class-variance-authority@0.7.1)(date-fns@4.4.0)(katex@0.16.47)(lucide-react@1.31.0(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@crew-ui/base':
         specifier: catalog:web
-        version: 4.2.1(@base-ui/react@1.7.0(@date-fns/tz@1.5.0)(@types/react@19.2.18)(date-fns@4.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
+        version: 5.0.0(@base-ui/react@1.7.0(@date-fns/tz@1.5.0)(@types/react@19.2.18)(date-fns@4.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@fontsource-variable/geist':
         specifier: catalog:web
         version: 5.3.0
@@ -714,8 +714,8 @@ packages:
       react: ^19.x
       react-dom: ^19.x
 
-  '@crew-ui/base@4.2.1':
-    resolution: {integrity: sha512-vN899SMrZ6oU1VbagZ4ExrnQVNNGKHti0NhnSFnR3z/c5t1xfYnLB85Zv6+Qc4eu8S5gS51MfZ0z18yv2qY/Ew==}
+  '@crew-ui/base@5.0.0':
+    resolution: {integrity: sha512-eYWos5VPk/wmkPl5V7T/vnpsdkfUCRMlMREW5JcWCDZCdR3LoYJz2VCtoYfvJPpt0IWBJFbAQylI7PowXmnH3Q==}
     peerDependencies:
       '@base-ui/react': ^1.7.0
       react: ^18.x || ^19.x
@@ -5064,7 +5064,7 @@ snapshots:
       - '@types/react'
       - date-fns
 
-  '@crew-ui/base@4.2.1(@base-ui/react@1.7.0(@date-fns/tz@1.5.0)(@types/react@19.2.18)(date-fns@4.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
+  '@crew-ui/base@5.0.0(@base-ui/react@1.7.0(@date-fns/tz@1.5.0)(@types/react@19.2.18)(date-fns@4.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8))(react-dom@19.2.8(react@19.2.8))(react@19.2.8)':
     dependencies:
       '@base-ui/react': 1.7.0(@date-fns/tz@1.5.0)(@types/react@19.2.18)(date-fns@4.4.0)(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
       '@tanstack/react-virtual': 3.14.9(react-dom@19.2.8(react@19.2.8))(react@19.2.8)
