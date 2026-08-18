@@ -4,6 +4,9 @@
 
 
 # vined - begin
+*.gen.css
+*.gen.ts
+*.gen.tsx
 *.local
 .DS_Store
 .cache/
@@ -21,6 +24,7 @@
 /app/skel
 /app/skeled
 /app/src/server
+/app/src/web/package.json
 /dev.yaml
 /domain/accounting
 /domain/accounting.core
@@ -48,13 +52,14 @@
 /domain/uic
 /domain/unit
 /domain/wecom
+/domain/matrix
 /go.work
 /go.work.sum
+/pnpm-workspace.yaml
 __unconfig*
 dist
 dist-ssr
 node_modules
+pnpm-lock.yaml
 todos.json
-vineModules.gen.ts
-vineStyles.gen.css
 # vined - end
