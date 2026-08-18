@@ -4,7 +4,8 @@ import {
   uploadFileWithFormData,
 } from './upload-service.shared'
 import { getWebProjectConfig } from '#/lib/web-project-config.ts'
-import { getSessionAuthorizationHeader } from '#/lib/session-cookie.ts'
+import { getSessionAuthorizationHeader } from '#/lib/session-storage.ts'
+import { getMessages, languageStore } from '#/lib/i18n/index.ts'
 
 export const FILE_SERVICE_PATH_PREFIX = '/file.FileWeb/FileService'
 
@@ -22,6 +23,10 @@ function getFilePrivateUploadPath() {
 
 function getFilePrivateDownloadPath() {
   return getWebProjectConfig().uploadServices.file.privateDownloadPath
+}
+
+function getUploadMessages() {
+  return getMessages(languageStore.getSnapshot()).common.upload
 }
 
 export function getFileDownloadUrl(recordId?: string | null, host?: string) {
@@ -67,7 +72,7 @@ export async function fetchFileDownloadBlob(
   const downloadUrl = getFileDownloadUrl(recordId)
 
   if (!downloadUrl) {
-    throw new Error('文件 ID 不能为空。')
+    throw new Error(getUploadMessages().fileIdRequired)
   }
 
   const headers = new Headers()
@@ -86,14 +91,15 @@ export async function fetchFileDownloadBlob(
 
   if (!response.ok) {
     throw new Error(
-      (await readResponseErrorMessage(response)) || '文件下载失败，请稍后重试。',
+      (await readResponseErrorMessage(response)) ||
+        getUploadMessages().fileDownloadFailed,
     )
   }
 
   const blob = await response.blob()
 
   if (!blob.size) {
-    throw new Error('文件内容为空。')
+    throw new Error(getUploadMessages().fileContentEmpty)
   }
 
   return blob
@@ -106,7 +112,7 @@ export async function uploadPublicFile(file: File, host?: string) {
   return uploadFileWithFormData(
     getFilePublicUploadPath(),
     formData,
-    '文件上传失败，请稍后重试。',
+    getUploadMessages().fileUploadFailed,
     host,
   )
 }
@@ -118,7 +124,7 @@ export async function uploadPrivateFile(file: File, host?: string) {
   return uploadFileWithFormData(
     getFilePrivateUploadPath(),
     formData,
-    '文件上传失败，请稍后重试。',
+    getUploadMessages().fileUploadFailed,
     host,
   )
 }
@@ -137,7 +143,7 @@ export function uploadPrivateFileWithProgress(
   return uploadFileWithFormDataByXhr(
     getFilePrivateUploadPath(),
     formData,
-    '文件上传失败，请稍后重试。',
+    getUploadMessages().fileUploadFailed,
     options,
   )
 }

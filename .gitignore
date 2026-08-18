@@ -27,6 +27,7 @@
 /dev.yaml
 /domain/accounting
 /domain/accounting.core
+/domain/agent
 /domain/ai.flow
 /domain/ai.model
 /domain/audit
@@ -46,8 +47,10 @@
 /domain/project.data
 /domain/record
 /domain/report
+/domain/search.indexer
 /domain/uic
 /domain/unit
+/domain/wecom
 /domain/matrix
 /go.work
 /go.work.sum

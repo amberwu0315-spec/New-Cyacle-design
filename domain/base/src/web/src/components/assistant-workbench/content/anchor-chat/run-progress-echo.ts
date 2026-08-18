@@ -1,4 +1,9 @@
-import type { AppLanguage, AppMessages } from '#/components/assistant-workbench/i18n/index.ts'
+import {
+  getAssistantWorkbenchMessages,
+  getCurrentLanguage,
+  type AppLanguage,
+  type AppMessages,
+} from '#/components/assistant-workbench/i18n/index.ts'
 import type { AssistantRunProgressGroup } from '../../model'
 
 type AssistantWorkbenchMessages = AppMessages['assistantWorkbench']
@@ -48,26 +53,16 @@ export interface AssistantRunProgressEchoSummary {
   sections: Array<AssistantRunProgressEchoSection>
 }
 
-const RUN_PROGRESS_STEP_LABELS: Record<string, string> = {
-  createModelSkeleton: '搭建模型骨架',
-  factorMapping: '匹配因子',
-  createDataRecords: '生成数据记录',
-  setOutputProduct: '设置研究对象',
-  done: '执行完成',
-}
-
-const MODEL_NODE_TYPE_LABELS: Record<string, string> = {
-  phases: '阶段',
-  modules: '模块',
-  unitProcesses: '单元过程',
-}
-
 function parseProgressItemData<T>(value: string) {
   try {
     return JSON.parse(value) as T
   } catch {
     return null
   }
+}
+
+function getFallbackMessages() {
+  return getAssistantWorkbenchMessages(getCurrentLanguage()).assistantWorkbench
 }
 
 function formatLocalizedText(
@@ -96,8 +91,9 @@ function buildKnownStepEcho(
     messages?: AssistantWorkbenchMessages
   } = {},
 ): AssistantRunProgressEchoSection | null {
-  const copy = options.messages?.runProgressEcho
-  const language = options.language ?? 'zh-CN'
+  const copy =
+    options.messages?.runProgressEcho ?? getFallbackMessages().runProgressEcho
+  const language = options.language ?? getCurrentLanguage()
 
   if (group.step === 'createModelSkeleton') {
     const latest = parseProgressItemData<ModelSkeletonProgressData>(
@@ -109,26 +105,19 @@ function buildKnownStepEcho(
       copy?.modelNodeTypes[
         modelNodeType as keyof AssistantWorkbenchMessages['runProgressEcho']['modelNodeTypes']
       ] ||
-      MODEL_NODE_TYPE_LABELS[modelNodeType] ||
       modelNodeType ||
       ''
 
     return {
       id: group.step,
-      title:
-        copy?.steps.createModelSkeleton ?? RUN_PROGRESS_STEP_LABELS[group.step],
-      metric:
-        copy?.metric.nodes(group.items.length) ??
-        `${group.items.length} 个节点`,
+      title: copy.steps.createModelSkeleton,
+      metric: copy.metric.nodes(group.items.length),
       description:
         nodeName && nodeType
-          ? (copy?.description.latestAdded(nodeName, nodeType) ??
-            `最近新增：${nodeName} · ${nodeType}`)
+          ? copy.description.latestAdded(nodeName, nodeType)
           : nodeName
-            ? (copy?.description.latestAdded(nodeName) ??
-              `最近新增：${nodeName}`)
-            : (copy?.description.modelSkeletonReady ??
-              '已生成阶段、模块和单元过程骨架。'),
+            ? copy.description.latestAdded(nodeName)
+            : copy.description.modelSkeletonReady,
     }
   }
 
@@ -144,19 +133,14 @@ function buildKnownStepEcho(
 
     return {
       id: group.step,
-      title: copy?.steps.factorMapping ?? RUN_PROGRESS_STEP_LABELS[group.step],
-      metric:
-        copy?.metric.matches(group.items.length) ??
-        `${group.items.length} 条匹配`,
+      title: copy.steps.factorMapping,
+      metric: copy.metric.matches(group.items.length),
       description:
         unitProcessName && factorName
-          ? (copy?.description.latestMatched(unitProcessName, factorName) ??
-            `最近匹配：${unitProcessName} -> ${factorName}`)
+          ? copy.description.latestMatched(unitProcessName, factorName)
           : unitProcessName
-            ? (copy?.description.latestMatched(unitProcessName) ??
-              `最近匹配：${unitProcessName}`)
-            : (copy?.description.factorMappingReady ??
-              '已为当前模型补齐因子匹配结果。'),
+            ? copy.description.latestMatched(unitProcessName)
+            : copy.description.factorMappingReady,
     }
   }
 
@@ -171,20 +155,14 @@ function buildKnownStepEcho(
 
     return {
       id: group.step,
-      title:
-        copy?.steps.createDataRecords ?? RUN_PROGRESS_STEP_LABELS[group.step],
-      metric:
-        copy?.metric.records(group.items.length) ??
-        `${group.items.length} 条记录`,
+      title: copy.steps.createDataRecords,
+      metric: copy.metric.records(group.items.length),
       description:
         recordName && amountLabel
-          ? (copy?.description.latestGenerated(recordName, amountLabel) ??
-            `最近生成：${recordName} · ${amountLabel}`)
+          ? copy.description.latestGenerated(recordName, amountLabel)
           : recordName
-            ? (copy?.description.latestGenerated(recordName) ??
-              `最近生成：${recordName}`)
-            : (copy?.description.dataRecordsReady ??
-              '已生成本轮核算需要的数据记录。'),
+            ? copy.description.latestGenerated(recordName)
+            : copy.description.dataRecordsReady,
     }
   }
 
@@ -197,16 +175,11 @@ function buildKnownStepEcho(
 
     return {
       id: group.step,
-      title:
-        copy?.steps.setOutputProduct ?? RUN_PROGRESS_STEP_LABELS[group.step],
-      metric: productName || copy?.metric.productUpdated || '研究对象已更新',
+      title: copy.steps.setOutputProduct,
+      metric: productName || copy.metric.productUpdated,
       description: latest?.isNewlyCreated
-        ? productDesc ||
-          copy?.description.outputProductCreated ||
-          '已新建研究对象并写入当前任务。'
-        : productDesc ||
-          copy?.description.outputProductReused ||
-          '已复用研究对象并写入当前任务。',
+        ? productDesc || copy.description.outputProductCreated
+        : productDesc || copy.description.outputProductReused,
     }
   }
 
@@ -217,12 +190,11 @@ function buildKnownStepEcho(
 
     return {
       id: group.step,
-      title: copy?.steps.done ?? RUN_PROGRESS_STEP_LABELS[group.step],
-      metric: copy?.metric.completed ?? '已完成',
+      title: copy.steps.done,
+      metric: copy.metric.completed,
       description: latest?.accountingId
-        ? (copy?.description.accountingResultReady ??
-          '执行结果已写入核算任务，可继续查看详情。')
-        : (copy?.description.done ?? '本轮执行已完成并返回结果。'),
+        ? copy.description.accountingResultReady
+        : copy.description.done,
     }
   }
 
@@ -233,10 +205,11 @@ function buildGenericStepEcho(
   group: AssistantRunProgressGroup,
   messages?: AssistantWorkbenchMessages,
 ): AssistantRunProgressEchoSection | null {
-  const stepLabels = messages?.runProgressEcho.steps
+  const runProgressMessages =
+    messages?.runProgressEcho ?? getFallbackMessages().runProgressEcho
+  const stepLabels = runProgressMessages.steps
   const stepLabel =
     stepLabels?.[group.step as keyof typeof stepLabels] ||
-    RUN_PROGRESS_STEP_LABELS[group.step] ||
     group.step.trim()
 
   if (!stepLabel) {
@@ -246,12 +219,8 @@ function buildGenericStepEcho(
   return {
     id: group.step,
     title: stepLabel,
-    metric:
-      messages?.runProgressEcho.metric.results(group.items.length) ??
-      `${group.items.length} 条结果`,
-    description:
-      messages?.runProgressEcho.description.generic ??
-      '已返回可用于回显的执行结果。',
+    metric: runProgressMessages.metric.results(group.items.length),
+    description: runProgressMessages.description.generic,
   }
 }
 
@@ -281,8 +250,8 @@ export function summarizeAssistantRunProgress(
 
   return {
     summary:
-      options.messages?.runProgressEcho.summary(sections.length, preview) ??
-      `${sections.length} 个阶段${preview ? ` · ${preview}` : ''}`,
+      (options.messages?.runProgressEcho ?? getFallbackMessages().runProgressEcho)
+        .summary(sections.length, preview),
     sections,
   }
 }

@@ -11,6 +11,22 @@ pnpm build                                   # 可选参数 --vrpcClientVersion=
 pnpm build -- --vrpcClientVersion=1.1.1
 ```
 
+从项目根目录启动完整应用时，通过 `VITE_APP_EDITION` 明确选择应用版本：
+
+```bash
+VITE_APP_EDITION=default plot app run
+```
+
+未配置时使用 `default`。未知版本会在启动 Web router 时直接报错，不会静默回退到其它版本。
+装配了定制领域的部署分支可将 `VITE_APP_EDITION` 设置为该领域注册的 edition ID；
+具体 ID 和启动命令由对应领域文档维护。
+
+默认版本继续把普通业务路由挂到公共 `shell` outlet。定制版本可以在
+`appEdition.routeMount` 中声明自己的顶层 outlet；该 outlet 会直接挂到
+`RootRoute`，领域可在自己的 pathless 根路由中提供 Layout，而不经过公共
+`ShellRoute`。具体 outlet 名称和 Layout 都由定制领域维护，app 层不判断具体
+edition 名称。
+
 ## 项目结构
 
 ```text
@@ -278,3 +294,9 @@ pnpm build
 - `src/router.ts`、`src/routes/`、`src/features/`、`src/components/` 可以承载项目 app 层自己的路由、页面和 shell 适配代码。
 - `src/globals.css` 可以放最终应用自己的全局样式补充。
 - base domain 负责跨 domain 共享能力，feature domain 负责领域页面，ship module 负责组合、运行入口、项目级路由和入口级配置。
+
+## Admin 后台
+
+`/admin` 用于迁移原 Matrix 后台功能。Admin 的路由和菜单由各 feature domain
+通过 `routeMounts.admin` 与 `capabilities.adminNav` 上报，app 只负责聚合，
+通用布局不保存业务菜单。详细约定见 [ADMIN.md](./ADMIN.md)。

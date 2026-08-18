@@ -1,4 +1,5 @@
 import * as React from 'react'
+import { useRender } from '@base-ui/react/use-render'
 import { ChevronDown, ChevronsLeft, ChevronsRight } from 'lucide-react'
 
 import {
@@ -7,6 +8,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '#/components/ui/popover.tsx'
+import { useTranslation } from '#/lib/i18n/index.ts'
 import { cn } from '#/lib/utils.ts'
 
 export type WorkbenchSidebarIcon = React.ElementType<{ className?: string }>
@@ -67,7 +69,10 @@ export type WorkbenchSidebarBottomProps = React.ComponentPropsWithoutRef<'div'>
 export type WorkbenchSidebarFooterProps = React.ComponentPropsWithoutRef<'div'>
 
 export interface WorkbenchSidebarItemProps
-  extends Omit<React.ComponentPropsWithoutRef<'button'>, 'children' | 'onSelect'> {
+  extends Omit<
+    useRender.ComponentProps<'button'>,
+    'children' | 'onSelect'
+  > {
   active?: boolean
   /**
    * Short label used when items are shown directly while collapsed.
@@ -103,11 +108,6 @@ interface ScrollEdges {
   bottom: boolean
 }
 
-const DEFAULT_LABELS: Required<WorkbenchSidebarLabels> = {
-  collapse: '收起菜单',
-  expand: '展开菜单',
-  navigation: '工作区菜单',
-}
 const DEFAULT_COLLAPSED_GROUP_BEHAVIOR: WorkbenchSidebarCollapsedGroupBehavior =
   'groups'
 const DEFAULT_EXPANDED_WIDTH = '12rem'
@@ -189,13 +189,14 @@ function WorkbenchSidebarRoot({
   style,
   ...props
 }: WorkbenchSidebarRootProps) {
+  const { t: messages } = useTranslation()
   const [uncontrolledExpanded, setUncontrolledExpanded] = React.useState(() =>
     readStoredExpanded(storageKey, defaultExpanded),
   )
   const expanded = controlledExpanded ?? uncontrolledExpanded
   const resolvedLabels = React.useMemo<Required<WorkbenchSidebarLabels>>(
-    () => ({ ...DEFAULT_LABELS, ...labels }),
-    [labels],
+    () => ({ ...messages.common.workbenchSidebar, ...labels }),
+    [labels, messages.common.workbenchSidebar],
   )
   const collapsedGroupPopoverHandle =
     React.useMemo<WorkbenchSidebarCollapsedGroupPopoverHandle>(
@@ -849,6 +850,7 @@ function WorkbenchSidebarItem({
   id,
   onClick,
   onSelect,
+  render,
   type = 'button',
   ...props
 }: WorkbenchSidebarItemProps) {
@@ -873,15 +875,15 @@ function WorkbenchSidebarItem({
     [disabled, onClick, onItemSelect, onSelect, payload],
   )
 
-  return (
-    <button
-      {...props}
-      type={type}
-      disabled={disabled}
-      aria-current={active ? 'page' : undefined}
-      data-active={active ? 'true' : 'false'}
-      data-slot="workbench-sidebar-item"
-      className={cn(
+  return useRender({
+    defaultTagName: 'button',
+    props: {
+      ...props,
+      type: render ? undefined : type,
+      disabled: render ? undefined : disabled,
+      'aria-current': active ? 'page' : undefined,
+      'data-active': active ? 'true' : 'false',
+      className: cn(
         'group/workbench-sidebar-item flex min-w-0 cursor-pointer items-center rounded-md text-left font-medium outline-none transition-[background-color,color,box-shadow] duration-150 focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-45',
         expanded
           ? 'h-8 w-full gap-2 px-2 text-sm'
@@ -890,33 +892,40 @@ function WorkbenchSidebarItem({
           ? 'bg-primary text-primary-foreground shadow-sm shadow-primary/25'
           : 'text-sidebar-foreground/78 hover:bg-muted hover:text-foreground',
         className,
-      )}
-      onClick={handleClick}
-    >
-      <span
-        className={cn(
-          'flex shrink-0 items-center justify-center transition-colors',
-          expanded ? 'size-4' : 'size-5',
-          active
-            ? 'text-primary-foreground'
-            : 'text-sidebar-foreground/72 group-hover/workbench-sidebar-item:text-foreground',
-        )}
-      >
-        <Icon className="size-4 shrink-0" />
-      </span>
-      <span
-        className={cn(
-          'truncate leading-none',
-          expanded
-            ? 'min-w-0 flex-1 text-[14px]'
-            : 'max-w-full text-[13px]',
-          active && 'font-semibold',
-        )}
-      >
-        {expanded ? children : (compactLabel ?? children)}
-      </span>
-    </button>
-  )
+      ),
+      onClick: handleClick,
+      children: (
+        <>
+          <span
+            className={cn(
+              'flex shrink-0 items-center justify-center transition-colors',
+              expanded ? 'size-4' : 'size-5',
+              active
+                ? 'text-primary-foreground'
+                : 'text-sidebar-foreground/72 group-hover/workbench-sidebar-item:text-foreground',
+            )}
+          >
+            <Icon className="size-4 shrink-0" />
+          </span>
+          <span
+            className={cn(
+              'truncate leading-none',
+              expanded
+                ? 'min-w-0 flex-1 text-[14px]'
+                : 'max-w-full text-[13px]',
+              active && 'font-semibold',
+            )}
+          >
+            {expanded ? children : (compactLabel ?? children)}
+          </span>
+        </>
+      ),
+    },
+    render,
+    state: {
+      slot: 'workbench-sidebar-item',
+    },
+  })
 }
 
 export const WorkbenchSidebar = Object.assign(WorkbenchSidebarRoot, {

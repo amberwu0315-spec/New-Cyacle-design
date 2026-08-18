@@ -2,10 +2,13 @@ import type { LucideIcon } from 'lucide-react'
 
 import { getMessages, languageStore } from '#/lib/i18n/index.ts'
 import type { SupportedLanguage } from '#/lib/i18n/index.ts'
-import type { WebDomain } from '#/routes/web-domain.ts'
+import type { WebDomain } from '../../../routes/web-domain.ts'
+import type { WorkspaceSelectionItem } from './workspace-selection.ts'
+import type { PermissionCodeMap } from '#/context/permission-context.tsx'
 
 export interface DomainNavMetaContext {
   language: SupportedLanguage
+  workspace?: WorkspaceSelectionItem | null
 }
 
 export interface DomainNavItemMeta {
@@ -14,12 +17,16 @@ export interface DomainNavItemMeta {
   desc: string
   to: string
   icon: LucideIcon
+  category?: string
+  standaloneScene?: boolean
+  permissionCode?: string
 }
 
 export interface DomainNavGroupMeta {
   id: string
   title: string | null
   items: Array<DomainNavItemMeta>
+  permissionCode?: string
 }
 
 export interface DomainNavMeta {
@@ -30,6 +37,7 @@ export interface DomainNavMeta {
   defaultTo: string
   category?: string
   groups: Array<DomainNavGroupMeta>
+  permissionCode?: string
 }
 
 export type DomainNavMetaFactory = (
@@ -38,6 +46,7 @@ export type DomainNavMetaFactory = (
 
 export interface AppLayoutDomainCapabilities extends Record<string, unknown> {
   nav?: DomainNavMetaFactory
+  permissionCodes?: ReadonlyArray<string>
 }
 
 export interface AppNavItem {
@@ -46,6 +55,8 @@ export interface AppNavItem {
   description: string
   to: string
   icon: LucideIcon
+  category?: string
+  standaloneScene?: boolean
 }
 
 export interface AppNavGroup {
@@ -77,6 +88,8 @@ export interface AppNavConfig {
 
 export interface AppNavConfigOptions {
   language?: SupportedLanguage
+  permissionCodeMap?: PermissionCodeMap
+  workspace?: WorkspaceSelectionItem | null
 }
 
 export const MOCK_USER = {
@@ -110,11 +123,59 @@ function createDefaultSceneId(defaultTo: string) {
   return pathKey ? `domain-${pathKey}` : 'domain-root'
 }
 
+function hasPermission(
+  permissionCodeMap: PermissionCodeMap | undefined,
+  code?: string,
+) {
+  return !permissionCodeMap || !code || Boolean(permissionCodeMap[code])
+}
+
 function normalizeDomainNavMeta(
   navMeta: DomainNavMeta,
   defaultCategory: string,
-): AppScene {
-  const defaultTo = normalizeNavPath(navMeta.defaultTo)
+  permissionCodeMap?: PermissionCodeMap,
+): AppScene | null {
+  if (!hasPermission(permissionCodeMap, navMeta.permissionCode)) {
+    return null
+  }
+
+  const groups = navMeta.groups.flatMap((group) => {
+    if (!hasPermission(permissionCodeMap, group.permissionCode)) {
+      return []
+    }
+
+    const items = group.items
+      .filter((item) => hasPermission(permissionCodeMap, item.permissionCode))
+      .map((item) => ({
+        id: item.id,
+        label: item.label,
+        description: item.desc,
+        to: normalizeNavPath(item.to),
+        icon: item.icon,
+        category: item.category,
+        standaloneScene: item.standaloneScene,
+      }))
+
+    return items.length
+      ? [
+          {
+            id: group.id,
+            title: group.title,
+            items,
+          },
+        ]
+      : []
+  })
+
+  if (!groups.length) {
+    return null
+  }
+
+  const requestedDefaultTo = normalizeNavPath(navMeta.defaultTo)
+  const visibleDefaultItem = groups
+    .flatMap((group) => group.items)
+    .find((item) => item.to === requestedDefaultTo)
+  const defaultTo = visibleDefaultItem?.to ?? groups[0]?.items[0]?.to ?? '/'
 
   return {
     id: navMeta.id ?? createDefaultSceneId(defaultTo),
@@ -123,17 +184,7 @@ function normalizeDomainNavMeta(
     category: navMeta.category ?? defaultCategory,
     icon: navMeta.icon,
     defaultTo,
-    groups: navMeta.groups.map((group) => ({
-      id: group.id,
-      title: group.title,
-      items: group.items.map((item) => ({
-        id: item.id,
-        label: item.label,
-        description: item.desc,
-        to: normalizeNavPath(item.to),
-        icon: item.icon,
-      })),
-    })),
+    groups,
   }
 }
 
@@ -160,6 +211,7 @@ export function createAppNavConfig(
   const t = getMessages(language)
   const navMetaContext = {
     language,
+    workspace: options.workspace ?? null,
   }
   const scenes: Array<AppScene> = []
   const categories: Array<AppSceneCategory> = []
@@ -174,7 +226,11 @@ export function createAppNavConfig(
     const scene = normalizeDomainNavMeta(
       navMeta,
       t.common.nav.categories.businessApps,
+      options.permissionCodeMap,
     )
+    if (!scene) {
+      continue
+    }
     scenes.push(scene)
 
     const category = categories.find((item) => item.title === scene.category)
@@ -194,6 +250,42 @@ export function createAppNavConfig(
     categories,
     defaultSceneId: scenes[0]?.id ?? '',
   }
+}
+
+export function createAppPermissionCodes(
+  webDomains: ReadonlyArray<WebDomain>,
+  options: Pick<AppNavConfigOptions, 'language' | 'workspace'> = {},
+) {
+  const language = options.language ?? languageStore.getSnapshot()
+  const context = {
+    language,
+    workspace: options.workspace ?? null,
+  }
+  const codes = new Set<string>()
+
+  for (const webDomain of webDomains) {
+    const capabilities = webDomain.capabilities as
+      | AppLayoutDomainCapabilities
+      | undefined
+
+    for (const code of capabilities?.permissionCodes ?? []) {
+      if (code) codes.add(code)
+    }
+
+    const navMeta = getDomainNavMeta(webDomain, context)
+    if (!navMeta) continue
+    if (navMeta.permissionCode) codes.add(navMeta.permissionCode)
+
+    for (const group of navMeta.groups) {
+      if (group.permissionCode) codes.add(group.permissionCode)
+
+      for (const item of group.items) {
+        if (item.permissionCode) codes.add(item.permissionCode)
+      }
+    }
+  }
+
+  return [...codes]
 }
 
 export function getSceneById(navConfig: AppNavConfig, sceneId: string) {

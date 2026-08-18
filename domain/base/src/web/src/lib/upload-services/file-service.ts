@@ -1,4 +1,4 @@
-import { vrpcHttpClient } from '#/lib/vrpc-client.ts'
+import { getVrpcHttpClient } from '#/lib/vrpc-client.ts'
 import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 
 export interface UploadedFileResource {
@@ -117,13 +117,13 @@ async function uploadFile(
   const formData = new FormData()
   formData.append('file', file)
 
-  const payload = await vrpcHttpClient.request<unknown>({
+  const payload = await getVrpcHttpClient().request<unknown>({
     path,
     method: 'POST',
     body: formData,
-    request: {
+    options: {
       suppressGlobalToast: true,
-      fetchOptions: {
+      requestInit: {
         cache: 'no-cache',
       },
     },

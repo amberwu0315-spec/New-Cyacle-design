@@ -159,6 +159,7 @@ export interface AssistantRunState {
     | 'cancelled'
   lastEventId?: string | null
   errorMessage?: string | null
+  terminalEventReceived?: boolean
 }
 
 export interface AssistantRunProgressItem {

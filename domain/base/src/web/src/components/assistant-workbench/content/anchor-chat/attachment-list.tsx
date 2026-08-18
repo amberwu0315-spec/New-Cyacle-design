@@ -12,13 +12,22 @@ import {
   type DocumentsPreviewItem,
 } from '#/components/assistant-workbench/document-preview.tsx'
 import { Button } from '#/components/ui/button.tsx'
-import { useOptionalI18n } from '#/components/assistant-workbench/i18n/index.ts'
+import {
+  getAssistantWorkbenchMessages,
+  getCurrentLanguage,
+  useOptionalI18n,
+} from '#/components/assistant-workbench/i18n/index.ts'
 import type { AppMessages } from '#/components/assistant-workbench/i18n/index.ts'
 import { cn } from '#/lib/utils.ts'
 import type { AssistantWorkbenchAttachment } from '../../model'
 import type { AssistantDraftAttachment } from './draft-attachments'
 
 type AssistantWorkbenchMessages = AppMessages['assistantWorkbench']
+const LEGACY_READY_STATUS = '\u5df2\u5c31\u7eea'
+
+function getFallbackMessages() {
+  return getAssistantWorkbenchMessages(getCurrentLanguage()).assistantWorkbench
+}
 
 export interface AssistantAnchorChatAttachmentItem {
   id: string
@@ -70,7 +79,7 @@ function buildAttachmentMetaText(
   const statusText =
     attachment.statusText &&
     attachment.statusText !== messages.attachments.status.ready &&
-    attachment.statusText !== '已就绪'
+    attachment.statusText !== LEGACY_READY_STATUS
       ? attachment.statusText
       : undefined
   const sizeText = attachment.sizeText?.trim()
@@ -128,6 +137,7 @@ export function normalizeAssistantDraftAttachment(
 ): AssistantAnchorChatAttachmentItem {
   const documentId = attachment.remoteFileId
   const statusMessages = messages?.attachments.status
+  const fallbackStatusMessages = getFallbackMessages().attachments.status
 
   return {
     id: attachment.id,
@@ -146,11 +156,11 @@ export function normalizeAssistantDraftAttachment(
     }),
     statusText:
       attachment.uploadStatus === 'uploading'
-        ? (statusMessages?.uploading ?? '上传中')
+        ? (statusMessages?.uploading ?? fallbackStatusMessages.uploading)
         : attachment.uploadStatus === 'failed'
-          ? (statusMessages?.failed ?? '上传失败')
+          ? (statusMessages?.failed ?? fallbackStatusMessages.failed)
           : attachment.uploadStatus === 'ready'
-            ? (statusMessages?.ready ?? '已就绪')
+            ? (statusMessages?.ready ?? fallbackStatusMessages.ready)
             : undefined,
     errorMessage: attachment.errorMessage,
   }
@@ -218,12 +228,14 @@ export function AssistantAnchorChatAttachmentList(props: {
           attachment.errorMessage ||
           attachment.statusText ===
             assistantMessages.attachments.status.failed ||
-          attachment.statusText === '上传失败',
+          attachment.statusText ===
+            getFallbackMessages().attachments.status.failed,
         )
         const isUploading =
           attachment.statusText ===
             assistantMessages.attachments.status.uploading ||
-          attachment.statusText === '上传中'
+          attachment.statusText ===
+            getFallbackMessages().attachments.status.uploading
         const cardClassName = cn(
           isComposerLayout
             ? 'group relative flex w-full flex-1 min-w-0 items-center gap-2.5 rounded-lg border px-2.5 py-2 pr-9 text-left shadow-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/40'

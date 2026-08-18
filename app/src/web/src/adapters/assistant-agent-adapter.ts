@@ -1,13 +1,15 @@
 import {
-  vrpcClient,
+  getVrpcClient,
   type AssistantAgentRuntimeConfig,
   type AssistantRawAgentServiceClient,
 } from '@carbonnt-cyacle/web-base'
 
-const LCA_AGENT_SERVICE_NAME = 'lca.core.AgentService'
+const AGENT_RPC_SERVICE_NAME = 'agent.AgentService'
+const AGENT_WEB_SERVICE_NAME = 'agent.AgentWeb'
 
 type AgentRequestOptions = {
   headers?: HeadersInit
+  operatorHeader?: string
   suppressGlobalToast?: boolean
 }
 
@@ -19,69 +21,118 @@ type AgentServiceResult<
   ? Awaited<TResult>
   : never
 
-function invokeLcaAgent<TResponse>(
+let agentVrpcInterceptorAttached = false
+
+function getAssistantAgentVrpcClient() {
+  const client = getVrpcClient()
+
+  if (agentVrpcInterceptorAttached) {
+    return client
+  }
+
+  // AgentService 仍要求旧的 vrpc-operator 请求头；0.9.1 会拒绝应用层直接覆盖
+  // vrpc-* 协议头，因此在协议校验完成后、transport 发送前补回该头。
+  client.use({
+    beforeRequest: (context) => {
+      if (context.request.serviceName !== AGENT_RPC_SERVICE_NAME) {
+        return
+      }
+
+      const options = context.request.options as AgentRequestOptions | undefined
+
+      if (!options?.operatorHeader) {
+        return
+      }
+
+      const headers = new Headers(context.init.headers)
+      headers.set('vrpc-operator', options.operatorHeader)
+      context.init.headers = headers
+    },
+  })
+
+  agentVrpcInterceptorAttached = true
+  return client
+}
+
+function invokeAgent<TResponse>(
   methodName: string,
   params: Record<string, unknown> | null,
   options?: AgentRequestOptions,
 ) {
-  return vrpcClient.invoke<TResponse>({
-    serviceName: LCA_AGENT_SERVICE_NAME,
+  const headers = new Headers(options?.headers)
+  const operatorHeader = headers.get('vrpc-operator') ?? undefined
+
+  headers.delete('vrpc-operator')
+
+  let hasHeaders = false
+  headers.forEach(() => {
+    hasHeaders = true
+  })
+
+  const requestOptions: AgentRequestOptions = {
+    ...options,
+    headers: hasHeaders ? headers : undefined,
+    operatorHeader,
+  }
+
+  return getAssistantAgentVrpcClient().invoke<TResponse>({
+    serviceName: AGENT_RPC_SERVICE_NAME,
     methodName,
     params,
-    options,
+    options: requestOptions,
   })
 }
 
-function buildLcaAgentServiceUrl(path: string) {
-  return `/${LCA_AGENT_SERVICE_NAME}/${path}`.replace(/\/+/g, '/')
+function buildAgentEventUrl(path: string) {
+  return `/${AGENT_WEB_SERVICE_NAME}/${path}`.replace(/\/+/g, '/')
 }
 
-function createLcaAssistantAgentService() {
+function createAssistantAgentService() {
   return {
     cancelRun: (runId, metas) =>
-      invokeLcaAgent<AgentServiceResult<'cancelRun'>>(
+      invokeAgent<AgentServiceResult<'cancelRun'>>(
         'cancelRun',
         { runId },
         metas as AgentRequestOptions,
       ),
     getMessages: (threadId, metas) =>
-      invokeLcaAgent<AgentServiceResult<'getMessages'>>(
+      invokeAgent<AgentServiceResult<'getMessages'>>(
         'getMessages',
         { threadId },
         metas as AgentRequestOptions,
       ),
     getPendingInteractions: (threadId, metas) =>
-      invokeLcaAgent<AgentServiceResult<'getPendingInteractions'>>(
+      invokeAgent<AgentServiceResult<'getPendingInteractions'>>(
         'getPendingInteractions',
         { threadId },
         metas as AgentRequestOptions,
       ),
     getRun: (runId, metas) =>
-      invokeLcaAgent<AgentServiceResult<'getRun'>>(
+      invokeAgent<AgentServiceResult<'getRun'>>(
         'getRun',
         { runId },
         metas as AgentRequestOptions,
       ),
     getRunProgress: (runId, metas) =>
-      invokeLcaAgent<AgentServiceResult<'getRunProgress'>>(
+      invokeAgent<AgentServiceResult<'getRunProgress'>>(
         'getRunProgress',
         { runId },
         metas as AgentRequestOptions,
       ),
     getThreads: (tags, metas) =>
-      invokeLcaAgent<AgentServiceResult<'getThreads'>>(
+      invokeAgent<AgentServiceResult<'getThreads'>>(
         'getThreads',
         { tags: tags?.length ? tags : null },
         metas as AgentRequestOptions,
       ),
     newThread: (tags, metas) =>
-      invokeLcaAgent<AgentServiceResult<'newThread'>>(
+      invokeAgent<AgentServiceResult<'newThread'>>(
         'newThread',
         { tags: tags?.length ? tags : null },
         metas as AgentRequestOptions,
       ),
     sendMessage: (threadId, message, orgInfo, threadTags, _language, metas) =>
-      invokeLcaAgent<AgentServiceResult<'sendMessage'>>(
+      invokeAgent<AgentServiceResult<'sendMessage'>>(
         'sendMessage',
         {
           threadId,
@@ -100,7 +151,7 @@ function createLcaAssistantAgentService() {
       orgInfo,
       metas,
     ) =>
-      invokeLcaAgent<AgentServiceResult<'submitInteraction'>>(
+      invokeAgent<AgentServiceResult<'submitInteraction'>>(
         'submitInteraction',
         {
           threadId,
@@ -117,10 +168,10 @@ function createLcaAssistantAgentService() {
   } satisfies AssistantRawAgentServiceClient
 }
 
-export function createLcaAssistantAgentRuntimeConfig() {
+export function createAssistantAgentRuntimeConfig() {
   return {
-    agentService: createLcaAssistantAgentService(),
-    buildAgentEventUrl: buildLcaAgentServiceUrl,
+    agentService: createAssistantAgentService(),
+    buildAgentEventUrl,
   } satisfies Pick<
     AssistantAgentRuntimeConfig,
     'agentService' | 'buildAgentEventUrl'

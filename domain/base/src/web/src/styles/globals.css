@@ -146,6 +146,15 @@ body {
   --sidebar-ring: oklch(0.551 0.027 264.364);
 }
 
+.cyacle-admin-theme {
+  --primary: #256fc4;
+  --primary-foreground: #ffffff;
+  --ring: #70a4dc;
+  --sidebar-primary: #256fc4;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-ring: #70a4dc;
+}
+
 @layer base {
   * {
     @apply border-border outline-ring/50;

@@ -3,7 +3,6 @@
 import * as React from 'react'
 import { createPortal } from 'react-dom'
 import { PanelRightClose, PanelRightOpen, Sparkles } from 'lucide-react'
-import { toast } from 'sonner'
 
 import {
   AssistantAnchorChatRenderer,
@@ -13,6 +12,7 @@ import {
 } from './content'
 import type { AssistantDraftAttachment } from './content'
 import { useAssistantAgentSession } from './controller'
+import { createAssistantRandomId } from './lib/id'
 import type { AssistantLaunchArea } from './model'
 import { AssistantResizableEmbeddedRenderer } from './ui'
 import {
@@ -29,6 +29,7 @@ import {
 } from '#/components/ui/tooltip.tsx'
 import { useOptionalI18n } from '#/components/assistant-workbench/i18n/index.ts'
 import { cn } from '#/lib/utils.ts'
+import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 
 import {
   agentCollaborationActions,
@@ -44,6 +45,7 @@ import type {
   UseAgentCollaborationPageOptions,
   UseAgentCollaborationPageResult,
 } from './page-agent-collaboration-store'
+import { toast } from '#/components/ui/toast.tsx'
 
 const ENTRY_SIZE = 48
 const ENTRY_SAFE_GAP = 32
@@ -216,7 +218,7 @@ function openAgentTarget(
     seedMessages: buildAssistantAnchorChatSeedMessages(launchArea, messages),
     renderMode: 'embedded',
     session: {
-      activationId: crypto.randomUUID(),
+      activationId: createAssistantRandomId(),
       threadStrategy: 'reuse-current-thread',
     },
   })
@@ -276,7 +278,10 @@ function DefaultAgentCollaborationPanel({
           messages: assistantMessages,
         })
         assistantWorkbenchActions.setAttachments(result.attachments)
-        result.rejectedMessages.forEach((message) => toast.error(message))
+        result.rejectedMessages.forEach((message) => toast.add({
+          type: 'error',
+          description: message,
+        }))
 
         const uploadedAttachments = await session.uploadAttachments(
           result.attachments,
@@ -284,15 +289,18 @@ function DefaultAgentCollaborationPanel({
         assistantWorkbenchActions.setAttachments(uploadedAttachments)
         uploadedAttachments.forEach((attachment) => {
           if (attachment.uploadStatus === 'failed' && attachment.errorMessage) {
-            toast.error(attachment.errorMessage)
+            // toast.error(attachment.errorMessage)
+            toast.add({
+              type: 'error',
+              description: attachment.errorMessage,
+            })
           }
         })
       } catch (error) {
-        toast.error(
-          error instanceof Error
-            ? error.message
-            : assistantMessages.errors.uploadFailed,
-        )
+        toast.add({
+          type: 'error',
+          description: error instanceof Error ? error.message : assistantMessages.errors.uploadFailed,
+        })
       }
     },
     [assistantMessages, session, snapshot.attachments],
@@ -308,11 +316,13 @@ function DefaultAgentCollaborationPanel({
       assistantWorkbenchActions.setAttachments(result.attachments)
       assistantWorkbenchActions.clearDraft()
     } catch (error) {
-      toast.error(
-        error instanceof Error
-          ? error.message
-          : assistantMessages.errors.messageSendFailed,
-      )
+      toast.add({
+        type: 'error',
+        description:
+          error instanceof Error
+            ? error.message
+            : assistantMessages.errors.messageSendFailed,
+      })
     }
   }, [assistantMessages, session, snapshot.attachments, snapshot.composerValue])
 
@@ -324,11 +334,13 @@ function DefaultAgentCollaborationPanel({
           attachments: [],
         })
       } catch (error) {
-        toast.error(
-          error instanceof Error
-            ? error.message
-            : assistantMessages.errors.messageSendFailed,
-        )
+        toast.add({
+          type: 'error',
+          description:
+            error instanceof Error
+              ? error.message
+              : assistantMessages.errors.messageSendFailed,
+        })
       }
     },
     [assistantMessages, session],
@@ -482,6 +494,14 @@ export function AgentAnchorButton({
 }
 
 export function AgentCollaborationRoot() {
+  if (!getWebProjectConfig().capabilities.agent.enabled) {
+    return null
+  }
+
+  return <EnabledAgentCollaborationRoot />
+}
+
+function EnabledAgentCollaborationRoot() {
   const config = useCurrentAgentCollaborationPageConfig()
   const assistantOpen = useAssistantWorkbenchSelector(
     (snapshot) => snapshot.open && snapshot.renderMode === 'embedded',

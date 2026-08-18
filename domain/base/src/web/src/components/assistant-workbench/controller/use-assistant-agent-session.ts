@@ -3,6 +3,7 @@ import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 import { useOptionalI18n } from '#/components/assistant-workbench/i18n/index.ts'
 import type { AppMessages } from '#/components/assistant-workbench/i18n/index.ts'
+import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 
 import type {
   AssistantWorkbenchThreadStrategy,
@@ -27,12 +28,43 @@ import {
   assistantAgentService,
   uploadAssistantDraftAttachment,
 } from '../service'
+import { createPrefixedAssistantId } from '../lib/id'
 
 const STREAM_FLUSH_INTERVAL_MS = 50
+const STREAM_RETRY_DELAY_MS = 1_000
+const RUN_STATUS_RECONCILIATION_INTERVAL_MS = 3_000
 type AssistantWorkbenchMessages = AppMessages['assistantWorkbench']
 
+function isRetryableNonTerminalStreamError(packet: AssistantStreamPacket) {
+  return (
+    packet.type === 'error' &&
+    packet.data?.terminal === false &&
+    packet.data?.retryable !== false
+  )
+}
+
+function waitForStreamRetry(signal: AbortSignal) {
+  return new Promise<void>((resolve) => {
+    if (signal.aborted) {
+      resolve()
+      return
+    }
+
+    const handleAbort = () => {
+      window.clearTimeout(timeoutId)
+      resolve()
+    }
+    const timeoutId = window.setTimeout(() => {
+      signal.removeEventListener('abort', handleAbort)
+      resolve()
+    }, STREAM_RETRY_DELAY_MS)
+
+    signal.addEventListener('abort', handleAbort, { once: true })
+  })
+}
+
 function buildOptimisticMessageId(prefix: string) {
-  return `${prefix}-${crypto.randomUUID()}`
+  return createPrefixedAssistantId(prefix)
 }
 
 function resolveDefaultThreadId(threads: Array<AssistantThreadSummary>) {
@@ -433,6 +465,18 @@ function canResumeRunStream(status: AssistantRunState['status']) {
   return status === 'queued' || status === 'running'
 }
 
+function shouldReconcileRunStatus(
+  status: AssistantRunState['status'],
+  terminalEventReceived?: boolean,
+) {
+  return (
+    status === 'queued' ||
+    status === 'running' ||
+    status === 'waiting_user' ||
+    (status === 'failed' && !terminalEventReceived)
+  )
+}
+
 function resolveResumeRunId(args: {
   preferredRunId?: string | null
   messages: Array<AssistantWorkbenchMessage>
@@ -490,7 +534,8 @@ export function useAssistantAgentSession(
   const assistantMessages = i18nMessages.assistantWorkbench
   const queryClient = useQueryClient()
   const assistantUserContext = useAssistantAgentUserContext()
-  const sessionEnabled = options.enabled !== false
+  const sessionEnabled =
+    getWebProjectConfig().capabilities.agent.enabled && options.enabled !== false
   const [currentThreadId, setCurrentThreadId] = React.useState<string | null>(
     null,
   )
@@ -537,6 +582,7 @@ export function useAssistantAgentSession(
     options.activeTarget,
   )
   const onMessageCompletedRef = React.useRef(options.onMessageCompleted)
+  const completedRunNotificationIdsRef = React.useRef<Set<string>>(new Set())
   const onRunProgressLoadedRef = React.useRef(options.onRunProgressLoaded)
   const handledThreadActivationIdRef = React.useRef<string | null>(null)
   const handledThreadScopeKeyRef = React.useRef<string | null>(null)
@@ -1178,6 +1224,159 @@ export function useAssistantAgentSession(
     threadScopeKey,
   ])
 
+  const notifyMessageCompleted = React.useCallback(async (runId: string) => {
+    const normalizedRunId = normalizeRunId(runId)
+
+    if (
+      normalizedRunId &&
+      completedRunNotificationIdsRef.current.has(normalizedRunId)
+    ) {
+      return
+    }
+
+    if (normalizedRunId) {
+      completedRunNotificationIdsRef.current.add(normalizedRunId)
+    }
+
+    if (onMessageCompletedRef.current) {
+      await onMessageCompletedRef.current(activeTargetRef.current)
+    }
+  }, [])
+
+  React.useEffect(() => {
+    const runId = normalizeRunId(currentRun?.runId)
+    const threadId = currentRun?.threadId.trim() ?? ''
+    const runStatus = currentRun?.status
+
+    if (
+      !requestContext ||
+      !runId ||
+      !threadId ||
+      !runStatus ||
+      !shouldReconcileRunStatus(
+        runStatus,
+        currentRun?.terminalEventReceived,
+      )
+    ) {
+      return
+    }
+
+    let disposed = false
+    let timeoutId: number | null = null
+
+    const scheduleNextReconciliation = () => {
+      if (disposed) {
+        return
+      }
+
+      timeoutId = window.setTimeout(() => {
+        void reconcileRunStatus()
+      }, RUN_STATUS_RECONCILIATION_INTERVAL_MS)
+    }
+
+    const reconcileRunStatus = async () => {
+      try {
+        const runDetail = await assistantAgentService.getRun(
+          requestContext,
+          runId,
+        )
+
+        if (
+          disposed ||
+          normalizeRunId(runDetail.id) !== runId ||
+          runDetail.threadId.trim() !== threadId
+        ) {
+          return
+        }
+
+        const nextRunStatus = normalizeRunDetailStatus(runDetail.status)
+
+        if (nextRunStatus === 'idle') {
+          return
+        }
+
+        if (nextRunStatus === 'waiting_user') {
+          setCurrentRun((current) =>
+            current?.runId === runId
+              ? { ...current, status: 'waiting_user' }
+              : current,
+          )
+
+          const hasPendingInteraction = pendingInteractionsRef.current.some(
+            (interaction) =>
+              interaction.runId === runId &&
+              isUnresolvedPendingInteraction(interaction),
+          )
+
+          if (runStatus !== 'waiting_user' || !hasPendingInteraction) {
+            await refreshCurrentThread().catch(() => undefined)
+          }
+          return
+        }
+
+        if (nextRunStatus === 'queued' || nextRunStatus === 'running') {
+          if (nextRunStatus !== runStatus) {
+            setCurrentRun((current) =>
+              current?.runId === runId
+                ? { ...current, status: nextRunStatus }
+                : current,
+            )
+          }
+          return
+        }
+
+        runAbortControllerRef.current?.abort()
+        runAbortControllerRef.current = null
+        flushBufferedStreamingChunks()
+        lastStreamingMessageIdRef.current = null
+        setLiveSyncThreadId((current) =>
+          current === threadId ? null : current,
+        )
+        setCurrentRun((current) =>
+          current?.runId === runId
+            ? {
+                ...current,
+                status: nextRunStatus,
+                terminalEventReceived: true,
+              }
+            : current,
+        )
+
+        await Promise.allSettled([
+          refreshCurrentThread(),
+          loadRunProgress(runId, { force: true }),
+        ])
+
+        if (nextRunStatus === 'completed') {
+          await notifyMessageCompleted(runId)
+        }
+      } catch {
+        // 状态校准只是 SSE 的兜底，临时失败时保留当前运行并等待下一轮。
+      } finally {
+        scheduleNextReconciliation()
+      }
+    }
+
+    scheduleNextReconciliation()
+
+    return () => {
+      disposed = true
+      if (timeoutId != null) {
+        window.clearTimeout(timeoutId)
+      }
+    }
+  }, [
+    currentRun?.runId,
+    currentRun?.status,
+    currentRun?.terminalEventReceived,
+    currentRun?.threadId,
+    flushBufferedStreamingChunks,
+    loadRunProgress,
+    notifyMessageCompleted,
+    refreshCurrentThread,
+    requestContext,
+  ])
+
   const settleStreamingAssistantMessageAfterCancel = React.useCallback(() => {
     flushBufferedStreamingChunks()
     const assistantMessageId = lastStreamingMessageIdRef.current
@@ -1528,13 +1727,20 @@ export function useAssistantAgentSession(
             : current,
         )
 
-        if (onMessageCompletedRef.current) {
-          await onMessageCompletedRef.current(activeTargetRef.current)
-        }
+        await notifyMessageCompleted(packet.runId)
         return
       }
 
       if (packet.type === 'error') {
+        if (packet.data?.terminal === false) {
+          setCurrentRun((current) =>
+            current && packet.id.trim()
+              ? { ...current, lastEventId: packet.id }
+              : current,
+          )
+          return
+        }
+
         flushBufferedStreamingChunks()
         const errorMessage =
           typeof packet.data?.message === 'string'
@@ -1562,6 +1768,7 @@ export function useAssistantAgentSession(
                 status: 'failed',
                 errorMessage,
                 lastEventId: packet.id,
+                terminalEventReceived: true,
               }
             : current,
         )
@@ -1597,15 +1804,20 @@ export function useAssistantAgentSession(
             return current
           }
 
-          return current.status === 'waiting_user' ||
-            current.status === 'failed' ||
-            current.status === 'cancelled'
-            ? current
-            : {
-                ...current,
-                status: 'completed',
-                lastEventId: packet.id,
-              }
+          if (current.status === 'waiting_user') {
+            return current
+          }
+
+          if (current.status === 'failed' || current.status === 'cancelled') {
+            return { ...current, terminalEventReceived: true }
+          }
+
+          return {
+            ...current,
+            status: 'completed',
+            lastEventId: packet.id,
+            terminalEventReceived: true,
+          }
         })
       }
     },
@@ -1613,6 +1825,7 @@ export function useAssistantAgentSession(
       assistantMessages,
       flushBufferedStreamingChunks,
       loadRunProgress,
+      notifyMessageCompleted,
       refreshCurrentThread,
       scheduleStreamingFlush,
       setSyncedPendingInteractions,
@@ -1635,15 +1848,34 @@ export function useAssistantAgentSession(
       runAbortControllerRef.current = abortController
 
       try {
-        await assistantAgentService.subscribeToRun(requestContext, {
-          runId: args.runId,
-          lastEventId: args.lastEventId,
-          signal: abortController.signal,
-          eventStreamFailedMessage: assistantMessages.errors.eventStreamFailed,
-          onPacket: (packet) => {
-            void handleStreamPacket(packet)
-          },
-        })
+        let lastEventId = args.lastEventId
+
+        while (!abortController.signal.aborted) {
+          const retryState = { shouldRetry: false }
+
+          await assistantAgentService.subscribeToRun(requestContext, {
+            runId: args.runId,
+            lastEventId,
+            signal: abortController.signal,
+            eventStreamFailedMessage:
+              assistantMessages.errors.eventStreamFailed,
+            onPacket: (packet) => {
+              if (isRetryableNonTerminalStreamError(packet)) {
+                retryState.shouldRetry = true
+              } else if (packet.id.trim()) {
+                lastEventId = packet.id
+              }
+
+              void handleStreamPacket(packet)
+            },
+          })
+
+          if (!retryState.shouldRetry || abortController.signal.aborted) {
+            return
+          }
+
+          await waitForStreamRetry(abortController.signal)
+        }
       } catch (error) {
         handleStreamSubscriptionFailure({
           error,
@@ -1733,6 +1965,10 @@ export function useAssistantAgentSession(
         threadId: runThreadId,
         messageId: runDetail.messageId || null,
         status: nextRunStatus,
+        terminalEventReceived:
+          nextRunStatus === 'completed' ||
+          nextRunStatus === 'failed' ||
+          nextRunStatus === 'cancelled',
       })
 
       if (!canResumeRunStream(nextRunStatus)) {
@@ -2028,7 +2264,7 @@ export function useAssistantAgentSession(
         args.content.trim() ||
         (readyAttachments.length > 0
           ? (options.defaultAttachmentOnlyPrompt ??
-            '请结合我上传的文件继续分析。')
+            assistantMessages.composer.defaultAttachmentOnlyPrompt)
           : '')
 
       if (!normalizedContent) {
@@ -2303,6 +2539,7 @@ export function useAssistantAgentSession(
         ? {
             ...current,
             status: 'cancelled',
+            terminalEventReceived: true,
           }
         : current,
     )

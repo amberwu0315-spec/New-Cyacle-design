@@ -1,4 +1,8 @@
 import type { AssistantDraftAttachment } from '../content'
+import {
+  getAssistantWorkbenchMessages,
+  getCurrentLanguage,
+} from '../i18n/index.ts'
 import { uploadConfiguredAssistantAttachment } from './agent-service-runtime'
 
 export async function uploadAssistantDraftAttachment(
@@ -9,11 +13,13 @@ export async function uploadAssistantDraftAttachment(
   },
 ) {
   const organizationId = options.organizationId?.trim()
+  const messages =
+    getAssistantWorkbenchMessages(getCurrentLanguage()).assistantWorkbench
 
   if (!organizationId) {
     throw new Error(
       options.missingOrganizationMessage ??
-        '当前组织信息缺失，暂时无法上传附件。',
+        messages.errors.missingOrganizationForUpload,
     )
   }
 

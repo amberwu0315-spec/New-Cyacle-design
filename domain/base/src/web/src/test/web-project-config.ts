@@ -2,6 +2,11 @@ import { configureWebProjectConfig } from '#/lib/web-project-config.ts'
 
 export function configureTestWebProjectConfig() {
   configureWebProjectConfig({
+    capabilities: {
+      agent: { enabled: true },
+      dataRecordMap: { enabled: true },
+      languageSwitcher: { enabled: true },
+    },
     routes: {
       loginPath: '/uic/login',
     },

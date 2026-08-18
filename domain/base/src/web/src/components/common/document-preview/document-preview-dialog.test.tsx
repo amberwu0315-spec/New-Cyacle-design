@@ -7,7 +7,7 @@ import {
   clearSessionCredential,
   setSessionCredential,
   setSessionScope,
-} from '#/lib/session-cookie.ts'
+} from '#/lib/session-storage.ts'
 import { configureTestWebProjectConfig } from '#/test/web-project-config.ts'
 
 import { DocumentPreviewDialog } from './document-preview-dialog'

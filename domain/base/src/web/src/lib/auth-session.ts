@@ -1,8 +1,18 @@
-import { queryClient } from '#/lib/query-client.tsx'
-import { clearSessionCredential } from '#/lib/session-cookie.ts'
+import { getQueryClient } from '#/context/query-client.tsx'
+import { clearSessionCredential } from '#/lib/session-storage.ts'
 import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 
 let isRedirectingToLogin = false
+let loginPathOverride: string | undefined
+
+export function setAuthLoginPathOverride(loginPath?: string) {
+  const previousLoginPathOverride = loginPathOverride
+  loginPathOverride = loginPath
+
+  return () => {
+    loginPathOverride = previousLoginPathOverride
+  }
+}
 
 function getCurrentRedirectPath(loginPath: string) {
   if (typeof window === 'undefined') {
@@ -31,19 +41,20 @@ function createLoginPath(
 
 export function clearAuthSessionSideEffects() {
   clearSessionCredential()
-  queryClient.clear()
+  getQueryClient().clear()
 }
 
-export function redirectToLoginWithCurrentLocation() {
+export function redirectToLoginWithCurrentLocation(loginPath?: string) {
   clearAuthSessionSideEffects()
 
   if (typeof window === 'undefined') {
     return
   }
 
-  const { loginPath } = getWebProjectConfig().routes
+  const resolvedLoginPath =
+    loginPath ?? loginPathOverride ?? getWebProjectConfig().routes.loginPath
 
-  if (window.location.pathname === loginPath) {
+  if (window.location.pathname === resolvedLoginPath) {
     return
   }
 
@@ -52,5 +63,5 @@ export function redirectToLoginWithCurrentLocation() {
   }
 
   isRedirectingToLogin = true
-  window.location.replace(createLoginPath(loginPath))
+  window.location.replace(createLoginPath(resolvedLoginPath))
 }

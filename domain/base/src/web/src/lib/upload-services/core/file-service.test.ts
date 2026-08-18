@@ -18,7 +18,7 @@ import {
   clearSessionCredential,
   setSessionCredential,
   setSessionScope,
-} from '#/lib/session-cookie.ts'
+} from '#/lib/session-storage.ts'
 
 beforeEach(() => {
   const localStorageStore = new Map<string, string>()

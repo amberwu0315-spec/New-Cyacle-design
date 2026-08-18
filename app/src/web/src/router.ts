@@ -6,24 +6,89 @@ import {
   defineWebDomainRouteOutlets,
   resolveWebDomainRouteMount,
 } from '@carbonnt-cyacle/web-base'
+import {
+  ensurePermissions,
+  fetchOrganizationProfile,
+  getSelectedWorkspaceScope,
+} from '@carbonnt-cyacle/web-uic/pub'
 
 import { AppLayout } from '#/components/layouts/app-layout/index.ts'
+import {
+  createConfiguredAppNavConfig,
+  resolveAppEditionHomeTo,
+} from '#/components/layouts/app-layout/app-nav-config.ts'
+import { AppRoutePendingFallback } from '#/components/routes/app-route-pending-fallback.tsx'
 import { AppNotFoundPage } from '#/features/not-found/page.tsx'
+import { adminHomeTo } from '#/admin/admin-config.ts'
+import { resolveSystemEntryHomeTo } from '#/system-entry.ts'
+import {
+  getAppEdition,
+  resolveAppEditionRegistration,
+} from '#/app-edition.ts'
 import { createHomeRoute } from '#/routes/home-route.ts'
+import {
+  createAdminHomeRoute,
+  createAdminRoute,
+} from '#/routes/admin/index.ts'
 import { webModules } from '#/vineModules.gen.ts'
+import { appPermissionCodes } from '#/app-permissions.ts'
 
 const appRouteOutlets = defineWebDomainRouteOutlets({
+  admin: 'admin',
   root: 'root',
   shell: 'shell',
 })
 
 const RootRoute = createRootRoute()
 
+const appEdition = getAppEdition()
+const appEditionRegistration = resolveAppEditionRegistration(
+  webModules,
+  appEdition,
+)
+
 const ShellRoute = createRoute({
   getParentRoute: () => RootRoute,
   id: 'shell',
   component: AppLayout,
 })
+
+const AdminRoute = createAdminRoute({ parentRoute: RootRoute })
+
+const appEditionHomeTo = resolveAppEditionHomeTo(webModules, appEdition)
+async function resolveDefaultSystemHomeTo() {
+  let frontendHomeTo = appEditionHomeTo
+
+  try {
+    const permissionCodeMap = await ensurePermissions({
+      codes: appPermissionCodes,
+      suppressGlobalToast: true,
+      workspaceScope: getSelectedWorkspaceScope(),
+    })
+    frontendHomeTo =
+      createConfiguredAppNavConfig(
+        webModules,
+        { permissionCodeMap },
+        appEdition,
+      ).scenes[0]?.defaultTo ?? appEditionHomeTo
+  } catch {
+    // 权限加载失败时沿用默认入口，具体页面仍由权限守卫处理。
+  }
+
+  try {
+    const organizationProfile = await fetchOrganizationProfile({
+      suppressGlobalToast: true,
+    })
+
+    return resolveSystemEntryHomeTo({
+      adminHomeTo,
+      businessCodes: organizationProfile?.businessCodes,
+      frontendHomeTo,
+    })
+  } catch {
+    return frontendHomeTo
+  }
+}
 
 const rootDomainRoutes = resolveWebDomainRouteMount({
   domains: webModules,
@@ -37,18 +102,52 @@ const shellDomainRoutes = resolveWebDomainRouteMount({
   parentRoute: ShellRoute,
 })
 
+const adminDomainRoutes = resolveWebDomainRouteMount({
+  domains: webModules,
+  outlet: appRouteOutlets.admin,
+  parentRoute: AdminRoute,
+})
+
+const appEditionRoutes = appEditionRegistration
+  ? [
+      createHomeRoute({
+        defaultTo: appEditionHomeTo,
+        parentRoute: RootRoute,
+      }),
+      ...resolveWebDomainRouteMount({
+        domains: webModules,
+        outlet: appEditionRegistration.routeMount,
+        parentRoute: RootRoute,
+      }),
+    ]
+  : [
+      AdminRoute.addChildren([
+        createAdminHomeRoute({
+          parentRoute: AdminRoute,
+        }),
+        ...adminDomainRoutes,
+      ]),
+      ShellRoute.addChildren([
+        createHomeRoute({
+          defaultTo: resolveDefaultSystemHomeTo,
+          parentRoute: ShellRoute,
+        }),
+        createWorkbenchSidebarDemoRoute({ parentRoute: ShellRoute }),
+        ...shellDomainRoutes,
+      ]),
+    ]
+
 const routeTree = RootRoute.addChildren([
   ...rootDomainRoutes,
-  ShellRoute.addChildren([
-    createHomeRoute({ parentRoute: ShellRoute }),
-    createWorkbenchSidebarDemoRoute({ parentRoute: ShellRoute }),
-    ...shellDomainRoutes,
-  ]),
+  ...appEditionRoutes,
 ])
 
 export const router = createRouter({
   routeTree,
   defaultNotFoundComponent: AppNotFoundPage,
+  defaultPendingComponent: AppRoutePendingFallback,
+  defaultPendingMinMs: 300,
+  defaultPendingMs: 150,
   defaultPreload: 'intent',
   scrollRestoration: true,
 })

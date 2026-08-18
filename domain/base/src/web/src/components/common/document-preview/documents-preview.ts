@@ -5,6 +5,7 @@ import {
   getDocumentDownloadUrl,
   getDocumentPreviewImageUrl,
 } from '#/lib/upload-services/core/document-service.ts'
+import { getMessages, languageStore } from '#/lib/i18n/index.ts'
 import { getFileDownloadUrl } from '#/lib/upload-services/core/file-service.ts'
 
 import {
@@ -119,6 +120,10 @@ function shouldUseGeneratedPreview(name: string) {
   return PDF_CONVERTIBLE_EXTENSIONS.has(extension)
 }
 
+function getDocumentPreviewMessages() {
+  return getMessages(languageStore.getSnapshot()).common.documentPreview
+}
+
 export function createDocumentPreviewItem(
   entry: DocumentsPreviewDocumentEntry,
 ): DocumentsPreviewItem {
@@ -150,6 +155,7 @@ export function createDocumentPreviewItemFromDocument(input: {
     useRawVersion: true,
   })
   const size = input.size ?? undefined
+  const messages = getDocumentPreviewMessages()
 
   return {
     id: input.id,
@@ -168,20 +174,20 @@ export function createDocumentPreviewItemFromDocument(input: {
       size,
       infoPanel: {
         documentInfo: {
-          title: '文档信息',
+          title: messages.info.documentTitle,
           items: [
-            { label: '来源', value: '文档管理' },
-            { label: '版本', value: input.version || '-' },
+            { label: messages.info.source, value: messages.info.documentSource },
+            { label: messages.info.version, value: input.version || '-' },
             {
-              label: '大小',
+              label: messages.info.size,
               value: formatDocumentFileSize(input.size ?? null),
             },
             {
-              label: '创建时间',
+              label: messages.info.createdAt,
               value: formatDocumentDate(input.createdAt ?? null),
             },
             {
-              label: '更新时间',
+              label: messages.info.updatedAt,
               value: formatDocumentDate(input.updatedAt ?? null),
             },
           ],
@@ -218,6 +224,7 @@ export function createFilePreviewItem(input: {
     ? withPreviewGenerate(directUrl)
     : directUrl
   const size = input.size ?? undefined
+  const messages = getDocumentPreviewMessages()
 
   return {
     id: input.id,
@@ -235,11 +242,11 @@ export function createFilePreviewItem(input: {
       size,
       infoPanel: {
         documentInfo: {
-          title: '文件信息',
+          title: messages.info.fileTitle,
           items: [
-            { label: '来源', value: '文件服务' },
+            { label: messages.info.source, value: messages.info.fileSource },
             {
-              label: '大小',
+              label: messages.info.size,
               value: formatDocumentFileSize(input.size ?? null),
             },
           ],

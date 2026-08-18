@@ -7,6 +7,7 @@ import { Button } from '#/components/ui/button.tsx'
 import { Spinner } from '#/components/ui/spinner.tsx'
 import { cn } from '#/lib/utils.ts'
 import { fetchDocumentBlobByUrl } from '#/lib/upload-services/core/document-service.ts'
+import { getMessages, languageStore, useTranslation } from '#/lib/i18n/index.ts'
 
 import type { DocumentsPreviewItem } from './documents-preview'
 
@@ -45,9 +46,11 @@ const AUTHORIZED_INLINE_PREVIEW_IDLE_STATE: AuthorizedInlinePreviewState = {
 
 export interface InlineDocumentPreviewProps {
   className?: string
+  download?: ViewerContentProps['download']
   emptyDescription?: string
   emptyTitle?: string
   item: DocumentsPreviewItem | null
+  toolbar?: ViewerContentProps['toolbar']
   viewerClassName?: string
 }
 
@@ -78,12 +81,18 @@ function getPreviewErrorMessage(error: unknown) {
     return error.message
   }
 
-  return '文档预览加载失败，请稍后重试。'
+  return getMessages(
+    languageStore.getSnapshot(),
+  ).common.documentPreview.loadFailedMessage
 }
 
 function createObjectUrl(blob: Blob) {
   if (typeof URL === 'undefined' || typeof URL.createObjectURL !== 'function') {
-    throw new Error('当前环境不支持文档预览。')
+    throw new Error(
+      getMessages(
+        languageStore.getSnapshot(),
+      ).common.documentPreview.unsupportedEnvironment,
+    )
   }
 
   return URL.createObjectURL(blob)
@@ -236,7 +245,7 @@ function InlinePreviewState({
   title: string
 }) {
   return (
-    <div className="flex h-full min-h-[420px] flex-col items-center justify-center gap-3 px-6 text-center text-sm text-muted-foreground">
+    <div className="flex h-full min-h-[420px] w-full min-w-0 flex-col items-center justify-center gap-3 px-6 text-center text-sm text-muted-foreground">
       {loading ? <Spinner className="size-5" /> : <FileText className="size-8" />}
       <div className="font-medium text-foreground">{title}</div>
       <div className="max-w-md leading-relaxed">{description}</div>
@@ -247,13 +256,20 @@ function InlinePreviewState({
 
 export function InlineDocumentPreview({
   className,
-  emptyDescription = '当前文件还没有可用的预览内容。',
-  emptyTitle = '暂无文件预览',
+  download,
+  emptyDescription,
+  emptyTitle,
   item,
+  toolbar,
   viewerClassName,
 }: InlineDocumentPreviewProps) {
+  const { t: messages } = useTranslation()
+  const previewMessages = messages.common.documentPreview
   const [reloadToken, setReloadToken] = React.useState(0)
   const authorizedPreview = useAuthorizedInlinePreviewItem(item, reloadToken)
+  const resolvedEmptyDescription =
+    emptyDescription ?? previewMessages.emptyDescription
+  const resolvedEmptyTitle = emptyTitle ?? previewMessages.emptyTitle
   const handleRetry = React.useCallback(() => {
     setReloadToken((current) => current + 1)
   }, [])
@@ -262,13 +278,13 @@ export function InlineDocumentPreview({
     return (
       <div
         className={cn(
-          'flex h-full min-h-[420px] min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
+          'flex h-full min-h-[420px] w-full min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
           className,
         )}
       >
         <InlinePreviewState
-          description={emptyDescription}
-          title={emptyTitle}
+          description={resolvedEmptyDescription}
+          title={resolvedEmptyTitle}
         />
       </div>
     )
@@ -278,14 +294,14 @@ export function InlineDocumentPreview({
     return (
       <div
         className={cn(
-          'flex h-full min-h-[420px] min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
+          'flex h-full min-h-[420px] w-full min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
           className,
         )}
       >
         <InlinePreviewState
-          description="正在读取文件内容并加载预览器。"
+          description={previewMessages.loadingDocument}
           loading
-          title="文件预览加载中"
+          title={previewMessages.loadingDocument}
         />
       </div>
     )
@@ -295,7 +311,7 @@ export function InlineDocumentPreview({
     return (
       <div
         className={cn(
-          'flex h-full min-h-[420px] min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
+          'flex h-full min-h-[420px] w-full min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
           className,
         )}
       >
@@ -303,11 +319,11 @@ export function InlineDocumentPreview({
           action={
             <Button type="button" variant="outline" onClick={handleRetry}>
               <RefreshCw className="size-4" />
-              重试
+              {previewMessages.retry}
             </Button>
           }
           description={authorizedPreview.error}
-          title="文件预览加载失败"
+          title={previewMessages.loadFailedTitle}
         />
       </div>
     )
@@ -316,24 +332,26 @@ export function InlineDocumentPreview({
   return (
     <div
       className={cn(
-        'flex h-full min-h-[420px] min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
+        'flex h-full min-h-[420px] w-full min-w-0 flex-1 overflow-hidden rounded-lg border bg-card',
         className,
       )}
     >
       <React.Suspense
         fallback={
-          <div className="flex h-full flex-1 items-center justify-center gap-2 text-sm text-muted-foreground">
+          <div className="flex h-full w-full min-w-0 flex-1 items-center justify-center gap-2 text-sm text-muted-foreground">
             <Spinner className="size-4" />
-            正在加载预览器...
+            {previewMessages.loadingViewer}
           </div>
         }
       >
         <InlineDocumentPreviewContent
           file={authorizedPreview.item?.viewerFile ?? null}
-          className="h-full flex-1"
+          className="h-full w-full min-w-0 flex-1"
+          download={download}
+          toolbar={toolbar}
           classNames={{
             root: cn(
-              'documents-preview-viewer h-full rounded-none border-0',
+              'documents-preview-viewer h-full w-full min-w-0 rounded-none !border-0',
               viewerClassName,
             ),
           }}

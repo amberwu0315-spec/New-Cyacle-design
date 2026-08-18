@@ -7,6 +7,7 @@ import {
   DialogTitle,
 } from '#/components/ui/dialog.tsx'
 import { Button } from '#/components/ui/button.tsx'
+import { useOptionalI18n } from './i18n/index.ts'
 
 export type DocumentsPreviewSource = 'document' | 'file'
 
@@ -227,6 +228,8 @@ export function DocumentPreviewDialog({
   onOpenChange,
   open,
 }: DocumentPreviewDialogProps) {
+  const { messages } = useOptionalI18n()
+  const previewMessages = messages.assistantWorkbench.documentPreview
   const handleDownload = React.useCallback(() => {
     if (!item) {
       return
@@ -243,7 +246,7 @@ export function DocumentPreviewDialog({
       <DialogContent className="flex h-[min(720px,calc(100vh-48px))] max-w-[min(960px,calc(100vw-32px))] grid-rows-[auto_1fr] p-0">
         <DialogHeader className="border-b px-4 py-3">
           <DialogTitle className="truncate pr-8">
-            {item?.name || '附件预览'}
+            {item?.name || previewMessages.attachmentPreview}
           </DialogTitle>
         </DialogHeader>
 
@@ -270,10 +273,10 @@ export function DocumentPreviewDialog({
             )
           ) : (
             <div className="flex h-full flex-col items-center justify-center gap-4 text-center text-sm text-muted-foreground">
-              <p>当前附件暂不支持内嵌预览。</p>
+              <p>{previewMessages.unsupportedAttachmentPreview}</p>
               {item?.url || item?.rawUrl ? (
                 <Button type="button" onClick={handleDownload}>
-                  下载附件
+                  {previewMessages.downloadAttachment}
                 </Button>
               ) : null}
             </div>

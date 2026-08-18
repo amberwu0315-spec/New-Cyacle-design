@@ -1,5 +1,7 @@
+import { getMessages, languageStore } from '#/lib/i18n/index.ts'
+
 export class UploadAbortError extends Error {
-  constructor(message = '已取消上传') {
+  constructor(message = getUploadMessages().uploadCanceled) {
     super(message)
     this.name = 'UploadAbortError'
   }
@@ -42,12 +44,16 @@ interface UploadPoolTaskRecord {
   settled: boolean
 }
 
+function getUploadMessages() {
+  return getMessages(languageStore.getSnapshot()).common.upload
+}
+
 function normalizeUploadError(error: unknown) {
   if (error instanceof Error) {
     return error
   }
 
-  return new Error('上传失败，请稍后重试。')
+  return new Error(getUploadMessages().uploadFailed)
 }
 
 export function createUploadPool(
@@ -177,7 +183,9 @@ export function createUploadPool(
   return {
     enqueue: <TResult>(task: UploadPoolTask<TResult>) => {
       if (taskMap.has(task.id)) {
-        return Promise.reject(new Error(`上传任务已存在：${task.id}`))
+        return Promise.reject(
+          new Error(getUploadMessages().duplicateTask(task.id)),
+        )
       }
 
       return new Promise((resolve, reject) => {

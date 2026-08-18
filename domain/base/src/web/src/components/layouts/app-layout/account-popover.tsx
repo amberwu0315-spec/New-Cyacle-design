@@ -1,5 +1,12 @@
 import * as React from 'react'
-import { BoxIcon, CheckIcon, GlobeIcon, LogOut, RefreshCwIcon } from 'lucide-react'
+import {
+  BoxIcon,
+  CheckIcon,
+  ExternalLinkIcon,
+  GlobeIcon,
+  LogOut,
+  RefreshCwIcon,
+} from 'lucide-react'
 
 import { Button } from '#/components/ui/button.tsx'
 import {
@@ -21,6 +28,7 @@ import {
 } from '#/lib/i18n/index.ts'
 import type { SupportedLanguage } from '#/lib/i18n/index.ts'
 import { cn } from '#/lib/utils.ts'
+import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 import type {
   WorkspaceSelectionItem,
   WorkspaceSelectionResult,
@@ -33,6 +41,7 @@ import type {
 } from '#/components/layouts/app-layout/app-layout.tsx'
 
 export type AccountPopoverProps = {
+  accountMenuLinks?: Array<AccountMenuLink>
   currentWorkspaceScope: string | null
   hasSessionCredential: boolean
   onLogout: () => void
@@ -41,6 +50,13 @@ export type AccountPopoverProps = {
   ) => Promise<WorkspaceSelectionResult>
   profileQuery: AppLayoutAsyncState<AppLayoutUserProfile>
   workspaceQuery: AppLayoutAsyncState<Array<WorkspaceSelectionItem>>
+}
+
+export type AccountMenuLink = {
+  href: string
+  id: string
+  label: string
+  target?: '_blank' | '_self'
 }
 
 const ACCOUNT_LANGUAGE_OPTIONS: Array<SupportedLanguage> = ['en-US', 'zh-CN']
@@ -128,6 +144,7 @@ function WorkspaceMenuItem({
 }
 
 export function AccountPopover({
+  accountMenuLinks = [],
   currentWorkspaceScope,
   hasSessionCredential,
   onLogout,
@@ -143,6 +160,7 @@ export function AccountPopover({
   const profile = profileQuery.data
   const workspaceOptions = workspaceQuery.data ?? []
   const hasWorkspaceOptions = workspaceOptions.length > 0
+  const canSwitchWorkspace = workspaceOptions.length > 1
   const isWorkspaceLoading =
     workspaceQuery.isLoading || (workspaceQuery.isFetching && !hasWorkspaceOptions)
   const isProfileLoading =
@@ -168,6 +186,8 @@ export function AccountPopover({
   const languageMenuLabel = formatMessage(t.common.language.current, {
     language: currentLanguageName,
   })
+  const languageSwitcherEnabled =
+    getWebProjectConfig().capabilities.languageSwitcher.enabled
 
   const handleWorkspaceRetry = React.useCallback(() => {
     setWorkspaceSwitchFailed(false)
@@ -266,6 +286,7 @@ export function AccountPopover({
       <DropdownMenuTrigger
         render={
           <Button
+            data-slot="account-trigger"
             variant="ghost"
             aria-label={t.common.shell.account.menu}
             className="h-10 min-w-0 max-w-[10rem] justify-start gap-2 px-2 active:translate-y-0"
@@ -273,7 +294,11 @@ export function AccountPopover({
         }
       >
         {isProfileLoading ? (
-          <Skeleton aria-hidden="true" className="h-10 w-24 rounded-lg" />
+          <Skeleton
+            data-slot="account-trigger-loading"
+            aria-hidden="true"
+            className="h-10 w-24 rounded-lg"
+          />
         ) : (
           <>
             <img
@@ -282,7 +307,10 @@ export function AccountPopover({
               aria-hidden="true"
               className="size-7 shrink-0 rounded-full border border-border object-cover"
             />
-            <span className="max-w-full truncate text-sm font-semibold text-foreground">
+            <span
+              data-slot="account-trigger-label"
+              className="max-w-full truncate text-sm font-semibold text-foreground"
+            >
               {accountName}
             </span>
           </>
@@ -331,93 +359,124 @@ export function AccountPopover({
         </div>
 
         <div className="mt-2.5 flex flex-col gap-1 border-t border-border/70 p-2.5">
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger
-              disabled={isWorkspaceSubmenuDisabled}
-              openOnHover
-              delay={80}
-              className="min-h-12 cursor-pointer gap-2 rounded-lg px-2.5 py-2 text-[15px] font-semibold data-disabled:pointer-events-none data-disabled:opacity-50"
-            >
-              <BoxIcon aria-hidden="true" className="text-muted-foreground" />
-              <span className="min-w-0 flex-1 text-left">
-                <span className="block truncate">
-                  {t.common.shell.account.switchWorkspace}
-                </span>
-                {currentWorkspaceName ? (
-                  <span className="mt-0.5 inline-flex max-w-full rounded-md bg-muted px-1.5 py-0.5 text-[11px] leading-4 font-medium text-foreground/80">
-                    <span className="min-w-0 truncate">
-                      {currentWorkspaceName}
-                    </span>
+          {canSwitchWorkspace ? (
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger
+                disabled={isWorkspaceSubmenuDisabled}
+                openOnHover
+                delay={80}
+                className="min-h-12 cursor-pointer gap-2 rounded-lg px-2.5 py-2 text-[15px] font-semibold data-disabled:pointer-events-none data-disabled:opacity-50"
+              >
+                <BoxIcon aria-hidden="true" className="text-muted-foreground" />
+                <span className="min-w-0 flex-1 text-left">
+                  <span className="block truncate">
+                    {t.common.shell.account.switchWorkspace}
                   </span>
-                ) : null}
-              </span>
-            </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent
-              side="left"
-              align="start"
-              sideOffset={8}
-              className="max-h-[min(60dvh,380px)] w-[300px] rounded-lg border border-border/70 p-2 shadow-xl"
-            >
-              {workspaceSwitchFailed ? (
-                <div className="mb-2 rounded-lg bg-destructive/10 px-3 py-2 text-xs leading-5 text-destructive">
-                  {t.common.workspace.switchFailed}
-                </div>
-              ) : null}
-              <div className="flex flex-col gap-1">{workspaceSubmenuContent}</div>
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
-
-          <DropdownMenuSub>
-            <DropdownMenuSubTrigger
-              openOnHover
-              delay={80}
-              aria-label={languageMenuLabel}
-              className="min-h-12 cursor-pointer gap-2 rounded-lg px-2.5 py-2 text-[15px] font-semibold"
-            >
-              <GlobeIcon aria-hidden="true" className="text-muted-foreground" />
-              <span className="min-w-0 flex-1 truncate text-left">
-                {t.common.shell.account.languageSettings}
-              </span>
-              <span className="max-w-20 shrink-0 truncate text-xs leading-4 font-medium text-muted-foreground">
-                {currentLanguageName}
-              </span>
-            </DropdownMenuSubTrigger>
-            <DropdownMenuSubContent
-              side="left"
-              align="start"
-              sideOffset={8}
-              className="w-44 rounded-lg border border-border/70 p-2 shadow-xl"
-            >
-              <div className="flex flex-col gap-1">
-                {ACCOUNT_LANGUAGE_OPTIONS.map((item) => {
-                  const isActive = item === language
-
-                  return (
-                    <DropdownMenuItem
-                      key={item}
-                      data-language={item}
-                      aria-current={isActive ? 'true' : undefined}
-                      className={cn(
-                        'h-9 cursor-pointer gap-2 rounded-lg px-2.5 text-sm',
-                        isActive && 'bg-primary/5 text-primary focus:bg-primary/10',
-                      )}
-                      onClick={handleLanguageChange}
-                    >
-                      <span className="min-w-0 flex-1 truncate">
-                        {t.common.language.names[item]}
+                  {currentWorkspaceName ? (
+                    <span className="mt-0.5 inline-flex max-w-full rounded-md bg-muted px-1.5 py-0.5 text-[11px] leading-4 font-medium text-foreground/80">
+                      <span className="min-w-0 truncate">
+                        {currentWorkspaceName}
                       </span>
-                      {isActive ? (
-                        <CheckIcon
-                          aria-hidden="true"
-                          className="size-4 shrink-0 text-primary"
-                        />
-                      ) : null}
-                    </DropdownMenuItem>
-                  )
-                })}
-              </div>
-            </DropdownMenuSubContent>
-          </DropdownMenuSub>
+                    </span>
+                  ) : null}
+                </span>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent
+                side="left"
+                align="start"
+                sideOffset={8}
+                className="max-h-[min(60dvh,380px)] w-[300px] rounded-lg border border-border/70 p-2 shadow-xl"
+              >
+                {workspaceSwitchFailed ? (
+                  <div className="mb-2 rounded-lg bg-destructive/10 px-3 py-2 text-xs leading-5 text-destructive">
+                    {t.common.workspace.switchFailed}
+                  </div>
+                ) : null}
+                <div className="flex flex-col gap-1">
+                  {workspaceSubmenuContent}
+                </div>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          ) : null}
+
+          {languageSwitcherEnabled ? (
+            <DropdownMenuSub>
+              <DropdownMenuSubTrigger
+                openOnHover
+                delay={80}
+                aria-label={languageMenuLabel}
+                className="min-h-12 cursor-pointer gap-2 rounded-lg px-2.5 py-2 text-[15px] font-semibold"
+              >
+                <GlobeIcon aria-hidden="true" className="text-muted-foreground" />
+                <span className="min-w-0 flex-1 truncate text-left">
+                  {t.common.shell.account.languageSettings}
+                </span>
+                <span className="max-w-20 shrink-0 truncate text-xs leading-4 font-medium text-muted-foreground">
+                  {currentLanguageName}
+                </span>
+              </DropdownMenuSubTrigger>
+              <DropdownMenuSubContent
+                side="left"
+                align="start"
+                sideOffset={8}
+                className="w-44 rounded-lg border border-border/70 p-2 shadow-xl"
+              >
+                <div className="flex flex-col gap-1">
+                  {ACCOUNT_LANGUAGE_OPTIONS.map((item) => {
+                    const isActive = item === language
+
+                    return (
+                      <DropdownMenuItem
+                        key={item}
+                        data-language={item}
+                        aria-current={isActive ? 'true' : undefined}
+                        className={cn(
+                          'h-9 cursor-pointer gap-2 rounded-lg px-2.5 text-sm',
+                          isActive &&
+                            'bg-primary/5 text-primary focus:bg-primary/10',
+                        )}
+                        onClick={handleLanguageChange}
+                      >
+                        <span className="min-w-0 flex-1 truncate">
+                          {t.common.language.names[item]}
+                        </span>
+                        {isActive ? (
+                          <CheckIcon
+                            aria-hidden="true"
+                            className="size-4 shrink-0 text-primary"
+                          />
+                        ) : null}
+                      </DropdownMenuItem>
+                    )
+                  })}
+                </div>
+              </DropdownMenuSubContent>
+            </DropdownMenuSub>
+          ) : null}
+
+          {accountMenuLinks.map((link) => (
+            <DropdownMenuItem
+              key={link.id}
+              render={
+                <a
+                  href={link.href}
+                  target={link.target}
+                  rel={
+                    link.target === '_blank'
+                      ? 'noopener noreferrer'
+                      : undefined
+                  }
+                />
+              }
+              className="min-h-11 cursor-pointer gap-2 rounded-lg px-2.5 py-2 text-[15px] font-semibold"
+            >
+              <ExternalLinkIcon
+                aria-hidden="true"
+                className="size-4 text-muted-foreground"
+              />
+              <span className="min-w-0 flex-1 truncate">{link.label}</span>
+            </DropdownMenuItem>
+          ))}
 
           <DropdownMenuSeparator className="mx-0 my-1.5" />
 
