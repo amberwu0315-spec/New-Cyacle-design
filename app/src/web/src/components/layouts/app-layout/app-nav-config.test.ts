@@ -1,5 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { LucideIcon } from 'lucide-react'
+import { Building2 } from 'lucide-react'
 
 import type { WebDomain } from '@carbonnt-cyacle/web-base'
 
@@ -145,6 +146,7 @@ describe('configured app navigation', () => {
     ])
     expect(config.scenes[1]).toMatchObject({
       label: 'Enterprise Management',
+      icon: Building2,
       defaultTo: '/uic/org/enterprise-info',
       groups: [{ id: 'uic-enterprise-management', title: null }],
     })

@@ -4,6 +4,7 @@ import {
   type AppNavConfigOptions,
   type WebDomain,
 } from '@carbonnt-cyacle/web-base'
+import { Building2 } from 'lucide-react'
 
 import {
   DEFAULT_APP_EDITION,
@@ -52,6 +53,7 @@ function splitUicEnterpriseManagementScene(config: AppNavConfig): AppNavConfig {
     ...uicScene,
     id: 'domain-uic-enterprise-management',
     label: enterpriseGroup.title ?? enterpriseGroup.items[0]!.label,
+    icon: Building2,
     defaultTo: enterpriseDefaultTo,
     groups: [{ ...enterpriseGroup, title: null }],
   }
