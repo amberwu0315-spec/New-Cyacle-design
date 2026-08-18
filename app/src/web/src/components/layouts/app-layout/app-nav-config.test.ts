@@ -90,6 +90,70 @@ function createStandaloneAccountingDomain(): WebDomain {
 }
 
 describe('configured app navigation', () => {
+  it('splits enterprise management from the user center scene', () => {
+    const uicDomain: WebDomain = {
+      id: 'uic',
+      routeMounts: {},
+      capabilities: {
+        nav: () => ({
+          id: 'domain-uic',
+          label: 'User Center',
+          desc: 'Account and enterprise settings',
+          icon: TestIcon,
+          defaultTo: '/uic/user/profile',
+          groups: [
+            {
+              id: 'uic-user-settings',
+              title: 'User Center',
+              items: [
+                {
+                  id: 'uic-user-profile',
+                  label: 'Basic Info',
+                  desc: 'Basic Info',
+                  to: '/uic/user/profile',
+                  icon: TestIcon,
+                },
+              ],
+            },
+            {
+              id: 'uic-enterprise-management',
+              title: 'Enterprise Management',
+              items: [
+                {
+                  id: 'uic-org-enterprise-info',
+                  label: 'Enterprise Info',
+                  desc: 'Enterprise Info',
+                  to: '/uic/org/enterprise-info',
+                  icon: TestIcon,
+                },
+              ],
+            },
+          ],
+        }),
+      },
+    }
+    const config = createConfiguredAppNavConfig([uicDomain], {
+      language: 'en-US',
+    })
+
+    expect(config.scenes.map((scene) => scene.id)).toEqual([
+      'domain-uic',
+      'domain-uic-enterprise-management',
+    ])
+    expect(config.scenes[0]?.groups.map((group) => group.id)).toEqual([
+      'uic-user-settings',
+    ])
+    expect(config.scenes[1]).toMatchObject({
+      label: 'Enterprise Management',
+      defaultTo: '/uic/org/enterprise-info',
+      groups: [{ id: 'uic-enterprise-management', title: null }],
+    })
+    expect(
+      config.categories.find((category) => category.title === 'Account')
+        ?.sceneIds,
+    ).toEqual(['domain-uic', 'domain-uic-enterprise-management'])
+  })
+
   it('moves item-level scenes to their category without replacing the original domain scene', () => {
     const projectDomain: WebDomain = {
       id: 'project',
