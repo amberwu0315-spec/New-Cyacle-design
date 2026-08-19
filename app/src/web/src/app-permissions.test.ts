@@ -3,13 +3,11 @@ import { describe, expect, it } from 'vitest'
 import { appPermissionCodes } from './app-permissions.ts'
 
 const CURRENT_MENU_PERMISSION_CODES = [
-  'CFO',
   'SSO_oauth',
   'account',
   'accounting',
   'audit_log',
   'base_flow_factor',
-  'carbon_footprint',
   'cfo_accounting',
   'composite_factor',
   'database',
@@ -35,5 +33,11 @@ describe('app permission aggregation', () => {
 
   it('deduplicates permission codes contributed by multiple domains', () => {
     expect(new Set(appPermissionCodes).size).toBe(appPermissionCodes.length)
+  })
+
+  it('does not request legacy scene-level permissions', () => {
+    expect(appPermissionCodes).not.toEqual(
+      expect.arrayContaining(['carbon_footprint', 'CFO']),
+    )
   })
 })
