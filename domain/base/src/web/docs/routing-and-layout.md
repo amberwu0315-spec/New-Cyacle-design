@@ -223,6 +223,8 @@ const publicCatalogRoute = createRoute({
 
 ## Admin 改动隔离
 
+后台页面的具体展示、技术 ID、详情跳转、分区和表格要求见 [Admin 页面展示规范](admin-pages.md)。
+
 修改 `/admin` 下的后台相关代码时，必须保证不影响前台路由和前台界面样式。后台页面优先使用独立的 route factory、page wrapper 和 layout，不要在同一个页面组件里通过 `presentation === 'admin'`、`mode === 'admin'` 等分支同时承载后台和前台的页面外壳。
 
 可以复用无视觉副作用的能力，例如 API hook、query key、纯数据转换、表单 schema、无样式业务组件或明确设计为跨端复用的基础组件。页面头部、导航、容器边距、表格密度、按钮区、详情布局、空状态和局部 CSS class 等视觉结构应留在各自路由侧封装，避免后台改动影响前台入口。
