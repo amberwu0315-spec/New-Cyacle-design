@@ -57,6 +57,7 @@ const ShellRoute = createRoute({
 const AdminRoute = createAdminRoute({ parentRoute: RootRoute })
 
 const appEditionHomeTo = resolveAppEditionHomeTo(webModules, appEdition)
+
 async function resolveDefaultSystemHomeTo() {
   let frontendHomeTo = DEFAULT_APP_HOME_TO
 
