@@ -12,10 +12,12 @@ function createDomain({
   id,
   itemId,
   category,
+  to = `/${id}`,
 }: {
   id: string
   itemId: string
   category?: string
+  to?: string
 }): WebDomain {
   return {
     id,
@@ -26,7 +28,7 @@ function createDomain({
         label: id,
         desc: `${id} scene`,
         icon: TestIcon,
-        defaultTo: `/${id}`,
+        defaultTo: to,
         groups: [
           {
             id: `${id}-group`,
@@ -36,7 +38,7 @@ function createDomain({
                 id: itemId,
                 label: itemId,
                 desc: `${itemId} item`,
-                to: `/${id}`,
+                to,
                 icon: TestIcon,
                 category,
               },
@@ -237,6 +239,24 @@ describe('configured app navigation', () => {
     expect(config.scenes.map((scene) => scene.id)).toEqual([
       'domain-project--project-list',
     ])
+    expect(config.defaultSceneId).toBe('domain-project--project-list')
+  })
+
+  it('keeps the project list as the default scene while permissions reveal earlier domains', () => {
+    const config = createConfiguredAppNavConfig(
+      [
+        createStandaloneAccountingDomain(),
+        createDomain({
+          id: 'project',
+          itemId: 'project-list',
+          category: 'accounting',
+          to: '/project/projects',
+        }),
+      ],
+      { language: 'en-US' },
+    )
+
+    expect(config.scenes[0]?.defaultTo).toBe('/cfp')
     expect(config.defaultSceneId).toBe('domain-project--project-list')
   })
 
