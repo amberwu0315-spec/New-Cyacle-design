@@ -91,3 +91,6 @@ domains:
     - name: supply.chain
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/supply.chain.git
+    - name: survey
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/survey.git

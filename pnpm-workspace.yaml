@@ -91,6 +91,7 @@ packages:
   - ./.cache/web/workspace/skeld/report-pub
   - ./.cache/web/workspace/skeld/search-indexer-pub
   - ./.cache/web/workspace/skeld/supply-chain-pub
+  - ./.cache/web/workspace/skeld/survey-pub
   - ./.cache/web/workspace/skeld/uic-pub
   - ./.cache/web/workspace/skeld/unit-pub
   - ./.cache/web/workspace/skeld/wecom-pub
@@ -119,6 +120,7 @@ packages:
   - ./.cache/web/workspace/web/report
   - ./.cache/web/workspace/web/search-indexer
   - ./.cache/web/workspace/web/supply-chain
+  - ./.cache/web/workspace/web/survey
   - ./.cache/web/workspace/web/uic
   - ./.cache/web/workspace/web/unit
   - ./.cache/web/workspace/web/wecom
