@@ -19,6 +19,10 @@ import {
   resolveAppEditionHomeTo,
 } from '#/components/layouts/app-layout/app-nav-config.ts'
 import { AppRoutePendingFallback } from '#/components/routes/app-route-pending-fallback.tsx'
+import {
+  AppRouteErrorPage,
+  reportRouteError,
+} from '#/features/route-error/page.tsx'
 import { AppNotFoundPage } from '#/features/not-found/page.tsx'
 import { adminHomeTo } from '#/admin/admin-config.ts'
 import { resolveSystemEntryHomeTo } from '#/system-entry.ts'
@@ -155,6 +159,8 @@ const routeTree = RootRoute.addChildren([
 export const router = createRouter({
   routeTree,
   defaultNotFoundComponent: AppNotFoundPage,
+  defaultErrorComponent: AppRouteErrorPage,
+  defaultOnCatch: reportRouteError,
   defaultPendingComponent: AppRoutePendingFallback,
   defaultPendingMinMs: 300,
   defaultPendingMs: 150,
