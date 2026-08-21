@@ -242,6 +242,9 @@ importers:
       '@carbonnt-cyacle/skeled-supply-chainpub':
         specifier: workspace:*
         version: link:../../../.cache/web/workspace/skeld/supply-chain-pub
+      '@carbonnt-cyacle/skeled-surveypub':
+        specifier: workspace:*
+        version: link:../../../.cache/web/workspace/skeld/survey-pub
       '@carbonnt-cyacle/skeled-uicpub':
         specifier: workspace:*
         version: link:../../../.cache/web/workspace/skeld/uic-pub
@@ -326,6 +329,9 @@ importers:
       '@carbonnt-cyacle/web-supply-chain':
         specifier: workspace:*
         version: link:../../../.cache/web/workspace/web/supply-chain
+      '@carbonnt-cyacle/web-survey':
+        specifier: workspace:*
+        version: link:../../../.cache/web/workspace/web/survey
       '@carbonnt-cyacle/web-uic':
         specifier: workspace:*
         version: link:../../../.cache/web/workspace/web/uic
