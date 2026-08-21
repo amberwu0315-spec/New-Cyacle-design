@@ -14,6 +14,7 @@ import {
 
 import { AppLayout } from '#/components/layouts/app-layout/index.ts'
 import {
+  DEFAULT_APP_HOME_TO,
   createConfiguredAppNavConfig,
   resolveAppEditionHomeTo,
 } from '#/components/layouts/app-layout/app-nav-config.ts'
@@ -56,8 +57,9 @@ const ShellRoute = createRoute({
 const AdminRoute = createAdminRoute({ parentRoute: RootRoute })
 
 const appEditionHomeTo = resolveAppEditionHomeTo(webModules, appEdition)
+
 async function resolveDefaultSystemHomeTo() {
-  let frontendHomeTo = appEditionHomeTo
+  let frontendHomeTo = DEFAULT_APP_HOME_TO
 
   try {
     const permissionCodeMap = await ensurePermissions({
@@ -65,12 +67,20 @@ async function resolveDefaultSystemHomeTo() {
       suppressGlobalToast: true,
       workspaceScope: getSelectedWorkspaceScope(),
     })
-    frontendHomeTo =
-      createConfiguredAppNavConfig(
-        webModules,
-        { permissionCodeMap },
-        appEdition,
-      ).scenes[0]?.defaultTo ?? appEditionHomeTo
+    const navConfig = createConfiguredAppNavConfig(
+      webModules,
+      { permissionCodeMap },
+      appEdition,
+    )
+    const hasDefaultSystemHome = navConfig.scenes.some((scene) =>
+      scene.groups.some((group) =>
+        group.items.some((item) => item.to === DEFAULT_APP_HOME_TO),
+      ),
+    )
+
+    frontendHomeTo = hasDefaultSystemHome
+      ? DEFAULT_APP_HOME_TO
+      : (navConfig.scenes[0]?.defaultTo ?? appEditionHomeTo)
   } catch {
     // 权限加载失败时沿用默认入口，具体页面仍由权限守卫处理。
   }

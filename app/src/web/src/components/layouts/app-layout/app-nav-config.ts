@@ -4,12 +4,15 @@ import {
   type AppNavConfigOptions,
   type WebDomain,
 } from '@carbonnt-cyacle/web-base'
+import { Building2 } from 'lucide-react'
 
 import {
   DEFAULT_APP_EDITION,
   resolveAppEditionRegistration,
 } from '#/app-edition.ts'
 import { getMessages } from '#/lib/i18n/index.ts'
+
+export const DEFAULT_APP_HOME_TO = '/project/projects'
 
 function getAppNavCategories(language: AppNavConfigOptions['language']) {
   const t = getMessages(language)
@@ -22,6 +25,55 @@ function getAppNavCategories(language: AppNavConfigOptions['language']) {
     platform: t.layout.navCategories.platform,
     account: t.layout.navCategories.account,
   } as const
+}
+
+function splitUicEnterpriseManagementScene(config: AppNavConfig): AppNavConfig {
+  const uicSceneIndex = config.scenes.findIndex(
+    (scene) => scene.id === 'domain-uic',
+  )
+  const uicScene = config.scenes[uicSceneIndex]
+
+  if (!uicScene) {
+    return config
+  }
+
+  const enterpriseGroup = uicScene.groups.find(
+    (group) => group.id === 'uic-enterprise-management',
+  )
+
+  if (!enterpriseGroup?.items.length) {
+    return config
+  }
+
+  const enterpriseDefaultTo = enterpriseGroup.items[0]?.to
+
+  if (!enterpriseDefaultTo) {
+    return config
+  }
+
+  const enterpriseScene = {
+    ...uicScene,
+    id: 'domain-uic-enterprise-management',
+    label: enterpriseGroup.title ?? enterpriseGroup.items[0]!.label,
+    icon: Building2,
+    defaultTo: enterpriseDefaultTo,
+    groups: [{ ...enterpriseGroup, title: null }],
+  }
+  const scenes = [...config.scenes]
+
+  scenes.splice(
+    uicSceneIndex,
+    1,
+    {
+      ...uicScene,
+      groups: uicScene.groups.filter(
+        (group) => group.id !== enterpriseGroup.id,
+      ),
+    },
+    enterpriseScene,
+  )
+
+  return { ...config, scenes }
 }
 
 function groupAppNavConfig(
@@ -45,6 +97,7 @@ function groupAppNavConfig(
     'domain-cfo': appNavCategories.accounting,
     'domain-document-management': appNavCategories.management,
     'domain-uic': appNavCategories.account,
+    'domain-uic-enterprise-management': appNavCategories.account,
   }
   const appNavCategoryByKey: Record<string, string> = {
     basis: appNavCategories.basis,
@@ -200,11 +253,23 @@ export function createConfiguredAppNavConfig(
     AppNavConfig
   >(webDomains, appEdition)
 
-  return groupAppNavConfig(
-    registration?.createNavConfig(options) ??
-      createAppNavConfig(webDomains, options),
+  const config = groupAppNavConfig(
+    splitUicEnterpriseManagementScene(
+      registration?.createNavConfig(options) ??
+        createAppNavConfig(webDomains, options),
+    ),
     options,
   )
+  const homeTo = registration?.homeTo ?? DEFAULT_APP_HOME_TO
+  const homeScene = config.scenes.find((scene) =>
+    scene.groups.some((group) =>
+      group.items.some((item) => item.to === homeTo),
+    ),
+  )
+
+  return homeScene
+    ? { ...config, defaultSceneId: homeScene.id }
+    : config
 }
 
 export function resolveAppEditionHomeTo(
@@ -215,6 +280,6 @@ export function resolveAppEditionHomeTo(
     resolveAppEditionRegistration<AppNavConfigOptions, AppNavConfig>(
       webDomains,
       appEdition,
-    )?.homeTo ?? '/cfp'
+    )?.homeTo ?? DEFAULT_APP_HOME_TO
   )
 }

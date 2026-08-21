@@ -202,7 +202,7 @@ export function AppShellFrameSidebar({
         {...props}
         data-slot="app-shell-frame-sidebar"
         className={cn(
-          'relative z-40 flex h-dvh shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground after:pointer-events-none after:absolute after:inset-y-0 after:right-0 after:z-10 after:w-3 after:bg-gradient-to-l after:from-border/50 after:via-border/20 after:to-transparent transition-[width,transform] duration-200 ease-linear',
+          'relative z-40 flex h-dvh shrink-0 flex-col border-r border-sidebar-border bg-sidebar text-sidebar-foreground after:pointer-events-none after:absolute after:inset-y-0 after:right-0 after:z-10 after:w-1 after:bg-gradient-to-l after:from-border/25 after:to-transparent transition-[width,transform] duration-200 ease-linear',
           isResizing && 'transition-none',
           isMobile
             ? cn(

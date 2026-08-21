@@ -10,6 +10,16 @@
 
 多语言名称读取顺序以当前语言优先；当前语言没有时可以回退到另一个语言。有任意名称时展示已有名称，不把 ID、code、空字符串或通用空值符号当作对象名称兜底，除非该业务对象的既有产品规范明确要求使用 code/ID。
 
+## 详情页面展示与分区
+
+`/admin/**` 页面还需遵守 [Admin 页面展示规范](admin-pages.md)。
+
+面向业务用户的详情页面默认不展示数据库主键、UUID、`orgId`、`userId`、`xxId` 等技术标识，也不能把 ID 当作名称、简称、操作人或联系方式的兜底。只有排障、审计、接口联调等明确以技术标识为业务信息的页面，才可以在有清晰字段名和产品需求的前提下展示。
+
+详情页面通过轻量背景色、留白和标题层级区分主体信息、关联数据和操作记录，不使用“页面边框 → section 边框 → 卡片边框 → 表格边框”的多层边框嵌套。推荐让 section 使用无边框的浅色背景承载内容，由内部表格或确实可交互的控件保留自身边界；普通键值信息可以使用同色系背景块分组，不为每一个字段增加分割线或描边。
+
+关联账号、订阅方案、服务对象、操作日志等结构化集合优先使用项目通用 `DataView` / `DataGrid` 和 `useDataModel`，必须提供可见表头。不要用 CSS Grid 模拟无表头表格，也不要只靠每行文本位置让用户猜测列含义。树、时间线、键值描述和只有单个对象的摘要不强制表格化，但仍需提供明确的字段或层级语义。
+
 ## 业务列表页面工具栏
 
 带搜索或筛选能力的业务列表页面，创建等全局操作必须和搜索、筛选处于同一排：搜索和筛选位于左侧，创建按钮位于该排右侧。使用 `DataView` 时统一通过 `toolbarTrailingRight` 承载创建按钮，不要把创建按钮放在页面标题行或另起一排。服务客户、研究对象等因工作空间类型而切换名称、但共用列表结构的页面同样遵守此规则。
@@ -45,7 +55,7 @@
 
 表格型选择器优先使用 `DataView + DataGrid + SearchBox`，不要再为同类对象选择器手写一套 `Input + Table/按钮列表 + ScrollArea`。树、文件和主从预览场景不能合理表达为表格时可以使用专用内容组件，但弹框外壳和下面的交互合同保持一致。
 
-选择弹框中的搜索框聚焦时只保留 `border-ring` 边框反馈，不显示 Crew UI 默认的 3px focus ring，避免搜索框紧贴弹框头部时出现类似整块头部阴影的灰色外沿。实现时统一复用 Base 导出的样式：`DataView` / `SearchBox` 通过 `searchBoxProps.classNames={DATA_SELECTOR_SEARCH_BOX_CLASS_NAMES}`（compound 写法传给 `DataView.SearchBox.classNames`）；尚未迁移到 SearchBox 的旧式搜索输入通过 `className={cn(DATA_SELECTOR_SEARCH_INPUT_CLASS_NAME, ...)}` 覆盖。不要修改 Base `Input` / `InputGroup` 的全局焦点态，也不要完全移除边框反馈；普通表单和非选择器页面继续保留默认可访问性焦点 ring。
+通用搜索表格和选择弹框中的 `SearchBox` 聚焦时只保留 `border-ring` 边框反馈，不显示 Crew UI 默认的 3px focus ring，避免工具栏或弹框头部出现类似整块阴影的灰色外沿。Base 全局样式已按 `search-box-start-input` slot 统一处理；选择弹框仍可复用 `DATA_SELECTOR_SEARCH_BOX_CLASS_NAMES` 作为局部兼容覆盖（`DataView` / `SearchBox` 通过 `searchBoxProps.classNames` 传入，compound 写法传给 `DataView.SearchBox.classNames`）。尚未迁移到 SearchBox 的旧式搜索输入通过 `className={cn(DATA_SELECTOR_SEARCH_INPUT_CLASS_NAME, ...)}` 覆盖。不要修改 Base `Input` / `InputGroup` 的全局焦点态，也不要完全移除边框反馈；普通表单继续保留默认可访问性焦点 ring。
 
 ```tsx
 <DialogContent className="flex max-h-[88vh] flex-col overflow-hidden sm:!max-w-4xl">

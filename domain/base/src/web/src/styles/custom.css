@@ -15,6 +15,13 @@
     line-height: 1.25rem;
   }
 
+  /* 通用搜索表格只保留聚焦边框，不显示 SearchBox 默认的 3px ring。 */
+  [data-slot='input-group']:has(
+    [data-slot='search-box-start-input']:focus
+  ) {
+    box-shadow: none !important;
+  }
+
   [data-slot='breadcrumb'],
   [data-slot='breadcrumb'] * {
     -webkit-user-select: none;
