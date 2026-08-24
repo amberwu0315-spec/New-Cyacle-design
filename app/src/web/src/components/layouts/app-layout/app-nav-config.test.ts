@@ -20,7 +20,7 @@ function createDomain({
 }): WebDomain {
   return {
     id,
-    routeMounts: {},
+    routes: [],
     capabilities: {
       nav: () => ({
         id: `domain-${id}`,
@@ -52,7 +52,7 @@ function createDomain({
 function createStandaloneAccountingDomain(): WebDomain {
   return {
     id: 'accounting',
-    routeMounts: {},
+    routes: [],
     capabilities: {
       nav: () => ({
         id: 'domain-accounting',
@@ -95,7 +95,7 @@ describe('configured app navigation', () => {
   it('splits enterprise management from the user center scene', () => {
     const uicDomain: WebDomain = {
       id: 'uic',
-      routeMounts: {},
+      routes: [],
       capabilities: {
         nav: () => ({
           id: 'domain-uic',
@@ -159,7 +159,7 @@ describe('configured app navigation', () => {
   it('moves item-level scenes to their category without replacing the original domain scene', () => {
     const projectDomain: WebDomain = {
       id: 'project',
-      routeMounts: {},
+      routes: [],
       capabilities: {
         nav: () => ({
           id: 'domain-project',

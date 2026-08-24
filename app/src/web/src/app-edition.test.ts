@@ -29,7 +29,6 @@ function createEditionDomain(id: string) {
         id,
         homeTo: `/${id}`,
         createNavConfig: () => ({ id }),
-        routeMount: id,
       },
     },
   }
@@ -48,7 +47,6 @@ describe('app edition registry', () => {
 
     expect(registration?.homeTo).toBe('/custom')
     expect(registration?.createNavConfig({})).toEqual({ id: 'custom' })
-    expect(registration?.routeMount).toBe('custom')
   })
 
   it('rejects an unknown edition', () => {
