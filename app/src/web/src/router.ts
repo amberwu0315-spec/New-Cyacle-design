@@ -1,10 +1,9 @@
 import '#/project-config.ts'
 
-import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
+import { createRootRoute, createRoute } from '@tanstack/react-router'
 import {
+  createWebRouter,
   createWorkbenchSidebarDemoRoute,
-  defineWebDomainRouteOutlets,
-  resolveWebDomainRouteMount,
 } from '@carbonnt-cyacle/web-base'
 import {
   ensurePermissions,
@@ -38,28 +37,15 @@ import {
 import { webModules } from '#/vineModules.gen.ts'
 import { appPermissionCodes } from '#/app-permissions.ts'
 
-const appRouteOutlets = defineWebDomainRouteOutlets({
-  admin: 'admin',
-  root: 'root',
-  shell: 'shell',
+const rootRoute = createRootRoute({
+  notFoundComponent: AppNotFoundPage,
 })
-
-const RootRoute = createRootRoute()
 
 const appEdition = getAppEdition()
 const appEditionRegistration = resolveAppEditionRegistration(
   webModules,
   appEdition,
 )
-
-const ShellRoute = createRoute({
-  getParentRoute: () => RootRoute,
-  id: 'shell',
-  component: AppLayout,
-})
-
-const AdminRoute = createAdminRoute({ parentRoute: RootRoute })
-
 const appEditionHomeTo = resolveAppEditionHomeTo(webModules, appEdition)
 
 async function resolveDefaultSystemHomeTo() {
@@ -93,7 +79,6 @@ async function resolveDefaultSystemHomeTo() {
     const organizationProfile = await fetchOrganizationProfile({
       suppressGlobalToast: true,
     })
-
     return resolveSystemEntryHomeTo({
       adminHomeTo,
       businessCodes: organizationProfile?.businessCodes,
@@ -104,69 +89,89 @@ async function resolveDefaultSystemHomeTo() {
   }
 }
 
-const rootDomainRoutes = resolveWebDomainRouteMount({
-  domains: webModules,
-  outlet: appRouteOutlets.root,
-  parentRoute: RootRoute,
-})
+function createStandardWebRouter() {
+  const appRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    id: 'app',
+    component: AppLayout,
+  })
+  const adminRoute = createAdminRoute({ parentRoute: rootRoute })
+  const standardDomains = webModules.filter(
+    (domain) => domain.id !== 'wuxibiologics',
+  )
 
-const shellDomainRoutes = resolveWebDomainRouteMount({
-  domains: webModules,
-  outlet: appRouteOutlets.shell,
-  parentRoute: ShellRoute,
-})
-
-const adminDomainRoutes = resolveWebDomainRouteMount({
-  domains: webModules,
-  outlet: appRouteOutlets.admin,
-  parentRoute: AdminRoute,
-})
-
-const appEditionRoutes = appEditionRegistration
-  ? [
-      createHomeRoute({
-        defaultTo: appEditionHomeTo,
-        parentRoute: RootRoute,
-      }),
-      ...resolveWebDomainRouteMount({
-        domains: webModules,
-        outlet: appEditionRegistration.routeMount,
-        parentRoute: RootRoute,
-      }),
-    ]
-  : [
-      AdminRoute.addChildren([
-        createAdminHomeRoute({
-          parentRoute: AdminRoute,
-        }),
-        ...adminDomainRoutes,
-      ]),
-      ShellRoute.addChildren([
+  return createWebRouter({
+    rootRoute,
+    domains: standardDomains,
+    rootOutlets: {
+      app: appRoute,
+      admin: adminRoute,
+      wuxibiologics: null,
+    },
+    routes: ({ app, admin }) => ({
+      app: [
         createHomeRoute({
           defaultTo: resolveDefaultSystemHomeTo,
-          parentRoute: ShellRoute,
+          parentRoute: app!,
         }),
-        createWorkbenchSidebarDemoRoute({ parentRoute: ShellRoute }),
-        ...shellDomainRoutes,
-      ]),
-    ]
+        createWorkbenchSidebarDemoRoute({ parentRoute: app! }),
+      ],
+      admin: [createAdminHomeRoute({ parentRoute: admin! })],
+    }),
+    router: {
+      defaultNotFoundComponent: AppNotFoundPage,
+      defaultErrorComponent: AppRouteErrorPage,
+      defaultOnCatch: reportRouteError,
+      defaultPendingComponent: AppRoutePendingFallback,
+      defaultPendingMinMs: 300,
+      defaultPendingMs: 150,
+    },
+  })
+}
 
-const routeTree = RootRoute.addChildren([
-  ...rootDomainRoutes,
-  ...appEditionRoutes,
-])
+function createEditionWebRouter() {
+  if (!appEditionRegistration) {
+    throw new Error(`App edition "${appEdition}" is not registered.`)
+  }
 
-export const router = createRouter({
-  routeTree,
-  defaultNotFoundComponent: AppNotFoundPage,
-  defaultErrorComponent: AppRouteErrorPage,
-  defaultOnCatch: reportRouteError,
-  defaultPendingComponent: AppRoutePendingFallback,
-  defaultPendingMinMs: 300,
-  defaultPendingMs: 150,
-  defaultPreload: 'intent',
-  scrollRestoration: true,
-})
+  const editionRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    id: appEditionRegistration.routeMount,
+    component: () => null,
+  })
+  const editionDomains = webModules.filter(
+    (domain) => domain.id === appEditionRegistration.id,
+  )
+
+  return createWebRouter({
+    rootRoute,
+    domains: editionDomains,
+    rootOutlets: {
+      app: null,
+      admin: null,
+      wuxibiologics: editionRoute,
+    },
+    routes: ({ root }) => ({
+      root: [
+        createHomeRoute({ defaultTo: appEditionHomeTo, parentRoute: root }),
+      ],
+    }),
+    router: {
+      defaultNotFoundComponent: AppNotFoundPage,
+      defaultErrorComponent: AppRouteErrorPage,
+      defaultOnCatch: reportRouteError,
+      defaultPendingComponent: AppRoutePendingFallback,
+      defaultPendingMinMs: 300,
+      defaultPendingMs: 150,
+    },
+  })
+}
+
+const webRouter = appEditionRegistration
+  ? createEditionWebRouter()
+  : createStandardWebRouter()
+
+export const { outlets, webDomains, routeTree, router } = webRouter
 
 declare module '@tanstack/react-router' {
   interface Register {
