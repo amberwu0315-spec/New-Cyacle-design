@@ -21,11 +21,10 @@ VITE_APP_EDITION=default plot app run
 装配了定制领域的部署分支可将 `VITE_APP_EDITION` 设置为该领域注册的 edition ID；
 具体 ID 和启动命令由对应领域文档维护。
 
-默认版本继续把普通业务路由挂到公共 `app` outlet。定制版本可以在
-`appEdition.routeMount` 中声明自己的顶层 outlet；该 outlet 会直接挂到
-`RootRoute`，领域可在自己的 pathless 根路由中提供 Layout，而不经过公共
-`AppRoute`。具体 outlet 名称和 Layout 都由定制领域维护，app 层不判断具体
-edition 名称。
+默认版本继续把普通业务路由挂到公共 `app` outlet，后台路由挂到 `admin`
+outlet。定制 edition 的路由树由 app 层单独组装，领域通过 `addRoute('root',
+factory)` 注册不依赖公共壳子的登录、回调或 edition 根路由；具体 Layout 和
+导航仍由定制领域维护。
 
 ## 项目结构
 
@@ -57,7 +56,7 @@ cyacle/
 
 `app/src/web` 不放跨 domain 复用的共享组件、共享 lib 或 feature domain 的业务页面。可复用能力放到 `domain/base/src/web`，领域业务页面放到对应 `domain/<domain>/src/web`。
 
-`domain/base/src/web` 是共享前端基础包，提供 BaseProviders、共享 UI、共享 layout、全局样式、React Query、VRPC client、route mount helper 等能力。
+`domain/base/src/web` 是共享前端基础包，提供 BaseProviders、共享 UI、共享 layout、全局样式、React Query、VRPC client，以及 typed route builder/router 组装能力。
 
 `domain/<domain>/src/web` 是 feature domain 的前端包，提供该领域自己的路由、页面、局部组件，并通过 `createWebDomain().addRoute()` 暴露 route tree 和 capabilities。
 
@@ -147,8 +146,8 @@ const AdminRoute = createRoute({
 
 export const { router } = createWebRouter({
   rootRoute: RootRoute,
-  domains: webModules.filter((domain) => domain.id !== 'wuxibiologics'),
-  rootOutlets: { app: ShellRoute, admin: AdminRoute, wuxibiologics: null },
+  domains: webModules,
+  rootOutlets: { app: ShellRoute, admin: AdminRoute },
   routes: ({ app }) => ({ app: [createHomeRoute({ parentRoute: app! })] }),
 })
 ```
