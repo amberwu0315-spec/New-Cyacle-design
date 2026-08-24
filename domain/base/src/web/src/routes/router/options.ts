@@ -3,7 +3,7 @@ import type {
   RouterConstructorOptions,
   RouterHistory,
   TrailingSlashOption,
-} from '@tanstack/react-router'
+} from "@tanstack/react-router"
 
 export type WebRouterOptions = Omit<
   RouterConstructorOptions<
@@ -13,5 +13,5 @@ export type WebRouterOptions = Omit<
     RouterHistory,
     Record<string, unknown>
   >,
-  'routeTree'
+  "routeTree"
 >

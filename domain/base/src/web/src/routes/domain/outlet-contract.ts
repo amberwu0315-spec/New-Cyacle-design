@@ -1,9 +1,27 @@
-import type { AnyRoute } from '@tanstack/react-router'
-import { webDomainOutletIds, webDomainRootOutletIds } from '../web-domain.ts'
+import type { AnyRoute } from "@tanstack/react-router"
 
-export { webDomainOutletIds, webDomainRootOutletIds }
-export type WebDomainOutlet = (typeof webDomainOutletIds)[number]
+import { webDomainRootOutletIds } from "../config/outlets.ts"
+
 export type WebDomainRootOutlet = (typeof webDomainRootOutletIds)[number]
-export type WebDomainOutletRoutes<TRootRoute extends AnyRoute = AnyRoute> = Readonly<
-  { root: TRootRoute } & Record<WebDomainRootOutlet, AnyRoute | null>
+export type WebDomainOutlet = "root" | WebDomainRootOutlet
+
+export type WebDomainRootOutletRoute<TOutlet extends WebDomainRootOutlet> = AnyRoute & {
+  readonly types: {
+    readonly customId: TOutlet
+  }
+}
+
+export type WebDomainRootOutletRoutes = Readonly<{
+  [TOutlet in WebDomainRootOutlet]: WebDomainRootOutletRoute<TOutlet> | null
+}>
+
+export type WebDomainOutletRoutes<
+  TRootRoute extends AnyRoute,
+  TRootOutlets extends WebDomainRootOutletRoutes,
+> = Readonly<
+  { root: TRootRoute } & {
+    [TOutlet in WebDomainRootOutlet]: TRootOutlets[TOutlet]
+  }
 >
+
+export const webDomainOutletIds: readonly WebDomainOutlet[] = ["root", ...webDomainRootOutletIds]

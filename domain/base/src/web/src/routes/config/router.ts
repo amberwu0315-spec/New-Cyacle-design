@@ -1,7 +1,7 @@
-import type { WebRouterOptions } from '../router/options.ts'
+import type { WebRouterOptions } from "../router/options.ts"
 
 export const defaultWebRouterOptions = {
-  defaultPreload: 'intent',
+  defaultPreload: "intent",
   defaultPreloadStaleTime: 0,
   scrollRestoration: true,
 } satisfies WebRouterOptions

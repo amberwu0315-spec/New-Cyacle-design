@@ -1,0 +1,6 @@
+{
+  "ignorePatterns": ["**/package.json", "**/pnpm-lock.yaml", "**/public/**"],
+  "semi": false,
+  "singleQuote": false,
+  "jsxSingleQuote": false
+}

@@ -10,10 +10,10 @@ import {
 import { getAdminNavigation } from '#/admin/admin-config.ts'
 import { AdminAppLayout } from '#/components/layouts/admin-layout/index.ts'
 
-export function createAdminRoute({
+export function createAdminRoute<const TParentRoute extends AnyRoute>({
   parentRoute,
 }: {
-  parentRoute: AnyRoute
+  parentRoute: TParentRoute
 }) {
   return createRoute({
     getParentRoute: () => parentRoute,
@@ -22,14 +22,14 @@ export function createAdminRoute({
   })
 }
 
-export function createAdminHomeRoute({
+export function createAdminHomeRoute<const TParentRoute extends AnyRoute>({
   parentRoute,
 }: {
-  parentRoute: AnyRoute
+  parentRoute: TParentRoute
 }) {
   return createRoute({
     getParentRoute: () => parentRoute,
-    path: '/',
+    path: 'admin',
     component: AdminHomeRedirect,
   })
 }

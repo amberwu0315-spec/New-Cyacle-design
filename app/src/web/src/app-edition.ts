@@ -5,7 +5,6 @@ export interface AppEditionRegistration<TOptions, TNavConfig> {
   id: string
   homeTo: string
   createNavConfig: (options: TOptions) => TNavConfig
-  routeMount: string
 }
 
 interface AppEditionCapability<TOptions, TNavConfig> {

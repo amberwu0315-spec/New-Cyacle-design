@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { LucideIcon } from 'lucide-react'
 
-import type { WebDomain } from '../../../routes/web-domain.ts'
+import type { WebDomain } from '../../../routes/domain/builder.ts'
 import {
   createAppNavConfig,
   createAppPermissionCodes,
@@ -12,7 +12,7 @@ const TestIcon = (() => null) as unknown as LucideIcon
 function createDomain(): WebDomain {
   return {
     id: 'test',
-    routeMounts: {},
+    routes: [],
     capabilities: {
       permissionCodes: ['action_edit'],
       nav: () => ({

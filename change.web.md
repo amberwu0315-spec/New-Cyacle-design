@@ -73,26 +73,21 @@ body {
 - `domain/base/src/web/src/styles/globals.css` 不再包含 `#app`、`body` 的应用容器假设，只保留设计系统、reset、主题变量和 Tailwind/shadcn 基础能力。
 - app globals 最后导入，负责项目自己的容器策略和主题覆盖。
 
-## Domain Manifest
+## Domain Route Builder
 
-领域注册统一为 manifest，不兼容旧 factory：
+领域注册统一为 typed builder，不再兼容旧的 manifest factory：
 
 ```ts
-export const webDomain = defineWebDomain<UicWebCapabilities>()({
-  id: 'uic',
-  routeMounts: {
-    root: [createLoginRoute, createLegalRoute],
-    shell: [createUicRoutes],
-  },
-  capabilities: {
-    nav: createUicNavCapability(),
-  },
-})
+export const webDomain = createWebDomain('uic')
+  .addRoute('root', createLoginRoute)
+  .addRoute('root', createLegalRoute)
+  .addRoute('app', createUicRoutes)
+  .addCapability('nav', createUicNavCapability())
 ```
 
-- `routeMounts.root` 挂到 `RootRoute`，适合登录、协议、回调等无应用壳页面。
-- `routeMounts.shell` 挂到 app shell route，适合需要 `BaseAppLayout` 的业务页面。
-- mount key 是开放字符串，未来项目可以扩展 `admin`、`studio`、`embedded` 等挂载点。
+- `addRoute('root', factory)` 挂到 `RootRoute`，适合登录、协议、回调等无应用壳页面。
+- `addRoute('app', factory)` 挂到 app shell route，适合需要 `BaseAppLayout` 的业务页面。
+- outlet 是显式的类型约束；当前项目使用 `root`、`app` 和 `admin`，新增 outlet 需要同步更新 base 的路由契约和 app 组装。
 - `metas` 统一改为 `capabilities`，base 只提供泛型承载和收集能力，不限定业务语义。
 - `nav` 是 Cyacle 这类项目的能力约定，推荐由 app 层或项目级 web layer 解析并消费；模板 base 不应把 `nav` 作为领域注册的固定语义。
 
@@ -134,7 +129,7 @@ export const webDomain = defineWebDomain<UicWebCapabilities>()({
 - base 内部承担 app root/layout/router/home，会让生成模板和业务项目手写代码互相覆盖。
 - CSS 从 TS side-effect imports 分散导入时，base/domain/app 的覆盖顺序不够稳定，改为 `vineStyles.gen.css` 聚合更清晰。
 - 领域注册里的 `metas` 语义太弱，但又容易被误用成固定业务协议；改为 `capabilities` 后，表达上更接近“领域向上层暴露能力”。
-- `routes: [...]` 默认挂 layout slot 不够明确；`routeMounts: { root, shell }` 直接表达页面是否经过 AppLayout，更适合长期扩展。
+- 路由通过 `addRoute(outlet, factory)` 显式声明挂载 outlet，domain route tree 的路径和 params 类型会在 app 组装时保留。
 - 直接源码消费 workspace 依赖会放大 React 类型重复问题；这不是业务代码问题，是模板包产物和 workspace 拓扑问题。
 
 ## 验证记录

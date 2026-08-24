@@ -38,6 +38,7 @@
     "@types/react": "catalog:web",
     "@types/react-dom": "catalog:web",
     "jsdom": "catalog:web",
+    "oxfmt": "catalog:web",
     "shadcn": "catalog:web",
     "typescript": "catalog:web",
     "vite": "catalog:web",
@@ -53,6 +54,7 @@
   "name": "@carbonnt-cyacle/web-base",
   "private": true,
   "scripts": {
+    "fmt": "oxfmt",
     "test": "vitest run --passWithNoTests",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },

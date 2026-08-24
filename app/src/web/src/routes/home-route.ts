@@ -1,12 +1,14 @@
-import { createRoute, redirect } from '@tanstack/react-router'
-import type { WebRouteHandle } from '@carbonnt-cyacle/web-base'
+import { createRoute, redirect, type AnyRoute } from '@tanstack/react-router'
 
-type HomeRouteDeps = {
+type HomeRouteDeps<TParentRoute extends AnyRoute> = {
   defaultTo: string | (() => string | Promise<string>)
-  parentRoute: WebRouteHandle
+  parentRoute: TParentRoute
 }
 
-export function createHomeRoute({ defaultTo, parentRoute }: HomeRouteDeps) {
+export function createHomeRoute<const TParentRoute extends AnyRoute>({
+  defaultTo,
+  parentRoute,
+}: HomeRouteDeps<TParentRoute>) {
   return createRoute({
     getParentRoute: () => parentRoute,
     path: '/',
