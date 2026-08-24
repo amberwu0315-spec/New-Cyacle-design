@@ -4,28 +4,29 @@
 
 > 职责：规定 app 与 domain 的路由挂载、懒加载策略和页面布局分层。
 
-`app/src/web` 创建最终 `RootRoute`、`ShellRoute`、项目 app 级路由和 domain outlet；feature domain 通过 `webDomain.routeMounts` 接入 app 定义的 outlet。普通业务页面默认挂到 shell outlet；login、register、SSO callback 等特殊页面挂到 root outlet。
+`app/src/web` 创建最终 `RootRoute`、pathless Layout outlet、项目 app 级路由和最终 Router；feature domain 通过 `createWebDomain().addRoute()` 声明 route tree，再由 `createWebRouter` 统一接入。普通业务页面默认挂到 `app` outlet；login、register、SSO callback 等特殊页面挂到 `root` outlet。
 
 | 场景 | 默认写法 |
 | --- | --- |
 | 全局 provider、Toaster、QueryClient 等基础设施 | `app/src/web/src/main.tsx` 中使用 `BaseProviders` |
 | app 入口级配置、router、outlet 定义 | `app/src/web/src/router.ts` |
-| app 自己需要统一页面框架的路由 | 挂到 `ShellRoute` 分支 |
+| app 自己需要统一页面框架的路由 | 挂到 `app` outlet 分支 |
 | app 自己不需要页面框架的路由 | 直接挂 RootRoute |
-| 普通 business domain route tree | `routeMounts.shell`，挂到 app shell 下 |
-| 特殊无 layout domain route | `routeMounts.root`，直接挂 RootRoute |
+| 普通 business domain route tree | `.addRoute('app', factory)`，挂到 app Layout 下 |
+| 后台 domain route tree | `.addRoute('admin', factory)`，挂到 Admin Layout 下 |
+| 特殊无 layout domain route | `.addRoute('root', factory)`，直接挂 RootRoute |
 | 普通页面内容区 | 优先用共享 `ModuleLayout` 打底；domain 可自定义 `PageLayout` |
 | domain route 扩展信息 | `capabilities`，当前 app 消费函数式 `capabilities.nav` |
 
 ## App 层组织
 
-`main.tsx` 只负责引入最终样式、包裹 `BaseProviders` 并挂载 `RouterProvider`。`router.ts` 负责创建 `RootRoute`、`ShellRoute`、项目 app 级路由、domain outlet 和入口配置。App shell 适配代码放 `app/src/web/src/components/layouts/`，共享 layout 与通用页面底座放 `domain/base/src/web/src/components/layouts/`。
+`main.tsx` 只负责引入最终样式、包裹 `BaseProviders` 并挂载 `RouterProvider`。`router.ts` 负责创建 `RootRoute`、Layout outlet、项目 app 级路由、domain route tree 和入口配置。App shell 适配代码放 `app/src/web/src/components/layouts/`，共享 layout 与通用页面底座放 `domain/base/src/web/src/components/layouts/`。
 
 ```text
 app/src/web/src/
 ├── main.tsx                     ← 挂载 React app + BaseProviders
 ├── project-config.ts            ← 配置项目级共享参数
-├── router.ts                    ← 创建最终 router + app route + domain outlet
+├── router.ts                    ← 创建最终 router + Layout outlet + domain route tree
 ├── routes/                      ← 项目 app 级路由
 ├── features/                    ← 项目 app 级页面
 └── components/layouts/          ← app shell 适配代码
@@ -40,45 +41,30 @@ domain/base/src/web/src/
 // app/src/web/src/router.ts
 import '#/project-config.ts'
 
-import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
-import {
-  defineWebDomainRouteOutlets,
-  resolveWebDomainRouteMount,
-} from '@example-app/web-base'
+import { createRootRoute, createRoute } from '@tanstack/react-router'
+import { createWebRouter } from '@example-app/web-base'
 
 import { AppLayout } from '#/components/layouts/app-layout/index.ts'
 import { createHomeRoute } from '#/routes/home-route.ts'
 import { webModules } from '#/vineModules.gen.ts'
 
-const appRouteOutlets = defineWebDomainRouteOutlets({
-  root: 'root',
-  shell: 'shell',
-})
-
 const RootRoute = createRootRoute()
 const ShellRoute = createRoute({
   getParentRoute: () => RootRoute,
-  id: 'shell',
+  id: 'app',
   component: AppLayout,
 })
+const AdminRoute = createRoute({
+  getParentRoute: () => RootRoute,
+  id: 'admin',
+})
 
-const routeTree = RootRoute.addChildren([
-  ...resolveWebDomainRouteMount({
-    domains: webModules,
-    outlet: appRouteOutlets.root,
-    parentRoute: RootRoute,
-  }),
-  ShellRoute.addChildren([
-    createHomeRoute({ parentRoute: ShellRoute }),
-    ...resolveWebDomainRouteMount({
-      domains: webModules,
-      outlet: appRouteOutlets.shell,
-      parentRoute: ShellRoute,
-    }),
-  ]),
-])
-
-export const router = createRouter({ routeTree })
+export const { router } = createWebRouter({
+  rootRoute: RootRoute,
+  domains: webModules.filter((domain) => domain.id !== 'wuxibiologics'),
+  rootOutlets: { app: ShellRoute, admin: AdminRoute, wuxibiologics: null },
+  routes: ({ app }) => ({ app: [createHomeRoute({ parentRoute: app! })] }),
+})
 ```
 
 
@@ -164,30 +150,31 @@ export function createWorkspaceRoute({ domainRoute }: { domainRoute: AnyRoute })
 }
 ```
 
-不要为了把 wrapper 放进独立 lazy 模块而硬编码 `useParams({ from: '/workspace/$appId' })`。`from` 匹配的是完整 route id，不是浏览器 URL；code-based domain route 挂到 pathless `shell`、`settingsLayout` 等父路由后，实际 route id 会包含父级 id，而且更换 outlet 后还会改变。使用当前 factory 创建的 `route.useParams()` / `route.useSearch()` 不依赖最终挂载位置。
+不要为了把 wrapper 放进独立 lazy 模块而硬编码 `useParams({ from: '/workspace/$appId' })`。`from` 匹配的是完整 route id，不是浏览器 URL；code-based domain route 挂到 pathless `app`、`settingsLayout` 等父路由后，实际 route id 会包含父级 id，而且更换 outlet 后还会改变。使用当前 factory 创建的 `route.useParams()` / `route.useSearch()` 不依赖最终挂载位置。
 
 只有当某个 route 需要把 `component`、`pendingComponent`、`errorComponent` 等非关键配置拆成独立 lazy route 文件时，才考虑 code-based `.lazy(() => import('./xxx.lazy').then((d) => d.Route))`；使用这种写法前先固定 route id，避免 lazy route id 和主 route 不一致。`path`、`validateSearch`、`beforeLoad` 和通常情况下的 `loader` 继续同步保留，避免先下载 route options 才能开始加载数据的额外瀑布。
 
 若项目使用 file-based route，则沿用项目约定创建 `.lazy.tsx`，并用 `createLazyFileRoute` 替代 `createLazyRoute`。
 
-不要 lazy app 壳子本身：`main.tsx`、`router.ts`、`ShellRoute`、`AppLayout`、domain route mount factory 保持同步。它们负责应用骨架、路由注册、outlet 挂载和 nav capability 聚合；改成异步会让 app 路由入口协议变复杂，收益不明显。
+不要 lazy app 壳子本身：`main.tsx`、`router.ts`、Layout outlet、`AppLayout`、domain route factory 保持同步。它们负责应用骨架、路由注册、outlet 挂载和 nav capability 聚合；改成异步会让 app 路由入口协议变复杂，收益不明显。
 
 ## Business Domain 路由
 
-Business domain 对外导出 `webDomain`。默认写法使用 `defineWebDomain()` 声明 domain id、`routeMounts` 和可选 `capabilities`：`routeMounts.shell` 挂到 app shell 下，`routeMounts.root` 直接挂 RootRoute；当前 app 会读取函数式 `capabilities.nav` 聚合左侧导航。
+Business domain 对外导出 `webDomain`。默认写法使用 `createWebDomain(id)` 声明 domain，再通过 `.addRoute(outlet, factory)` 注册路由、`.addCapability(key, value)` 暴露能力：`app` 挂到普通应用 Layout，`admin` 挂到后台 Layout，`root` 直接挂 RootRoute；当前 app 会读取函数式 `capabilities.nav` 聚合左侧导航。
 
 Domain 默认路由以领域名称开始，domain root 可同步承载 `Outlet`，子页面挂在 domain root 下。子路由使用相对 path，例如 `reports` 最终成为 `/catalog/reports`。自定义顶层路由只在产品合同明确需要时创建，并先检查与其它 domain 的 path 冲突。
 
 ```tsx
 // domain/catalog/src/web/src/routes/index.tsx
-import { defineWebDomain, type WebDomainRouteFactory } from "@example-app/web-base"
+import { createWebDomain } from "@example-app/web-base"
 import { Outlet, createRoute } from "@tanstack/react-router"
+import type { AnyRoute } from "@tanstack/react-router"
 
 import { createHomeRouteTree } from "./home-route"
 import { createReportsRouteTree } from "./reports-route"
 import { createCatalogNavMeta } from "./nav"
 
-const createCatalogRoutes: WebDomainRouteFactory = ({ parentRoute }) => {
+const createCatalogRoutes = (parentRoute: AnyRoute) => {
   const domainRoute = createRoute({
     getParentRoute: () => parentRoute,
     path: "catalog",
@@ -202,15 +189,9 @@ const createCatalogRoutes: WebDomainRouteFactory = ({ parentRoute }) => {
   ]
 }
 
-export const webDomain = defineWebDomain()({
-  id: "catalog",
-  routeMounts: {
-    shell: [createCatalogRoutes],
-  },
-  capabilities: {
-    nav: createCatalogNavMeta,
-  },
-})
+export const webDomain = createWebDomain("catalog")
+  .addRoute("app", createCatalogRoutes)
+  .addCapability("nav", createCatalogNavMeta)
 ```
 
 ```tsx

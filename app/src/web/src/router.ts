@@ -1,86 +1,55 @@
-import '#/project-config.ts'
+import '#/project-config.ts';
 
-import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
-import {
-  createWorkbenchSidebarDemoRoute,
-  defineWebDomainRouteOutlets,
-  resolveWebDomainRouteMount,
-} from '@carbonnt-cyacle/web-base'
+import { createRootRoute, createRoute } from '@tanstack/react-router';
+import { createWebRouter, createWorkbenchSidebarDemoRoute } from '@carbonnt-cyacle/web-base';
 import {
   ensurePermissions,
   fetchOrganizationProfile,
   getSelectedWorkspaceScope,
-} from '@carbonnt-cyacle/web-uic/pub'
+} from '@carbonnt-cyacle/web-uic/pub';
 
-import { AppLayout } from '#/components/layouts/app-layout/index.ts'
+import { AppLayout } from '#/components/layouts/app-layout/index.ts';
+import { AdminAppLayout } from '#/components/layouts/admin-layout/index.ts';
 import {
   createConfiguredAppNavConfig,
   resolveAppEditionHomeTo,
-} from '#/components/layouts/app-layout/app-nav-config.ts'
-import { AppRoutePendingFallback } from '#/components/routes/app-route-pending-fallback.tsx'
-import { AppNotFoundPage } from '#/features/not-found/page.tsx'
-import { adminHomeTo } from '#/admin/admin-config.ts'
-import { resolveSystemEntryHomeTo } from '#/system-entry.ts'
-import {
-  getAppEdition,
-  resolveAppEditionRegistration,
-} from '#/app-edition.ts'
-import { createHomeRoute } from '#/routes/home-route.ts'
-import {
-  createAdminHomeRoute,
-  createAdminRoute,
-} from '#/routes/admin/index.ts'
-import { webModules } from '#/vineModules.gen.ts'
-import { appPermissionCodes } from '#/app-permissions.ts'
+} from '#/components/layouts/app-layout/app-nav-config.ts';
+import { AppRoutePendingFallback } from '#/components/routes/app-route-pending-fallback.tsx';
+import { AppNotFoundPage } from '#/features/not-found/page.tsx';
+import { adminHomeTo } from '#/admin/admin-config.ts';
+import { resolveSystemEntryHomeTo } from '#/system-entry.ts';
+import { getAppEdition, resolveAppEditionRegistration } from '#/app-edition.ts';
+import { createHomeRoute } from '#/routes/home-route.ts';
+import { createAdminHomeRoute } from '#/routes/admin/index.ts';
+import { webModules } from '#/vineModules.gen.ts';
+import { appPermissionCodes } from '#/app-permissions.ts';
 
-const appRouteOutlets = defineWebDomainRouteOutlets({
-  admin: 'admin',
-  root: 'root',
-  shell: 'shell',
-})
+const DEFAULT_APP_HOME_TO = '/project/projects';
 
-const RootRoute = createRootRoute()
+const rootRoute = createRootRoute({
+  notFoundComponent: AppNotFoundPage,
+});
 
-const appEdition = getAppEdition()
-const appEditionRegistration = resolveAppEditionRegistration(
-  webModules,
-  appEdition,
-)
-
-const ShellRoute = createRoute({
-  getParentRoute: () => RootRoute,
-  id: 'shell',
-  component: AppLayout,
-})
-
-const AdminRoute = createAdminRoute({ parentRoute: RootRoute })
-
-const appEditionHomeTo = resolveAppEditionHomeTo(webModules, appEdition)
-const defaultSystemFrontendHomeTo = '/project/projects'
+const appEdition = getAppEdition();
+const appEditionRegistration = resolveAppEditionRegistration(webModules, appEdition);
+const appEditionHomeTo = resolveAppEditionHomeTo(webModules, appEdition);
 
 async function resolveDefaultSystemHomeTo() {
-  let frontendHomeTo = defaultSystemFrontendHomeTo
+  let frontendHomeTo = DEFAULT_APP_HOME_TO;
 
   try {
     const permissionCodeMap = await ensurePermissions({
       codes: appPermissionCodes,
       suppressGlobalToast: true,
       workspaceScope: getSelectedWorkspaceScope(),
-    })
-    const navConfig = createConfiguredAppNavConfig(
-      webModules,
-      { permissionCodeMap },
-      appEdition,
-    )
+    });
+    const navConfig = createConfiguredAppNavConfig(webModules, { permissionCodeMap }, appEdition);
     const hasDefaultSystemHome = navConfig.scenes.some((scene) =>
-      scene.groups.some((group) =>
-        group.items.some((item) => item.to === defaultSystemFrontendHomeTo),
-      ),
-    )
-
+      scene.groups.some((group) => group.items.some((item) => item.to === DEFAULT_APP_HOME_TO))
+    );
     frontendHomeTo = hasDefaultSystemHome
-      ? defaultSystemFrontendHomeTo
-      : (navConfig.scenes[0]?.defaultTo ?? appEditionHomeTo)
+      ? DEFAULT_APP_HOME_TO
+      : (navConfig.scenes[0]?.defaultTo ?? appEditionHomeTo);
   } catch {
     // 权限加载失败时沿用默认入口，具体页面仍由权限守卫处理。
   }
@@ -88,82 +57,95 @@ async function resolveDefaultSystemHomeTo() {
   try {
     const organizationProfile = await fetchOrganizationProfile({
       suppressGlobalToast: true,
-    })
-
+    });
     return resolveSystemEntryHomeTo({
       adminHomeTo,
       businessCodes: organizationProfile?.businessCodes,
       frontendHomeTo,
-    })
+    });
   } catch {
-    return frontendHomeTo
+    return frontendHomeTo;
   }
 }
 
-const rootDomainRoutes = resolveWebDomainRouteMount({
-  domains: webModules,
-  outlet: appRouteOutlets.root,
-  parentRoute: RootRoute,
-})
+function createStandardWebRouter() {
+  const appRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    id: 'app',
+    component: AppLayout,
+  });
+  const adminRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    path: 'admin',
+    component: AdminAppLayout,
+  });
+  const standardDomains = webModules.filter((domain) => domain.id !== 'wuxibiologics');
 
-const shellDomainRoutes = resolveWebDomainRouteMount({
-  domains: webModules,
-  outlet: appRouteOutlets.shell,
-  parentRoute: ShellRoute,
-})
-
-const adminDomainRoutes = resolveWebDomainRouteMount({
-  domains: webModules,
-  outlet: appRouteOutlets.admin,
-  parentRoute: AdminRoute,
-})
-
-const appEditionRoutes = appEditionRegistration
-  ? [
-      createHomeRoute({
-        defaultTo: appEditionHomeTo,
-        parentRoute: RootRoute,
-      }),
-      ...resolveWebDomainRouteMount({
-        domains: webModules,
-        outlet: appEditionRegistration.routeMount,
-        parentRoute: RootRoute,
-      }),
-    ]
-  : [
-      AdminRoute.addChildren([
-        createAdminHomeRoute({
-          parentRoute: AdminRoute,
-        }),
-        ...adminDomainRoutes,
-      ]),
-      ShellRoute.addChildren([
+  return createWebRouter({
+    rootRoute,
+    domains: standardDomains,
+    rootOutlets: {
+      app: appRoute,
+      admin: adminRoute,
+      wuxibiologics: null,
+    },
+    routes: ({ app, admin }) => ({
+      app: [
         createHomeRoute({
           defaultTo: resolveDefaultSystemHomeTo,
-          parentRoute: ShellRoute,
+          parentRoute: app!,
         }),
-        createWorkbenchSidebarDemoRoute({ parentRoute: ShellRoute }),
-        ...shellDomainRoutes,
-      ]),
-    ]
+        createWorkbenchSidebarDemoRoute({ parentRoute: app! }),
+      ],
+      admin: [createAdminHomeRoute({ parentRoute: admin! })],
+    }),
+    router: {
+      defaultNotFoundComponent: AppNotFoundPage,
+      defaultPendingComponent: AppRoutePendingFallback,
+      defaultPendingMinMs: 300,
+      defaultPendingMs: 150,
+    },
+  });
+}
 
-const routeTree = RootRoute.addChildren([
-  ...rootDomainRoutes,
-  ...appEditionRoutes,
-])
+function createEditionWebRouter() {
+  if (!appEditionRegistration) {
+    throw new Error(`App edition "${appEdition}" is not registered.`);
+  }
 
-export const router = createRouter({
-  routeTree,
-  defaultNotFoundComponent: AppNotFoundPage,
-  defaultPendingComponent: AppRoutePendingFallback,
-  defaultPendingMinMs: 300,
-  defaultPendingMs: 150,
-  defaultPreload: 'intent',
-  scrollRestoration: true,
-})
+  const editionRoute = createRoute({
+    getParentRoute: () => rootRoute,
+    id: appEditionRegistration.routeMount,
+    component: () => null,
+  });
+  const editionDomains = webModules.filter((domain) => domain.id === appEditionRegistration.id);
+
+  return createWebRouter({
+    rootRoute,
+    domains: editionDomains,
+    rootOutlets: {
+      app: null,
+      admin: null,
+      wuxibiologics: editionRoute,
+    },
+    routes: ({ root }) => ({
+      root: [createHomeRoute({ defaultTo: appEditionHomeTo, parentRoute: root })],
+    }),
+    router: {
+      defaultNotFoundComponent: AppNotFoundPage,
+      defaultPendingComponent: AppRoutePendingFallback,
+      defaultPendingMinMs: 300,
+      defaultPendingMs: 150,
+    },
+  });
+}
+
+const webRouter = appEditionRegistration ? createEditionWebRouter() : createStandardWebRouter();
+
+export const { outlets, webDomains, routeTree, router } = webRouter;
 
 declare module '@tanstack/react-router' {
   interface Register {
-    router: typeof router
+    router: typeof router;
   }
 }

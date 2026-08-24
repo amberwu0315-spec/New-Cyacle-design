@@ -1,1 +1,7 @@
 export * from './web-domain.ts'
+export * from './config/index.ts'
+export * from './domain/builder.ts'
+export * from './domain/collect.ts'
+export * from './domain/route-component.ts'
+export * from './domain/route-parent.ts'
+export * from './router/index.ts'
