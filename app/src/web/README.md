@@ -21,11 +21,10 @@ VITE_APP_EDITION=default plot app run
 装配了定制领域的部署分支可将 `VITE_APP_EDITION` 设置为该领域注册的 edition ID；
 具体 ID 和启动命令由对应领域文档维护。
 
-默认版本继续把普通业务路由挂到公共 `shell` outlet。定制版本可以在
-`appEdition.routeMount` 中声明自己的顶层 outlet；该 outlet 会直接挂到
-`RootRoute`，领域可在自己的 pathless 根路由中提供 Layout，而不经过公共
-`ShellRoute`。具体 outlet 名称和 Layout 都由定制领域维护，app 层不判断具体
-edition 名称。
+默认版本继续把普通业务路由挂到公共 `app` outlet，后台路由挂到 `admin`
+outlet。定制 edition 的路由树由 app 层单独组装，领域通过 `addRoute('root',
+factory)` 注册不依赖公共壳子的登录、回调或 edition 根路由；具体 Layout 和
+导航仍由定制领域维护。
 
 ## 项目结构
 
@@ -57,9 +56,9 @@ cyacle/
 
 `app/src/web` 不放跨 domain 复用的共享组件、共享 lib 或 feature domain 的业务页面。可复用能力放到 `domain/base/src/web`，领域业务页面放到对应 `domain/<domain>/src/web`。
 
-`domain/base/src/web` 是共享前端基础包，提供 BaseProviders、共享 UI、共享 layout、全局样式、React Query、VRPC client、route mount helper 等能力。
+`domain/base/src/web` 是共享前端基础包，提供 BaseProviders、共享 UI、共享 layout、全局样式、React Query、VRPC client，以及 typed route builder/router 组装能力。
 
-`domain/<domain>/src/web` 是 feature domain 的前端包，提供该领域自己的路由、页面、局部组件，并通过 `webDomain` 暴露 route mounts 和 capabilities。
+`domain/<domain>/src/web` 是 feature domain 的前端包，提供该领域自己的路由、页面、局部组件，并通过 `createWebDomain().addRoute()` 暴露 route tree 和 capabilities。
 
 ## Ship Module
 
@@ -70,7 +69,7 @@ ship module 的主要职责：
 - 启动 Vite dev server
 - 执行生产构建并输出 `dist/`
 - 在 `src/main.tsx` 中挂载 React app，并引入最终样式入口
-- 在 `src/router.ts` 中创建最终 router，配置项目级入口参数，定义 domain route outlet，并挂载 app 自身路由和 feature domain 路由
+- 在 `src/router.ts` 中创建 Root Route、pathless Layout outlet 和最终 router，并挂载 app 自身路由和 feature domain 路由
 - 在 `src/routes/`、`src/features/`、`src/components/` 中放项目 app 层路由、页面和 shell 适配代码
 - 在 `src/globals.css` 中声明只属于最终应用的全局样式补充
 - 通过生成的 `src/vineModules.gen.ts` 和 `src/vineStyles.gen.css` 汇总 feature domain 入口
@@ -122,50 +121,35 @@ const webProjectConfig = {
 configureWebProjectConfig(webProjectConfig)
 ```
 
-`src/router.ts` 是项目 app 层可维护的路由入口，先加载项目级配置，再创建最终 router：
+`src/router.ts` 是项目 app 层可维护的路由入口，先加载项目级配置，再创建 Root Route、Layout outlet 和最终 router。base 的 typed collector 负责把 domain route tree 重新绑定到这些真实 outlet：
 
 ```ts
 import './project-config'
 
-import { createRootRoute, createRoute, createRouter } from '@tanstack/react-router'
-import {
-  defineWebDomainRouteOutlets,
-  resolveWebDomainRouteMount,
-} from '@scope/web-base'
+import { createRootRoute, createRoute } from '@tanstack/react-router'
+import { createWebRouter } from '@scope/web-base'
 
 import { AppLayout } from './components/layouts/app-layout'
 import { createHomeRoute } from './routes/home-route'
 import { webModules } from './vineModules.gen'
 
-const appRouteOutlets = defineWebDomainRouteOutlets({
-  root: 'root',
-  shell: 'shell',
-})
-
 const RootRoute = createRootRoute()
 const ShellRoute = createRoute({
   getParentRoute: () => RootRoute,
-  id: 'shell',
+  id: 'app',
   component: AppLayout,
 })
+const AdminRoute = createRoute({
+  getParentRoute: () => RootRoute,
+  id: 'admin',
+})
 
-const routeTree = RootRoute.addChildren([
-  ...resolveWebDomainRouteMount({
-    domains: webModules,
-    outlet: appRouteOutlets.root,
-    parentRoute: RootRoute,
-  }),
-  ShellRoute.addChildren([
-    createHomeRoute({ parentRoute: ShellRoute }),
-    ...resolveWebDomainRouteMount({
-      domains: webModules,
-      outlet: appRouteOutlets.shell,
-      parentRoute: ShellRoute,
-    }),
-  ]),
-])
-
-export const router = createRouter({ routeTree })
+export const { router } = createWebRouter({
+  rootRoute: RootRoute,
+  domains: webModules,
+  rootOutlets: { app: ShellRoute, admin: AdminRoute },
+  routes: ({ app }) => ({ app: [createHomeRoute({ parentRoute: app! })] }),
+})
 ```
 
 ship module 可以定义项目级 layout 和项目级页面。跨 domain 共享的基础设施仍放 `domain/base/src/web`；feature domain 的业务页面仍放各自 domain 包。
@@ -176,7 +160,7 @@ base domain 提供：
 
 - `BaseProviders`：React Query、主题、Toaster 等全局 provider
 - `globals.css`：全局 Tailwind、theme、字体和基础 CSS
-- `defineWebDomain`、`defineWebDomainRouteOutlets`、`resolveWebDomainRouteMount`：domain route mount 协议
+- `createWebDomain`、`createWebRouter`、`createStandaloneWebDomainRouter`：typed domain route 协议和 Router 组装
 - `AppLayout`、`ModuleLayout` 等共享 layout
 - `components/ui/*`：共享 UI 组件
 - `lib/query-client`：React Query provider
@@ -211,7 +195,7 @@ domain/<domain>/src/web/
 export { webDomain } from './routes'
 ```
 
-`webDomain` 使用 base domain 提供的 `defineWebDomain()` 声明 route mounts 和 capabilities。feature domain 不应该自己创建 root router，也不应该自己挂载 React app。
+`webDomain` 使用 base domain 提供的 `createWebDomain()` 声明 route tree 和 capabilities。feature domain 不应该自己创建 root router，也不应该自己挂载 React app。
 
 ## 路由关系
 
@@ -221,12 +205,12 @@ export { webDomain } from './routes'
 router.ts                             # app/src/web
 └─ RootRoute                          # app 根路由
    ├─ root outlet                     # login、register、SSO callback 等无 shell 页面
-   └─ ShellRoute                      # app shell
+   └─ AppRoute                        # app shell
       ├─ app routes                   # 首页、帮助页、项目级公共入口
-      └─ shell outlet                 # 普通 feature domain 页面
+      └─ app outlet                   # 普通 feature domain 页面
 ```
 
-app 层负责根路由、shell 路由、项目级页面和入口级配置。feature domain 只负责自己领域下的 route factory，并通过 `root`、`shell` 等 outlet 接入最终应用。
+app 层负责根路由、Layout outlet、项目级页面和入口级配置。feature domain 只负责自己领域下的 route factory，并通过 `root`、`app`、`admin` 等 outlet 接入最终应用。
 
 ## 样式与 Tailwind
 
@@ -298,5 +282,5 @@ pnpm build
 ## Admin 后台
 
 `/admin` 用于迁移原 Matrix 后台功能。Admin 的路由和菜单由各 feature domain
-通过 `routeMounts.admin` 与 `capabilities.adminNav` 上报，app 只负责聚合，
+通过 `.addRoute('admin', ...)` 与 `capabilities.adminNav` 上报，app 只负责聚合，
 通用布局不保存业务菜单。详细约定见 [ADMIN.md](./ADMIN.md)。

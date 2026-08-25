@@ -1,4 +1,4 @@
-import type { WebDomain } from '../../../routes/web-domain.ts'
+import type { WebDomain } from '../../../routes/domain/builder.ts'
 import { languageStore } from '../../../lib/i18n/index.ts'
 import type { SupportedLanguage } from '../../../lib/i18n/index.ts'
 

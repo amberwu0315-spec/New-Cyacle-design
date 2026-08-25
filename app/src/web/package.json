@@ -107,6 +107,7 @@
     "@types/react-dom": "catalog:web",
     "@vitejs/plugin-react": "catalog:web",
     "jsdom": "catalog:web",
+    "oxfmt": "catalog:web",
     "tailwindcss": "catalog:web",
     "typescript": "catalog:web",
     "vite": "catalog:web",
@@ -120,6 +121,7 @@
   "scripts": {
     "build": "vite build",
     "dev": "vite dev",
+    "fmt": "oxfmt",
     "test": "vitest run --passWithNoTests",
     "typecheck": "tsc --noEmit -p tsconfig.json"
   },

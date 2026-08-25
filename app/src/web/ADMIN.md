@@ -29,7 +29,7 @@ RootRoute
 ### Feature domain
 
 - 维护本领域迁移后的 Admin 页面。
-- 通过 `routeMounts.admin` 上报本领域 Admin 路由。
+- 通过 `createWebDomain().addRoute('admin', createAdminRoutes)` 上报本领域 Admin 路由。
 - 通过 `capabilities.adminNav` 上报本领域 Admin 菜单。
 - 页面继续使用领域自己的服务、查询和实体，不把业务实现放进 app。
 - Admin 页面放在 `features/admin/`，对应路由放在 `routes/admin/`，按业务模块继续拆分文件。
@@ -38,13 +38,13 @@ RootRoute
 
 - 创建 `/admin` 根路由。
 - 挂载认证和 Admin 品牌。
-- 聚合各领域的 `admin` route mount 和 `adminNav` capability。
+- 聚合各领域注册到 `admin` outlet 的路由和 `adminNav` capability。
 - 根据第一个可用菜单决定 `/admin` 默认跳转地址。
 
 ## 领域接入示例
 
 ```tsx
-const createAdminRoutes: WebDomainRouteFactory = ({ parentRoute }) =>
+const createAdminRoutes = (parentRoute: AnyRoute) =>
   createRoute({
     getParentRoute: () => parentRoute,
     path: 'resources',
@@ -67,17 +67,11 @@ const createAdminNav: AdminNavMetaFactory = () => [
   },
 ]
 
-export const webDomain = defineWebDomain()({
-  id: 'example',
-  routeMounts: {
-    shell: [createShellRoutes],
-    admin: [createAdminRoutes],
-  },
-  capabilities: {
-    adminNav: createAdminNav,
-    nav: createShellNav,
-  },
-})
+export const webDomain = createWebDomain('example')
+  .addRoute('app', createShellRoutes)
+  .addRoute('admin', createAdminRoutes)
+  .addCapability('adminNav', createAdminNav)
+  .addCapability('nav', createShellNav)
 ```
 
 最终路径由 Admin 根路由和领域相对路径组成：示例中的 `resources` 对应
@@ -101,7 +95,7 @@ src/
 - 多个领域可以使用相同的 group `id`，聚合器会按领域加载顺序合并菜单项。
 - 菜单项 `id` 应全局唯一，建议使用 `admin-<domain>-<resource>`。
 - 尚未迁移但需要保留位置的菜单可以设置 `disabled: true`。
-- 已启用菜单必须存在对应的 `routeMounts.admin` 路由。
+- 已启用菜单必须存在对应的 `admin` outlet 路由注册。
 
 ## 页面与表格规范
 
