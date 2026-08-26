@@ -1,6 +1,7 @@
 export * from '../auto-translate-control.tsx'
 export * from './access-guard.tsx'
 export * from './app-shell-frame/index.ts'
+export * from './data-selector-detail-drawer.tsx'
 export * from './document-preview/index.ts'
 export * from './detail-page-header.tsx'
 export * from './errors/index.ts'
