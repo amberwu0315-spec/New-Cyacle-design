@@ -49,7 +49,7 @@
 
 1. `DialogContent` 使用纵向 flex，并限制在视口内：`flex max-h-[88vh] flex-col overflow-hidden`。常规表格选择器优先使用 `sm:!max-w-4xl`；列数较多、包含预览区或业务明确需要更宽时才扩大到 `sm:!max-w-5xl` / `sm:!max-w-6xl`。
 2. `DialogHeader` 默认固定不收缩，包含明确的标题和必要的说明；不要把创建按钮塞进标题行。
-3. 中间表格区统一使用 `DialogBody containerClassName="h-[520px] py-2" className="overflow-hidden"`。`DialogBody` 在普通文字和表单弹框中由不滚动的外层保持 `py-4`，选择器为了保持工具栏和表格密度才显式收紧为 `py-2`；不能把上下留白只放在会滚动的内层，也不能让表格文字直接贴住头部。`DataView` 使用 `height="100%"` 和 `h-full min-h-0`，分页、搜索栏留在内容区内，只有表格 viewport 滚动，Dialog、标题、工具栏和底部操作不能随表格滚动。
+3. 中间表格区统一使用 `DialogBody className="h-[520px] overflow-hidden py-2"`。`DialogBody` 自身保持滚动和高度链，不能再把 `className` 拆到第二层容器；`DataView` 使用 `height="100%"` 和 `h-full min-h-0`，分页、搜索栏留在内容区内，只有表格 viewport 滚动，Dialog、标题、工具栏和底部操作不能随表格滚动。
 4. `DialogFooter` 默认固定不收缩。右侧按“取消、确认”的顺序放置操作；可清空的选择器可以把“清除选择”作为 ghost 按钮放在确认操作之前。
 5. 初次加载使用表格 skeleton；刷新时保留已有表格和筛选条件，用 `isFetching` 表示刷新状态，避免整块内容闪回空白或骨架。
 
@@ -64,7 +64,7 @@
     <DialogDescription>从当前工作空间可见的数据中选择一项。</DialogDescription>
   </DialogHeader>
 
-  <DialogBody containerClassName="h-[520px] py-2" className="overflow-hidden">
+  <DialogBody className="h-[520px] overflow-hidden py-2">
     <DataView
       className="h-full min-h-0 w-full"
       height="100%"
