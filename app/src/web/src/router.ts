@@ -19,45 +19,22 @@ import { createAdminHomeRoute } from '#/routes/admin/index.ts'
 import { createHomeRoute } from '#/routes/home-route.ts'
 import { webModules } from '#/vineModules.gen.ts'
 
-const domainProfiles = {
-  standard: webModules,
-} as const
-
+const domainProfiles = { standard: webModules } as const
 const standardDomains = domainProfiles.standard
-
-const rootRoute = createRootRoute({
-  notFoundComponent: AppNotFoundPage,
-})
+const rootRoute = createRootRoute({ notFoundComponent: AppNotFoundPage })
 
 const webRouter = createWebRouter({
   rootRoute,
   domains: standardDomains,
   rootOutlets: {
-    app: createRoute({
-      getParentRoute: () => rootRoute,
-      id: 'app',
-      component: AppLayout,
-    }),
-    admin: createRoute({
-      getParentRoute: () => rootRoute,
-      id: 'admin',
-      component: AdminAppLayout,
-    }),
+    app: createRoute({ getParentRoute: () => rootRoute, id: 'app', component: AppLayout }),
+    admin: createRoute({ getParentRoute: () => rootRoute, id: 'admin', component: AdminAppLayout }),
   },
   routes: ({ app, admin }) => {
-    const homeRoute = createHomeRoute({
-      defaultTo: resolveDefaultSystemHomeTo,
-      parentRoute: app,
-    })
-    const workbenchSidebarDemoRoute = createWorkbenchSidebarDemoRoute({
-      parentRoute: app,
-    })
+    const homeRoute = createHomeRoute({ defaultTo: resolveDefaultSystemHomeTo, parentRoute: app })
+    const workbenchSidebarDemoRoute = createWorkbenchSidebarDemoRoute({ parentRoute: app })
     const adminHomeRoute = createAdminHomeRoute({ parentRoute: admin })
-
-    return {
-      app: [homeRoute, workbenchSidebarDemoRoute],
-      admin: [adminHomeRoute],
-    }
+    return { app: [homeRoute, workbenchSidebarDemoRoute], admin: [adminHomeRoute] }
   },
   router: {
     defaultNotFoundComponent: AppNotFoundPage,
@@ -72,7 +49,5 @@ const webRouter = createWebRouter({
 export const { outlets, webDomains, routeTree, router } = webRouter
 
 declare module '@tanstack/react-router' {
-  interface Register {
-    router: typeof router
-  }
+  interface Register { router: typeof router }
 }

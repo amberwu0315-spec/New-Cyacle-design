@@ -8,6 +8,8 @@ export type WorkspaceSelectionItem = {
   name: string
   describe?: string | null
   iconUrl?: string | null
+  /** 当前组织工作空间对应的组织类型（由应用壳子补充）。 */
+  organizationCategory?: string | null
 }
 
 export type WorkspaceSelectionResult = {
