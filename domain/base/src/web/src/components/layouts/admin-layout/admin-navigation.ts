@@ -3,6 +3,7 @@ import { languageStore } from '../../../lib/i18n/index.ts'
 import type { SupportedLanguage } from '../../../lib/i18n/index.ts'
 
 import type { AdminNavigationGroup } from './admin-layout.tsx'
+import type { PermissionCode } from '#/permissions/permission-codes.ts'
 
 export interface AdminNavMetaContext {
   domainId: string
@@ -15,7 +16,7 @@ export type AdminNavMetaFactory = (
 
 export interface AdminLayoutDomainCapabilities extends Record<string, unknown> {
   adminNav?: AdminNavMetaFactory
-  adminPermissionCodes?: ReadonlyArray<string>
+  adminPermissionCodes?: ReadonlyArray<PermissionCode>
 }
 
 export interface AdminNavigationOptions {
@@ -72,8 +73,8 @@ export function resolveAdminHomeTo(
 
 export function createAdminPermissionCodes(
   webDomains: ReadonlyArray<WebDomain>,
-): Array<string> {
-  const codes = new Set<string>()
+): Array<PermissionCode> {
+  const codes = new Set<PermissionCode>()
 
   for (const webDomain of webDomains) {
     const capabilities = webDomain.capabilities as
@@ -92,7 +93,7 @@ export function createAdminPermissionCodes(
       language: languageStore.getSnapshot(),
     })) {
       for (const item of group.items) {
-        if (item.permissionCode) codes.add(item.permissionCode)
+        if (item.visible) codes.add(item.visible)
       }
     }
   }

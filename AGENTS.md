@@ -8,3 +8,6 @@
 ## 前端代码开发
 开发 `src/web` 下的前端代码的时候一定先阅读 `domain/base/src/web/web.md`，里面有前端代码的姿势和案例说明。
 另外每一个前端 src/web 下如果有 README.md，先读一下，里面会包含一些规则说明。
+
+## 前端代码开发说明
+开发 `app/src/web`、`domain/*/src/web` 或涉及 React、TypeScript、Vite、路由、Layout、i18n、vRPC、React Query、CSS、Base UI、前端依赖、测试和构建时，必读 `.agent/frontend-development-rules/SKILL.md`。
