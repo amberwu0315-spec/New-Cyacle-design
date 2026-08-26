@@ -11,6 +11,8 @@ import {
 } from '#/app-edition.ts'
 import { getMessages } from '#/lib/i18n/index.ts'
 
+export const DEFAULT_APP_HOME_TO = '/project/projects'
+
 function getAppNavCategories(language: AppNavConfigOptions['language']) {
   const t = getMessages(language)
 
@@ -249,13 +251,23 @@ export function createConfiguredAppNavConfig(
     AppNavConfig
   >(webDomains, appEdition)
 
-  return groupAppNavConfig(
+  const config = groupAppNavConfig(
     splitUicEnterpriseManagementScene(
       registration?.createNavConfig(options) ??
         createAppNavConfig(webDomains, options),
     ),
     options,
   )
+  const homeTo = registration?.homeTo ?? DEFAULT_APP_HOME_TO
+  const homeScene = config.scenes.find((scene) =>
+    scene.groups.some((group) =>
+      group.items.some((item) => item.to === homeTo),
+    ),
+  )
+
+  return homeScene
+    ? { ...config, defaultSceneId: homeScene.id }
+    : config
 }
 
 export function resolveAppEditionHomeTo(
@@ -266,6 +278,6 @@ export function resolveAppEditionHomeTo(
     resolveAppEditionRegistration<AppNavConfigOptions, AppNavConfig>(
       webDomains,
       appEdition,
-    )?.homeTo ?? '/cfp'
+    )?.homeTo ?? DEFAULT_APP_HOME_TO
   )
 }
