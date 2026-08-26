@@ -76,7 +76,7 @@ return (
 
 1. `DialogContent` 负责弹框最大高度、纵向 flex 和整窗裁剪：`flex max-h-[88vh] flex-col overflow-hidden`。
 2. `DialogHeader` 和 `DialogFooter` 默认包含 `shrink-0`，底部操作始终留在弹框底部；业务代码不需要重复声明，但自定义头尾组件仍需遵守这一点。
-3. 普通滚动内容统一使用 `DialogBody`。它默认提供 `-mx-4 min-h-0 flex-1 overflow-y-auto px-4 py-4`，保证内容滚到顶部时与固定头部仍有 16px 间距，不要在滚动 body 上改成 `py-0`、`py-1` 或 `py-2`。如果 body 内部是表格、树、编辑器等自带滚动的固定区域，则用 `DialogBody className="overflow-hidden"`，由内部组件负责滚动。
+3. 普通滚动内容统一使用 `DialogBody`。它由“固定留白容器 + 内层滚动区”组成：外层默认提供 `-mx-4 min-h-0 flex-1 overflow-hidden px-4 py-4`，内层负责 `overflow-y-auto`。上下 16px 留白必须放在不滚动的外层，不能只给滚动元素设置 `py-4`，否则内容滚动后 padding 会离开视口，文字仍会贴住固定头部。业务 `className` 作用于内层滚动区；确需调整外层高度或留白时使用 `containerClassName`。
 4. 表单弹框的 `form` 本身也要是 `flex min-h-0 flex-1 flex-col`，不要只让 `FieldGroup` 撑开弹框。
 5. 小型确认弹框内容确定不会溢出时可以保持默认 Dialog；一旦有较长表单、上传区、动态列表、条件字段或多语言 textarea，就按固定头尾结构实现。
 
@@ -112,7 +112,7 @@ return (
     <DialogTitle>选择数据</DialogTitle>
   </DialogHeader>
 
-  <DialogBody className="h-[520px] overflow-hidden py-2">
+  <DialogBody containerClassName="h-[520px] py-2" className="overflow-hidden">
     <DataView className="h-full min-h-0 w-full" height="100%" />
   </DialogBody>
 
@@ -123,7 +123,7 @@ return (
 </DialogContent>
 ```
 
-`DialogBody` 的 `py-4` 是普通表单、详情和文字内容的统一默认值，间距应由滚动 body 持有，而不是给所有 `DialogHeader` 叠加底部 padding。这样小型确认弹框仍保持紧凑，滚动内容也不会贴住固定头部。表格型选择器为了保持工具栏和表格密度，可以显式使用 `py-2`；这属于明确例外。
+`DialogBody` 外层的 `py-4` 是普通表单、详情和文字内容的统一默认值。这个固定留白不能下放到内层滚动区，也不需要给所有 `DialogHeader` 叠加底部 padding。这样小型确认弹框仍保持紧凑，滚动内容也不会贴住固定头部。表格型选择器为了保持工具栏和表格密度，可以通过 `containerClassName="py-2"` 显式收紧；这属于明确例外。
 
 使用 `gap-0 p-0` 自定义整窗布局的大型弹框可以不使用 `DialogBody`，但必须在固定头部和滚动内容区分别明确间距：头部通常使用 `shrink-0 border-b px-6 py-4 pr-12`，滚动内容容器至少使用 `min-h-0 flex-1 overflow-y-auto px-6 py-4`。已经提供 `py-4` 的自定义 body 不得再叠加额外的 Header 底部 padding。
 
