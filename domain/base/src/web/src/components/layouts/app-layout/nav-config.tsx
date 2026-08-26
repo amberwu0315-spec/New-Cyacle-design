@@ -5,6 +5,7 @@ import type { SupportedLanguage } from '#/lib/i18n/index.ts'
 import type { WebDomain } from '../../../routes/domain/builder.ts'
 import type { WorkspaceSelectionItem } from './workspace-selection.ts'
 import type { PermissionCodeMap } from '#/context/permission-context.tsx'
+import type { PermissionCode } from '#/permissions/permission-codes.ts'
 
 export interface DomainNavMetaContext {
   language: SupportedLanguage
@@ -19,14 +20,14 @@ export interface DomainNavItemMeta {
   icon: LucideIcon
   category?: string
   standaloneScene?: boolean
-  permissionCode?: string
+  visible?: PermissionCode
 }
 
 export interface DomainNavGroupMeta {
   id: string
   title: string | null
   items: Array<DomainNavItemMeta>
-  permissionCode?: string
+  visible?: PermissionCode
 }
 
 export interface DomainNavMeta {
@@ -37,7 +38,7 @@ export interface DomainNavMeta {
   defaultTo: string
   category?: string
   groups: Array<DomainNavGroupMeta>
-  permissionCode?: string
+  visible?: PermissionCode
 }
 
 export type DomainNavMetaFactory = (
@@ -46,7 +47,7 @@ export type DomainNavMetaFactory = (
 
 export interface AppLayoutDomainCapabilities extends Record<string, unknown> {
   nav?: DomainNavMetaFactory
-  permissionCodes?: ReadonlyArray<string>
+  permissionCodes?: ReadonlyArray<PermissionCode>
 }
 
 export interface AppNavItem {
@@ -125,7 +126,7 @@ function createDefaultSceneId(defaultTo: string) {
 
 function hasPermission(
   permissionCodeMap: PermissionCodeMap | undefined,
-  code?: string,
+  code?: PermissionCode,
 ) {
   return !permissionCodeMap || !code || Boolean(permissionCodeMap[code])
 }
@@ -135,17 +136,17 @@ function normalizeDomainNavMeta(
   defaultCategory: string,
   permissionCodeMap?: PermissionCodeMap,
 ): AppScene | null {
-  if (!hasPermission(permissionCodeMap, navMeta.permissionCode)) {
+  if (!hasPermission(permissionCodeMap, navMeta.visible)) {
     return null
   }
 
   const groups = navMeta.groups.flatMap((group) => {
-    if (!hasPermission(permissionCodeMap, group.permissionCode)) {
+    if (!hasPermission(permissionCodeMap, group.visible)) {
       return []
     }
 
     const items = group.items
-      .filter((item) => hasPermission(permissionCodeMap, item.permissionCode))
+      .filter((item) => hasPermission(permissionCodeMap, item.visible))
       .map((item) => ({
         id: item.id,
         label: item.label,
@@ -261,7 +262,7 @@ export function createAppPermissionCodes(
     language,
     workspace: options.workspace ?? null,
   }
-  const codes = new Set<string>()
+  const codes = new Set<PermissionCode>()
 
   for (const webDomain of webDomains) {
     const capabilities = webDomain.capabilities as
@@ -274,13 +275,13 @@ export function createAppPermissionCodes(
 
     const navMeta = getDomainNavMeta(webDomain, context)
     if (!navMeta) continue
-    if (navMeta.permissionCode) codes.add(navMeta.permissionCode)
+    if (navMeta.visible) codes.add(navMeta.visible)
 
     for (const group of navMeta.groups) {
-      if (group.permissionCode) codes.add(group.permissionCode)
+      if (group.visible) codes.add(group.visible)
 
       for (const item of group.items) {
-        if (item.permissionCode) codes.add(item.permissionCode)
+        if (item.visible) codes.add(item.visible)
       }
     }
   }

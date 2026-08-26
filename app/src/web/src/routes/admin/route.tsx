@@ -44,7 +44,7 @@ function AdminHomeRedirect() {
   const adminNavigation = getAdminNavigation('zh-CN')
   const permittedNavigation = adminNavigation.flatMap((group) => {
     const items = group.items.filter(
-      (item) => !item.permissionCode || hasPermission(item.permissionCode),
+      (item) => !item.visible || hasPermission(item.visible),
     )
 
     return items.length > 0 ? [{ ...group, items }] : []
