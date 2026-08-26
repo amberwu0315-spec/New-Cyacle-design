@@ -48,9 +48,9 @@
 数据选择弹框统一采用“固定头部 + 固定高度内容区 + 固定底部”的三段式结构：
 
 1. `DialogContent` 使用纵向 flex，并限制在视口内：`flex max-h-[88vh] flex-col overflow-hidden`。常规表格选择器优先使用 `sm:!max-w-4xl`；列数较多、包含预览区或业务明确需要更宽时才扩大到 `sm:!max-w-5xl` / `sm:!max-w-6xl`。
-2. `DialogHeader` 使用 `shrink-0`，包含明确的标题和必要的说明；不要把创建按钮塞进标题行。
-3. 中间表格区使用统一的 `h-[520px] min-h-0 overflow-hidden py-2`。`DataView` 使用 `height="100%"` 和 `h-full min-h-0`，分页、搜索栏留在内容区内，只有表格 viewport 滚动，Dialog、标题、工具栏和底部操作不能随表格滚动。
-4. `DialogFooter` 使用 `shrink-0`。右侧按“取消、确认”的顺序放置操作；可清空的选择器可以把“清除选择”作为 ghost 按钮放在确认操作之前。
+2. `DialogHeader` 默认固定不收缩，包含明确的标题和必要的说明；不要把创建按钮塞进标题行。
+3. 中间表格区统一使用 `DialogBody className="h-[520px] overflow-hidden py-2"`。`DialogBody` 在普通文字和表单弹框中默认使用 `py-4`，选择器为了保持工具栏和表格密度才显式收紧为 `py-2`；不能使用 `py-0` 或让表格文字直接贴住头部。`DataView` 使用 `height="100%"` 和 `h-full min-h-0`，分页、搜索栏留在内容区内，只有表格 viewport 滚动，Dialog、标题、工具栏和底部操作不能随表格滚动。
+4. `DialogFooter` 默认固定不收缩。右侧按“取消、确认”的顺序放置操作；可清空的选择器可以把“清除选择”作为 ghost 按钮放在确认操作之前。
 5. 初次加载使用表格 skeleton；刷新时保留已有表格和筛选条件，用 `isFetching` 表示刷新状态，避免整块内容闪回空白或骨架。
 
 表格型选择器优先使用 `DataView + DataGrid + SearchBox`，不要再为同类对象选择器手写一套 `Input + Table/按钮列表 + ScrollArea`。树、文件和主从预览场景不能合理表达为表格时可以使用专用内容组件，但弹框外壳和下面的交互合同保持一致。
@@ -59,12 +59,12 @@
 
 ```tsx
 <DialogContent className="flex max-h-[88vh] flex-col overflow-hidden sm:!max-w-4xl">
-  <DialogHeader className="shrink-0">
+  <DialogHeader>
     <DialogTitle>选择数据</DialogTitle>
     <DialogDescription>从当前工作空间可见的数据中选择一项。</DialogDescription>
   </DialogHeader>
 
-  <div className="h-[520px] min-h-0 overflow-hidden py-2">
+  <DialogBody className="h-[520px] overflow-hidden py-2">
     <DataView
       className="h-full min-h-0 w-full"
       height="100%"
@@ -78,9 +78,9 @@
         </div>
       )}
     />
-  </div>
+  </DialogBody>
 
-  <DialogFooter className="shrink-0">
+  <DialogFooter>
     <Button variant="outline" onClick={handleCancel}>取消</Button>
     <Button disabled={!selectedValue} onClick={handleConfirm}>确认</Button>
   </DialogFooter>

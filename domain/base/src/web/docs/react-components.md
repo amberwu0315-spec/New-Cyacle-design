@@ -75,8 +75,8 @@ return (
 推荐结构：
 
 1. `DialogContent` 负责弹框最大高度、纵向 flex 和整窗裁剪：`flex max-h-[88vh] flex-col overflow-hidden`。
-2. `DialogHeader` 和 `DialogFooter` 使用 `shrink-0`，底部操作始终留在弹框底部。
-3. 中间 body 使用 `min-h-0 flex-1 overflow-y-auto`；如果 body 内部是表格、树、编辑器等自带滚动的固定区域，则 body 用 `overflow-hidden`，由内部组件负责滚动。
+2. `DialogHeader` 和 `DialogFooter` 默认包含 `shrink-0`，底部操作始终留在弹框底部；业务代码不需要重复声明，但自定义头尾组件仍需遵守这一点。
+3. 普通滚动内容统一使用 `DialogBody`。它默认提供 `-mx-4 min-h-0 flex-1 overflow-y-auto px-4 py-4`，保证内容滚到顶部时与固定头部仍有 16px 间距，不要在滚动 body 上改成 `py-0`、`py-1` 或 `py-2`。如果 body 内部是表格、树、编辑器等自带滚动的固定区域，则用 `DialogBody className="overflow-hidden"`，由内部组件负责滚动。
 4. 表单弹框的 `form` 本身也要是 `flex min-h-0 flex-1 flex-col`，不要只让 `FieldGroup` 撑开弹框。
 5. 小型确认弹框内容确定不会溢出时可以保持默认 Dialog；一旦有较长表单、上传区、动态列表、条件字段或多语言 textarea，就按固定头尾结构实现。
 
@@ -84,18 +84,18 @@ return (
 <Dialog open={open} onOpenChange={onOpenChange}>
   <DialogContent className="flex max-h-[88vh] flex-col overflow-hidden sm:!max-w-4xl">
     <form className="flex min-h-0 flex-1 flex-col" onSubmit={handleSubmit}>
-      <DialogHeader className="shrink-0">
+      <DialogHeader>
         <DialogTitle>编辑数据</DialogTitle>
         <DialogDescription>维护基础信息和扩展字段。</DialogDescription>
       </DialogHeader>
 
-      <div className="-mx-4 min-h-0 flex-1 overflow-y-auto px-4">
-        <FieldGroup className="gap-5 py-6">
+      <DialogBody>
+        <FieldGroup className="gap-5">
           {/* fields */}
         </FieldGroup>
-      </div>
+      </DialogBody>
 
-      <DialogFooter className="shrink-0">
+      <DialogFooter>
         <Button type="button" variant="outline" onClick={handleCancel}>取消</Button>
         <Button type="submit">保存</Button>
       </DialogFooter>
@@ -108,20 +108,24 @@ return (
 
 ```tsx
 <DialogContent className="flex max-h-[88vh] flex-col overflow-hidden sm:!max-w-5xl">
-  <DialogHeader className="shrink-0">
+  <DialogHeader>
     <DialogTitle>选择数据</DialogTitle>
   </DialogHeader>
 
-  <div className="-mx-4 h-[520px] min-h-0 flex-1 overflow-hidden px-4 py-2">
+  <DialogBody className="h-[520px] overflow-hidden py-2">
     <DataView className="h-full min-h-0 w-full" height="100%" />
-  </div>
+  </DialogBody>
 
-  <DialogFooter className="shrink-0">
+  <DialogFooter>
     <Button type="button" variant="outline">取消</Button>
     <Button type="button">确认</Button>
   </DialogFooter>
 </DialogContent>
 ```
+
+`DialogBody` 的 `py-4` 是普通表单、详情和文字内容的统一默认值，间距应由滚动 body 持有，而不是给所有 `DialogHeader` 叠加底部 padding。这样小型确认弹框仍保持紧凑，滚动内容也不会贴住固定头部。表格型选择器为了保持工具栏和表格密度，可以显式使用 `py-2`；这属于明确例外。
+
+使用 `gap-0 p-0` 自定义整窗布局的大型弹框可以不使用 `DialogBody`，但必须在固定头部和滚动内容区分别明确间距：头部通常使用 `shrink-0 border-b px-6 py-4 pr-12`，滚动内容容器至少使用 `min-h-0 flex-1 overflow-y-auto px-6 py-4`。已经提供 `py-4` 的自定义 body 不得再叠加额外的 Header 底部 padding。
 
 如果多个弹框属于同一个业务 domain，优先在当前 domain 内抽局部 className 常量或小组件统一这些 class，不要为了某个领域页面直接修改 base 的 `DialogContent` 默认样式。修改 `/admin/**` 相关弹框时，后台专属布局也应留在后台路由或后台 domain 内，不要让后台弹框样式影响前台弹框。
 
