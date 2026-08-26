@@ -90,16 +90,27 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   )
 }
 
-function DialogBody({ className, ...props }: React.ComponentProps<"div">) {
+function DialogBody({
+  className,
+  containerClassName,
+  ...props
+}: React.ComponentProps<"div"> & {
+  containerClassName?: string
+}) {
   return (
     <div
       data-slot="dialog-body"
       className={cn(
-        "-mx-4 min-h-0 flex-1 overflow-y-auto px-4 py-4",
-        className
+        "-mx-4 min-h-0 flex-1 overflow-hidden px-4 py-4",
+        containerClassName
       )}
-      {...props}
-    />
+    >
+      <div
+        data-slot="dialog-body-scroll"
+        className={cn("h-full min-h-0 overflow-y-auto", className)}
+        {...props}
+      />
+    </div>
   )
 }
 
