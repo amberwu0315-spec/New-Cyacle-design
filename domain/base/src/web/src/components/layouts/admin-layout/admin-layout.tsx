@@ -5,6 +5,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { Spinner } from '#/components/ui/spinner.tsx'
 import { useTranslation } from '#/lib/i18n/index.ts'
 import { cn } from '#/lib/utils.ts'
+import type { PermissionCode } from '#/permissions/permission-codes.ts'
 
 export interface AdminNavigationItem {
   description?: string
@@ -12,7 +13,7 @@ export interface AdminNavigationItem {
   icon: React.ElementType<{ className?: string }>
   id: string
   label: string
-  permissionCode?: string
+  visible?: PermissionCode
   to: string
 }
 
