@@ -49,7 +49,7 @@
 
 1. `DialogContent` 使用纵向 flex，并限制在视口内：`flex max-h-[88vh] flex-col overflow-hidden`。常规表格选择器优先使用 `sm:!max-w-4xl`；列数较多、包含预览区或业务明确需要更宽时才扩大到 `sm:!max-w-5xl` / `sm:!max-w-6xl`。
 2. `DialogHeader` 使用 `shrink-0`，包含明确的标题和必要的说明；不要把创建按钮塞进标题行。
-3. 中间表格区使用统一的 `h-[520px] min-h-0 overflow-hidden py-2`。`DataView` 使用 `height="100%"` 和 `h-full min-h-0`，分页、搜索栏留在内容区内，只有表格 viewport 滚动，Dialog、标题、工具栏和底部操作不能随表格滚动。
+3. 中间表格区统一使用 `DialogBody className="h-[520px] overflow-hidden py-2"`。`DialogBody` 自身保持滚动和高度链，不能再把 `className` 拆到第二层容器；`DataView` 使用 `height="100%"` 和 `h-full min-h-0`，分页、搜索栏留在内容区内，只有表格 viewport 滚动，Dialog、标题、工具栏和底部操作不能随表格滚动。
 4. `DialogFooter` 使用 `shrink-0`。右侧按“取消、确认”的顺序放置操作；可清空的选择器可以把“清除选择”作为 ghost 按钮放在确认操作之前。
 5. 初次加载使用表格 skeleton；刷新时保留已有表格和筛选条件，用 `isFetching` 表示刷新状态，避免整块内容闪回空白或骨架。
 
@@ -64,7 +64,7 @@
     <DialogDescription>从当前工作空间可见的数据中选择一项。</DialogDescription>
   </DialogHeader>
 
-  <div className="h-[520px] min-h-0 overflow-hidden py-2">
+  <DialogBody className="h-[520px] overflow-hidden py-2">
     <DataView
       className="h-full min-h-0 w-full"
       height="100%"
@@ -78,7 +78,7 @@
         </div>
       )}
     />
-  </div>
+  </DialogBody>
 
   <DialogFooter className="shrink-0">
     <Button variant="outline" onClick={handleCancel}>取消</Button>
@@ -106,6 +106,12 @@
 - 键盘可聚焦的表格行使用 Enter/Space 完成“选中”；确认仍通过底部确认按钮，除非组件明确实现并文档化 Enter 直接确认。
 
 多选数据选择弹框不强制双击确认，双击可以保留打开、预览等已有交互。多选弹框必须显示已选数量，并由底部确认一次性提交。同一个选项对应多个不同确认动作、无法确定默认动作时，不要擅自绑定其中一个动作作为双击确认，应先明确默认确认语义；确认语义明确后，再让双击复用该默认确认链路。
+
+### 查看详情与嵌套选择
+
+数据选择弹框中的“查看详情”统一使用 Base 提供的 `DataSelectorDetailDrawer` 和 `useDataSelectorDetailDrawerHost`。Base 只维护唯一 Drawer、详情历史、返回、宽度和内容现场，不得依赖元件、公式、数据记录、数据源等业务类型；各 feature domain 负责把稳定 key、标题和详情 React 内容转换成 `DataSelectorDetailDrawerItem`。
+
+详情 Drawer 内再次打开数据选择弹框时，选择器必须优先复用当前 `useDataSelectorDetailDrawerHost()`，不能渲染第二个 Drawer。查看嵌套对象详情前关闭当前选择弹框，在同一个 Drawer 中切换内容；返回上一层时恢复上一层详情并重新打开原选择弹框。详情页面里不属于“选择”流程的普通关联链接仍跳转到对应完整页面，不继续压入 Drawer。
 
 ### 状态和验收清单
 

@@ -76,7 +76,7 @@ return (
 
 1. `DialogContent` 负责弹框最大高度、纵向 flex 和整窗裁剪：`flex max-h-[88vh] flex-col overflow-hidden`。
 2. `DialogHeader` 和 `DialogFooter` 使用 `shrink-0`，底部操作始终留在弹框底部。
-3. 中间 body 使用 `min-h-0 flex-1 overflow-y-auto`；如果 body 内部是表格、树、编辑器等自带滚动的固定区域，则 body 用 `overflow-hidden`，由内部组件负责滚动。
+3. 普通滚动内容统一使用 `DialogBody`。它自身承担 `-mx-4 my-4 min-h-0 flex-1 overflow-y-auto px-4`，固定头尾间距通过 `my-4` 保持，不要在滚动内容上只设置 `py-4`。业务 `className` 继续作用于同一个滚动层，保证表格、树、DataGrid 等现有高度和滚动链不被拆断。
 4. 表单弹框的 `form` 本身也要是 `flex min-h-0 flex-1 flex-col`，不要只让 `FieldGroup` 撑开弹框。
 5. 小型确认弹框内容确定不会溢出时可以保持默认 Dialog；一旦有较长表单、上传区、动态列表、条件字段或多语言 textarea，就按固定头尾结构实现。
 
@@ -89,11 +89,11 @@ return (
         <DialogDescription>维护基础信息和扩展字段。</DialogDescription>
       </DialogHeader>
 
-      <div className="-mx-4 min-h-0 flex-1 overflow-y-auto px-4">
-        <FieldGroup className="gap-5 py-6">
+      <DialogBody>
+        <FieldGroup className="gap-5">
           {/* fields */}
         </FieldGroup>
-      </div>
+      </DialogBody>
 
       <DialogFooter className="shrink-0">
         <Button type="button" variant="outline" onClick={handleCancel}>取消</Button>
@@ -112,9 +112,9 @@ return (
     <DialogTitle>选择数据</DialogTitle>
   </DialogHeader>
 
-  <div className="-mx-4 h-[520px] min-h-0 flex-1 overflow-hidden px-4 py-2">
+  <DialogBody className="h-[520px] overflow-hidden py-2">
     <DataView className="h-full min-h-0 w-full" height="100%" />
-  </div>
+  </DialogBody>
 
   <DialogFooter className="shrink-0">
     <Button type="button" variant="outline">取消</Button>
