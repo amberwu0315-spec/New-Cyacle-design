@@ -14,16 +14,9 @@ import { getMessages } from '#/lib/i18n/index.ts'
 export const DEFAULT_APP_HOME_TO = '/project/projects'
 
 /**
- * Scenes shown by the standard app shell. The underlying routes remain
- * registered; this is only a product-specific navigation presentation filter.
+ * Optional product-specific navigation presentation filter. The underlying
+ * routes remain registered when a caller supplies visibleSceneIds.
  */
-export const APP_VISIBLE_SCENE_IDS = [
-  'domain-pcf-factor-api',
-  'domain-uic',
-  'domain-uic-enterprise-management',
-  'domain-cfo',
-] as const
-
 type ConfiguredAppNavConfigOptions = AppNavConfigOptions & {
   visibleSceneIds?: ReadonlyArray<string>
 }
