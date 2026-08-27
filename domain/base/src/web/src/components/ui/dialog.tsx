@@ -5,6 +5,7 @@ import { Dialog as DialogPrimitive } from '@base-ui/react/dialog';
 
 import { cn } from '#/lib/utils.ts';
 import { Button } from '#/components/ui/button.tsx';
+import { OverlayLayerScope, useOverlayLayer } from '#/components/common/overlay-layer.tsx';
 import { XIcon } from 'lucide-react';
 
 function Dialog({ ...props }: DialogPrimitive.Root.Props) {
@@ -23,7 +24,19 @@ function DialogClose({ ...props }: DialogPrimitive.Close.Props) {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />;
 }
 
-function DialogOverlay({ className, ...props }: DialogPrimitive.Backdrop.Props) {
+function getExplicitZIndex(className: unknown) {
+  if (typeof className !== 'string' || !className) return null
+
+  const match = className.match(/(?:^|\s)(?:[\w-]+:)*!?z-(?:\[(\d+)\]|(\d+))(?:\s|$)/)
+  const value = match?.[1] ?? match?.[2]
+
+  return value ? Number(value) : null
+}
+
+function DialogOverlay({
+  className,
+  ...props
+}: DialogPrimitive.Backdrop.Props) {
   return (
     <DialogPrimitive.Backdrop
       data-slot="dialog-overlay"
@@ -44,17 +57,23 @@ function DialogContent({
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean;
 }) {
+  const { contentLayer } = useOverlayLayer()
+  const explicitLayer = getExplicitZIndex(className)
+  const resolvedLayer = explicitLayer ?? contentLayer
+
   return (
     <DialogPortal>
-      <DialogOverlay />
+      <DialogOverlay style={{ zIndex: resolvedLayer }} />
       <DialogPrimitive.Popup
         data-slot="dialog-content"
         className={cn(
           'fixed top-1/2 left-1/2 z-50 grid w-full max-w-[calc(100%-2rem)] -translate-x-1/2 -translate-y-1/2 gap-4 rounded-xl bg-popover p-4 text-sm text-popover-foreground ring-1 ring-foreground/10 duration-100 outline-none sm:max-w-sm data-open:animate-in data-open:fade-in-0 data-open:zoom-in-95 data-closed:animate-out data-closed:fade-out-0 data-closed:zoom-out-95',
           className
         )}
-        {...props}>
-        {children}
+        {...props}
+        style={{ zIndex: resolvedLayer, ...props.style }}
+      >
+        <OverlayLayerScope baseLayer={resolvedLayer}>{children}</OverlayLayerScope>
         {showCloseButton && (
           <DialogPrimitive.Close
             data-slot="dialog-close"

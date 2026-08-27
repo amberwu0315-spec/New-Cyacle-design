@@ -115,9 +115,11 @@
 
 ### 查看详情与嵌套选择
 
-数据选择弹框中的“查看详情”统一使用 Base 提供的 `DataSelectorDetailDrawer` 和 `useDataSelectorDetailDrawerHost`。Base 只维护唯一 Drawer、详情历史、返回、宽度和内容现场，不得依赖元件、公式、数据记录、数据源等业务类型；各 feature domain 负责把稳定 key、标题和详情 React 内容转换成 `DataSelectorDetailDrawerItem`。
+数据选择弹框中的“查看详情”统一使用 Base 提供的 `DataSelectorDetailDrawer`、`useDataSelectorDetailDrawerHost` 和 `useDataSelectorDialogLayer`。Base 只维护唯一 Drawer、详情历史、选择器状态栈、返回、宽度和内容现场，不得依赖元件、公式、数据记录、数据源等业务类型；各 feature domain 负责把稳定 key、标题和详情 React 内容转换成 `DataSelectorDetailDrawerItem`。
 
-详情 Drawer 内再次打开数据选择弹框时，选择器必须优先复用当前 `useDataSelectorDetailDrawerHost()`，不能渲染第二个 Drawer。查看嵌套对象详情前关闭当前选择弹框，在同一个 Drawer 中切换内容；返回上一层时恢复上一层详情并重新打开原选择弹框。详情页面里不属于“选择”流程的普通关联链接仍跳转到对应完整页面，不继续压入 Drawer。
+打开详情后，原选择器必须保留在 Drawer 后方，不关闭、不卸载，并保留筛选、分页、排序和选中项；关闭 Drawer 后直接恢复交互。详情 Drawer 内再次打开数据选择弹框时，选择器必须优先复用当前 `useDataSelectorDetailDrawerHost()`，不能渲染第二个 Drawer。查看嵌套对象详情时在同一个 Drawer 中切换内容，返回上一层时恢复上一层详情和原选择弹框。详情页面里不属于“选择”流程的普通关联链接仍跳转到对应完整页面，不继续压入 Drawer。
+
+具体层级、生命周期、焦点、Escape 和接入代码遵守 [Dialog 与 Drawer 浮层协作规范](overlay-layering.md)。
 
 ### 状态和验收清单
 
@@ -132,6 +134,7 @@
 - [ ] 创建成功后列表可见且新项被选中；刷新不会丢失当前筛选条件。
 - [ ] 中英文名称、空名称、按钮、空状态和禁用原因符合多语言及 `<未命名>` / `<Untitled>` 规范。
 - [ ] 窄视口下弹框不超过 `88vh`，不会把 Footer 推出视口。
+- [ ] 查看详情后选择器仍显示在 Drawer 后方；关闭 Drawer 后现场保留且恢复交互。
 
 `unspecific` 是每个枚举都可能包含的特殊兜底类型，不属于面向用户的业务选项。下拉框、单选、多选、筛选器等由枚举生成的前端候选项必须过滤 `unspecific`，不允许用户主动选择；读取接口已有数据时仍需兼容该值，不要因此修改接口枚举、提交值或反序列化逻辑。
 

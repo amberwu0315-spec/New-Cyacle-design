@@ -63,6 +63,9 @@ function splitUicEnterpriseManagementScene(config: AppNavConfig): AppNavConfig {
     ...uicScene,
     id: 'domain-uic-enterprise-management',
     label: enterpriseGroup.title ?? enterpriseGroup.items[0]!.label,
+    // This group becomes an independent scene card. Reuse its first item's
+    // description instead of leaving the user-center scene summary in place.
+    description: enterpriseGroup.items[0]!.description,
     icon: Building2,
     defaultTo: enterpriseDefaultTo,
     groups: [{ ...enterpriseGroup, title: null }],
