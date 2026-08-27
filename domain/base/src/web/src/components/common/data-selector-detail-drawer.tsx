@@ -103,7 +103,7 @@ function DataSelectorDetailDrawerContent({
 
   return (
     <Sheet open onOpenChange={handleOpenChange}>
-      <SheetContent side="right" className="!w-auto gap-0 overflow-hidden p-0 sm:!max-w-none">
+      <SheetContent side="right" className="z-[70] !w-auto gap-0 overflow-hidden p-0 sm:!max-w-none">
         <AssistantResizableEmbeddedRenderer
           open
           defaultWidth={Math.min(DEFAULT_DRAWER_WIDTH, maxWidth)}
