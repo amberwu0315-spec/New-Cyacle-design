@@ -19,6 +19,7 @@
   - [Admin 页面展示规范](docs/admin-pages.md)
   - [Domain 多语言](docs/domain-i18n.md)
   - [业务展示、列表与选择弹框](docs/business-display-and-selection.md)
+  - [Dialog 与 Drawer 浮层协作](docs/overlay-layering.md)
   - [React 组件写法](docs/react-components.md)
 - Web 数据与构建
   - [接口调用与 QueryKey](docs/api-and-query-key.md)
@@ -35,6 +36,7 @@
 | `/admin/**` 详情、分区、技术 ID 和业务跳转如何展示 | [Admin 页面展示规范](docs/admin-pages.md) |
 | Domain 文案目录和多语言 API 如何组织 | [Domain 多语言](docs/domain-i18n.md) |
 | 空名称如何展示、列表工具栏如何布局、选择弹框和枚举候选项如何交互 | [业务展示、列表与选择弹框](docs/business-display-and-selection.md) |
+| 选择弹框、详情 Drawer 和嵌套 Dialog 如何分层、保留现场与关闭 | [Dialog 与 Drawer 浮层协作](docs/overlay-layering.md) |
 | JSX 回调、Dialog 弹框布局和 detached trigger 浮层如何写 | [React 组件写法](docs/react-components.md) |
 | API hook、QueryKey 和缓存失效如何组织 | [接口调用与 QueryKey](docs/api-and-query-key.md) |
 | 哪些聚合文件由 Plot 生成、CSS 如何进入最终应用 | [生成聚合文件与 CSS 链路](docs/generated-files-and-css.md) |
