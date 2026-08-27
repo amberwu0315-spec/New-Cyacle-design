@@ -14,7 +14,7 @@ import {
 import { resolveSystemEntryHomeTo } from '#/system-entry.ts'
 import { webModules } from '#/vineModules.gen.ts'
 
-const DEFAULT_APP_HOME_TO = '/project/research-objects'
+const DEFAULT_APP_HOME_TO = '/project/projects'
 
 export async function resolveDefaultSystemHomeTo() {
   const appEdition = getAppEdition()

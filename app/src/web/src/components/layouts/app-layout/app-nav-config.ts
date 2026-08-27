@@ -11,7 +11,7 @@ import {
 } from '#/app-edition.ts'
 import { getMessages } from '#/lib/i18n/index.ts'
 
-export const DEFAULT_APP_HOME_TO = '/project/research-objects'
+export const DEFAULT_APP_HOME_TO = '/project/projects'
 
 /**
  * Scenes shown by the standard app shell. The underlying routes remain

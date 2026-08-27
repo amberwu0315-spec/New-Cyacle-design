@@ -119,7 +119,6 @@ describe('configured app navigation', () => {
     expect(config.scenes.map((scene) => scene.id)).toEqual([
       'domain-pcf-factor-api',
       'domain-cfo',
-      'domain-project',
       'domain-uic',
     ])
     expect(config.categories.flatMap((category) => category.sceneIds)).toEqual([
@@ -127,7 +126,7 @@ describe('configured app navigation', () => {
       'domain-cfo',
       'domain-uic',
     ])
-    expect(config.defaultSceneId).toBe('domain-project')
+    expect(config.defaultSceneId).toBe('domain-pcf-factor-api')
   })
 
   it('keeps a fallback scene while permissions are still unavailable', () => {
@@ -300,21 +299,22 @@ describe('configured app navigation', () => {
     expect(config.defaultSceneId).toBe('domain-project--project-list')
   })
 
-  it('keeps service customers as the default scene while permissions reveal earlier domains', () => {
+  it('keeps the project list as the default scene while permissions reveal earlier domains', () => {
     const config = createConfiguredAppNavConfig(
       [
         createStandaloneAccountingDomain(),
         createDomain({
           id: 'project',
-          itemId: 'service-customers',
-          to: '/project/research-objects',
+          itemId: 'project-list',
+          category: 'accounting',
+          to: '/project/projects',
         }),
       ],
       { language: 'en-US' },
     )
 
     expect(config.scenes[0]?.defaultTo).toBe('/cfp')
-    expect(config.defaultSceneId).toBe('domain-project')
+    expect(config.defaultSceneId).toBe('domain-project--project-list')
   })
 
   it('promotes standalone items to sibling scenes', () => {
