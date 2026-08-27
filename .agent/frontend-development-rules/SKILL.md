@@ -953,6 +953,12 @@ function AccountPopover() {
 
 ### Activity 与浮层
 
+#### 受保护图片与文件资源
+
+- 需要登录态的图片、文件预览等资源必须通过统一的鉴权加载 helper（例如 `fetchDocumentBlobByUrl`）请求，再使用 Blob URL 渲染。
+- 禁止把受保护资源 URL 直接交给 `<img src>`、CSS `background-image` 或 SVG `<image href>`；这些加载方式不会自动携带当前会话的 `Authorization` 请求头。
+- Blob URL 只在对应组件存活期间使用；资源切换或组件卸载时要 `URL.revokeObjectURL`，请求要支持取消，失败时展示现有占位或错误状态，不要回退到未鉴权的原始 URL。
+
 - `Activity` 只用于需要保留 state/DOM 的重型面板；hidden 会清理 Effect，恢复时 Effect 会再次运行。
 - iframe、video、audio、canvas、websocket、MessagePort 和第三方 SDK 必须区分“新资源加载”和“已加载资源恢复”，不能恢复时无条件重置 loading。
 - 不需要保留状态、隐藏时应释放资源的内容用条件渲染卸载。
