@@ -29,7 +29,7 @@ import { webModules } from '#/vineModules.gen.ts'
 import { getAppEdition } from '#/app-edition.ts'
 import { resolveSystemEntryAccess } from '#/system-entry.ts'
 import { useTranslation } from '#/lib/i18n/index.ts'
-import { createConfiguredAppNavConfig } from './app-nav-config.ts'
+import { APP_VISIBLE_SCENE_IDS, createConfiguredAppNavConfig } from './app-nav-config.ts'
 import { appPermissionCodes } from '#/app-permissions.ts'
 
 type AgentProfile = AppLayoutUserProfile & {
@@ -81,6 +81,7 @@ export function AppLayout() {
         {
           language,
           permissionCodeMap: permissionQuery.data ?? {},
+          visibleSceneIds: APP_VISIBLE_SCENE_IDS,
           workspace: currentWorkspace,
         },
         appEdition,
