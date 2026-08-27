@@ -10,8 +10,6 @@ type RuntimeConfigInput = Readonly<{
 }>;
 
 const DEFAULT_VRPC_INVOKE_URL = '/api/invoke';
-const LOCAL_VRPC_INVOKE_URL = 'http://127.0.0.1:7090/api/invoke';
-const LOCAL_HOSTNAMES = new Set(['localhost', '127.0.0.1', '::1']);
 const VRPC_INVOKE_URL_META_NAME = 'vrpc:invoke-url';
 const VRPC_INVOKE_URL_PLACEHOLDER = '__VRPC_INVOKE_URL__';
 
@@ -29,12 +27,6 @@ export function resolveRuntimeConfig(
 function readDocumentRuntimeConfig(): RuntimeConfigInput | undefined {
   if (typeof document === 'undefined') {
     return undefined;
-  }
-
-  if (LOCAL_HOSTNAMES.has(document.location.hostname)) {
-    return {
-      vrpcInvokeUrl: LOCAL_VRPC_INVOKE_URL,
-    };
   }
 
   return {
