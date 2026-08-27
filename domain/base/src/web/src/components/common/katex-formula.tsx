@@ -10,6 +10,7 @@ export interface KatexFormulaProps {
   displayMode?: boolean
   className?: string
   fallbackClassName?: string
+  fallback?: React.ReactNode
 }
 
 function renderKatex(math: string, displayMode: boolean) {
@@ -30,6 +31,7 @@ export function KatexFormula({
   displayMode = false,
   className,
   fallbackClassName,
+  fallback,
 }: KatexFormulaProps) {
   const trimmedMath = math.trim()
   const html = React.useMemo(
@@ -50,7 +52,7 @@ export function KatexFormula({
           className,
         )}
       >
-        {math}
+        {fallback ?? math}
       </FallbackTag>
     )
   }

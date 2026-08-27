@@ -75,6 +75,8 @@ function DatePicker({
   language: languageOverride,
   maxDate,
   minDate,
+  onClick: inputOnClick,
+  onFocus: inputOnFocus,
   placeholder,
   ...inputProps
 }: DatePickerProps) {
@@ -133,6 +135,14 @@ function DatePicker({
           onChange={(event) => onValueChange(event.currentTarget.value)}
           onBlur={handleBlur}
           {...inputProps}
+          onFocus={(event) => {
+            setOpen(true)
+            inputOnFocus?.(event)
+          }}
+          onClick={(event) => {
+            setOpen(true)
+            inputOnClick?.(event)
+          }}
         />
         <InputGroupAddon align="inline-end">
           <PopoverTrigger

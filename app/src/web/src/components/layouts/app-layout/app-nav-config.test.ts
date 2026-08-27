@@ -12,11 +12,13 @@ function createDomain({
   id,
   itemId,
   category,
+  sceneId,
   to = `/${id}`,
 }: {
   id: string
   itemId: string
   category?: string
+  sceneId?: string
   to?: string
 }): WebDomain {
   return {
@@ -24,7 +26,7 @@ function createDomain({
     routes: [],
     capabilities: {
       nav: () => ({
-        id: `domain-${id}`,
+        id: sceneId ?? `domain-${id}`,
         label: id,
         desc: `${id} scene`,
         icon: TestIcon,
@@ -93,6 +95,63 @@ function createStandaloneAccountingDomain(): WebDomain {
 }
 
 describe('configured app navigation', () => {
+  it('filters the scene picker without removing the underlying routes', () => {
+    const config = createConfiguredAppNavConfig(
+      [
+        createDomain({
+          id: 'pcf.factor.api',
+          itemId: 'background-data',
+          sceneId: 'domain-pcf-factor-api',
+        }),
+        createDomain({ id: 'cfo', itemId: 'organization-carbon-footprint' }),
+        createDomain({
+          id: 'project',
+          itemId: 'service-customers',
+          to: '/project/research-objects',
+        }),
+        createDomain({ id: 'uic', itemId: 'user-center' }),
+      ],
+      {
+        language: 'zh-CN',
+        visibleSceneIds: ['domain-pcf-factor-api', 'domain-cfo', 'domain-uic'],
+      },
+    )
+
+    expect(config.scenes.map((scene) => scene.id)).toEqual([
+      'domain-pcf-factor-api',
+      'domain-cfo',
+      'domain-uic',
+    ])
+    expect(config.categories.flatMap((category) => category.sceneIds)).toEqual([
+      'domain-pcf-factor-api',
+      'domain-cfo',
+      'domain-uic',
+    ])
+    expect(config.defaultSceneId).toBe('domain-pcf-factor-api')
+  })
+
+  it('keeps a fallback scene while permissions are still unavailable', () => {
+    const config = createConfiguredAppNavConfig(
+      [
+        createDomain({
+          id: 'project',
+          itemId: 'project-list',
+          to: '/project/projects',
+        }),
+      ],
+      {
+        language: 'zh-CN',
+        visibleSceneIds: ['domain-cfo'],
+      },
+    )
+
+    expect(config.scenes.map((scene) => scene.id)).toEqual([
+      'domain-project',
+    ])
+    expect(config.defaultSceneId).toBe('domain-project')
+    expect(config.categories).toEqual([])
+  })
+
   it('splits enterprise management from the user center scene', () => {
     const uicDomain: WebDomain = {
       id: 'uic',
