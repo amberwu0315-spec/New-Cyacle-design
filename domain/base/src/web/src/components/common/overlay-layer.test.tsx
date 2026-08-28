@@ -3,7 +3,11 @@
 import { render, screen } from "@testing-library/react"
 import { describe, expect, it } from "vitest"
 
-import { OverlayLayerScope, useOverlayLayer } from "./overlay-layer.tsx"
+import {
+  OverlayLayerScope,
+  resolveOverlayLayerZIndex,
+  useOverlayLayer,
+} from "./overlay-layer.tsx"
 
 function LayerProbe({ name }: { name: string }) {
   const layer = useOverlayLayer()
@@ -34,5 +38,16 @@ describe("OverlayLayerScope", () => {
     render(<LayerProbe name="default-dialog" />)
 
     expect(screen.getByTestId("default-dialog").textContent).toBe("0:50:50")
+  })
+
+  it("lets floating content derive the next layer from its container", () => {
+    expect(resolveOverlayLayerZIndex(50)).toBe(50)
+    expect(resolveOverlayLayerZIndex(80)).toBe(80)
+  })
+
+  it("preserves explicit utility-class layer overrides", () => {
+    expect(resolveOverlayLayerZIndex(60, "w-80 z-[90] p-0")).toBe(90)
+    expect(resolveOverlayLayerZIndex(60, "sm:!z-80 w-80")).toBe(80)
+    expect(resolveOverlayLayerZIndex(60, null, "z-70")).toBe(70)
   })
 })

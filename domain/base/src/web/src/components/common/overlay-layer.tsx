@@ -2,6 +2,8 @@ import * as React from "react"
 
 const DEFAULT_DIALOG_Z_INDEX = 50
 const OVERLAY_LAYER_STEP = 10
+const EXPLICIT_Z_INDEX_PATTERN =
+  /(?:^|\s)(?:[\w-]+:)*!?z-(?:\[(\d+)\]|(\d+))(?:\s|$)/
 
 const OverlayLayerContext = React.createContext(0)
 
@@ -24,4 +26,20 @@ export function useOverlayLayer() {
     contentLayer,
     overlayLayer: contentLayer,
   }
+}
+
+export function resolveOverlayLayerZIndex(
+  defaultLayer: number,
+  ...classNames: unknown[]
+) {
+  for (const className of classNames) {
+    if (typeof className !== "string" || !className) continue
+
+    const match = className.match(EXPLICIT_Z_INDEX_PATTERN)
+    const value = match?.[1] ?? match?.[2]
+
+    if (value) return Number(value)
+  }
+
+  return defaultLayer
 }

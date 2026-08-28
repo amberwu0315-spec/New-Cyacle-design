@@ -5,7 +5,11 @@ import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 
 import { cn } from "#/lib/utils.ts"
 import { Button } from "#/components/ui/button.tsx"
-import { OverlayLayerScope, useOverlayLayer } from "#/components/common/overlay-layer.tsx"
+import {
+  OverlayLayerScope,
+  resolveOverlayLayerZIndex,
+  useOverlayLayer,
+} from "#/components/common/overlay-layer.tsx"
 import { XIcon } from "lucide-react"
 
 function Dialog({ ...props }: DialogPrimitive.Root.Props) {
@@ -22,15 +26,6 @@ function DialogPortal({ ...props }: DialogPrimitive.Portal.Props) {
 
 function DialogClose({ ...props }: DialogPrimitive.Close.Props) {
   return <DialogPrimitive.Close data-slot="dialog-close" {...props} />
-}
-
-function getExplicitZIndex(className: unknown) {
-  if (typeof className !== "string" || !className) return null
-
-  const match = className.match(/(?:^|\s)(?:[\w-]+:)*!?z-(?:\[(\d+)\]|(\d+))(?:\s|$)/)
-  const value = match?.[1] ?? match?.[2]
-
-  return value ? Number(value) : null
 }
 
 function DialogOverlay({
@@ -58,8 +53,7 @@ function DialogContent({
   showCloseButton?: boolean
 }) {
   const { contentLayer } = useOverlayLayer()
-  const explicitLayer = getExplicitZIndex(className)
-  const resolvedLayer = explicitLayer ?? contentLayer
+  const resolvedLayer = resolveOverlayLayerZIndex(contentLayer, className)
 
   return (
     <DialogPortal>
