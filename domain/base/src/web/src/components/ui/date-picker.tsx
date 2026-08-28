@@ -84,6 +84,7 @@ function DatePicker({
   const language = languageOverride ?? currentLanguage
   const messages = DEFAULT_MESSAGES[language]
   const [open, setOpen] = React.useState(false)
+  const suppressFocusOpenRef = React.useRef(false)
   const selectedDate = React.useMemo(
     () => parseDateInputValue(value),
     [value],
@@ -99,12 +100,14 @@ function DatePicker({
     (date: Date | undefined) => {
       if (!date) return
 
+      suppressFocusOpenRef.current = true
       onValueChange(formatDateInputValue(date))
       setOpen(false)
     },
     [onValueChange],
   )
   const handleClear = React.useCallback(() => {
+    suppressFocusOpenRef.current = true
     onValueChange("")
     setOpen(false)
   }, [onValueChange])
@@ -137,7 +140,11 @@ function DatePicker({
             onBlur={handleBlur}
             {...inputProps}
             onFocus={(event) => {
-              setOpen(true)
+              if (suppressFocusOpenRef.current) {
+                suppressFocusOpenRef.current = false
+              } else {
+                setOpen(true)
+              }
               inputOnFocus?.(event)
             }}
             onClick={(event) => {
@@ -153,6 +160,9 @@ function DatePicker({
                   variant="ghost"
                   disabled={disabled}
                   aria-label={placeholder ?? messages.placeholder}
+                  onFocus={() => {
+                    suppressFocusOpenRef.current = false
+                  }}
                 />
               }
             >
