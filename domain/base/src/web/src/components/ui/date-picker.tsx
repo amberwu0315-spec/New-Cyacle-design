@@ -120,71 +120,73 @@ function DatePicker({
   )
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
-      <InputGroup className={className}>
-        <InputGroupInput
-          type="text"
-          inputMode="numeric"
-          autoComplete="off"
-          maxLength={11}
-          className="tabular-nums"
-          value={value}
-          placeholder={placeholder ?? messages.placeholder}
-          disabled={disabled}
-          aria-invalid={invalid}
-          onChange={(event) => onValueChange(event.currentTarget.value)}
-          onBlur={handleBlur}
-          {...inputProps}
-          onFocus={(event) => {
-            setOpen(true)
-            inputOnFocus?.(event)
-          }}
-          onClick={(event) => {
-            setOpen(true)
-            inputOnClick?.(event)
-          }}
-        />
-        <InputGroupAddon align="inline-end">
-          <PopoverTrigger
-            render={
-              <InputGroupButton
-                size="icon-xs"
-                variant="ghost"
-                disabled={disabled}
-                aria-label={placeholder ?? messages.placeholder}
-              />
-            }
-          >
-            <CalendarIcon className="size-4 opacity-70" />
-          </PopoverTrigger>
-        </InputGroupAddon>
-      </InputGroup>
-      <PopoverContent align="start" className="w-auto p-2">
-        <Calendar
-          mode="single"
-          captionLayout="dropdown"
-          locale={language === "en-US" ? enUS : zhCN}
-          selected={selectedDate}
-          defaultMonth={selectedDate}
-          disabled={disabledDates}
-          onSelect={handleSelect}
-        />
-        {clearable && value ? (
-          <div className="border-t px-1 pt-2">
-            <Button
-              type="button"
-              variant="ghost"
-              size="sm"
-              className="w-full justify-center"
-              disabled={disabled}
-              onClick={handleClear}
+    <div className="relative">
+      <Popover open={open} onOpenChange={setOpen}>
+        <InputGroup className={className}>
+          <InputGroupInput
+            type="text"
+            inputMode="numeric"
+            autoComplete="off"
+            maxLength={11}
+            className="tabular-nums"
+            value={value}
+            placeholder={placeholder ?? messages.placeholder}
+            disabled={disabled}
+            aria-invalid={invalid}
+            onChange={(event) => onValueChange(event.currentTarget.value)}
+            onBlur={handleBlur}
+            {...inputProps}
+            onFocus={(event) => {
+              setOpen(true)
+              inputOnFocus?.(event)
+            }}
+            onClick={(event) => {
+              setOpen(true)
+              inputOnClick?.(event)
+            }}
+          />
+          <InputGroupAddon align="inline-end">
+            <PopoverTrigger
+              render={
+                <InputGroupButton
+                  size="icon-xs"
+                  variant="ghost"
+                  disabled={disabled}
+                  aria-label={placeholder ?? messages.placeholder}
+                />
+              }
             >
-              {clearLabel ?? messages.clear}
-            </Button>
-          </div>
-        ) : null}
-      </PopoverContent>
-    </Popover>
+              <CalendarIcon className="size-4 opacity-70" />
+            </PopoverTrigger>
+          </InputGroupAddon>
+        </InputGroup>
+        <PopoverContent align="start" className="w-auto p-2">
+          <Calendar
+            mode="single"
+            captionLayout="dropdown"
+            locale={language === "en-US" ? enUS : zhCN}
+            selected={selectedDate}
+            defaultMonth={selectedDate}
+            disabled={disabledDates}
+            onSelect={handleSelect}
+          />
+          {clearable && value ? (
+            <div className="border-t px-1 pt-2">
+              <Button
+                type="button"
+                variant="ghost"
+                size="sm"
+                className="w-full justify-center"
+                disabled={disabled}
+                onClick={handleClear}
+              >
+                {clearLabel ?? messages.clear}
+              </Button>
+            </div>
+          ) : null}
+        </PopoverContent>
+      </Popover>
+    </div>
   )
 }
 
