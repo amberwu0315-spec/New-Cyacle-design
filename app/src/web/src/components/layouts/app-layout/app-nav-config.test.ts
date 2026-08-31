@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { Building2 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
 
 import type { WebDomain } from '@carbonnt-cyacle/web-base'
@@ -11,21 +12,25 @@ function createDomain({
   id,
   itemId,
   category,
+  sceneId,
+  to = `/${id}`,
 }: {
   id: string
   itemId: string
   category?: string
+  sceneId?: string
+  to?: string
 }): WebDomain {
   return {
     id,
     routes: [],
     capabilities: {
       nav: () => ({
-        id: `domain-${id}`,
+        id: sceneId ?? `domain-${id}`,
         label: id,
         desc: `${id} scene`,
         icon: TestIcon,
-        defaultTo: `/${id}`,
+        defaultTo: to,
         groups: [
           {
             id: `${id}-group`,
@@ -35,7 +40,7 @@ function createDomain({
                 id: itemId,
                 label: itemId,
                 desc: `${itemId} item`,
-                to: `/${id}`,
+                to,
                 icon: TestIcon,
                 category,
               },
@@ -90,6 +95,63 @@ function createStandaloneAccountingDomain(): WebDomain {
 }
 
 describe('configured app navigation', () => {
+  it('filters the scene picker without removing the underlying routes', () => {
+    const config = createConfiguredAppNavConfig(
+      [
+        createDomain({
+          id: 'pcf.factor.api',
+          itemId: 'background-data',
+          sceneId: 'domain-pcf-factor-api',
+        }),
+        createDomain({ id: 'cfo', itemId: 'organization-carbon-footprint' }),
+        createDomain({
+          id: 'project',
+          itemId: 'service-customers',
+          to: '/project/research-objects',
+        }),
+        createDomain({ id: 'uic', itemId: 'user-center' }),
+      ],
+      {
+        language: 'zh-CN',
+        visibleSceneIds: ['domain-pcf-factor-api', 'domain-cfo', 'domain-uic'],
+      },
+    )
+
+    expect(config.scenes.map((scene) => scene.id)).toEqual([
+      'domain-pcf-factor-api',
+      'domain-cfo',
+      'domain-uic',
+    ])
+    expect(config.categories.flatMap((category) => category.sceneIds)).toEqual([
+      'domain-pcf-factor-api',
+      'domain-cfo',
+      'domain-uic',
+    ])
+    expect(config.defaultSceneId).toBe('domain-pcf-factor-api')
+  })
+
+  it('keeps a fallback scene while permissions are still unavailable', () => {
+    const config = createConfiguredAppNavConfig(
+      [
+        createDomain({
+          id: 'project',
+          itemId: 'project-list',
+          to: '/project/projects',
+        }),
+      ],
+      {
+        language: 'zh-CN',
+        visibleSceneIds: ['domain-cfo'],
+      },
+    )
+
+    expect(config.scenes.map((scene) => scene.id)).toEqual([
+      'domain-project',
+    ])
+    expect(config.defaultSceneId).toBe('domain-project')
+    expect(config.categories).toEqual([])
+  })
+
   it('splits enterprise management from the user center scene', () => {
     const uicDomain: WebDomain = {
       id: 'uic',
@@ -145,6 +207,8 @@ describe('configured app navigation', () => {
     ])
     expect(config.scenes[1]).toMatchObject({
       label: 'Enterprise Management',
+      description: 'Enterprise Info',
+      icon: Building2,
       defaultTo: '/uic/org/enterprise-info',
       groups: [{ id: 'uic-enterprise-management', title: null }],
     })
@@ -235,6 +299,24 @@ describe('configured app navigation', () => {
     expect(config.scenes.map((scene) => scene.id)).toEqual([
       'domain-project--project-list',
     ])
+    expect(config.defaultSceneId).toBe('domain-project--project-list')
+  })
+
+  it('keeps the project list as the default scene while permissions reveal earlier domains', () => {
+    const config = createConfiguredAppNavConfig(
+      [
+        createStandaloneAccountingDomain(),
+        createDomain({
+          id: 'project',
+          itemId: 'project-list',
+          category: 'accounting',
+          to: '/project/projects',
+        }),
+      ],
+      { language: 'en-US' },
+    )
+
+    expect(config.scenes[0]?.defaultTo).toBe('/cfp')
     expect(config.defaultSceneId).toBe('domain-project--project-list')
   })
 

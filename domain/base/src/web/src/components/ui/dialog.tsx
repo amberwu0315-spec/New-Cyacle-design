@@ -5,6 +5,11 @@ import { Dialog as DialogPrimitive } from "@base-ui/react/dialog"
 
 import { cn } from "#/lib/utils.ts"
 import { Button } from "#/components/ui/button.tsx"
+import {
+  OverlayLayerScope,
+  resolveOverlayLayerZIndex,
+  useOverlayLayer,
+} from "#/components/common/overlay-layer.tsx"
 import { XIcon } from "lucide-react"
 
 function Dialog({ ...props }: DialogPrimitive.Root.Props) {
@@ -47,9 +52,12 @@ function DialogContent({
 }: DialogPrimitive.Popup.Props & {
   showCloseButton?: boolean
 }) {
+  const { contentLayer } = useOverlayLayer()
+  const resolvedLayer = resolveOverlayLayerZIndex(contentLayer, className)
+
   return (
     <DialogPortal>
-      <DialogOverlay />
+      <DialogOverlay style={{ zIndex: resolvedLayer }} />
       <DialogPrimitive.Popup
         data-slot="dialog-content"
         className={cn(
@@ -57,8 +65,9 @@ function DialogContent({
           className
         )}
         {...props}
+        style={{ zIndex: resolvedLayer, ...props.style }}
       >
-        {children}
+        <OverlayLayerScope baseLayer={resolvedLayer}>{children}</OverlayLayerScope>
         {showCloseButton && (
           <DialogPrimitive.Close
             data-slot="dialog-close"
@@ -84,7 +93,20 @@ function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="dialog-header"
-      className={cn("flex flex-col gap-2", className)}
+      className={cn("flex shrink-0 flex-col gap-2", className)}
+      {...props}
+    />
+  )
+}
+
+function DialogBody({ className, ...props }: React.ComponentProps<"div">) {
+  return (
+    <div
+      data-slot="dialog-body"
+      className={cn(
+        "-mx-4 my-4 min-h-0 flex-1 overflow-y-auto px-4",
+        className
+      )}
       {...props}
     />
   )
@@ -102,7 +124,7 @@ function DialogFooter({
     <div
       data-slot="dialog-footer"
       className={cn(
-        "-mx-4 -mb-4 flex flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end",
+        "-mx-4 -mb-4 flex shrink-0 flex-col-reverse gap-2 rounded-b-xl border-t bg-muted/50 p-4 sm:flex-row sm:justify-end",
         className
       )}
       {...props}
@@ -148,6 +170,7 @@ function DialogDescription({
 
 export {
   Dialog,
+  DialogBody,
   DialogClose,
   DialogContent,
   DialogDescription,

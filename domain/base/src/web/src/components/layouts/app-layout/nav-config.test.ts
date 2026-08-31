@@ -3,30 +3,41 @@ import type { LucideIcon } from 'lucide-react'
 
 import type { WebDomain } from '../../../routes/domain/builder.ts'
 import {
+  definePermissionCodeDictionary,
+} from '#/permissions/permission-codes.ts'
+import {
   createAppNavConfig,
   createAppPermissionCodes,
 } from './nav-config.tsx'
 
 const TestIcon = (() => null) as unknown as LucideIcon
 
+const TEST_PERMISSION_CODES = definePermissionCodeDictionary({
+  actionEdit: { code: 'action_edit', description: 'test' },
+  sceneView: { code: 'scene_view', description: 'test' },
+  groupView: { code: 'group_view', description: 'test' },
+  hiddenView: { code: 'hidden_view', description: 'test' },
+  visibleView: { code: 'visible_view', description: 'test' },
+})
+
 function createDomain(): WebDomain {
   return {
     id: 'test',
     routes: [],
     capabilities: {
-      permissionCodes: ['action_edit'],
+      permissionCodes: [TEST_PERMISSION_CODES.actionEdit.code],
       nav: () => ({
         id: 'test-scene',
         label: 'Test',
         desc: 'Test scene',
         icon: TestIcon,
         defaultTo: '/hidden',
-        permissionCode: 'scene_view',
+        visible: TEST_PERMISSION_CODES.sceneView.code,
         groups: [
           {
             id: 'empty-group',
             title: 'Empty',
-            permissionCode: 'group_view',
+            visible: TEST_PERMISSION_CODES.groupView.code,
             items: [
               {
                 id: 'hidden',
@@ -34,7 +45,7 @@ function createDomain(): WebDomain {
                 desc: 'Hidden item',
                 to: '/hidden',
                 icon: TestIcon,
-                permissionCode: 'hidden_view',
+                visible: TEST_PERMISSION_CODES.hiddenView.code,
               },
             ],
           },
@@ -49,7 +60,7 @@ function createDomain(): WebDomain {
                 to: '/visible',
                 icon: TestIcon,
                 category: 'featured',
-                permissionCode: 'visible_view',
+                visible: TEST_PERMISSION_CODES.visibleView.code,
               },
             ],
           },

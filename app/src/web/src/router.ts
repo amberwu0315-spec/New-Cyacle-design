@@ -9,6 +9,10 @@ import {
 import { AdminAppLayout } from '#/components/layouts/admin-layout/index.ts'
 import { AppLayout } from '#/components/layouts/app-layout/index.ts'
 import { AppRoutePendingFallback } from '#/components/routes/app-route-pending-fallback.tsx'
+import {
+  AppRouteErrorPage,
+  reportRouteError,
+} from '#/features/route-error/page.tsx'
 import { AppNotFoundPage } from '#/features/not-found/page.tsx'
 import { resolveDefaultSystemHomeTo } from '#/app-route-navigation.ts'
 import { createAdminHomeRoute } from '#/routes/admin/index.ts'
@@ -57,6 +61,8 @@ const webRouter = createWebRouter({
   },
   router: {
     defaultNotFoundComponent: AppNotFoundPage,
+    defaultErrorComponent: AppRouteErrorPage,
+    defaultOnCatch: reportRouteError,
     defaultPendingComponent: AppRoutePendingFallback,
     defaultPendingMinMs: 300,
     defaultPendingMs: 150,

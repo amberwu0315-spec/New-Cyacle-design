@@ -4,12 +4,23 @@ import {
   type AppNavConfigOptions,
   type WebDomain,
 } from '@carbonnt-cyacle/web-base'
+import { Building2 } from 'lucide-react'
 
 import {
   DEFAULT_APP_EDITION,
   resolveAppEditionRegistration,
 } from '#/app-edition.ts'
 import { getMessages } from '#/lib/i18n/index.ts'
+
+export const DEFAULT_APP_HOME_TO = '/project/projects'
+
+/**
+ * Optional product-specific navigation presentation filter. The underlying
+ * routes remain registered when a caller supplies visibleSceneIds.
+ */
+type ConfiguredAppNavConfigOptions = AppNavConfigOptions & {
+  visibleSceneIds?: ReadonlyArray<string>
+}
 
 function getAppNavCategories(language: AppNavConfigOptions['language']) {
   const t = getMessages(language)
@@ -52,6 +63,10 @@ function splitUicEnterpriseManagementScene(config: AppNavConfig): AppNavConfig {
     ...uicScene,
     id: 'domain-uic-enterprise-management',
     label: enterpriseGroup.title ?? enterpriseGroup.items[0]!.label,
+    // This group becomes an independent scene card. Reuse its first item's
+    // description instead of leaving the user-center scene summary in place.
+    description: enterpriseGroup.items[0]!.description,
+    icon: Building2,
     defaultTo: enterpriseDefaultTo,
     groups: [{ ...enterpriseGroup, title: null }],
   }
@@ -239,9 +254,52 @@ function groupAppNavConfig(
   }
 }
 
+function filterAppNavScenes(
+  config: AppNavConfig,
+  visibleSceneIds?: ReadonlyArray<string>,
+): AppNavConfig {
+  if (!visibleSceneIds) {
+    return config
+  }
+
+  const visibleIds = new Set(visibleSceneIds)
+  // Keep the configured landing scene in the model so active-state and
+  // breadcrumbs still resolve while omitting it from the scene picker cards.
+  const landingScene = config.scenes.find((scene) =>
+    scene.groups.some((group) =>
+      group.items.some((item) => item.to === DEFAULT_APP_HOME_TO),
+    ),
+  )
+  // During permission bootstrap every configured scene can be filtered out.
+  // Keep one deterministic scene in the model so the shell still has an
+  // active scene to render until the permission result arrives.
+  const fallbackSceneId = config.defaultSceneId || config.scenes[0]?.id
+  const scenes = config.scenes.filter(
+    (scene) =>
+      visibleIds.has(scene.id) ||
+      scene.id === landingScene?.id ||
+      scene.id === fallbackSceneId,
+  )
+  const categories = config.categories
+    .map((category) => ({
+      ...category,
+      sceneIds: category.sceneIds.filter((sceneId) => visibleIds.has(sceneId)),
+    }))
+    .filter((category) => category.sceneIds.length > 0)
+
+  return {
+    ...config,
+    scenes,
+    categories,
+    defaultSceneId: visibleIds.has(config.defaultSceneId)
+      ? config.defaultSceneId
+      : (scenes[0]?.id ?? ''),
+  }
+}
+
 export function createConfiguredAppNavConfig(
   webDomains: ReadonlyArray<WebDomain>,
-  options: AppNavConfigOptions = {},
+  options: ConfiguredAppNavConfigOptions = {},
   appEdition = DEFAULT_APP_EDITION,
 ): AppNavConfig {
   const registration = resolveAppEditionRegistration<
@@ -249,13 +307,26 @@ export function createConfiguredAppNavConfig(
     AppNavConfig
   >(webDomains, appEdition)
 
-  return groupAppNavConfig(
-    splitUicEnterpriseManagementScene(
-      registration?.createNavConfig(options) ??
-        createAppNavConfig(webDomains, options),
+  const config = filterAppNavScenes(
+    groupAppNavConfig(
+      splitUicEnterpriseManagementScene(
+        registration?.createNavConfig(options) ??
+          createAppNavConfig(webDomains, options),
+      ),
+      options,
     ),
-    options,
+    options.visibleSceneIds,
   )
+  const homeTo = registration?.homeTo ?? DEFAULT_APP_HOME_TO
+  const homeScene = config.scenes.find((scene) =>
+    scene.groups.some((group) =>
+      group.items.some((item) => item.to === homeTo),
+    ),
+  )
+
+  return homeScene
+    ? { ...config, defaultSceneId: homeScene.id }
+    : config
 }
 
 export function resolveAppEditionHomeTo(
@@ -266,6 +337,6 @@ export function resolveAppEditionHomeTo(
     resolveAppEditionRegistration<AppNavConfigOptions, AppNavConfig>(
       webDomains,
       appEdition,
-    )?.homeTo ?? '/cfp'
+    )?.homeTo ?? DEFAULT_APP_HOME_TO
   )
 }

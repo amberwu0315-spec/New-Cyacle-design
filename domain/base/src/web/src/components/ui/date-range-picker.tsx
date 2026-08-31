@@ -131,6 +131,7 @@ export function buildDateRangeYearPresets({
 export interface DateRangePickerProps {
   start: string
   end: string
+  disabled?: boolean
   placeholder?: string
   ariaLabel?: string
   emptyLabel?: string
@@ -156,6 +157,7 @@ interface DateRangePickerPresetPanelProps {
   presets: Array<DateRangePickerPreset>
   selectedStart: string
   selectedEnd: string
+  disabled?: boolean
   onSelect: (preset: DateRangePickerPreset) => void
 }
 
@@ -165,6 +167,7 @@ interface DateRangePickerDateInputProps {
   placeholder: string
   ariaLabel: string
   invalid: boolean
+  disabled?: boolean
   onChange: (value: string) => void
   onFocus: () => void
   onBlur: () => void
@@ -177,6 +180,7 @@ function DateRangePickerDateInput({
   placeholder,
   ariaLabel,
   invalid,
+  disabled = false,
   onChange,
   onFocus,
   onBlur,
@@ -189,6 +193,7 @@ function DateRangePickerDateInput({
       </span>
       <Input
         value={value}
+        disabled={disabled}
         onChange={(event) => onChange(event.target.value)}
         onFocus={onFocus}
         onBlur={onBlur}
@@ -213,6 +218,7 @@ function DateRangePickerPresetPanel({
   presets,
   selectedStart,
   selectedEnd,
+  disabled = false,
   onSelect,
 }: DateRangePickerPresetPanelProps) {
   if (presets.length === 0) return null
@@ -233,6 +239,7 @@ function DateRangePickerPresetPanel({
             <button
               key={`${preset.label}-${preset.start}-${preset.end}`}
               type="button"
+              disabled={disabled}
               aria-pressed={selected}
               className={cn(
                 'relative flex h-10 min-w-0 items-center justify-center rounded-md border px-2.5 text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:h-8',
@@ -257,6 +264,7 @@ function DateRangePickerPresetPanel({
 export function DateRangePicker({
   start,
   end,
+  disabled = false,
   placeholder = 'Select date range',
   ariaLabel = 'Select date range',
   emptyLabel = 'Not selected',
@@ -458,6 +466,7 @@ export function DateRangePicker({
         render={
           <button
             type="button"
+            disabled={disabled}
             aria-label={ariaLabel}
             className="flex h-8 w-full min-w-0 items-center gap-2 rounded-md border border-input bg-background px-2.5 text-left text-sm outline-none transition-colors hover:bg-muted/30 focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50"
           />
@@ -489,6 +498,7 @@ export function DateRangePicker({
               captionLayout="dropdown"
               locale={calendarLocale}
               selected={selectedRange}
+              disabled={disabled ? () => true : undefined}
               month={visibleMonth}
               onMonthChange={setVisibleMonth}
               onDayClick={(day) => {
@@ -531,6 +541,7 @@ export function DateRangePicker({
                 presets={presetOptions}
                 selectedStart={start}
                 selectedEnd={end}
+                disabled={disabled}
                 onSelect={selectPreset}
               />
             </div>
@@ -553,6 +564,7 @@ export function DateRangePicker({
             placeholder="YYYY-MM-DD"
             ariaLabel={startAriaLabel}
             invalid={Boolean(inputErrors.start)}
+            disabled={disabled}
           />
 
           <div className="hidden h-8 items-center text-xs font-medium text-muted-foreground sm:flex">
@@ -569,9 +581,10 @@ export function DateRangePicker({
             placeholder="YYYY-MM-DD"
             ariaLabel={endAriaLabel}
             invalid={Boolean(inputErrors.end)}
+            disabled={disabled}
           />
 
-          <Button type="button" size="default" className="w-full px-3 sm:w-auto" onClick={commitRangeAndClose}>
+          <Button type="button" size="default" className="w-full px-3 sm:w-auto" disabled={disabled} onClick={commitRangeAndClose}>
             {applyLabel}
           </Button>
 

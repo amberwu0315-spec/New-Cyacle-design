@@ -48,9 +48,9 @@
 数据选择弹框统一采用“固定头部 + 固定高度内容区 + 固定底部”的三段式结构：
 
 1. `DialogContent` 使用纵向 flex，并限制在视口内：`flex max-h-[88vh] flex-col overflow-hidden`。常规表格选择器优先使用 `sm:!max-w-4xl`；列数较多、包含预览区或业务明确需要更宽时才扩大到 `sm:!max-w-5xl` / `sm:!max-w-6xl`。
-2. `DialogHeader` 使用 `shrink-0`，包含明确的标题和必要的说明；不要把创建按钮塞进标题行。
-3. 中间表格区使用统一的 `h-[520px] min-h-0 overflow-hidden py-2`。`DataView` 使用 `height="100%"` 和 `h-full min-h-0`，分页、搜索栏留在内容区内，只有表格 viewport 滚动，Dialog、标题、工具栏和底部操作不能随表格滚动。
-4. `DialogFooter` 使用 `shrink-0`。右侧按“取消、确认”的顺序放置操作；可清空的选择器可以把“清除选择”作为 ghost 按钮放在确认操作之前。
+2. `DialogHeader` 默认固定不收缩，包含明确的标题和必要的说明；不要把创建按钮塞进标题行。
+3. 中间表格区统一使用 `DialogBody className="h-[520px] overflow-hidden py-2"`。`DialogBody` 自身保持滚动和高度链，不能再把 `className` 拆到第二层容器；`DataView` 使用 `height="100%"` 和 `h-full min-h-0`，分页、搜索栏留在内容区内，只有表格 viewport 滚动，Dialog、标题、工具栏和底部操作不能随表格滚动。
+4. `DialogFooter` 默认固定不收缩。右侧按“取消、确认”的顺序放置操作；可清空的选择器可以把“清除选择”作为 ghost 按钮放在确认操作之前。
 5. 初次加载使用表格 skeleton；刷新时保留已有表格和筛选条件，用 `isFetching` 表示刷新状态，避免整块内容闪回空白或骨架。
 
 表格型选择器优先使用 `DataView + DataGrid + SearchBox`，不要再为同类对象选择器手写一套 `Input + Table/按钮列表 + ScrollArea`。树、文件和主从预览场景不能合理表达为表格时可以使用专用内容组件，但弹框外壳和下面的交互合同保持一致。
@@ -59,12 +59,12 @@
 
 ```tsx
 <DialogContent className="flex max-h-[88vh] flex-col overflow-hidden sm:!max-w-4xl">
-  <DialogHeader className="shrink-0">
+  <DialogHeader>
     <DialogTitle>选择数据</DialogTitle>
     <DialogDescription>从当前工作空间可见的数据中选择一项。</DialogDescription>
   </DialogHeader>
 
-  <div className="h-[520px] min-h-0 overflow-hidden py-2">
+  <DialogBody className="h-[520px] overflow-hidden py-2">
     <DataView
       className="h-full min-h-0 w-full"
       height="100%"
@@ -78,9 +78,9 @@
         </div>
       )}
     />
-  </div>
+  </DialogBody>
 
-  <DialogFooter className="shrink-0">
+  <DialogFooter>
     <Button variant="outline" onClick={handleCancel}>取消</Button>
     <Button disabled={!selectedValue} onClick={handleConfirm}>确认</Button>
   </DialogFooter>
@@ -107,6 +107,14 @@
 
 多选数据选择弹框不强制双击确认，双击可以保留打开、预览等已有交互。多选弹框必须显示已选数量，并由底部确认一次性提交。同一个选项对应多个不同确认动作、无法确定默认动作时，不要擅自绑定其中一个动作作为双击确认，应先明确默认确认语义；确认语义明确后，再让双击复用该默认确认链路。
 
+### 查看详情与嵌套选择
+
+数据选择弹框中的“查看详情”统一使用 Base 提供的 `DataSelectorDetailDrawer`、`useDataSelectorDetailDrawerHost` 和 `useDataSelectorDialogLayer`。Base 只维护唯一 Drawer、详情历史、选择器状态栈、返回、宽度和内容现场，不得依赖元件、公式、数据记录、数据源等业务类型；各 feature domain 负责把稳定 key、标题和详情 React 内容转换成 `DataSelectorDetailDrawerItem`。
+
+打开详情后，原选择器必须保留在 Drawer 后方，不关闭、不卸载，并保留筛选、分页、排序和选中项；关闭 Drawer 后直接恢复交互。详情 Drawer 内再次打开数据选择弹框时，选择器必须优先复用当前 `useDataSelectorDetailDrawerHost()`，不能渲染第二个 Drawer。查看嵌套对象详情时在同一个 Drawer 中切换内容，返回上一层时恢复上一层详情和原选择弹框。详情页面里不属于“选择”流程的普通关联链接仍跳转到对应完整页面，不继续压入 Drawer。
+
+具体层级、生命周期、焦点、Escape 和接入代码遵守 [Dialog 与 Drawer 浮层协作规范](overlay-layering.md)。
+
 ### 状态和验收清单
 
 新增或修改数据选择弹框时，至少逐项验证：
@@ -120,6 +128,7 @@
 - [ ] 创建成功后列表可见且新项被选中；刷新不会丢失当前筛选条件。
 - [ ] 中英文名称、空名称、按钮、空状态和禁用原因符合多语言及 `<未命名>` / `<Untitled>` 规范。
 - [ ] 窄视口下弹框不超过 `88vh`，不会把 Footer 推出视口。
+- [ ] 查看详情后选择器仍显示在 Drawer 后方；关闭 Drawer 后现场保留且恢复交互。
 
 `unspecific` 是每个枚举都可能包含的特殊兜底类型，不属于面向用户的业务选项。下拉框、单选、多选、筛选器等由枚举生成的前端候选项必须过滤 `unspecific`，不允许用户主动选择；读取接口已有数据时仍需兼容该值，不要因此修改接口枚举、提交值或反序列化逻辑。
 
