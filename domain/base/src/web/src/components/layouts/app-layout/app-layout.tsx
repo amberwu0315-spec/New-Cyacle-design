@@ -42,6 +42,7 @@ export type AppLayoutAsyncState<TData> = {
 }
 
 export type AppLayoutUserProfile = {
+  avatarFileId?: string | null
   email?: string | null
   phone?: string | null
   realName?: string | null
