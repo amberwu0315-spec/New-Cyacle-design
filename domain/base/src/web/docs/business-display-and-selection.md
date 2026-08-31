@@ -115,9 +115,9 @@
 
 ### 查看详情与嵌套选择
 
-数据选择弹框中的“查看详情”统一使用 Base 提供的 `DataSelectorDetailDrawer`、`useDataSelectorDetailDrawerHost` 和 `useDataSelectorDialogLayer`。Base 只维护唯一 Drawer、详情历史、选择器状态栈、返回、宽度和内容现场，不得依赖元件、公式、数据记录、数据源等业务类型；各 feature domain 负责把稳定 key、标题和详情 React 内容转换成 `DataSelectorDetailDrawerItem`。
+数据选择弹框中的“查看详情”统一使用 Base 提供的 `DataSelectorDetailDrawer`、`DataSelectorDetailDrawerStackHost`、`useDataSelectorDetailDrawerHost` 和 `useDataSelectorDialogLayer`。Base 只维护详情 Drawer 实例栈、选择器状态栈、宽度和内容现场，不得依赖元件、公式、数据记录、数据源等业务类型；各 feature domain 负责把稳定 key、标题和详情 React 内容转换成 `DataSelectorDetailDrawerItem`。每次打开详情都创建独立 Drawer，最多同时存在 3 个，最新打开的 Drawer 显示在最前，达到上限后通过提示告知用户先关闭已有 Drawer，关闭时只移除当前实例。
 
-打开详情后，原选择器必须保留在 Drawer 后方，不关闭、不卸载，并保留筛选、分页、排序和选中项；关闭 Drawer 后直接恢复交互。详情 Drawer 内再次打开数据选择弹框时，选择器必须优先复用当前 `useDataSelectorDetailDrawerHost()`，不能渲染第二个 Drawer。查看嵌套对象详情时在同一个 Drawer 中切换内容，返回上一层时恢复上一层详情和原选择弹框。详情页面里不属于“选择”流程的普通关联链接仍跳转到对应完整页面，不继续压入 Drawer。
+打开详情后，原选择器必须保留在 Drawer 后方，不关闭、不卸载，并保留筛选、分页、排序和选中项；关闭 Drawer 后直接恢复交互。详情 Drawer 内再次打开数据选择弹框时，选择器必须优先复用当前 `useDataSelectorDetailDrawerHost()`，并为下一层详情追加独立 Drawer。关闭下一层 Drawer 时，上一层 Drawer、选择器和内容现场都保持不变。详情页面里不属于“选择”流程的普通关联链接仍跳转到对应完整页面，不继续压入 Drawer。
 
 具体层级、生命周期、焦点、Escape 和接入代码遵守 [Dialog 与 Drawer 浮层协作规范](overlay-layering.md)。
 

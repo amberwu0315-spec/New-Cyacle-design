@@ -27,6 +27,7 @@ import {
   useTranslation,
 } from '#/lib/i18n/index.ts'
 import type { SupportedLanguage } from '#/lib/i18n/index.ts'
+import { getFilePublicDownloadUrl } from '#/lib/upload-services/file-service.ts'
 import { cn } from '#/lib/utils.ts'
 import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 import type {
@@ -66,6 +67,35 @@ type WorkspaceMenuItemProps = {
   isSwitching: boolean
   onSelect: (workspace: WorkspaceSelectionItem) => void | Promise<void>
   workspace: WorkspaceSelectionItem
+}
+
+type AccountAvatarProps = {
+  alt: string
+  className: string
+  profile: AppLayoutUserProfile | null | undefined
+}
+
+function AccountAvatar({ alt, className, profile }: AccountAvatarProps) {
+  const avatarUrl = getFilePublicDownloadUrl(profile?.avatarFileId)
+  const [failedAvatarUrl, setFailedAvatarUrl] = React.useState<string | null>(null)
+  const shouldUseProfileAvatar = Boolean(
+    avatarUrl && avatarUrl !== failedAvatarUrl,
+  )
+  const handleError = React.useCallback(() => {
+    if (avatarUrl) {
+      setFailedAvatarUrl(avatarUrl)
+    }
+  }, [avatarUrl])
+
+  return (
+    <img
+      src={shouldUseProfileAvatar ? avatarUrl : defaultUserAvatar}
+      alt={alt}
+      aria-hidden={alt ? undefined : true}
+      className={className}
+      onError={handleError}
+    />
+  )
 }
 
 function getWorkspaceSecondaryText(
@@ -301,10 +331,9 @@ export function AccountPopover({
           />
         ) : (
           <>
-            <img
-              src={defaultUserAvatar}
+            <AccountAvatar
+              profile={profile}
               alt=""
-              aria-hidden="true"
               className="size-7 shrink-0 rounded-full border border-border object-cover"
             />
             <span
@@ -335,8 +364,8 @@ export function AccountPopover({
               </div>
             ) : (
               <div className="flex items-center gap-3">
-                <img
-                  src={defaultUserAvatar}
+                <AccountAvatar
+                  profile={profile}
                   alt={accountName}
                   className="size-11 shrink-0 rounded-full border border-border object-cover"
                 />

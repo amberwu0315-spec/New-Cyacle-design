@@ -1,9 +1,14 @@
 import * as React from "react"
 
+/**
+ * Overlay ordering is intentionally controlled by Portal DOM order. These
+ * legacy numeric helpers remain exported for source compatibility with older
+ * consumers, but shared overlay components no longer apply their values as
+ * CSS z-indexes.
+ */
 const DEFAULT_DIALOG_Z_INDEX = 50
 const OVERLAY_LAYER_STEP = 10
-const EXPLICIT_Z_INDEX_PATTERN =
-  /(?:^|\s)(?:[\w-]+:)*!?z-(?:\[(\d+)\]|(\d+))(?:\s|$)/
+const EXPLICIT_Z_INDEX_PATTERN = /(?:^|\s)(?:[\w-]+:)*!?z-(?:\[(\d+)\]|(\d+))(?:\s|$)/
 
 const OverlayLayerContext = React.createContext(0)
 
@@ -28,10 +33,8 @@ export function useOverlayLayer() {
   }
 }
 
-export function resolveOverlayLayerZIndex(
-  defaultLayer: number,
-  ...classNames: unknown[]
-) {
+/** @deprecated Prefer Portal DOM order; do not use the result as a z-index. */
+export function resolveOverlayLayerZIndex(defaultLayer: number, ...classNames: unknown[]) {
   for (const className of classNames) {
     if (typeof className !== "string" || !className) continue
 
