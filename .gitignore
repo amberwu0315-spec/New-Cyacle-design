@@ -1,6 +1,7 @@
 # local disabled domains
 /scripts/
 
+
 # vined - begin
 *.local
 .DS_Store
@@ -58,4 +59,3 @@ todos.json
 vineModules.gen.ts
 vineStyles.gen.css
 # vined - end
-
