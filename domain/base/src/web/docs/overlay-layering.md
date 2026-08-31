@@ -17,37 +17,40 @@ Popover、Select、Tooltip 等组件继续使用各自 Primitive 的定位和层
 
 ## 统一模型
 
-页面中最多存在一个详情 Drawer。嵌套查看详情时，不创建第二个 Drawer，而是在同一个 `DataSelectorDetailDrawer` 中压入详情历史；关闭或返回时恢复上一层详情。
+详情 Drawer 按打开次数创建独立实例，最多同时存在 3 个 Drawer。每次调用当前 Drawer 提供的 `openDetail` 都会追加一个新的 Drawer；新的 Portal 节点位于旧节点之后，因此最新打开的 Drawer 显示在最前。达到上限后新的打开请求不会创建 Drawer，并通过 AlertDialog 提示用户先关闭已有 Drawer。关闭某个 Drawer 只移除该实例，不会切换或销毁其他 Drawer。
 
 数据选择器 Dialog 可以有多个，但只有栈顶选择器处于 `active` 状态并可交互：
 
-| 状态 | 是否可见 | 是否 modal | 是否可交互 | 用途 |
-| --- | --- | --- | --- | --- |
-| `active` | 是 | 是 | 是 | 当前正在操作的选择器 |
-| `suspended` | 是 | 否 | 否 | 当前 Drawer 后面保留的选择器 |
-| `hidden` | 否 | 否 | 否 | 更早的选择器，仅保留现场 |
+| 状态        | 是否可见 | 是否 modal | 是否可交互 | 用途                         |
+| ----------- | -------- | ---------- | ---------- | ---------------------------- |
+| `active`    | 是       | 是         | 是         | 当前正在操作的选择器         |
+| `suspended` | 是       | 否         | 否         | 当前 Drawer 后面保留的选择器 |
+| `hidden`    | 否       | 否         | 否         | 更早的选择器，仅保留现场     |
 
 打开详情时，当前选择器从 `active` 切换为 `suspended`，仍显示在 Drawer 后方并保留搜索、分页、排序和选中项。关闭 Drawer 后恢复为 `active`。不得为了打开详情而销毁选择器、把其 `open` 改为 `false`，或在返回时重新创建一个空白选择器。
 
-## 固定层级
+## 统一浮层顺序
 
-| 层级 | 内容 |
-| --- | --- |
-| `0` | 普通页面 |
-| `50` | 页面直接打开的普通 Dialog |
-| `60` | `suspended` 数据选择器 |
-| `70` | 唯一详情 Drawer |
-| `80` | `active` 数据选择器；Drawer 内第一层 Dialog |
-| `90` 及以上 | Dialog 内继续打开的 Dialog，每层递增 `10` |
+浮层不再通过业务约定的 `z-index` 数值分层。所有 Base UI Portal 都挂载到 `document.body`，并保持 Backdrop 与 Popup 在同一个 Portal 中；浏览器按 Portal 节点在 DOM 中的顺序绘制浮层，后打开的浮层追加到后面，因此显示在最前。
 
-Dialog 的 Backdrop 和 Popup 必须处于同一层级，避免遮罩盖住自身内容。普通页面 Dialog 没有浮层上下文时仍使用默认层级 `50`。
+每个浮层必须作为一个完整的 Portal 单元：
+
+```text
+Portal A: Backdrop A → Popup A
+Portal B: Backdrop B → Popup B  ← 后打开，显示在最前
+```
+
+不要给 Dialog、Drawer、Popover、Select 或数据选择器添加 `z-[...]`、内联 `zIndex` 或按组件类型写死的层级。关闭动画完成前保留 Portal 节点，动画结束后再移除，避免节点顺序变化造成闪烁。
+
+如果后续需要专用的 `overlay-root`，必须让所有浮层（包括 `@crew-ui/base` 的 DataGrid/SearchBox）共同使用同一个容器；在未完成依赖包适配前，统一使用 `document.body`，不要混用多个 Portal 容器。当前 `@crew-ui/base@5.0.0` 内部仍有少量固定 `z-index`，待该依赖发布适配版本后再移除，暂不通过业务 CSS 覆盖。
 
 统一复用 Base 能力：
 
-- `OverlayLayerScope`：声明 Drawer 或 Dialog 所在的基础层级。
-- `useOverlayLayer`：让共享 Dialog 根据父浮层自动递增。
+- `OverlayLayerScope`：保留兼容上下文，不再驱动 CSS 层级。
+- `useOverlayLayer`：保留旧 API 兼容性；共享浮层的视觉顺序由 Portal DOM 顺序决定。
 - `useDataSelectorDialogLayer`：管理选择器栈、状态、modal、外部点击保护和关闭事件保护。
-- `DataSelectorDetailDrawer` / `useDataSelectorDetailDrawerHost`：承载唯一 Drawer 和详情历史。
+- `DataSelectorDetailDrawerStackHost`：挂载 Base 级详情 Drawer 实例栈，并按打开顺序渲染多个 Drawer。
+- `DataSelectorDetailDrawer` / `useDataSelectorDetailDrawerHost`：承载单个 Drawer，并为其内容提供追加详情实例的能力。
 
 业务组件不要写新的全局浮层 store，不要为单个页面添加 `z-[999]`，也不要只改 Popup 而遗漏 Backdrop。
 
@@ -71,13 +74,11 @@ const dialogLayer = useDataSelectorDialogLayer({ open, onOpenChange })
 
 打开详情前先调用 `dialogLayer.suspend()`；关闭或返回详情时调用 `dialogLayer.resume()`。不要绕过 `dialogProps.onOpenChange` 直接把受控状态传给 Dialog Root，因为 Drawer 的关闭点击、焦点迁移和 Escape 对挂起选择器都属于“外部交互”，必须由 Base 统一拦截，防止选择器被误关。
 
-Drawer 内打开的普通编辑 Dialog 不需要业务代码指定层级。`DataSelectorDetailDrawer` 已提供 `OverlayLayerScope baseLayer={70}`，共享 `DialogContent` 会自动进入 `80`；Dialog 内再打开 Dialog 时继续自动递增。
+Drawer 内打开的普通编辑 Dialog 不需要业务代码指定层级。Dialog、Drawer 及其子浮层都通过各自的 Portal 按打开顺序排列，业务组件不传递或计算层级数值。
 
 ## 生命周期和 Portal
 
-详情历史中的旧详情必须保留挂载状态，才能保留由它拥有的选择器 Portal 和表单现场。包含已打开 Dialog 的详情子树不能使用 `React.Activity mode="hidden"` 隐藏，因为 Activity 会清理 Effect，可能触发 Dialog 关闭；应使用 CSS `display: none` / 可见性包装层，或者把 Dialog 的 owner 提升到 Activity 外部。
-
-这里的“保留挂载”只用于 Drawer 详情历史。普通已关闭 Dialog 仍应正常卸载或停止查询。详情页应继续以 `embedded` 等既有参数控制查询范围，避免隐藏历史页发起无边界请求。
+每个 Drawer 实例独立挂载自己的内容、选择器 Portal 和表单现场。关闭实例时只卸载该实例；其他 Drawer 不使用历史切换，也不因兄弟实例关闭而重新创建。普通已关闭 Dialog 仍应正常卸载或停止查询。详情页应继续以 `embedded` 等既有参数控制查询范围，避免隐藏内容发起无边界请求。
 
 ## 焦点、键盘与关闭规则
 
@@ -86,7 +87,7 @@ Drawer 内打开的普通编辑 Dialog 不需要业务代码指定层级。`Data
 - Drawer 打开时焦点进入 Drawer；Drawer 内 Dialog 打开时焦点进入该 Dialog。
 - Escape 只关闭当前最上层浮层：先关闭内层 Dialog，再关闭或返回 Drawer，最后才轮到恢复后的选择器。
 - 关闭 Drawer 不得关闭其后方的选择器；关闭编辑 Dialog 不得关闭 Drawer。
-- 嵌套详情的关闭动作等同于“返回上一层详情”；只有详情历史为空时才真正关闭 Drawer。
+- 嵌套详情的关闭动作只关闭当前 Drawer；其他已打开的 Drawer 保持挂载和现场。
 
 ## 最低回归矩阵
 
@@ -97,9 +98,9 @@ Drawer 内打开的普通编辑 Dialog 不需要业务代码指定层级。`Data
 - [ ] Drawer 内打开编辑 Dialog 后，编辑 Dialog 位于 Drawer 上方。
 - [ ] 关闭编辑 Dialog 后，Drawer 和选择器都保留。
 - [ ] 关闭 Drawer 后，原选择器恢复可交互，筛选、分页、排序和选中项不丢失。
-- [ ] Drawer 中打开第二个选择器并查看第二层详情时，页面始终只有一个 Drawer。
-- [ ] 从第二层详情返回后，第二个选择器恢复；关闭第二个选择器后仍回到第一层详情。
+- [ ] Drawer 中打开第二个选择器并查看第二层详情时，页面同时存在独立 Drawer，最新 Drawer 位于最前，最多 3 个。
+- [ ] 关闭第二层详情时只移除当前 Drawer，第一层 Drawer 和第二个选择器的现场保持不变。
 - [ ] 连续按 Escape 时，每次只关闭一个最上层浮层。
 - [ ] Backdrop 不遮挡自身 Popup，任何被遮挡的浮层都不能截获点击或焦点。
 
-单元测试需覆盖选择器状态栈、挂起选择器的关闭保护和唯一 Drawer 历史；涉及实际 Primitive、Portal、焦点或 Backdrop 的修改，还必须在本地壳子页面完成浏览器回归，不能只凭组件测试判定通过。
+单元测试需覆盖选择器状态栈、挂起选择器的关闭保护和多 Drawer 实例的独立关闭；涉及实际 Primitive、Portal、焦点或 Backdrop 的修改，还必须在本地壳子页面完成浏览器回归，不能只凭组件测试判定通过。

@@ -6,6 +6,7 @@ import { describe, expect, it, vi } from "vitest"
 
 import {
   DataSelectorDetailDrawer,
+  DataSelectorDetailDrawerStackHost,
   useDataSelectorDialogLayer,
   useDataSelectorDetailDrawerHost,
 } from "./data-selector-detail-drawer.tsx"
@@ -27,6 +28,20 @@ vi.mock("#/components/ui/sheet.tsx", () => ({
   SheetTitle: ({ children }: React.PropsWithChildren) => <h2>{children}</h2>,
 }))
 
+vi.mock("#/components/ui/alert-dialog.tsx", () => ({
+  AlertDialog: ({
+    children,
+    open,
+  }: React.PropsWithChildren<{ open: boolean }>) =>
+    open ? <div data-testid="alert-dialog">{children}</div> : null,
+  AlertDialogContent: ({ children }: React.PropsWithChildren) => <div>{children}</div>,
+  AlertDialogDescription: ({ children }: React.PropsWithChildren) => <p>{children}</p>,
+  AlertDialogFooter: ({ children }: React.PropsWithChildren) => <div>{children}</div>,
+  AlertDialogHeader: ({ children }: React.PropsWithChildren) => <div>{children}</div>,
+  AlertDialogTitle: ({ children }: React.PropsWithChildren) => <h2>{children}</h2>,
+  AlertDialogCancel: ({ children }: React.PropsWithChildren) => <button>{children}</button>,
+}))
+
 vi.mock("#/components/assistant-workbench/ui/assistant-resizable-embedded-renderer.tsx", () => ({
   AssistantResizableEmbeddedRenderer: ({ children }: React.PropsWithChildren) => (
     <div>{children}</div>
@@ -45,7 +60,7 @@ function RootDetail({ onReturn }: { onReturn: () => void }) {
           host?.openDetail({
             key: "nested",
             title: "Nested detail",
-            content: <div>Nested content</div>,
+            content: <NestedDetail />,
             onReturn,
           })
         }
@@ -53,6 +68,44 @@ function RootDetail({ onReturn }: { onReturn: () => void }) {
         open nested detail
       </button>
     </>
+  )
+}
+
+function NestedDetail() {
+  const host = useDataSelectorDetailDrawerHost()
+
+  return (
+    <button
+      type="button"
+      onClick={() =>
+        host?.openDetail({
+          key: "third",
+          title: "Third detail",
+          content: <ThirdDetail />,
+        })
+      }
+    >
+      open third detail
+    </button>
+  )
+}
+
+function ThirdDetail() {
+  const host = useDataSelectorDetailDrawerHost()
+
+  return (
+    <button
+      type="button"
+      onClick={() =>
+        host?.openDetail({
+          key: "fourth",
+          title: "Fourth detail",
+          content: <div>Fourth content</div>,
+        })
+      }
+    >
+      open fourth detail
+    </button>
   )
 }
 
@@ -71,6 +124,7 @@ function DialogLayerProbe({
       data-state={layer.state}
       data-modal={String(layer.dialogProps.modal)}
       data-disable-pointer-dismissal={String(layer.dialogProps.disablePointerDismissal)}
+      data-layer-class-name={layer.layerClassName}
     >
       <button type="button" onClick={layer.suspend}>
         suspend {name}
@@ -133,6 +187,7 @@ describe("DataSelectorDetailDrawer", () => {
     expect(screen.getByTestId("first").dataset.state).toBe("active")
     expect(screen.getByTestId("first").dataset.modal).toBe("true")
     expect(screen.getByTestId("first").dataset.disablePointerDismissal).toBe("false")
+    expect(screen.getByTestId("first").dataset.layerClassName).toBe("")
 
     fireEvent.click(screen.getByRole("button", { name: "toggle second" }))
     expect(screen.getByTestId("first").dataset.state).toBe("suspended")
@@ -166,35 +221,54 @@ describe("DataSelectorDetailDrawer", () => {
     expect(handleOpenChange).toHaveBeenCalledWith(false)
   })
 
-  it("reuses one drawer and restores the previous detail when nested detail closes", () => {
+  it("opens nested details in independent drawers and closes only the selected drawer", () => {
     const handleOpenChange = vi.fn()
     const handleReturn = vi.fn()
     const handleRootReturn = vi.fn()
 
     render(
-      <DataSelectorDetailDrawer
-        item={{
-          key: "root",
-          title: "Root detail",
-          content: <RootDetail onReturn={handleReturn} />,
-          onReturn: handleRootReturn,
-        }}
-        onOpenChange={handleOpenChange}
-      />,
+      <>
+        <DataSelectorDetailDrawer
+          item={{
+            key: "root",
+            title: "Root detail",
+            content: <RootDetail onReturn={handleReturn} />,
+            onReturn: handleRootReturn,
+          }}
+          onOpenChange={handleOpenChange}
+        />
+        <DataSelectorDetailDrawerStackHost />
+      </>,
     )
 
     expect(screen.getAllByTestId("sheet")).toHaveLength(1)
     fireEvent.click(screen.getByRole("button", { name: "open nested detail" }))
     expect(screen.getByRole("heading", { name: "Nested detail" })).toBeTruthy()
     expect(screen.getByTestId("root-preserved")).toBeTruthy()
-    expect(screen.getAllByTestId("sheet")).toHaveLength(1)
+    expect(screen.getAllByTestId("sheet")).toHaveLength(2)
 
-    fireEvent.click(screen.getByRole("button", { name: "close" }))
-    expect(screen.getByRole("heading", { name: "Root detail" })).toBeTruthy()
-    expect(handleReturn).toHaveBeenCalledOnce()
+    fireEvent.click(screen.getByRole("button", { name: "open third detail" }))
+    expect(screen.getAllByTestId("sheet")).toHaveLength(3)
+    expect(screen.getByRole("heading", { name: "Third detail" })).toBeTruthy()
+
+    fireEvent.click(screen.getByRole("button", { name: "open fourth detail" }))
+    expect(screen.getAllByTestId("sheet")).toHaveLength(3)
+    expect(screen.queryByRole("heading", { name: "Fourth detail" })).toBeNull()
+    expect(screen.getByTestId("alert-dialog")).toBeTruthy()
+    expect(screen.getByText("最多同时打开 3 个详情 Drawer，请关闭一个后再查看。")).toBeTruthy()
+
+    fireEvent.click(screen.getAllByRole("button", { name: "close" }).at(-1)!)
+    expect(screen.getAllByTestId("sheet")).toHaveLength(2)
+    expect(screen.getByRole("heading", { name: "Nested detail" })).toBeTruthy()
+    expect(handleReturn).not.toHaveBeenCalled()
     expect(handleOpenChange).not.toHaveBeenCalled()
 
-    fireEvent.click(screen.getByRole("button", { name: "close" }))
+    fireEvent.click(screen.getAllByRole("button", { name: "close" }).at(-1)!)
+    expect(screen.getAllByTestId("sheet")).toHaveLength(1)
+    expect(screen.getByRole("heading", { name: "Root detail" })).toBeTruthy()
+    expect(handleReturn).toHaveBeenCalledOnce()
+
+    fireEvent.click(screen.getAllByRole("button", { name: "close" }).at(-1)!)
     expect(handleOpenChange).toHaveBeenCalledWith(false)
     expect(handleRootReturn).toHaveBeenCalledOnce()
   })

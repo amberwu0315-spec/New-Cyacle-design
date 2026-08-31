@@ -1,38 +1,34 @@
-'use client'
+"use client"
 
-import * as React from 'react'
-import type { Locale } from 'react-day-picker'
-import { Calendar as CalendarIcon, Check } from 'lucide-react'
+import * as React from "react"
+import type { Locale } from "react-day-picker"
+import { Calendar as CalendarIcon, Check } from "lucide-react"
 
-import { cn } from '#/lib/utils.ts'
-import { Button } from '#/components/ui/button.tsx'
-import { Calendar } from '#/components/ui/calendar.tsx'
-import { Input } from '#/components/ui/input.tsx'
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from '#/components/ui/popover.tsx'
+import { cn } from "#/lib/utils.ts"
+import { Button } from "#/components/ui/button.tsx"
+import { Calendar } from "#/components/ui/calendar.tsx"
+import { Input } from "#/components/ui/input.tsx"
+import { Popover, PopoverContent, PopoverTrigger } from "#/components/ui/popover.tsx"
 
 const DATE_RANGE_PICKER_INPUT_MAX_LENGTH = 10
 
-type DateRangePickerInputKey = 'start' | 'end'
+type DateRangePickerInputKey = "start" | "end"
 type DateRangePickerInputErrors = Record<DateRangePickerInputKey, string | null>
 
 export function toDateRangePickerInputValue(date: Date) {
   const year = date.getFullYear()
-  const month = String(date.getMonth() + 1).padStart(2, '0')
-  const day = String(date.getDate()).padStart(2, '0')
+  const month = String(date.getMonth() + 1).padStart(2, "0")
+  const day = String(date.getDate()).padStart(2, "0")
 
   return `${year}-${month}-${day}`
 }
 
 function normalizeDateRangePickerInput(value: string | null | undefined) {
-  const trimmedValue = value?.trim() ?? ''
+  const trimmedValue = value?.trim() ?? ""
 
-  if (trimmedValue === '') return ''
+  if (trimmedValue === "") return ""
 
-  const compactValue = trimmedValue.replace(/\s+/g, '')
+  const compactValue = trimmedValue.replace(/\s+/g, "")
   if (/^\d{8}$/.test(compactValue)) {
     return normalizeDateRangePickerInput(
       `${compactValue.slice(0, 4)}-${compactValue.slice(4, 6)}-${compactValue.slice(6, 8)}`,
@@ -40,23 +36,23 @@ function normalizeDateRangePickerInput(value: string | null | undefined) {
   }
 
   const separatorNormalizedValue = compactValue
-    .replace(/[/.]/g, '-')
-    .replace(/年/g, '-')
-    .replace(/月/g, '-')
-    .replace(/日/g, '')
+    .replace(/[/.]/g, "-")
+    .replace(/年/g, "-")
+    .replace(/月/g, "-")
+    .replace(/日/g, "")
   const match = separatorNormalizedValue.match(/^(\d{4})-(\d{1,2})-(\d{1,2})$/)
 
   if (!match) return null
 
   const [, yearText, monthText, dayText] = match
-  const normalizedValue = `${yearText}-${monthText.padStart(2, '0')}-${dayText.padStart(2, '0')}`
+  const normalizedValue = `${yearText}-${monthText.padStart(2, "0")}-${dayText.padStart(2, "0")}`
   const parsedDate = parseDateRangePickerInput(normalizedValue)
 
   return parsedDate ? toDateRangePickerInputValue(parsedDate) : null
 }
 
 export function sanitizeDateRangePickerInputDraft(value: string) {
-  return value.replace(/[^\d-]/g, '').slice(0, DATE_RANGE_PICKER_INPUT_MAX_LENGTH)
+  return value.replace(/[^\d-]/g, "").slice(0, DATE_RANGE_PICKER_INPUT_MAX_LENGTH)
 }
 
 function resolveDateRangePickerInput(
@@ -80,7 +76,7 @@ function resolveDateRangePickerInput(
 }
 
 export function parseDateRangePickerInput(value: string | null | undefined) {
-  const text = value?.trim() ?? ''
+  const text = value?.trim() ?? ""
   const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(text)
 
   if (!match) return undefined
@@ -198,7 +194,7 @@ function DateRangePickerDateInput({
         onFocus={onFocus}
         onBlur={onBlur}
         onKeyDown={(event) => {
-          if (event.key === 'Enter') {
+          if (event.key === "Enter") {
             event.preventDefault()
             onEnter()
           }
@@ -242,17 +238,15 @@ function DateRangePickerPresetPanel({
               disabled={disabled}
               aria-pressed={selected}
               className={cn(
-                'relative flex h-10 min-w-0 items-center justify-center rounded-md border px-2.5 text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:h-8',
+                "relative flex h-10 min-w-0 items-center justify-center rounded-md border px-2.5 text-sm transition-colors outline-none focus-visible:ring-2 focus-visible:ring-ring/50 md:h-8",
                 selected
-                  ? 'border-primary/40 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90'
-                  : 'border-transparent bg-background/65 text-muted-foreground hover:border-border hover:bg-background hover:text-foreground',
+                  ? "border-primary/40 bg-primary text-primary-foreground shadow-sm hover:bg-primary/90"
+                  : "border-transparent bg-background/65 text-muted-foreground hover:border-border hover:bg-background hover:text-foreground",
               )}
               onClick={() => onSelect(preset)}
             >
               <span className="truncate tabular-nums">{preset.label}</span>
-              {selected ? (
-                <Check className="absolute right-2 size-3.5" aria-hidden />
-              ) : null}
+              {selected ? <Check className="absolute right-2 size-3.5" aria-hidden /> : null}
             </button>
           )
         })}
@@ -265,20 +259,20 @@ export function DateRangePicker({
   start,
   end,
   disabled = false,
-  placeholder = 'Select date range',
-  ariaLabel = 'Select date range',
-  emptyLabel = 'Not selected',
-  separatorLabel = 'to',
-  startLabel = 'Start Date',
-  endLabel = 'End Date',
-  startShortLabel = 'Start',
-  endShortLabel = 'End',
-  startAriaLabel = 'Start Date',
-  endAriaLabel = 'End Date',
-  applyLabel = 'Apply',
+  placeholder = "Select date range",
+  ariaLabel = "Select date range",
+  emptyLabel = "Not selected",
+  separatorLabel = "to",
+  startLabel = "Start Date",
+  endLabel = "End Date",
+  startShortLabel = "Start",
+  endShortLabel = "End",
+  startAriaLabel = "Start Date",
+  endAriaLabel = "End Date",
+  applyLabel = "Apply",
   showPresets = false,
   presets,
-  presetTitle = 'Year Presets',
+  presetTitle = "Year Presets",
   presetLabelFormatter,
   invalidFormatMessage = (label) => `${label} must use YYYY-MM-DD format`,
   calendarLocale,
@@ -286,12 +280,13 @@ export function DateRangePicker({
 }: DateRangePickerProps) {
   const [open, setOpen] = React.useState(false)
   const [selectingEndDate, setSelectingEndDate] = React.useState(false)
-  const [activeInput, setActiveInput] =
-    React.useState<DateRangePickerInputKey>('start')
+  const [activeInput, setActiveInput] = React.useState<DateRangePickerInputKey>("start")
   const [startInputValue, setStartInputValue] = React.useState(start)
   const [endInputValue, setEndInputValue] = React.useState(end)
-  const [inputErrors, setInputErrors] =
-    React.useState<DateRangePickerInputErrors>({ start: null, end: null })
+  const [inputErrors, setInputErrors] = React.useState<DateRangePickerInputErrors>({
+    start: null,
+    end: null,
+  })
   const presetOptions = React.useMemo(
     () => presets ?? buildDateRangeYearPresets({ labelFormatter: presetLabelFormatter }),
     [presetLabelFormatter, presets],
@@ -308,16 +303,12 @@ export function DateRangePicker({
   )
 
   React.useEffect(() => {
-    setStartInputValue((currentValue) =>
-      currentValue === start ? currentValue : start,
-    )
+    setStartInputValue((currentValue) => (currentValue === start ? currentValue : start))
     setInputErrors((currentErrors) => ({ ...currentErrors, start: null }))
   }, [start])
 
   React.useEffect(() => {
-    setEndInputValue((currentValue) =>
-      currentValue === end ? currentValue : end,
-    )
+    setEndInputValue((currentValue) => (currentValue === end ? currentValue : end))
     setInputErrors((currentErrors) => ({ ...currentErrors, end: null }))
   }, [end])
 
@@ -327,26 +318,23 @@ export function DateRangePicker({
     if (nextVisibleMonth) setVisibleMonth(nextVisibleMonth)
   }, [selectedRange.from, selectedRange.to])
 
-  const updateInputValue = React.useCallback(
-    (key: DateRangePickerInputKey, value: string) => {
-      const nextValue = sanitizeDateRangePickerInputDraft(value)
+  const updateInputValue = React.useCallback((key: DateRangePickerInputKey, value: string) => {
+    const nextValue = sanitizeDateRangePickerInputDraft(value)
 
-      if (key === 'start') {
-        setStartInputValue(nextValue)
-      } else {
-        setEndInputValue(nextValue)
-      }
+    if (key === "start") {
+      setStartInputValue(nextValue)
+    } else {
+      setEndInputValue(nextValue)
+    }
 
-      setInputErrors((currentErrors) => ({ ...currentErrors, [key]: null }))
-    },
-    [],
-  )
+    setInputErrors((currentErrors) => ({ ...currentErrors, [key]: null }))
+  }, [])
   const activateInput = React.useCallback(
     (key: DateRangePickerInputKey) => {
       setActiveInput(key)
-      setSelectingEndDate(key === 'end')
+      setSelectingEndDate(key === "end")
 
-      const inputValue = key === 'start' ? startInputValue : endInputValue
+      const inputValue = key === "start" ? startInputValue : endInputValue
       const parsedDate = parseDateRangePickerInput(inputValue)
 
       if (parsedDate) setVisibleMonth(parsedDate)
@@ -355,7 +343,7 @@ export function DateRangePicker({
   )
   const commitInputValue = React.useCallback(
     (key: DateRangePickerInputKey, value: string) => {
-      const label = key === 'start' ? startLabel : endLabel
+      const label = key === "start" ? startLabel : endLabel
       const result = resolveDateRangePickerInput(value, label, invalidFormatMessage)
 
       if (result.error) {
@@ -366,7 +354,7 @@ export function DateRangePicker({
       const nextValue = result.value
       const parsedDate = parseDateRangePickerInput(nextValue)
 
-      if (key === 'start') {
+      if (key === "start") {
         setStartInputValue(nextValue)
         onChange({ start: nextValue, end })
       } else {
@@ -387,11 +375,7 @@ export function DateRangePicker({
       startLabel,
       invalidFormatMessage,
     )
-    const endResult = resolveDateRangePickerInput(
-      endInputValue,
-      endLabel,
-      invalidFormatMessage,
-    )
+    const endResult = resolveDateRangePickerInput(endInputValue, endLabel, invalidFormatMessage)
 
     if (startResult.error || endResult.error) {
       setInputErrors({ start: startResult.error, end: endResult.error })
@@ -419,8 +403,7 @@ export function DateRangePicker({
     onChange({ start: nextStartValue, end: nextEndValue })
 
     const nextVisibleMonth =
-      parseDateRangePickerInput(nextStartValue) ??
-      parseDateRangePickerInput(nextEndValue)
+      parseDateRangePickerInput(nextStartValue) ?? parseDateRangePickerInput(nextEndValue)
 
     if (nextVisibleMonth) setVisibleMonth(nextVisibleMonth)
 
@@ -448,7 +431,7 @@ export function DateRangePicker({
     [onChange],
   )
   const rangeLabel =
-    start || end ? `${start || emptyLabel} ${separatorLabel} ${end || emptyLabel}` : ''
+    start || end ? `${start || emptyLabel} ${separatorLabel} ${end || emptyLabel}` : ""
   const inputError = inputErrors.start ?? inputErrors.end
 
   return (
@@ -458,7 +441,7 @@ export function DateRangePicker({
         setOpen(nextOpen)
         if (!nextOpen) {
           setSelectingEndDate(false)
-          setActiveInput('start')
+          setActiveInput("start")
         }
       }}
     >
@@ -473,7 +456,7 @@ export function DateRangePicker({
         }
       >
         <CalendarIcon className="size-3.5 shrink-0 text-muted-foreground" />
-        <span className={rangeLabel ? 'truncate' : 'truncate text-muted-foreground'}>
+        <span className={rangeLabel ? "truncate" : "truncate text-muted-foreground"}>
           {rangeLabel || placeholder}
         </span>
       </PopoverTrigger>
@@ -481,17 +464,17 @@ export function DateRangePicker({
         align="start"
         side="bottom"
         sideOffset={6}
-        className="z-[80] max-h-[min(var(--available-height),calc(100vh-2rem))] w-[34rem] max-w-[calc(100vw-2rem)] gap-0 overflow-x-hidden overflow-y-auto p-0"
+        className="max-h-[min(var(--available-height),calc(100vh-2rem))] w-[34rem] max-w-[calc(100vw-2rem)] gap-0 overflow-x-hidden overflow-y-auto p-0"
       >
         <div
           className={cn(
-            'grid gap-3 p-3 items-stretch',
+            "grid gap-3 p-3 items-stretch",
             showPresets
-              ? 'grid-cols-[250px_minmax(9.5rem,1fr)] max-[30rem]:grid-cols-[250px]'
-              : 'grid-cols-[250px]',
+              ? "grid-cols-[250px_minmax(9.5rem,1fr)] max-[30rem]:grid-cols-[250px]"
+              : "grid-cols-[250px]",
           )}
         >
-          <div className={cn('min-w-0', showPresets && 'hidden md:block')}>
+          <div className={cn("min-w-0", showPresets && "hidden md:block")}>
             <Calendar
               mode="range"
               className="w-[250px] p-0 [--cell-size:--spacing(6)] [&_.rdp-month]:gap-2 [&_.rdp-week]:mt-0.5"
@@ -504,14 +487,14 @@ export function DateRangePicker({
               onDayClick={(day) => {
                 const clickedDate = toDateRangePickerInputValue(day)
 
-                if (!selectingEndDate || activeInput === 'start') {
+                if (!selectingEndDate || activeInput === "start") {
                   setStartInputValue(clickedDate)
                   setEndInputValue(clickedDate)
                   setInputErrors({ start: null, end: null })
                   onChange({ start: clickedDate, end: clickedDate })
                   setVisibleMonth(day)
                   setSelectingEndDate(true)
-                  setActiveInput('end')
+                  setActiveInput("end")
                   return
                 }
 
@@ -528,7 +511,7 @@ export function DateRangePicker({
                 onChange({ start: nextStartDate, end: nextEndDate })
                 setVisibleMonth(day)
                 setSelectingEndDate(false)
-                setActiveInput('start')
+                setActiveInput("start")
                 setOpen(false)
               }}
             />
@@ -550,17 +533,17 @@ export function DateRangePicker({
 
         <div
           className={cn(
-            'grid gap-2 border-t bg-muted/15 p-3 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] sm:items-center',
-            showPresets && 'hidden md:grid',
+            "grid gap-2 border-t bg-muted/15 p-3 sm:grid-cols-[minmax(0,1fr)_auto_minmax(0,1fr)_auto] sm:items-center",
+            showPresets && "hidden md:grid",
           )}
         >
           <DateRangePickerDateInput
             label={startShortLabel}
             value={startInputValue}
-            onChange={(value) => updateInputValue('start', value)}
-            onFocus={() => activateInput('start')}
-            onBlur={() => commitInputValue('start', startInputValue)}
-            onEnter={() => commitInputValue('start', startInputValue)}
+            onChange={(value) => updateInputValue("start", value)}
+            onFocus={() => activateInput("start")}
+            onBlur={() => commitInputValue("start", startInputValue)}
+            onEnter={() => commitInputValue("start", startInputValue)}
             placeholder="YYYY-MM-DD"
             ariaLabel={startAriaLabel}
             invalid={Boolean(inputErrors.start)}
@@ -574,24 +557,28 @@ export function DateRangePicker({
           <DateRangePickerDateInput
             label={endShortLabel}
             value={endInputValue}
-            onChange={(value) => updateInputValue('end', value)}
-            onFocus={() => activateInput('end')}
-            onBlur={() => commitInputValue('end', endInputValue)}
-            onEnter={() => commitInputValue('end', endInputValue)}
+            onChange={(value) => updateInputValue("end", value)}
+            onFocus={() => activateInput("end")}
+            onBlur={() => commitInputValue("end", endInputValue)}
+            onEnter={() => commitInputValue("end", endInputValue)}
             placeholder="YYYY-MM-DD"
             ariaLabel={endAriaLabel}
             invalid={Boolean(inputErrors.end)}
             disabled={disabled}
           />
 
-          <Button type="button" size="default" className="w-full px-3 sm:w-auto" disabled={disabled} onClick={commitRangeAndClose}>
+          <Button
+            type="button"
+            size="default"
+            className="w-full px-3 sm:w-auto"
+            disabled={disabled}
+            onClick={commitRangeAndClose}
+          >
             {applyLabel}
           </Button>
 
           {inputError ? (
-            <div className="text-xs leading-5 text-destructive sm:col-span-4">
-              {inputError}
-            </div>
+            <div className="text-xs leading-5 text-destructive sm:col-span-4">{inputError}</div>
           ) : null}
         </div>
       </PopoverContent>

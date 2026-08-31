@@ -4,6 +4,7 @@ import { CrewUiConfig } from '@crew-ui/base'
 
 import { Toaster } from '#/components/ui/toast.tsx'
 import { TooltipProvider } from '#/components/ui/tooltip.tsx'
+import { DataSelectorDetailDrawerStackHost } from '#/components/common/data-selector-detail-drawer.tsx'
 import { DocumentPreviewHost } from '#/components/common/document-preview/index.ts'
 import { TanstackQueryRootProvider } from '#/context/query-client.tsx'
 import { getMessages, useLanguageStore } from '#/lib/i18n/index.ts'
@@ -21,6 +22,7 @@ export function BaseProviders({ children }: PropsWithChildren) {
         <FileViewerConfig locale={language} />
         <CrewUiConfig locale={language === 'en-US' ? 'en' : 'zh'} />
         {children}
+        <DataSelectorDetailDrawerStackHost />
         <DocumentPreviewHost />
         <Toaster position='top-center' />
       </TooltipProvider>
