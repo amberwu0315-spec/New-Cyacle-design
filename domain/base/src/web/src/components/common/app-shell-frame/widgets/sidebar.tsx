@@ -505,7 +505,7 @@ export function AppShellFrameSidebarNav({
             align="start"
             sideOffset={isCollapsed ? 10 : 8}
             className={cn(
-              'border border-border/50 p-6 shadow-xl',
+              'max-h-[calc(100dvh-2rem)] overflow-y-auto overscroll-contain border border-border/50 p-6 shadow-xl',
               isCollapsed
                 ? 'w-fit max-w-[calc(100vw-6rem)]'
                 : isMobile
@@ -513,7 +513,7 @@ export function AppShellFrameSidebarNav({
                   : 'w-fit max-w-[calc(100vw-2.75rem)]',
             )}
           >
-            <div className="grid grid-cols-1 gap-x-8 gap-y-6 md:grid-flow-col md:auto-cols-[19rem] md:grid-cols-none">
+            <div className="grid grid-cols-1 gap-x-8 gap-y-6 lg:w-[40rem] lg:grid-cols-2 2xl:w-auto 2xl:grid-flow-col 2xl:auto-cols-[19rem] 2xl:grid-cols-none">
               {categorizedScenes.map((category) => (
                 <section
                   key={category.title}
