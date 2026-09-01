@@ -63,6 +63,7 @@ catalogs:
     'typescript': '^7.0.2'
     'vite': '^8.1.4'
     'vitest': '^4.1.10'
+    xlsx: ^0.18.5
     'zod': '^4.4.3'
 
 packages:

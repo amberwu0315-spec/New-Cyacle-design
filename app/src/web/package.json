@@ -90,6 +90,7 @@
     "shadcn": "catalog:web",
     "tailwind-merge": "catalog:web",
     "tw-animate-css": "catalog:web",
+    "xlsx": "catalog:web",
     "zod": "catalog:web"
   },
   "devDependencies": {
