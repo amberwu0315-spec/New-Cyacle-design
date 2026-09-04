@@ -136,7 +136,10 @@ export function AppLayout() {
   const handleLogout = React.useCallback(() => {
     clearAuthSessionSideEffects()
     clearWorkspaceSelectionSideEffects()
-    void navigate({ to: getWebProjectConfig().routes.loginPath })
+    void navigate({
+      to: getWebProjectConfig().routes.loginPath,
+      replace: true,
+    })
   }, [navigate])
 
   if (

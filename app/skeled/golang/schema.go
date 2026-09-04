@@ -13,7 +13,7 @@ var _DomainSchema = &skel.DomainSchema{
 	Hash:   "3809ccf9",
 	Full:   true,
 	Generated: &skel.GeneratedInfo{
-		CompilerVersion: "v0.14.0",
+		CompilerVersion: "v0.14.1",
 	},
 
 	Webs: []*skel.WebSchema{
@@ -21,8 +21,7 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "WebWeb",
 			SkelName:    "app.WebWeb",
 			Description: "WebWeb入口",
-
-			Hash: "f11b8fad",
+			Hash:        "f11b8fad",
 			Audiences: []*skel.ActorAudienceSchema{
 				{Name: "UserActor", SkelName: "base.UserActor", Via: skel.ActorViaClient},
 			},

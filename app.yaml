@@ -88,10 +88,3 @@ domains:
     - name: search.indexer
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/search.indexer.git
-    - name: supply.chain
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/supply.chain.git
-    - name: survey
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/survey.git
-

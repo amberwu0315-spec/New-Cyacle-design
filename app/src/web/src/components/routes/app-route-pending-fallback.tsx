@@ -1,6 +1,17 @@
-import { ModuleLayout, Skeleton } from '@carbonnt-cyacle/web-base'
+import {
+  getSessionCredential,
+  ModuleLayout,
+  Skeleton,
+} from '@carbonnt-cyacle/web-base'
 
 export function AppRoutePendingFallback() {
+  // The fallback is designed for authenticated business routes. During logout
+  // the public login route is also lazy-loaded, but showing a business-table
+  // skeleton there makes the transition look like the old page is still active.
+  if (!getSessionCredential()) {
+    return null
+  }
+
   return (
     <ModuleLayout
       className="flex h-full min-h-[320px] w-full min-w-0 flex-1 overflow-hidden px-3 py-3 sm:px-4 sm:py-4"

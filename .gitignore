@@ -26,7 +26,6 @@
 /domain/ai.flow
 /domain/ai.model
 /domain/audit
-/domain/authorization
 /domain/calculation.core
 /domain/category
 /domain/cfo
