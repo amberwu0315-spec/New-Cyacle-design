@@ -73,11 +73,23 @@ type OpenActorCredential struct {
 	Token string `json:"token"`
 }
 
+// Clone returns a value-isolated copy of the generated data.
+func (v OpenActorCredential) Clone() OpenActorCredential {
+	cloned := v
+	return cloned
+}
+
 type OpenActorInfo struct {
 	// SystemCode 外部系统编码
 	SystemCode string `json:"systemCode"`
 	// ClientId 外部系统客户端ID
 	ClientId string `json:"clientId"`
+}
+
+// Clone returns a value-isolated copy of the generated data.
+func (v OpenActorInfo) Clone() OpenActorInfo {
+	cloned := v
+	return cloned
 }
 
 type UserActorCredential struct {
@@ -87,6 +99,12 @@ type UserActorCredential struct {
 	Scope string `json:"scope"`
 }
 
+// Clone returns a value-isolated copy of the generated data.
+func (v UserActorCredential) Clone() UserActorCredential {
+	cloned := v
+	return cloned
+}
+
 type UserActorInfo struct {
 	// UserId 接收人用户ID
 	UserId int `json:"userId"`
@@ -94,6 +112,12 @@ type UserActorInfo struct {
 	Username string `json:"username"`
 	// WorkspaceId 工作空间ID
 	WorkspaceId string `json:"workspaceId"`
+}
+
+// Clone returns a value-isolated copy of the generated data.
+func (v UserActorInfo) Clone() UserActorInfo {
+	cloned := v
+	return cloned
 }
 
 // OpenActorAuthServiceServer
@@ -117,12 +141,24 @@ var (
 		},
 	}
 	_OpenActorAuthServiceAuthSpec = &rpc.MethodSpec{
-		Name:                        "Auth",
-		SkelName:                    "auth",
-		ArgumentsType:               reflect.TypeFor[_OpenActorAuthServiceAuthArguments](),
-		ValidateArguments:           nil,
-		ResultType:                  reflect.TypeFor[OpenActorInfo](),
-		ValidateResult:              nil,
+		Name:              "Auth",
+		SkelName:          "auth",
+		ArgumentsType:     reflect.TypeFor[_OpenActorAuthServiceAuthArguments](),
+		ValidateArguments: nil,
+		CloneArguments: func(value any) any {
+			source := value.(*_OpenActorAuthServiceAuthArguments)
+			cloned := *source
+			cloned.Credential = source.Credential.Clone()
+			return &cloned
+		},
+		ResultType:     reflect.TypeFor[OpenActorInfo](),
+		ValidateResult: nil,
+		CloneResult: func(value any) any {
+			source := value.(OpenActorInfo)
+			cloned := source
+			cloned = source.Clone()
+			return cloned
+		},
 		ArgumentsSensitive:          false,
 		ResultSensitive:             false,
 		ArgumentsContainsBinaryType: false,
@@ -223,12 +259,24 @@ var (
 		},
 	}
 	_UserActorAuthServiceAuthSpec = &rpc.MethodSpec{
-		Name:                        "Auth",
-		SkelName:                    "auth",
-		ArgumentsType:               reflect.TypeFor[_UserActorAuthServiceAuthArguments](),
-		ValidateArguments:           nil,
-		ResultType:                  reflect.TypeFor[UserActorInfo](),
-		ValidateResult:              nil,
+		Name:              "Auth",
+		SkelName:          "auth",
+		ArgumentsType:     reflect.TypeFor[_UserActorAuthServiceAuthArguments](),
+		ValidateArguments: nil,
+		CloneArguments: func(value any) any {
+			source := value.(*_UserActorAuthServiceAuthArguments)
+			cloned := *source
+			cloned.Credential = source.Credential.Clone()
+			return &cloned
+		},
+		ResultType:     reflect.TypeFor[UserActorInfo](),
+		ValidateResult: nil,
+		CloneResult: func(value any) any {
+			source := value.(UserActorInfo)
+			cloned := source
+			cloned = source.Clone()
+			return cloned
+		},
 		ArgumentsSensitive:          false,
 		ResultSensitive:             false,
 		ArgumentsContainsBinaryType: false,
