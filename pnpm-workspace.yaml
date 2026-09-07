@@ -19,7 +19,7 @@ catalogs:
     '@cew-lib/file-viewer-image': '2.0.0'
     '@cew-lib/file-viewer-pdf': '2.0.0'
     '@cew-lib/file-viewer-video': '2.0.0'
-    '@cew-lib/report-template': '0.0.7'
+    '@cew-lib/report-template': '0.0.8'
     '@crew-ui/base': '5.0.0'
     '@fontsource-variable/geist': '^5.2.9'
     '@tailwindcss/vite': '^4.3.2'
