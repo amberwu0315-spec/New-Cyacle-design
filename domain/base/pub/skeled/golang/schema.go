@@ -13,7 +13,7 @@ var _DomainSchema = &skel.DomainSchema{
 	Hash:   "9b408049",
 	Full:   false,
 	Generated: &skel.GeneratedInfo{
-		CompilerVersion: "v0.11.1",
+		CompilerVersion: "v0.16.0",
 	},
 
 	Enums: []*skel.EnumSchema{
@@ -21,8 +21,7 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "ItemType",
 			SkelName:    "base.ItemType",
 			Description: "宏文本片段类型",
-
-			Hash: "c7abbf72",
+			Hash:        "c7abbf72",
 			Items: []*skel.EnumItemSchema{
 				{
 					Name:        "PLAIN",
@@ -45,13 +44,11 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "Item",
 			SkelName:    "base.Item",
 			Description: "宏文本片段",
-
-			Hash: "afc08aec",
+			Hash:        "afc08aec",
 			Members: []*skel.MemberSchema{
 				{
 					Name:        "value",
 					Description: "宏文本片段内容",
-
 					Type: &skel.TypeSchema{
 						Kind:     skel.TypeKindScalar,
 						Scalar:   skel.ScalarString,
@@ -61,7 +58,6 @@ var _DomainSchema = &skel.DomainSchema{
 				{
 					Name:        "type",
 					Description: "宏文本片段类型",
-
 					Type: &skel.TypeSchema{
 						Kind:     skel.TypeKindEnum,
 						Name:     "ItemType",
@@ -75,13 +71,11 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "MMacroText",
 			SkelName:    "base.MMacroText",
 			Description: "多语言宏文本",
-
-			Hash: "092327ae",
+			Hash:        "092327ae",
 			Members: []*skel.MemberSchema{
 				{
 					Name:        "zh",
 					Description: "中文",
-
 					Type: &skel.TypeSchema{
 						Kind:     skel.TypeKindData,
 						Name:     "MStringItem",
@@ -99,7 +93,6 @@ var _DomainSchema = &skel.DomainSchema{
 				{
 					Name:        "en",
 					Description: "英文",
-
 					Type: &skel.TypeSchema{
 						Kind:     skel.TypeKindData,
 						Name:     "MStringItem",
@@ -120,13 +113,11 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "MString",
 			SkelName:    "base.MString",
 			Description: "多语言普通文本",
-
-			Hash: "9f79b9e0",
+			Hash:        "9f79b9e0",
 			Members: []*skel.MemberSchema{
 				{
 					Name:        "zh",
 					Description: "中文",
-
 					Type: &skel.TypeSchema{
 						Kind:     skel.TypeKindData,
 						Name:     "MStringItem",
@@ -143,7 +134,6 @@ var _DomainSchema = &skel.DomainSchema{
 				{
 					Name:        "en",
 					Description: "英文",
-
 					Type: &skel.TypeSchema{
 						Kind:     skel.TypeKindData,
 						Name:     "MStringItem",
@@ -163,8 +153,7 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "MStringItem",
 			SkelName:    "base.MStringItem",
 			Description: "多语言中的单一语言内容",
-
-			Hash: "ad48046e",
+			Hash:        "ad48046e",
 			TypeParameters: []string{
 				"TItem",
 			},
@@ -172,7 +161,6 @@ var _DomainSchema = &skel.DomainSchema{
 				{
 					Name:        "value",
 					Description: "内容",
-
 					Type: &skel.TypeSchema{
 						Kind:     skel.TypeKindTypeParameter,
 						Name:     "TItem",
@@ -182,7 +170,6 @@ var _DomainSchema = &skel.DomainSchema{
 				{
 					Name:        "updatedAt",
 					Description: "数据更新时间",
-
 					Type: &skel.TypeSchema{
 						Kind:     skel.TypeKindScalar,
 						Scalar:   skel.ScalarTimestamp,
@@ -192,7 +179,6 @@ var _DomainSchema = &skel.DomainSchema{
 				{
 					Name:        "fromAI",
 					Description: "是否来源于AI, 如翻译",
-
 					Type: &skel.TypeSchema{
 						Kind:   skel.TypeKindScalar,
 						Scalar: skel.ScalarBool,
@@ -204,13 +190,11 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "MacroText",
 			SkelName:    "base.MacroText",
 			Description: "宏文本",
-
-			Hash: "266c0ea1",
+			Hash:        "266c0ea1",
 			Members: []*skel.MemberSchema{
 				{
 					Name:        "items",
 					Description: "宏文片段列表",
-
 					Type: &skel.TypeSchema{
 						Kind: skel.TypeKindList,
 						Element: &skel.TypeSchema{
@@ -227,8 +211,7 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "PageResp",
 			SkelName:    "base.PageResp",
 			Description: "分页结果",
-
-			Hash: "f67b8d77",
+			Hash:        "f67b8d77",
 			TypeParameters: []string{
 				"TItem",
 			},
@@ -236,7 +219,6 @@ var _DomainSchema = &skel.DomainSchema{
 				{
 					Name:        "total",
 					Description: "总数",
-
 					Type: &skel.TypeSchema{
 						Kind:   skel.TypeKindScalar,
 						Scalar: skel.ScalarInt,
@@ -245,7 +227,6 @@ var _DomainSchema = &skel.DomainSchema{
 				{
 					Name:        "data",
 					Description: "数据",
-
 					Type: &skel.TypeSchema{
 						Kind: skel.TypeKindList,
 						Element: &skel.TypeSchema{
@@ -261,13 +242,11 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "UnitValue",
 			SkelName:    "base.UnitValue",
 			Description: "数值带单位",
-
-			Hash: "e2c54182",
+			Hash:        "e2c54182",
 			Members: []*skel.MemberSchema{
 				{
 					Name:        "value",
 					Description: "数值",
-
 					Type: &skel.TypeSchema{
 						Kind:     skel.TypeKindScalar,
 						Scalar:   skel.ScalarDecimal,
@@ -277,7 +256,6 @@ var _DomainSchema = &skel.DomainSchema{
 				{
 					Name:        "unitId",
 					Description: "单位id",
-
 					Type: &skel.TypeSchema{
 						Kind:     skel.TypeKindScalar,
 						Scalar:   skel.ScalarString,
@@ -293,8 +271,7 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "OpenActor",
 			SkelName:    "base.OpenActor",
 			Description: "外部系统参与者",
-
-			Hash: "7f11dbab",
+			Hash:        "7f11dbab",
 			Vias: []skel.ActorVia{
 				skel.ActorViaClient,
 			},
@@ -302,13 +279,11 @@ var _DomainSchema = &skel.DomainSchema{
 			AuthCredential: &skel.DataSchema{
 				Name:     "OpenActorCredential",
 				SkelName: "base.OpenActorCredential",
-
-				Hash: "e162aa79",
+				Hash:     "e162aa79",
 				Members: []*skel.MemberSchema{
 					{
 						Name:        "token",
 						Description: "开放接口访问令牌",
-
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarString,
@@ -319,13 +294,11 @@ var _DomainSchema = &skel.DomainSchema{
 			AuthInfo: &skel.DataSchema{
 				Name:     "OpenActorInfo",
 				SkelName: "base.OpenActorInfo",
-
-				Hash: "b6866388",
+				Hash:     "b6866388",
 				Members: []*skel.MemberSchema{
 					{
 						Name:        "systemCode",
 						Description: "外部系统编码",
-
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarString,
@@ -334,7 +307,6 @@ var _DomainSchema = &skel.DomainSchema{
 					{
 						Name:        "clientId",
 						Description: "外部系统客户端ID",
-
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarString,
@@ -345,7 +317,6 @@ var _DomainSchema = &skel.DomainSchema{
 			AuthService: &skel.ServiceSchema{
 				Name:     "OpenActorAuthService",
 				SkelName: "base.OpenActorAuthService",
-
 				Hash:     "7b29778a",
 				Pub:      false,
 				AuthMode: skel.AuthModeUnset,
@@ -353,13 +324,11 @@ var _DomainSchema = &skel.DomainSchema{
 					{
 						Name:     "auth",
 						SkelName: "auth",
-
 						Hash:     "b9b0d57d",
 						AuthMode: skel.AuthModeAuth,
 						Arguments: []*skel.MemberSchema{
 							{
 								Name: "credential",
-
 								Type: &skel.TypeSchema{
 									Kind:     skel.TypeKindData,
 									Name:     "OpenActorCredential",
@@ -378,13 +347,11 @@ var _DomainSchema = &skel.DomainSchema{
 			AuthMethod: &skel.MethodSchema{
 				Name:     "auth",
 				SkelName: "auth",
-
 				Hash:     "b9b0d57d",
 				AuthMode: skel.AuthModeAuth,
 				Arguments: []*skel.MemberSchema{
 					{
 						Name: "credential",
-
 						Type: &skel.TypeSchema{
 							Kind:     skel.TypeKindData,
 							Name:     "OpenActorCredential",
@@ -404,8 +371,7 @@ var _DomainSchema = &skel.DomainSchema{
 			Name:        "UserActor",
 			SkelName:    "base.UserActor",
 			Description: "用户参与者",
-
-			Hash: "023d183d",
+			Hash:        "023d183d",
 			Vias: []skel.ActorVia{
 				skel.ActorViaClient,
 			},
@@ -413,13 +379,11 @@ var _DomainSchema = &skel.DomainSchema{
 			AuthCredential: &skel.DataSchema{
 				Name:     "UserActorCredential",
 				SkelName: "base.UserActorCredential",
-
-				Hash: "3e83beeb",
+				Hash:     "3e83beeb",
 				Members: []*skel.MemberSchema{
 					{
 						Name:        "session",
 						Description: "会话",
-
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarString,
@@ -428,7 +392,6 @@ var _DomainSchema = &skel.DomainSchema{
 					{
 						Name:        "scope",
 						Description: "应用权限范围 多个用,隔开",
-
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarString,
@@ -439,13 +402,11 @@ var _DomainSchema = &skel.DomainSchema{
 			AuthInfo: &skel.DataSchema{
 				Name:     "UserActorInfo",
 				SkelName: "base.UserActorInfo",
-
-				Hash: "cb58a5c7",
+				Hash:     "cb58a5c7",
 				Members: []*skel.MemberSchema{
 					{
 						Name:        "userId",
 						Description: "接收人用户ID",
-
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarInt,
@@ -454,7 +415,6 @@ var _DomainSchema = &skel.DomainSchema{
 					{
 						Name:        "username",
 						Description: "用户名字段名称",
-
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarString,
@@ -463,7 +423,6 @@ var _DomainSchema = &skel.DomainSchema{
 					{
 						Name:        "workspaceId",
 						Description: "工作空间ID",
-
 						Type: &skel.TypeSchema{
 							Kind:   skel.TypeKindScalar,
 							Scalar: skel.ScalarString,
@@ -474,7 +433,6 @@ var _DomainSchema = &skel.DomainSchema{
 			AuthService: &skel.ServiceSchema{
 				Name:     "UserActorAuthService",
 				SkelName: "base.UserActorAuthService",
-
 				Hash:     "b4095500",
 				Pub:      false,
 				AuthMode: skel.AuthModeUnset,
@@ -482,13 +440,11 @@ var _DomainSchema = &skel.DomainSchema{
 					{
 						Name:     "auth",
 						SkelName: "auth",
-
 						Hash:     "8f139ac1",
 						AuthMode: skel.AuthModeAuth,
 						Arguments: []*skel.MemberSchema{
 							{
 								Name: "credential",
-
 								Type: &skel.TypeSchema{
 									Kind:     skel.TypeKindData,
 									Name:     "UserActorCredential",
@@ -507,13 +463,11 @@ var _DomainSchema = &skel.DomainSchema{
 			AuthMethod: &skel.MethodSchema{
 				Name:     "auth",
 				SkelName: "auth",
-
 				Hash:     "8f139ac1",
 				AuthMode: skel.AuthModeAuth,
 				Arguments: []*skel.MemberSchema{
 					{
 						Name: "credential",
-
 						Type: &skel.TypeSchema{
 							Kind:     skel.TypeKindData,
 							Name:     "UserActorCredential",

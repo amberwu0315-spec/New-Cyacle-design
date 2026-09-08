@@ -3,8 +3,9 @@ general:
 team:
     name: carbonnt
 golang:
+    version: 1.27.1
     modulePathPrefix: go.cew.io/app
 git:
     repoUrlPrefix: 'git@git.cew.io:'
-vine:
-    version: v0.13.1
+toolchain:
+    vineVersion: v0.15.1
