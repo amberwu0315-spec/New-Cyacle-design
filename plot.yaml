@@ -1,12 +1,12 @@
 general:
-    disableOverride: false
+  disableOverride: false
 team:
-    name: carbonnt
+  name: carbonnt
 golang:
-    version: 1.27.1
-    modulePathPrefix: go.cew.io/app
+  version: 1.27.1
+  modulePathPrefix: go.cew.io/app
 git:
-    repoUrlPrefix: 'git@git.cew.io:'
+  repoUrlPrefix: 'git@git.cew.io:'
 toolchain:
-    vineVersion: v0.15.1
-    skelcVersion: v0.17.1
+  vineVersion: v0.15.1
+  skelcVersion: v0.17.1

@@ -259,13 +259,13 @@ Content-Type: application/json
 | `threadId` | string | 否 | 会话 ID；通常与外层 `threadId` 保持一致。 |
 | `content` | string | 是 | 用户消息正文，去除首尾空白后不能为空。 |
 | `fileIds` | string[] | 否 | 已上传且解析完成的文件 ID 列表。 |
-| `anchors` | `AnchorDeclaration[]` | 否 | 本次消息携带的业务锚点，当前支持项目和模型硬锚点。 |
+| `anchors` | `AnchorDeclaration[]` | 否 | 本次消息携带的业务锚点，用于锁定本轮交互的业务范围；可用 `dataType` 见下面的锚点约定。 |
 
 `AnchorDeclaration` 字段：
 
 | 字段 | 类型 | 必填 | 含义 |
 | --- | --- | --- | --- |
-| `dataType` | enum | 是 | 锚点数据类型；当前实现支持 `PROJECT`、`MODEL`。 |
+| `dataType` | enum | 是 | 锚点数据类型；当前实现支持 `PROJECT`、`OUTPUT`、`MODEL`、`PHASE`、`MODULE`、`UNIT_PROCESS`、`ACCOUNTING`、`DATA_RECORD`、`FACTOR`、`DOCUMENT`、`ALLOCATION_RULE`。 |
 | `dataId` | string | 是 | 锚点数据 ID。 |
 | `kind` | enum | 否 | 锚点类型；当前支持 `ENTITY`，不传时按实体锚点处理。 |
 | `mode` | enum | 否 | 锚点模式；当前支持 `HARD`，不传时按硬锚点处理。 |
@@ -277,14 +277,25 @@ Content-Type: application/json
 | --- | --- | --- |
 | `title` | string | 锚点显示标题。 |
 
+锚点约定：
+
+| 约定 | 说明 |
+| --- | --- |
+| 一个 `dataType` 只能出现一次 | 同一次 `sendMessage` 里同一个 `dataType` 传了两个不同 `dataId` 时，服务端判定为锚点冲突，整次请求失败；页面侧只应保留最贴近当前操作对象的那个锚点。 |
+| `kind` / `mode` 取值 | 只接受 `ENTITY` 与 `HARD`，其他取值会被拒绝。 |
+| 名称由服务端补全 | `PROJECT`、`MODEL`、`ACCOUNTING`、`ALLOCATION_RULE` 会调用业务接口取名称，`display.title` 只作为取不到时的兜底；`PHASE`、`MODULE`、`UNIT_PROCESS`、`OUTPUT`、`DATA_RECORD`、`FACTOR`、`DOCUMENT` 不做数据查询，名称直接取 `display.title`。 |
+| 提示词识别 | 正文里直接写 ID（如 `核算ID: xxx`、`单元过程ID: xxx`）时 11 类都能被识别成提示词锚点；正文里只写名称时，只有 `PROJECT`、`MODEL`、`PHASE`、`MODULE`、`UNIT_PROCESS`、`DATA_RECORD`、`FACTOR`、`ALLOCATION_RULE` 能按名称反查，`OUTPUT`、`ACCOUNTING`、`DOCUMENT` 没有名称解析器。 |
+| 项目 / 模型范围要自洽 | 各锚点解析出的项目和模型范围必须一致，否则判定为冲突。 |
+| 锚点范围会进入系统提示词 | 解析结果的范围摘要（`summary.text`）会作为本轮锁定的业务范围注入系统提示词；锚点越完整，智能体越不需要额外澄清。 |
+
 处理流程：
 
 1. 从 `orgInfo` 注入工作空间和组织上下文。
 2. 校验 `message.content` 不能为空。
 3. 从 `vrpc-operator` 解析当前操作人。
 4. 清洗 `message.fileIds`，校验数量、归属和解析状态。
-5. 规范化 `message.anchors`，仅接受项目和模型实体硬锚点。
-6. 如果用户正文里显式出现项目或模型 ID，服务端会尝试识别为提示词锚点。
+5. 规范化 `message.anchors`，仅接受受支持的实体硬锚点，同一个 `dataType` 只保留一个范围。
+6. 如果用户正文里显式出现锚点 ID（项目、模型、阶段、模块、单元过程、核算、输出物、活动数据记录、因子、文档、分配规则都支持），服务端会尝试识别为提示词锚点。
 7. 如果提示词锚点与显式传入锚点冲突，Run 进入 `REQUIRE_ACTION`，并创建交互确认。
 8. 若无冲突，创建或读取会话，写入用户消息，创建 Run。
 9. Run 初始状态为 `QUEUED`，随后异步执行 Agent。
@@ -1126,7 +1137,9 @@ while (true) {
 - 客户端不应等待或渲染 `section.tools`；工具调用只按 `tool.call` 进度展示。
 - `tool.call` 的 retryable 失败表示当前尝试失败但 Run 仍可继续，客户端应显示失败/重试状态，不要隐藏，也不要直接判定整个 Run 失败。
 - `anchor.applied@v1` 用于同步本地锚点状态，不需要在聊天区输出“锚点应用成功”之类的消息。
-- 当前锚点能力只支持项目和模型实体硬锚点；其他类型会被拒绝。
+- 锚点当前只支持实体硬锚点（`kind = ENTITY`、`mode = HARD`）；`dataType` 支持 `PROJECT`、`OUTPUT`、`MODEL`、`PHASE`、`MODULE`、`UNIT_PROCESS`、`ACCOUNTING`、`DATA_RECORD`、`FACTOR`、`DOCUMENT`、`ALLOCATION_RULE`。
+- 同一次 `sendMessage` 里同一个 `dataType` 只能传一个锚点；重复传不同 ID 会导致整次请求失败，页面侧需要先按 `dataType` 去重（保留最贴近当前操作对象的那个）。
+- 节点级入口（例如核算详情模型树里的阶段 / 模块 / 单元过程）建议把“项目 -> 模型 -> 核算 -> 输出物 -> 阶段 -> 模块 -> 单元过程”这条链上能拿到的锚点一起传，只传节点自身会让智能体缺少当前核算和模型范围。
 
 2026年6月1日
 lca.skel-0.0.1-f.c-ca866fd2

@@ -437,7 +437,7 @@ openAssistantAnchorChat({
 - `documentIds` / `fileIds`
   只来自已经上传成功且拿到 `remoteFileId` 的附件；上传返回优先读取接口里的 `documentId`，发送到 `lca.core` 时会作为 `message.fileIds` 传入。
 - `anchors`
-  来自 `launchArea.anchors + defaultAnchors` 合并后的结果，并按 `dataType:dataId` 去重。
+  来自 `launchArea.anchors + defaultAnchors` 合并后的结果，并按 `dataType:dataId` 去重。注意这里只去掉完全相同的锚点，不会按 `dataType` 收敛；同一个 `dataType` 出现多个不同 `dataId` 时后端会判定冲突并让请求失败，所以页面侧要在传进来之前自己按 `dataType` 去重。
 - `threadTags`
   来自 `resolveThreadTags()`，会先裁掉空值，再按 `key/value` 排序。
 
@@ -483,6 +483,38 @@ openAssistantAnchorChat({
 - `area.title = 基础信息`
 
 但没有在 `launchArea.anchors` 或 `resolveDefaultAnchors()` 里提供对应实体锚点，那么后端不会因为你当前选中了“基础信息”就自动收到一个“基础信息”锚点。
+
+### 节点级入口要带够锚点
+
+模型树、结果画布这类“点某个节点上的 AI”的入口，只传节点自身的锚点是不够的：后端只会拿到一个孤立的阶段 / 模块 / 单元过程 ID，不知道它属于哪个核算、哪个模型、哪个项目。
+
+推荐按业务链把能拿到的锚点一次带全，顺序也从外到内：
+
+```ts
+anchors: [
+  { dataType: 'PROJECT', dataId: cfpProjectId, kind: 'ENTITY', mode: 'HARD' },
+  { dataType: 'MODEL', dataId: modelId, kind: 'ENTITY', mode: 'HARD' },
+  { dataType: 'ACCOUNTING', dataId: accountingId, kind: 'ENTITY', mode: 'HARD' },
+  { dataType: 'OUTPUT', dataId: outputProductId, kind: 'ENTITY', mode: 'HARD' },
+  { dataType: 'PHASE', dataId: phaseId, kind: 'ENTITY', mode: 'HARD' },
+  { dataType: 'MODULE', dataId: moduleId, kind: 'ENTITY', mode: 'HARD' },
+  { dataType: 'UNIT_PROCESS', dataId: unitProcessId, kind: 'ENTITY', mode: 'HARD' },
+]
+```
+
+两条硬约束：
+
+- 同一 `dataType` 只能保留一个锚点，重复传不同 ID 后端会判定锚点冲突并让整次 `sendMessage` 失败；组装时按“越贴近当前操作对象优先级越高”去重，节点自身优先于祖先。
+- 只传 `display.title` 的类型（`PHASE` / `MODULE` / `UNIT_PROCESS` / `OUTPUT` 等）不会做数据查询，标题就是智能体看到的名称，尽量给真实业务名称。
+
+核算详情页已经把这部分收口成可复用函数，新入口直接复用即可：
+
+- `assistant-workbench/detail-anchor-context.ts`
+  `resolveAccountingDetailAnchorContext(...)` 解析项目 / 模型 / 核算 / 输出物 ID，`buildAccountingDetailContextAnchors(...)` 生成上下文锚点。
+- `assistant-workbench/anchor-declarations.ts`
+  `dedupeAssistantAnchorDeclarations(...)` 按 `dataType` 去重（保留最后一个）。
+- `model-config/model/model-config-node-anchors.ts`
+  `buildModelConfigNodeAncestorIndex(...)` 收集树上的祖先链，`buildModelConfigNodeAnchorDeclarations(...)` 生成“祖先 + 节点”锚点。
 
 ## Renderer 和内容层怎么分工
 
