@@ -1,6 +1,8 @@
 # local disabled domains
 /scripts/
 
+
+
 # vined - begin
 *.local
 .DS_Store
@@ -43,6 +45,7 @@
 /domain/record
 /domain/report
 /domain/search.indexer
+/domain/supply.chain
 /domain/uic
 /domain/unit
 /domain/wecom

@@ -57,14 +57,29 @@ export function AppLayout() {
   })
   const currentWorkspace = React.useMemo(
     () =>
-      workspaceQuery.data?.find(
-        (workspace) => workspace.id === selectedWorkspaceId,
-      ) ??
-      workspaceQuery.data?.find(
-        (workspace) => workspace.scope.trim() === currentWorkspaceScope,
-      ) ??
-      null,
-    [currentWorkspaceScope, selectedWorkspaceId, workspaceQuery.data],
+      (() => {
+        const workspace =
+          workspaceQuery.data?.find(
+            (item) => item.id === selectedWorkspaceId,
+          ) ??
+          workspaceQuery.data?.find(
+            (item) => item.scope.trim() === currentWorkspaceScope,
+          ) ??
+          null
+
+        return workspace
+          ? {
+              ...workspace,
+              organizationCategory: organizationProfileQuery.data?.category,
+            }
+          : null
+      })(),
+    [
+      currentWorkspaceScope,
+      organizationProfileQuery.data?.category,
+      selectedWorkspaceId,
+      workspaceQuery.data,
+    ],
   )
   const permissionQuery = useCurrentPermissions({
     codes: appPermissionCodes,

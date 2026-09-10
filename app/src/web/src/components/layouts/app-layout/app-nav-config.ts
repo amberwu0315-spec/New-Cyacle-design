@@ -104,6 +104,7 @@ function groupAppNavConfig(
   const appNavSceneCategoryById: Record<string, string> = {
     'domain-project': appNavCategories.basis,
     'domain-pcf-factor-api': appNavCategories.basis,
+    'domain-supply-chain': appNavCategories.basis,
     'domain-accounting': appNavCategories.accounting,
     'domain-cfo': appNavCategories.accounting,
     'domain-document-management': appNavCategories.management,

@@ -141,18 +141,16 @@ var (
 		},
 	}
 	_OpenActorAuthServiceAuthSpec = &rpc.MethodSpec{
-		Name:              "Auth",
-		SkelName:          "auth",
-		ArgumentsType:     reflect.TypeFor[_OpenActorAuthServiceAuthArguments](),
-		ValidateArguments: nil,
+		Name:          "Auth",
+		SkelName:      "auth",
+		ArgumentsType: reflect.TypeFor[_OpenActorAuthServiceAuthArguments](),
 		CloneArguments: func(value any) any {
 			source := value.(*_OpenActorAuthServiceAuthArguments)
 			cloned := *source
 			cloned.Credential = source.Credential.Clone()
 			return &cloned
 		},
-		ResultType:     reflect.TypeFor[OpenActorInfo](),
-		ValidateResult: nil,
+		ResultType: reflect.TypeFor[OpenActorInfo](),
 		CloneResult: func(value any) any {
 			source := value.(OpenActorInfo)
 			cloned := source
@@ -173,7 +171,7 @@ var (
 // OpenActorAuthService / Arguments
 
 type _OpenActorAuthServiceAuthArguments struct {
-	Credential OpenActorCredential `json:"credential" arg:"0"`
+	Credential OpenActorCredential `json:"credential" skel:"index(0)"`
 }
 
 // OpenActorAuthService / Server
@@ -259,18 +257,16 @@ var (
 		},
 	}
 	_UserActorAuthServiceAuthSpec = &rpc.MethodSpec{
-		Name:              "Auth",
-		SkelName:          "auth",
-		ArgumentsType:     reflect.TypeFor[_UserActorAuthServiceAuthArguments](),
-		ValidateArguments: nil,
+		Name:          "Auth",
+		SkelName:      "auth",
+		ArgumentsType: reflect.TypeFor[_UserActorAuthServiceAuthArguments](),
 		CloneArguments: func(value any) any {
 			source := value.(*_UserActorAuthServiceAuthArguments)
 			cloned := *source
 			cloned.Credential = source.Credential.Clone()
 			return &cloned
 		},
-		ResultType:     reflect.TypeFor[UserActorInfo](),
-		ValidateResult: nil,
+		ResultType: reflect.TypeFor[UserActorInfo](),
 		CloneResult: func(value any) any {
 			source := value.(UserActorInfo)
 			cloned := source
@@ -291,7 +287,7 @@ var (
 // UserActorAuthService / Arguments
 
 type _UserActorAuthServiceAuthArguments struct {
-	Credential UserActorCredential `json:"credential" arg:"0"`
+	Credential UserActorCredential `json:"credential" skel:"index(0)"`
 }
 
 // UserActorAuthService / Server

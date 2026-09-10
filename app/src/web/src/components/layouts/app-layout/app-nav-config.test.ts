@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { Building2 } from 'lucide-react'
 import type { LucideIcon } from 'lucide-react'
+import { Building2 } from 'lucide-react'
 
 import type { WebDomain } from '@carbonnt-cyacle/web-base'
 

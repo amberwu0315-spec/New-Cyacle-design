@@ -9,3 +9,4 @@ git:
   repoUrlPrefix: 'git@git.cew.io:'
 toolchain:
   vineVersion: v0.15.1
+  skelcVersion: v0.17.1

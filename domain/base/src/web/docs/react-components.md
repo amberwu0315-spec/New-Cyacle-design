@@ -9,23 +9,23 @@
 ```tsx
 // 不推荐：每次 render 都重新创建并传给 JSX prop
 function AccountPopover() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   function handleLogoutClick() {
-    void navigate({ to: crossDomainRoutePaths.uic.login })
+    void navigate({ to: crossDomainRoutePaths.uic.login });
   }
 
-  return <Button onClick={handleLogoutClick}>退出登录</Button>
+  return <Button onClick={handleLogoutClick}>退出登录</Button>;
 }
 
 // 推荐：传给 JSX prop 的 handler 使用稳定引用
 function AccountPopover() {
-  const navigate = useNavigate()
+  const navigate = useNavigate();
   const handleLogoutClick = React.useCallback(() => {
-    void navigate({ to: crossDomainRoutePaths.uic.login })
-  }, [navigate])
+    void navigate({ to: crossDomainRoutePaths.uic.login });
+  }, [navigate]);
 
-  return <Button onClick={handleLogoutClick}>退出登录</Button>
+  return <Button onClick={handleLogoutClick}>退出登录</Button>;
 }
 ```
 
@@ -36,7 +36,7 @@ Base UI 的 `Menu`、`Popover`、`PreviewCard` 都支持 detached trigger：触�
 优先使用 detached trigger 的场景：表格行操作菜单、列表项更多操作、hover 预览卡、侧边栏收起态子菜单、虚拟列表或大量重复 item 中的浮层。简单的一对一浮层仍然就近组合 `Root + Trigger + Content`。`Menu` 只建议给顶层菜单使用 detached trigger；子菜单 trigger 仍放在 `SubmenuRoot` 内部。
 
 ```tsx
-const rowMenu = React.useMemo(() => Menu.createHandle(), [])
+const rowMenu = React.useMemo(() => Menu.createHandle(), []);
 
 return (
   <>
@@ -48,7 +48,7 @@ return (
 
     <Menu.Root handle={rowMenu}>
       {({ payload }) => {
-        const row = payload as Row | undefined
+        const row = payload as Row | undefined;
 
         return row ? (
           <Menu.Portal>
@@ -59,11 +59,11 @@ return (
               </Menu.Popup>
             </Menu.Positioner>
           </Menu.Portal>
-        ) : null
+        ) : null;
       }}
     </Menu.Root>
   </>
-)
+);
 ```
 
 `PreviewCard.createHandle()` 和 `Popover.createHandle()` 同理；把预览卡、状态详情、统计说明、快捷编辑面板等浮层内容放在外层单例里，通过 `payload` 渲染当前行内容。
@@ -76,6 +76,7 @@ return (
 
 1. `DialogContent` 负责弹框最大高度、纵向 flex 和整窗裁剪：`flex max-h-[88vh] flex-col overflow-hidden`。
 2. `DialogHeader` 和 `DialogFooter` 默认包含 `shrink-0`，底部操作始终留在弹框底部；业务代码不需要重复声明，但自定义头尾组件仍需遵守这一点。
+   `DialogHeader` 必须包含明确的标题；`DialogDescription` 仅在有明确、必要的业务说明时添加。没有特殊说明时，普通表单弹框不要额外添加描述文案。
 3. 普通滚动内容统一使用 `DialogBody`。它自身承担 `-mx-4 my-4 min-h-0 flex-1 overflow-y-auto px-4`，固定头尾间距通过 `my-4` 保持，不要在滚动内容上只设置 `py-4`。业务 `className` 继续作用于同一个滚动层，保证表格、树、DataGrid 等现有高度和滚动链不被拆断。
 4. 表单弹框的 `form` 本身也要是 `flex min-h-0 flex-1 flex-col`，不要只让 `FieldGroup` 撑开弹框。
 5. 小型确认弹框内容确定不会溢出时可以保持默认 Dialog；一旦有较长表单、上传区、动态列表、条件字段或多语言 textarea，就按固定头尾结构实现。
@@ -90,13 +91,13 @@ return (
       </DialogHeader>
 
       <DialogBody>
-        <FieldGroup className="gap-5">
-          {/* fields */}
-        </FieldGroup>
+        <FieldGroup className="gap-5">{/* fields */}</FieldGroup>
       </DialogBody>
 
       <DialogFooter>
-        <Button type="button" variant="outline" onClick={handleCancel}>取消</Button>
+        <Button type="button" variant="outline" onClick={handleCancel}>
+          取消
+        </Button>
         <Button type="submit">保存</Button>
       </DialogFooter>
     </form>
@@ -117,7 +118,9 @@ return (
   </DialogBody>
 
   <DialogFooter>
-    <Button type="button" variant="outline">取消</Button>
+    <Button type="button" variant="outline">
+      取消
+    </Button>
     <Button type="button">确认</Button>
   </DialogFooter>
 </DialogContent>

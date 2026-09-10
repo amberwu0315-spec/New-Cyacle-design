@@ -30,12 +30,12 @@
 <DataView
   dataModel={dataModel}
   searchBox={searchBox}
-  toolbarTrailingRight={(
+  toolbarTrailingRight={
     <Button disabled={!canCreate} onClick={handleCreate}>
       <Plus data-icon="inline-start" />
       创建
     </Button>
-  )}
+  }
 />
 ```
 
@@ -55,7 +55,7 @@
 
 表格型选择器优先使用 `DataView + DataGrid + SearchBox`，不要再为同类对象选择器手写一套 `Input + Table/按钮列表 + ScrollArea`。树、文件和主从预览场景不能合理表达为表格时可以使用专用内容组件，但弹框外壳和下面的交互合同保持一致。
 
-选择弹框中的搜索框聚焦时只保留 `border-ring` 边框反馈，不显示 Crew UI 默认的 3px focus ring，避免搜索框紧贴弹框头部时出现类似整块头部阴影的灰色外沿。实现时统一复用 Base 导出的样式：`DataView` / `SearchBox` 通过 `searchBoxProps.classNames={DATA_SELECTOR_SEARCH_BOX_CLASS_NAMES}`（compound 写法传给 `DataView.SearchBox.classNames`）；尚未迁移到 SearchBox 的旧式搜索输入通过 `className={cn(DATA_SELECTOR_SEARCH_INPUT_CLASS_NAME, ...)}` 覆盖。不要修改 Base `Input` / `InputGroup` 的全局焦点态，也不要完全移除边框反馈；普通表单和非选择器页面继续保留默认可访问性焦点 ring。
+通用搜索表格和选择弹框中的 `SearchBox` 聚焦时只保留 `border-ring` 边框反馈，不显示 Crew UI 默认的 3px focus ring，避免工具栏或弹框头部出现类似整块阴影的灰色外沿。Base 全局样式已按 `search-box-start-input` slot 统一处理；选择弹框仍可复用 `DATA_SELECTOR_SEARCH_BOX_CLASS_NAMES` 作为局部兼容覆盖（`DataView` / `SearchBox` 通过 `searchBoxProps.classNames` 传入，compound 写法传给 `DataView.SearchBox.classNames`）。尚未迁移到 SearchBox 的旧式搜索输入通过 `className={cn(DATA_SELECTOR_SEARCH_INPUT_CLASS_NAME, ...)}` 覆盖。不要修改 Base `Input` / `InputGroup` 的全局焦点态，也不要完全移除边框反馈；普通表单继续保留默认可访问性焦点 ring。
 
 ```tsx
 <DialogContent className="flex max-h-[88vh] flex-col overflow-hidden sm:!max-w-4xl">
@@ -71,18 +71,24 @@
       searchBoxProps={{
         classNames: DATA_SELECTOR_SEARCH_BOX_CLASS_NAMES,
       }}
-      toolbarTrailingRight={(
+      toolbarTrailingRight={
         <div className="flex items-center gap-2">
-          <Button variant="outline" onClick={handleRefresh}>刷新</Button>
+          <Button variant="outline" onClick={handleRefresh}>
+            刷新
+          </Button>
           <Button onClick={handleCreate}>创建</Button>
         </div>
-      )}
+      }
     />
   </DialogBody>
 
   <DialogFooter>
-    <Button variant="outline" onClick={handleCancel}>取消</Button>
-    <Button disabled={!selectedValue} onClick={handleConfirm}>确认</Button>
+    <Button variant="outline" onClick={handleCancel}>
+      取消
+    </Button>
+    <Button disabled={!selectedValue} onClick={handleConfirm}>
+      确认
+    </Button>
   </DialogFooter>
 </DialogContent>
 ```
