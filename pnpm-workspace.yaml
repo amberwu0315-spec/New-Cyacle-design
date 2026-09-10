@@ -84,6 +84,7 @@ packages:
   - ./.cache/web/workspace/skeld/history-pub
   - ./.cache/web/workspace/skeld/lca-core-pub
   - ./.cache/web/workspace/skeld/lca-pub
+  - ./.cache/web/workspace/skeld/material-pub
   - ./.cache/web/workspace/skeld/meta-pub
   - ./.cache/web/workspace/skeld/notice-pub
   - ./.cache/web/workspace/skeld/pcf-factor-api-pub
@@ -112,6 +113,7 @@ packages:
   - ./.cache/web/workspace/web/history
   - ./.cache/web/workspace/web/lca
   - ./.cache/web/workspace/web/lca-core
+  - ./.cache/web/workspace/web/material
   - ./.cache/web/workspace/web/meta
   - ./.cache/web/workspace/web/notice
   - ./.cache/web/workspace/web/pcf-factor-api

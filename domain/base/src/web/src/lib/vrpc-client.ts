@@ -85,6 +85,12 @@ function getErrorCode(error: unknown) {
     : undefined
 }
 
+function getErrorText(error: unknown, field: 'reason' | 'detail' | 'vrpcStatus') {
+  return isRecord(error) && typeof error[field] === 'string'
+    ? error[field]
+    : undefined
+}
+
 function isAuthenticationError(error: unknown) {
   return (
     getErrorStatus(error) === 401 ||
@@ -112,7 +118,14 @@ function handleClientError(
     return
   }
 
-  console.error('VRPC Error:', error)
+  console.error('VRPC Error:', error, {
+    request: getRequestPath(context),
+    status: getErrorStatus(error),
+    code: getErrorCode(error),
+    reason: getErrorText(error, 'reason'),
+    detail: getErrorText(error, 'detail'),
+    vrpcStatus: getErrorText(error, 'vrpcStatus'),
+  })
 
   if (isAuthenticationError(error)) {
     // 只针对用户信息接口报错跳登录页面，其他接口如果报 401 可能是权限问题或者配置问题，不直接跳登录

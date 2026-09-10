@@ -1,8 +1,6 @@
 # local disabled domains
 /scripts/
 
-
-
 # vined - begin
 *.local
 .DS_Store
@@ -37,6 +35,7 @@
 /domain/history
 /domain/lca
 /domain/lca.core
+/domain/material
 /domain/meta
 /domain/notice
 /domain/pcf.factor.api
