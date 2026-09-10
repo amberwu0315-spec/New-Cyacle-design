@@ -94,4 +94,3 @@ domains:
     - name: material
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/material.git
-
