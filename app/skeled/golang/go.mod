@@ -4,7 +4,7 @@ module go.cew.io/app/carbonnt/cyacle/skeled/app
 
 go 1.27.0
 
-require go.yorun.ai/vine v0.15.5
+require go.yorun.ai/vine v0.15.7
 
 require (
 	cloud.google.com/go v0.123.0 // indirect
