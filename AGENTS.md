@@ -11,3 +11,6 @@
 
 ## 前端代码开发说明
 开发 `app/src/web`、`domain/*/src/web` 或涉及 React、TypeScript、Vite、路由、Layout、i18n、vRPC、React Query、CSS、Base UI、前端依赖、测试和构建时，必读 `.agent/frontend-development-rules/SKILL.md`。
+
+## 双 Agent 独立开发模式
+当任务要求「双 agent 开发」「开发/测试双 agent」「实现与测试分离」「独立开发模式」或需要 worktree 隔离时，必须使用 `multi-agents-dev-mode` 技能，按其 `prepare-task.sh`（多仓库时用 `REPOS` 指定参与仓库）建 implementation/tests worktree、冻结契约、按固定角色提示词启动两个 Agent；不要自行设计 agent 分工或跳过隔离。如果未找到`multi-agents-dev-mode` 技能，忽略此条。
