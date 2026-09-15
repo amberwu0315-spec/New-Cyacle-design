@@ -1,7 +1,7 @@
 # local disabled domains
 /scripts/
 
-# vined - begin
+# PLOTTED - BEGIN
 *.local
 .DS_Store
 .cache/
@@ -15,7 +15,7 @@
 .vite
 .vscode/
 .wrangler
-/app/seed
+/app/seed/*.plotted.yaml
 /app/skel
 /app/skeled
 /app/src/server
@@ -57,4 +57,4 @@ node_modules
 todos.json
 vineModules.gen.ts
 vineStyles.gen.css
-# vined - end
+# PLOTTED - END
