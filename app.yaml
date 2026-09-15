@@ -37,6 +37,9 @@ domains:
     - name: formula
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/formula.git
+    - name: material
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/material.git
     - name: category
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/category.git
