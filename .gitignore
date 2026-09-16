@@ -33,6 +33,7 @@
 /domain/audit
 /domain/calculation.core
 /domain/category
+/domain/cbam
 /domain/cfo
 /domain/factor
 /domain/file
@@ -40,6 +41,7 @@
 /domain/history
 /domain/lca
 /domain/lca.core
+/domain/market.carbon
 /domain/material
 /domain/meta
 /domain/notice
