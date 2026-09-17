@@ -42,13 +42,21 @@ function buildAgentServiceUrl(path: string) {
   return buildConfiguredAgentEventUrl(path)
 }
 
-function buildAgentRequestMetas(context: AssistantAgentRequestContext) {
+function buildAgentRequestMetas(
+  context: AssistantAgentRequestContext,
+  options?: { timeoutMs?: number; suppressGlobalToast?: boolean },
+) {
   assertOperatorId(context.operatorId)
 
   return {
     headers: {
       'vrpc-operator': buildOperatorHeader(context.operatorId),
     },
+    // 透传给 vRPC 的请求超时，避免后端长时间不返回时调用方被永久挂住。
+    ...(typeof options?.timeoutMs === 'number' && options.timeoutMs > 0
+      ? { timeoutMs: options.timeoutMs }
+      : {}),
+    ...(options?.suppressGlobalToast ? { suppressGlobalToast: true } : {}),
   }
 }
 
@@ -479,6 +487,13 @@ export interface AssistantSendMessageInput {
   anchors?: Array<AssistantAnchorDeclaration>
   threadTags?: Array<AssistantThreadTag>
   lang?: AppLanguage | null
+  /**
+   * 单次发送请求的超时时间（毫秒）。服务端在返回前可能执行同步的模型调用，
+   * 不设置超时会让调用方的提交状态一直无法结束。
+   */
+  timeoutMs?: number
+  /** 由调用方自行展示错误时，关闭 vRPC 的全局错误提示。 */
+  suppressGlobalToast?: boolean
 }
 
 export interface AssistantRunDetail {
@@ -835,7 +850,10 @@ export const assistantAgentService = {
     runId: string
     threadId?: string
   }> {
-    const metas = buildAgentRequestMetas(context)
+    const metas = buildAgentRequestMetas(context, {
+      timeoutMs: input.timeoutMs,
+      suppressGlobalToast: input.suppressGlobalToast,
+    })
 
     return (await agentService.sendMessage(
       input.threadId as string,
