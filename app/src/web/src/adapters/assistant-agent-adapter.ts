@@ -11,6 +11,7 @@ type AgentRequestOptions = {
   headers?: HeadersInit
   operatorHeader?: string
   suppressGlobalToast?: boolean
+  timeoutMs?: number
 }
 
 type AgentServiceResult<
