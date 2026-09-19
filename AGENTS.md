@@ -14,3 +14,9 @@
 
 ## 双 Agent 独立开发模式
 当任务要求「双 agent 开发」「开发/测试双 agent」「实现与测试分离」「独立开发模式」或需要 worktree 隔离时，必须使用 `multi-agents-dev-mode` 技能，按其 `prepare-task.sh`（多仓库时用 `REPOS` 指定参与仓库）建 implementation/tests worktree、冻结契约、按固定角色提示词启动两个 Agent；不要自行设计 agent 分工或跳过隔离。如果未找到`multi-agents-dev-mode` 技能，忽略此条。
+
+## 多 Agent 编排任务的硬规则
+- 所有 worktree / 任务包 / isolated-root 路径一律使用绝对路径（`prepare-task.sh` 内部会 `cd` 到各参与仓库，相对路径会解析错位，导致 worktree 建错位置）。
+- 后台 subagent 启动后等待完成通知，不频繁轮询、不因暂时无产出而过早 `interrupt_agent`；要干预前先 `send_message` 询问卡点，给足读输入与规划时间（约 5~6 分钟才开始落盘属正常）。
+- 遇到「无产出 / 失败」先做最小诊断（如最小写文件测试）确认环境是否可写，再决定是环境问题还是 agent 慢，不要靠猜。
+- 出问题优先检查：路径是否正确、进程/端口是否残留（如 `7099` 端口被残留 cyacle 进程占用会阻断 testkit）。

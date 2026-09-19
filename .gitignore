@@ -32,6 +32,7 @@
 /domain/ai.model
 /domain/audit
 /domain/calculation.core
+/domain/carbon.assets
 /domain/category
 /domain/cbam
 /domain/cfo
