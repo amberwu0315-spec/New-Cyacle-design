@@ -1,0 +1,7 @@
+application:
+  artifacts:
+    - server
+
+artifact:
+  server:
+    mode: linked
