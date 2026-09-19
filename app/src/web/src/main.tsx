@@ -2,7 +2,7 @@ import { RouterProvider } from '@tanstack/react-router';
 import ReactDOM from 'react-dom/client';
 import { BaseProviders } from '@carbonnt-cyacle/web-base';
 
-import '#/vineStyles.gen.css';
+import '#/generated/styles.gen.css';
 import { applyAppEditionToDocument, getAppEdition } from '#/app-edition.ts';
 import { router } from '#/router.ts';
 import { StrictMode } from 'react';

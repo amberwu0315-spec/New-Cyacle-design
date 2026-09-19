@@ -17,7 +17,7 @@ import {
 import { resolveDefaultSystemHomeTo } from '#/app-route-navigation.ts'
 import { createAdminHomeRoute } from '#/routes/admin/index.ts'
 import { createHomeRoute } from '#/routes/home-route.ts'
-import { webModules } from '#/vineModules.gen.ts'
+import { webModules } from '#/generated/modules.gen.ts'
 
 const domainProfiles = { standard: webModules } as const
 const standardDomains = domainProfiles.standard

@@ -1,0 +1,117 @@
+portalSites:
+  - name: app.WebWeb-web
+    type: WEBGW
+    actorSkelName: base.UserActor
+    actorVia: client
+    webName: app.WebWeb
+
+  - name: file.FileWeb-web
+    type: WEBGW
+    actorSkelName: base.UserActor
+    actorVia: client
+    webName: file.FileWeb
+
+  - name: file.MultipartFileWeb-web
+    type: WEBGW
+    actorSkelName: base.UserActor
+    actorVia: client
+    webName: file.MultipartFileWeb
+
+  - name: uic.DocumentWeb-web
+    type: WEBGW
+    actorSkelName: base.UserActor
+    actorVia: client
+    webName: uic.DocumentWeb
+
+  - name: uic.AuthWeb-web
+    type: WEBGW
+    actorSkelName: base.UserActor
+    actorVia: client
+    webName: uic.AuthWeb
+
+  - name: uic.CallbackWeb-web
+    type: WEBGW
+    actorSkelName: base.UserActor
+    actorVia: client
+    webName: uic.CallbackWeb
+
+  - name: uic.RecordWeb-web
+    type: WEBGW
+    actorSkelName: base.UserActor
+    actorVia: client
+    webName: uic.RecordWeb
+
+  - name: supply.chain.SurveyWeb-web
+    type: WEBGW
+    actorSkelName: base.UserActor
+    actorVia: client
+    webName: supply.chain.SurveyWeb
+
+  - name: agent.AgentWeb-web
+    type: WEBGW
+    actorSkelName: base.UserActor
+    actorVia: client
+    webName: agent.AgentWeb
+
+  - name: agent.AgentDebugWeb-web
+    type: WEBGW
+    actorSkelName: base.UserActor
+    actorVia: client
+    webName: agent.AgentDebugWeb
+
+portalRules:
+  - name: app.WebWeb-web
+    matchPathPrefix: "/"
+    routeType: SITE
+    routeSiteName: app.WebWeb-web
+    routePathPrefix: "/"
+
+  - name: file.FileWeb-web
+    matchPathPrefix: "/file.FileWeb"
+    routeType: SITE
+    routeSiteName: file.FileWeb-web
+
+  - name: file.MultipartFileWeb-web
+    matchPathPrefix: "/file.MultipartFileWeb"
+    routeType: SITE
+    routeSiteName: file.MultipartFileWeb-web
+
+  - name: uic.DocumentWeb-web
+    matchPathPrefix: "/uic.DocumentWeb"
+    routeType: SITE
+    routeSiteName: uic.DocumentWeb-web
+
+  - name: doc.DocumentWeb-web
+    matchPathPrefix: "/doc.DocumentWeb"
+    routeType: SITE
+    routeSiteName: uic.DocumentWeb-web
+
+  - name: uic.AuthWeb-web
+    matchPathPrefix: "/uic.AuthWeb"
+    routeType: SITE
+    routeSiteName: uic.AuthWeb-web
+
+  - name: uic.CallbackWeb-web
+    matchPathPrefix: "/uic.CallbackWeb"
+    routeType: SITE
+    routeSiteName: uic.CallbackWeb-web
+
+  - name: uic.RecordWeb-web
+    matchPathPrefix: "/uic.RecordWeb"
+    routeType: SITE
+    routeSiteName: uic.RecordWeb-web
+
+  - name: supply.chain.SurveyWeb-web
+    matchPathPrefix: "/supply.chain.SurveyWeb"
+    routeType: SITE
+    routeSiteName: supply.chain.SurveyWeb-web
+
+  - name: agent.AgentWeb-web
+    matchPathPrefix: "/agent.AgentWeb"
+    routeType: SITE
+    routeSiteName: agent.AgentWeb-web
+
+  - name: agent.AgentDebugWeb-web
+    matchPathPrefix: "/agent.AgentDebugWeb"
+    routeType: SITE
+    routeSiteName: agent.AgentDebugWeb-web

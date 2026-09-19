@@ -12,7 +12,7 @@ import {
   resolveAppEditionHomeTo,
 } from '#/components/layouts/app-layout/app-nav-config.ts'
 import { resolveSystemEntryHomeTo } from '#/system-entry.ts'
-import { webModules } from '#/vineModules.gen.ts'
+import { webModules } from '#/generated/modules.gen.ts'
 
 const DEFAULT_APP_HOME_TO = '/project/projects'
 

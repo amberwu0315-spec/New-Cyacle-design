@@ -68,6 +68,7 @@ catalogs:
 
 packages:
   # plot:workspace-begin
+<<<<<<< HEAD
   - ./.cache/web/workspace/skeld/accounting-core-pub
   - ./.cache/web/workspace/skeld/accounting-pub
   - ./.cache/web/workspace/skeld/agent-pub
@@ -126,5 +127,63 @@ packages:
   - ./.cache/web/workspace/web/uic
   - ./.cache/web/workspace/web/unit
   - ./.cache/web/workspace/web/wecom
+=======
+  - ./.plot/web/virtual/skeled-accounting-corepub
+  - ./.plot/web/virtual/skeled-accountingpub
+  - ./.plot/web/virtual/skeled-agentpub
+  - ./.plot/web/virtual/skeled-ai-flowpub
+  - ./.plot/web/virtual/skeled-ai-modelpub
+  - ./.plot/web/virtual/skeled-auditpub
+  - ./.plot/web/virtual/skeled-basepub
+  - ./.plot/web/virtual/skeled-calculation-corepub
+  - ./.plot/web/virtual/skeled-categorypub
+  - ./.plot/web/virtual/skeled-cfopub
+  - ./.plot/web/virtual/skeled-factorpub
+  - ./.plot/web/virtual/skeled-filepub
+  - ./.plot/web/virtual/skeled-formulapub
+  - ./.plot/web/virtual/skeled-historypub
+  - ./.plot/web/virtual/skeled-lca-corepub
+  - ./.plot/web/virtual/skeled-lcapub
+  - ./.plot/web/virtual/skeled-metapub
+  - ./.plot/web/virtual/skeled-noticepub
+  - ./.plot/web/virtual/skeled-pcf-factor-apipub
+  - ./.plot/web/virtual/skeled-project-datapub
+  - ./.plot/web/virtual/skeled-projectpub
+  - ./.plot/web/virtual/skeled-recordpub
+  - ./.plot/web/virtual/skeled-reportpub
+  - ./.plot/web/virtual/skeled-search-indexerpub
+  - ./.plot/web/virtual/skeled-supply-chainpub
+  - ./.plot/web/virtual/skeled-uicpub
+  - ./.plot/web/virtual/skeled-unitpub
+  - ./.plot/web/virtual/skeled-wecompub
+  - ./.plot/web/virtual/web-accounting
+  - ./.plot/web/virtual/web-accounting-core
+  - ./.plot/web/virtual/web-agent
+  - ./.plot/web/virtual/web-ai-flow
+  - ./.plot/web/virtual/web-ai-model
+  - ./.plot/web/virtual/web-audit
+  - ./.plot/web/virtual/web-base
+  - ./.plot/web/virtual/web-calculation-core
+  - ./.plot/web/virtual/web-category
+  - ./.plot/web/virtual/web-cfo
+  - ./.plot/web/virtual/web-factor
+  - ./.plot/web/virtual/web-file
+  - ./.plot/web/virtual/web-formula
+  - ./.plot/web/virtual/web-history
+  - ./.plot/web/virtual/web-lca
+  - ./.plot/web/virtual/web-lca-core
+  - ./.plot/web/virtual/web-meta
+  - ./.plot/web/virtual/web-notice
+  - ./.plot/web/virtual/web-pcf-factor-api
+  - ./.plot/web/virtual/web-project
+  - ./.plot/web/virtual/web-project-data
+  - ./.plot/web/virtual/web-record
+  - ./.plot/web/virtual/web-report
+  - ./.plot/web/virtual/web-search-indexer
+  - ./.plot/web/virtual/web-supply-chain
+  - ./.plot/web/virtual/web-uic
+  - ./.plot/web/virtual/web-unit
+  - ./.plot/web/virtual/web-wecom
+>>>>>>> d410119 (update vine)
   - ./app/src/web
   # plot:workspace-end

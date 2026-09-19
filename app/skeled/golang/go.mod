@@ -4,11 +4,12 @@ module go.cew.io/app/carbonnt/cyacle/skeled/app
 
 go 1.27.0
 
-require go.yorun.ai/vine v0.15.7
+require go.yorun.ai/vine v0.21.3
 
 require (
 	cloud.google.com/go v0.123.0 // indirect
 	github.com/Masterminds/semver/v3 v3.5.0 // indirect
+	github.com/andybalholm/brotli v1.2.4 // indirect
 	github.com/bytedance/gopkg v0.1.4 // indirect
 	github.com/bytedance/sonic v1.15.3 // indirect
 	github.com/bytedance/sonic/loader v0.5.2 // indirect

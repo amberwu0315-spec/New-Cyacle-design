@@ -2,14 +2,13 @@
 /scripts/
 
 # PLOTTED - BEGIN
-
 *.local
 .DS_Store
-.cache/
 .env
 .idea/
 .nitro
 .output
+.plot/
 .pnpm-store
 .tanstack
 .vinxi
@@ -21,6 +20,7 @@
 /app/skeled
 /app/src/server
 /dev.yaml
+/dist/
 /domain/accounting
 /domain/accounting.core
 /domain/agent
@@ -49,13 +49,14 @@
 /domain/uic
 /domain/unit
 /domain/wecom
-/go.work
-/go.work.sum
 __unconfig*
 dist
 dist-ssr
 node_modules
 todos.json
+<<<<<<< HEAD
 vineModules.gen.ts
 vineStyles.gen.css
+=======
+>>>>>>> d410119 (update vine)
 # PLOTTED - END

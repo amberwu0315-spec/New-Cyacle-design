@@ -25,7 +25,7 @@ import {
   useCurrentUserProfile,
 } from '@carbonnt-cyacle/web-uic/pub'
 
-import { webModules } from '#/vineModules.gen.ts'
+import { webModules } from '#/generated/modules.gen.ts'
 import { getAppEdition } from '#/app-edition.ts'
 import { resolveSystemEntryAccess } from '#/system-entry.ts'
 import { useTranslation } from '#/lib/i18n/index.ts'
