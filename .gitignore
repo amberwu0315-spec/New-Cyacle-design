@@ -1,26 +1,25 @@
 # local disabled domains
 /scripts/
 
-
-# vined - begin
+# PLOTTED - BEGIN
+**/generated/modules.gen.ts
+**/generated/styles.gen.css
 *.local
 .DS_Store
-.cache/
 .env
 .idea/
 .nitro
 .output
+.plot/
 .pnpm-store
 .tanstack
 .vinxi
 .vite
 .vscode/
 .wrangler
-/app/seed
-/app/skel
-/app/skeled
 /app/src/server
 /dev.yaml
+/dist/
 /domain/accounting
 /domain/accounting.core
 /domain/agent
@@ -48,13 +47,9 @@
 /domain/uic
 /domain/unit
 /domain/wecom
-/go.work
-/go.work.sum
 __unconfig*
 dist
 dist-ssr
 node_modules
 todos.json
-vineModules.gen.ts
-vineStyles.gen.css
-# vined - end
+# PLOTTED - END

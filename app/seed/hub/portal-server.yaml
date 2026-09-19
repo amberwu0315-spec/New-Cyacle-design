@@ -1,0 +1,21 @@
+portalSites:
+  - name: base.UserActor-client-rpc
+    type: RPCGW
+    actorSkelName: base.UserActor
+    actorVia: client
+
+  - name: base.OpenActor-client-rpc
+    type: RPCGW
+    actorSkelName: base.OpenActor
+    actorVia: client
+
+portalRules:
+  - name: base.UserActor-client-rpc
+    matchPathPrefix: "/api"
+    routeType: SITE
+    routeSiteName: base.UserActor-client-rpc
+
+  - name: base.OpenActor-client-rpc
+    matchPathPrefix: "/open-api"
+    routeType: SITE
+    routeSiteName: base.OpenActor-client-rpc

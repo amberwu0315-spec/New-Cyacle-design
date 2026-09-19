@@ -5,7 +5,7 @@ import {
   type SupportedLanguage,
 } from '@carbonnt-cyacle/web-base'
 
-import { webModules } from '#/vineModules.gen.ts'
+import { webModules } from '#/generated/modules.gen.ts'
 
 export function getAdminNavigation(language?: SupportedLanguage) {
   return createAdminNavigation(webModules, { language })
