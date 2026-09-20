@@ -1,6 +1,7 @@
 # local disabled domains
 /scripts/
 
+
 # PLOTTED - BEGIN
 **/generated/
 *.local
