@@ -6,11 +6,7 @@ go 1.27.0
 
 require (
 	go.cew.io/app/carbonnt/cyacle/skeled/basepub v0.0.0-00010101000000-000000000000
-<<<<<<< HEAD
-	go.yorun.ai/vine v0.15.5
-=======
-	go.yorun.ai/vine v0.21.3
->>>>>>> d410119 (update vine)
+	go.yorun.ai/vine v0.21.5
 )
 
 require (

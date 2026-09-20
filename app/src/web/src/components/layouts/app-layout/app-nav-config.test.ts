@@ -318,6 +318,39 @@ describe("configured app navigation", () => {
     ])
   })
 
+  it("groups carbon assets, CBAM and national carbon market filing into new categories", () => {
+    const config = createConfiguredAppNavConfig(
+      [
+        createDomain({
+          id: "carbon.assets",
+          itemId: "carbon-assets-ledger-asset",
+          sceneId: "domain-carbon-assets",
+        }),
+        createDomain({
+          id: "cbam",
+          itemId: "cbam-projects",
+          sceneId: "domain-cbam",
+        }),
+        createDomain({
+          id: "market.carbon",
+          itemId: "ncmr-dashboard",
+          sceneId: "domain-market-carbon",
+        }),
+      ],
+      { language: "zh-CN" },
+    )
+
+    expect(config.categories.map((category) => category.title)).toEqual([
+      "资产与履约",
+      "填报",
+    ])
+    expect(config.categories[0]?.sceneIds).toEqual([
+      "domain-carbon-assets",
+      "domain-cbam",
+    ])
+    expect(config.categories[1]?.sceneIds).toEqual(["domain-market-carbon"])
+  })
+
   it("splits material into materials/activities/collection sibling scenes", () => {
     const materialDomain: WebDomain = {
       id: "material",

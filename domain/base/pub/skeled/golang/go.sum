@@ -16,13 +16,8 @@ github.com/x448/float16 v0.8.4 h1:qLwI1I70+NjRFUR3zs1JPUCgaCXSh3SW62uAKT1mSBM=
 github.com/x448/float16 v0.8.4/go.mod h1:14CWIYCyZA/cWjXOioeEpHeN/83MdbZDRQHoFcYsOfg=
 go.yaml.in/yaml/v3 v3.0.5 h1:N6y/pJk8buWs9NY5ERU2HSMfm+IuD/OtfdAnq6kESPw=
 go.yaml.in/yaml/v3 v3.0.5/go.mod h1:HVTZu1O7/Vkt2N+BFy8Zza+lnLsABggaTM2ZpNIGuKg=
-<<<<<<< HEAD
-go.yorun.ai/vine v0.15.5 h1:KGQj2nrsu3AcDKz76VFfPK5yYAGVRnUuL3XdH5qfNuM=
-go.yorun.ai/vine v0.15.5/go.mod h1:XXDA2uz+SOSKN0301CxsUnfy8JsRmyxV2to0oNGxE94=
-=======
-go.yorun.ai/vine v0.21.3 h1:THgSSvNbfcZDVuMYt1Er4ZWSdQi70GIHIYfxxG7cPOY=
-go.yorun.ai/vine v0.21.3/go.mod h1:2x0wqRQt4hZPR7M4eYFGfpL1VP2qpSu8CWZMegL+VkA=
->>>>>>> d410119 (update vine)
+go.yorun.ai/vine v0.21.5 h1:YP0I1xskr6u77mhy8savAxXaMf9yD/wVP5Chm07/QEU=
+go.yorun.ai/vine v0.21.5/go.mod h1:2x0wqRQt4hZPR7M4eYFGfpL1VP2qpSu8CWZMegL+VkA=
 go.yorun.ai/vrpc v0.12.0 h1:fDPj/6w+/egy0mVjx7xHS0u+1z+7MePddHIzJ+UhGos=
 go.yorun.ai/vrpc v0.12.0/go.mod h1:DpmL8ZWOIU8pvGeVHIxQC/6cnWKp3vdCN6mW3yTFjWA=
 golang.org/x/net v0.58.0 h1:ynWG7rqYi4ccpTEuPZ2QGWHktVEM9DMCj9yzDE0Q7To=

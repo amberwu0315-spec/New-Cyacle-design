@@ -25,6 +25,8 @@ function getAppNavCategories(language: AppNavConfigOptions["language"]) {
   return {
     basis: t.layout.navCategories.basis,
     accounting: t.layout.navCategories.accounting,
+    assetsCompliance: t.layout.navCategories.assetsCompliance,
+    filing: t.layout.navCategories.filing,
     management: t.layout.navCategories.management,
     dashboard: t.layout.navCategories.dashboard,
     platform: t.layout.navCategories.platform,
@@ -129,6 +131,8 @@ function groupAppNavConfig(config: AppNavConfig, options: AppNavConfigOptions = 
   const appNavCategoryOrder = [
     appNavCategories.basis,
     appNavCategories.accounting,
+    appNavCategories.assetsCompliance,
+    appNavCategories.filing,
     appNavCategories.management,
     appNavCategories.dashboard,
     appNavCategories.platform,
@@ -140,6 +144,9 @@ function groupAppNavConfig(config: AppNavConfig, options: AppNavConfigOptions = 
     "domain-supply-chain": appNavCategories.basis,
     "domain-accounting": appNavCategories.accounting,
     "domain-cfo": appNavCategories.accounting,
+    "domain-carbon-assets": appNavCategories.assetsCompliance,
+    "domain-cbam": appNavCategories.assetsCompliance,
+    "domain-market-carbon": appNavCategories.filing,
     "domain-document-management": appNavCategories.management,
     "domain-uic": appNavCategories.account,
     "domain-uic-enterprise-management": appNavCategories.account,

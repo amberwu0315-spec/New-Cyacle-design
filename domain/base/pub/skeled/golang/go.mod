@@ -4,11 +4,7 @@ module go.cew.io/app/carbonnt/cyacle/skeled/basepub
 
 go 1.27.0
 
-<<<<<<< HEAD
-require go.yorun.ai/vine v0.15.5
-=======
-require go.yorun.ai/vine v0.21.3
->>>>>>> d410119 (update vine)
+require go.yorun.ai/vine v0.21.5
 
 require (
 	cloud.google.com/go v0.123.0 // indirect

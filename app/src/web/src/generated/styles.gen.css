@@ -2,8 +2,12 @@
 
 @import "@carbonnt-cyacle/web-base/globals.css";
 @import "@carbonnt-cyacle/web-accounting/globals.css";
+@import "@carbonnt-cyacle/web-carbon-assets/globals.css";
+@import "@carbonnt-cyacle/web-cbam/globals.css";
 @import "@carbonnt-cyacle/web-cfo/globals.css";
 @import "@carbonnt-cyacle/web-lca/globals.css";
+@import "@carbonnt-cyacle/web-market-carbon/globals.css";
+@import "@carbonnt-cyacle/web-material/globals.css";
 @import "@carbonnt-cyacle/web-meta/globals.css";
 @import "@carbonnt-cyacle/web-pcf-factor-api/globals.css";
 @import "@carbonnt-cyacle/web-project/globals.css";

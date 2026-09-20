@@ -229,23 +229,13 @@ importers:
         version: link:../../../.plot/web/virtual/skeled-lca-corepub
       '@carbonnt-cyacle/skeled-lcapub':
         specifier: workspace:*
-<<<<<<< HEAD
-        version: link:../../../.cache/web/workspace/skeld/lca-pub
-      '@carbonnt-cyacle/skeled-materialpub':
-        specifier: workspace:*
-        version: link:../../../.cache/web/workspace/skeld/material-pub
-=======
         version: link:../../../.plot/web/virtual/skeled-lcapub
-<<<<<<< HEAD
->>>>>>> d410119 (update vine)
-=======
       '@carbonnt-cyacle/skeled-market-carbonpub':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-market-carbonpub
       '@carbonnt-cyacle/skeled-materialpub':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-materialpub
->>>>>>> a010ac2 (add cbam)
       '@carbonnt-cyacle/skeled-metapub':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-metapub
@@ -335,23 +325,13 @@ importers:
         version: link:../../../.plot/web/virtual/web-lca
       '@carbonnt-cyacle/web-lca-core':
         specifier: workspace:*
-<<<<<<< HEAD
-        version: link:../../../.cache/web/workspace/web/lca-core
-      '@carbonnt-cyacle/web-material':
-        specifier: workspace:*
-        version: link:../../../.cache/web/workspace/web/material
-=======
         version: link:../../../.plot/web/virtual/web-lca-core
-<<<<<<< HEAD
->>>>>>> d410119 (update vine)
-=======
       '@carbonnt-cyacle/web-market-carbon':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-market-carbon
       '@carbonnt-cyacle/web-material':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-material
->>>>>>> a010ac2 (add cbam)
       '@carbonnt-cyacle/web-meta':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-meta

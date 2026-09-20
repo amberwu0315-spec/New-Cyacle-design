@@ -2,10 +2,7 @@
 /scripts/
 
 # PLOTTED - BEGIN
-<<<<<<< HEAD
-=======
 **/generated/
->>>>>>> 5eb4d42 (update vine)
 *.local
 .DS_Store
 .env
@@ -19,9 +16,6 @@
 .vite
 .vscode/
 .wrangler
-/app/seed/*.plotted.yaml
-/app/skel
-/app/skeled
 /app/src/server
 /dev.yaml
 /dist/
@@ -61,9 +55,4 @@ dist
 dist-ssr
 node_modules
 todos.json
-<<<<<<< HEAD
-vineModules.gen.ts
-vineStyles.gen.css
-=======
->>>>>>> d410119 (update vine)
 # PLOTTED - END
