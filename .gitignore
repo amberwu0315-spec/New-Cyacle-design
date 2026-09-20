@@ -2,6 +2,10 @@
 /scripts/
 
 # PLOTTED - BEGIN
+<<<<<<< HEAD
+=======
+**/generated/
+>>>>>>> 5eb4d42 (update vine)
 *.local
 .DS_Store
 .env
