@@ -221,6 +221,9 @@ importers:
       '@carbonnt-cyacle/skeled-lcapub':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-lcapub
+      '@carbonnt-cyacle/skeled-materialpub':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/skeled-materialpub
       '@carbonnt-cyacle/skeled-metapub':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-metapub
@@ -305,6 +308,9 @@ importers:
       '@carbonnt-cyacle/web-lca-core':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-lca-core
+      '@carbonnt-cyacle/web-material':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/web-material
       '@carbonnt-cyacle/web-meta':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-meta

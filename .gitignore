@@ -2,8 +2,7 @@
 /scripts/
 
 # PLOTTED - BEGIN
-**/generated/modules.gen.ts
-**/generated/styles.gen.css
+**/generated/
 *.local
 .DS_Store
 .env
@@ -35,6 +34,7 @@
 /domain/history
 /domain/lca
 /domain/lca.core
+/domain/material
 /domain/meta
 /domain/notice
 /domain/pcf.factor.api

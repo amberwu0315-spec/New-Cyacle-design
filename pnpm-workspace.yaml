@@ -84,6 +84,7 @@ packages:
   - ./.plot/web/virtual/skeled-historypub
   - ./.plot/web/virtual/skeled-lca-corepub
   - ./.plot/web/virtual/skeled-lcapub
+  - ./.plot/web/virtual/skeled-materialpub
   - ./.plot/web/virtual/skeled-metapub
   - ./.plot/web/virtual/skeled-noticepub
   - ./.plot/web/virtual/skeled-pcf-factor-apipub
@@ -112,6 +113,7 @@ packages:
   - ./.plot/web/virtual/web-history
   - ./.plot/web/virtual/web-lca
   - ./.plot/web/virtual/web-lca-core
+  - ./.plot/web/virtual/web-material
   - ./.plot/web/virtual/web-meta
   - ./.plot/web/virtual/web-notice
   - ./.plot/web/virtual/web-pcf-factor-api
