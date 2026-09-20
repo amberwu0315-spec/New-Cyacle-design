@@ -94,9 +94,6 @@ domains:
     - name: supply.chain
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/supply.chain.git
-    - name: material
-      source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/material.git
     - name: cbam
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/cbam.git
