@@ -87,6 +87,7 @@
     "dhtmlx-gantt": "catalog:web",
     "js-cookie": "catalog:web",
     "katex": "catalog:web",
+    "lightweight-charts": "catalog:web",
     "lucide-react": "catalog:web",
     "next-themes": "catalog:web",
     "react": "catalog:web",

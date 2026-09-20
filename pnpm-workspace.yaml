@@ -65,6 +65,7 @@ catalogs:
     'vitest': '^4.1.10'
     xlsx: ^0.18.5
     'zod': '^4.4.3'
+    "lightweight-charts": "^5.2.1"
 
 packages:
   # plot:workspace-begin
@@ -136,7 +137,9 @@ packages:
   - ./.plot/web/virtual/skeled-auditpub
   - ./.plot/web/virtual/skeled-basepub
   - ./.plot/web/virtual/skeled-calculation-corepub
+  - ./.plot/web/virtual/skeled-carbon-assetspub
   - ./.plot/web/virtual/skeled-categorypub
+  - ./.plot/web/virtual/skeled-cbampub
   - ./.plot/web/virtual/skeled-cfopub
   - ./.plot/web/virtual/skeled-factorpub
   - ./.plot/web/virtual/skeled-filepub
@@ -144,6 +147,8 @@ packages:
   - ./.plot/web/virtual/skeled-historypub
   - ./.plot/web/virtual/skeled-lca-corepub
   - ./.plot/web/virtual/skeled-lcapub
+  - ./.plot/web/virtual/skeled-market-carbonpub
+  - ./.plot/web/virtual/skeled-materialpub
   - ./.plot/web/virtual/skeled-metapub
   - ./.plot/web/virtual/skeled-noticepub
   - ./.plot/web/virtual/skeled-pcf-factor-apipub
@@ -164,7 +169,9 @@ packages:
   - ./.plot/web/virtual/web-audit
   - ./.plot/web/virtual/web-base
   - ./.plot/web/virtual/web-calculation-core
+  - ./.plot/web/virtual/web-carbon-assets
   - ./.plot/web/virtual/web-category
+  - ./.plot/web/virtual/web-cbam
   - ./.plot/web/virtual/web-cfo
   - ./.plot/web/virtual/web-factor
   - ./.plot/web/virtual/web-file
@@ -172,6 +179,8 @@ packages:
   - ./.plot/web/virtual/web-history
   - ./.plot/web/virtual/web-lca
   - ./.plot/web/virtual/web-lca-core
+  - ./.plot/web/virtual/web-market-carbon
+  - ./.plot/web/virtual/web-material
   - ./.plot/web/virtual/web-meta
   - ./.plot/web/virtual/web-notice
   - ./.plot/web/virtual/web-pcf-factor-api

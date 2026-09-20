@@ -97,3 +97,12 @@ domains:
     - name: material
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/material.git
+    - name: cbam
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/cbam.git
+    - name: market.carbon
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/market.carbon.git
+    - name: carbon.assets
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/carbon.assets.git
