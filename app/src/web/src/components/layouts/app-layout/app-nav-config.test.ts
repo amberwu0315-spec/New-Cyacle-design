@@ -52,6 +52,16 @@ function createDomain({
   }
 }
 
+function createOrganizationWorkspace(organizationCategory: string) {
+  return {
+    id: "workspace-1",
+    scope: "workspace-scope-1",
+    name: "Workspace",
+    belongType: "ORGANIZATION",
+    organizationCategory,
+  }
+}
+
 function createStandaloneAccountingDomain(): WebDomain {
   return {
     id: "accounting",
@@ -318,7 +328,7 @@ describe("configured app navigation", () => {
     ])
   })
 
-  it("groups carbon assets, CBAM and national carbon market filing into new categories", () => {
+  it("groups CBAM into accounting and carbon assets, national carbon market into management", () => {
     const config = createConfiguredAppNavConfig(
       [
         createDomain({
@@ -337,18 +347,49 @@ describe("configured app navigation", () => {
           sceneId: "domain-market-carbon",
         }),
       ],
-      { language: "zh-CN" },
+      {
+        language: "zh-CN",
+        workspace: createOrganizationWorkspace("ENTERPRISE_CUSTOMER"),
+      },
     )
 
     expect(config.categories.map((category) => category.title)).toEqual([
-      "资产与履约",
-      "填报",
+      "核算",
+      "管理",
     ])
-    expect(config.categories[0]?.sceneIds).toEqual([
+    expect(config.categories[0]?.sceneIds).toEqual(["domain-cbam"])
+    // 分组内顺序由 APP_NAV_SCENE_ORDER 决定，而非 webModules 注册顺序。
+    expect(config.categories[1]?.sceneIds).toEqual([
+      "domain-market-carbon",
       "domain-carbon-assets",
-      "domain-cbam",
     ])
-    expect(config.categories[1]?.sceneIds).toEqual(["domain-market-carbon"])
+  })
+
+  it("keeps the business unit entry above survey management in the foundation group", () => {
+    const config = createConfiguredAppNavConfig(
+      [
+        createDomain({
+          id: "supply.chain",
+          itemId: "survey-operations",
+          sceneId: "domain-supply-chain",
+        }),
+        createDomain({
+          id: "project",
+          itemId: "project-research-objects",
+          sceneId: "domain-project",
+        }),
+        createDomain({
+          id: "pcf.factor.api",
+          itemId: "background-data",
+          sceneId: "domain-pcf-factor-api",
+        }),
+      ],
+      { language: "zh-CN" },
+    )
+
+    expect(
+      config.categories.find((category) => category.title === "基础")?.sceneIds,
+    ).toEqual(["domain-pcf-factor-api", "domain-project", "domain-supply-chain"])
   })
 
   it("splits material into materials/activities/collection sibling scenes", () => {
@@ -429,6 +470,7 @@ describe("configured app navigation", () => {
     }
     const config = createConfiguredAppNavConfig([materialDomain], {
       language: "zh-CN",
+      workspace: createOrganizationWorkspace("ENTERPRISE_CUSTOMER"),
     })
 
     expect(config.scenes.map((scene) => scene.id)).toEqual([
@@ -452,5 +494,104 @@ describe("configured app navigation", () => {
       description: "发起收集并跟踪回收进度",
       defaultTo: "/material/collection/tasks",
     })
+  })
+
+  it("hides the management group for non-enterprise-customer organizations", () => {
+    const config = createConfiguredAppNavConfig(
+      [
+        createDomain({
+          id: "carbon.assets",
+          itemId: "carbon-assets-ledger-asset",
+          sceneId: "domain-carbon-assets",
+        }),
+        createDomain({
+          id: "project",
+          itemId: "project-research-objects",
+          sceneId: "domain-project",
+        }),
+      ],
+      {
+        language: "zh-CN",
+        workspace: createOrganizationWorkspace("SERVICE_PROVIDER"),
+      },
+    )
+
+    expect(config.scenes.map((scene) => scene.id)).toEqual(["domain-project"])
+    expect(config.categories.map((category) => category.title)).toEqual(["基础"])
+  })
+
+  it("hides the management group for personal workspaces", () => {
+    const config = createConfiguredAppNavConfig(
+      [
+        createDomain({
+          id: "carbon.assets",
+          itemId: "carbon-assets-ledger-asset",
+          sceneId: "domain-carbon-assets",
+        }),
+        createDomain({
+          id: "project",
+          itemId: "project-research-objects",
+          sceneId: "domain-project",
+        }),
+      ],
+      {
+        language: "zh-CN",
+        workspace: {
+          id: "workspace-1",
+          scope: "workspace-scope-1",
+          name: "Workspace",
+          belongType: "PERSIONAL",
+        },
+      },
+    )
+
+    expect(config.categories.map((category) => category.title)).toEqual(["基础"])
+  })
+
+  it("hides the management group before an organization workspace loads", () => {
+    const config = createConfiguredAppNavConfig(
+      [
+        createDomain({
+          id: "carbon.assets",
+          itemId: "carbon-assets-ledger-asset",
+          sceneId: "domain-carbon-assets",
+        }),
+        createDomain({
+          id: "project",
+          itemId: "project-research-objects",
+          sceneId: "domain-project",
+        }),
+      ],
+      { language: "zh-CN" },
+    )
+
+    expect(config.scenes.map((scene) => scene.id)).toEqual(["domain-project"])
+    expect(config.categories.map((category) => category.title)).toEqual(["基础"])
+  })
+
+  it("keeps the management group for enterprise customer organizations", () => {
+    const config = createConfiguredAppNavConfig(
+      [
+        createDomain({
+          id: "carbon.assets",
+          itemId: "carbon-assets-ledger-asset",
+          sceneId: "domain-carbon-assets",
+        }),
+        createDomain({
+          id: "project",
+          itemId: "project-research-objects",
+          sceneId: "domain-project",
+        }),
+      ],
+      {
+        language: "zh-CN",
+        workspace: createOrganizationWorkspace("ENTERPRISE_CUSTOMER"),
+      },
+    )
+
+    expect(config.categories.map((category) => category.title)).toEqual([
+      "基础",
+      "管理",
+    ])
   })
 })

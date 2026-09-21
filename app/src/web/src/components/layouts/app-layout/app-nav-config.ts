@@ -11,6 +11,17 @@ import { getMessages } from "#/lib/i18n/index.ts"
 
 export const DEFAULT_APP_HOME_TO = "/project/projects"
 
+const ENTERPRISE_CUSTOMER_ORGANIZATION_CATEGORY = "ENTERPRISE_CUSTOMER"
+
+function isEnterpriseCustomerWorkspace(
+  workspace: AppNavConfigOptions["workspace"],
+): boolean {
+  return (
+    workspace?.belongType === "ORGANIZATION" &&
+    workspace.organizationCategory === ENTERPRISE_CUSTOMER_ORGANIZATION_CATEGORY
+  )
+}
+
 /**
  * Optional product-specific navigation presentation filter. The underlying
  * routes remain registered when a caller supplies visibleSceneIds.
@@ -125,9 +136,42 @@ function splitMaterialModuleScenes(config: AppNavConfig): AppNavConfig {
   return { ...config, scenes }
 }
 
+/**
+ * 入口菜单在每个分组内的展示顺序（按 scene id）。
+ * 数组下标即顺序；未列出的 scene 稳定排在所属分组末尾（保留 webModules 注册顺序）。
+ *
+ * 待接入入口：对应 domain 尚未注册 nav，接入后需要在两处登记，否则会落到默认「业务应用」分组末尾：
+ * 本表插入顺序位置，并在 appNavSceneCategoryById 中登记所属分组。
+ * - 「工作督办」：基础分组首位（当前首位为 domain-pcf-factor-api）。
+ * - 「碳减排管理」：管理分组末位（当前末位为 domain-carbon-assets）。
+ */
+const APP_NAV_SCENE_ORDER = [
+  // 基础
+  "domain-pcf-factor-api", // 背景数据
+  "domain-project", // 业务单元 / 服务客户 / 研究对象（标签随 workspace 组织类型变化）
+  "domain-supply-chain", // 问卷管理（按组织类型可见）
+  // 核算
+  "domain-project--project-list", // 项目列表
+  "domain-accounting--accounting-cfp-accounting-tasks", // 产品碳足迹
+  "domain-accounting--accounting-lca-accounting-tasks", // 生命周期评价
+  "domain-cfo", // 组织碳足迹
+  "domain-cbam", // CBAM合规
+  // 管理
+  "domain-material", // 物料管理
+  "domain-material--activity", // 活动管理
+  "domain-material--collection", // 数据收集
+  "domain-market-carbon", // 全国碳市场填报
+  "domain-carbon-assets", // 碳资产管理
+  // 账号
+  "domain-uic", // 用户中心
+  "domain-uic-enterprise-management", // 企业管理
+] as const
+
 function groupAppNavConfig(config: AppNavConfig, options: AppNavConfigOptions = {}): AppNavConfig {
   type AppScene = AppNavConfig["scenes"][number]
   const appNavCategories = getAppNavCategories(options.language)
+  // 分组展示顺序。assetsCompliance / filing 当前已无 scene 归入（碳资产管理、全国碳市场填报已并入管理），
+  // 保留占位以便后续有 scene 复用时仍排在管理分组之前。
   const appNavCategoryOrder = [
     appNavCategories.basis,
     appNavCategories.accounting,
@@ -144,9 +188,12 @@ function groupAppNavConfig(config: AppNavConfig, options: AppNavConfigOptions = 
     "domain-supply-chain": appNavCategories.basis,
     "domain-accounting": appNavCategories.accounting,
     "domain-cfo": appNavCategories.accounting,
-    "domain-carbon-assets": appNavCategories.assetsCompliance,
-    "domain-cbam": appNavCategories.assetsCompliance,
-    "domain-market-carbon": appNavCategories.filing,
+    "domain-cbam": appNavCategories.accounting,
+    "domain-carbon-assets": appNavCategories.management,
+    "domain-market-carbon": appNavCategories.management,
+    "domain-material": appNavCategories.management,
+    "domain-material--activity": appNavCategories.management,
+    "domain-material--collection": appNavCategories.management,
     "domain-document-management": appNavCategories.management,
     "domain-uic": appNavCategories.account,
     "domain-uic-enterprise-management": appNavCategories.account,
@@ -216,7 +263,9 @@ function groupAppNavConfig(config: AppNavConfig, options: AppNavConfigOptions = 
       ]
     })
   })
-  const preferredSceneOrder = new Map([["domain-project--project-list", 0]])
+  const preferredSceneOrder = new Map(
+    APP_NAV_SCENE_ORDER.map((sceneId, index) => [sceneId as string, index]),
+  )
   const sceneIdsByCategory = new Map<string, Array<string>>()
 
   for (const scene of scenes) {
@@ -324,6 +373,34 @@ function filterAppNavScenes(
   }
 }
 
+/**
+ * 「管理」分组仅对企业客户组织可见。其它组织类型、个人工作空间或组织类型
+ * 尚未加载时，隐藏整个分组及其入口卡片；底层路由仍保持注册。
+ */
+function filterManagementCategoryByOrganizationType(
+  config: AppNavConfig,
+  options: AppNavConfigOptions = {},
+): AppNavConfig {
+  if (isEnterpriseCustomerWorkspace(options.workspace)) {
+    return config
+  }
+
+  const managementTitle = getAppNavCategories(options.language).management
+  const scenes = config.scenes.filter((scene) => scene.category !== managementTitle)
+  const categories = config.categories.filter(
+    (category) => category.title !== managementTitle,
+  )
+
+  return {
+    ...config,
+    scenes,
+    categories,
+    defaultSceneId: scenes.some((scene) => scene.id === config.defaultSceneId)
+      ? config.defaultSceneId
+      : (scenes[0]?.id ?? ""),
+  }
+}
+
 export function createConfiguredAppNavConfig(
   webDomains: ReadonlyArray<WebDomain>,
   options: ConfiguredAppNavConfigOptions = {},
@@ -335,11 +412,14 @@ export function createConfiguredAppNavConfig(
   )
 
   const config = filterAppNavScenes(
-    groupAppNavConfig(
-      splitMaterialModuleScenes(
-        splitUicEnterpriseManagementScene(
-          registration?.createNavConfig(options) ?? createAppNavConfig(webDomains, options),
+    filterManagementCategoryByOrganizationType(
+      groupAppNavConfig(
+        splitMaterialModuleScenes(
+          splitUicEnterpriseManagementScene(
+            registration?.createNavConfig(options) ?? createAppNavConfig(webDomains, options),
+          ),
         ),
+        options,
       ),
       options,
     ),
