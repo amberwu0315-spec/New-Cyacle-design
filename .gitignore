@@ -16,7 +16,6 @@
 .vite
 .vscode/
 .wrangler
-.cache/
 /app/src/server
 /dev.yaml
 /dist/
