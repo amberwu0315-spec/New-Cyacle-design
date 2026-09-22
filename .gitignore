@@ -5,7 +5,6 @@ go.work
 go.work.sum
 .cache/
 
-
 # PLOTTED - BEGIN
 **/generated/
 *.local
