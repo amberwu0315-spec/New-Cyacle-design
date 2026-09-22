@@ -1,0 +1,4 @@
+interface:
+  display_name: "Plot Web Best Practices"
+  short_description: "按任务主题索引加载 Plot Web 参考"
+  default_prompt: "使用 $plot-web-best-practices，按命中主题读取对应 topics 参考后完成这个 Plot Web 任务。"

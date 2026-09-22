@@ -1,0 +1,102 @@
+{
+  "skill_name": "plot-web-best-practices",
+  "evals": [
+    {
+      "id": "new-page",
+      "prompt": "新增一个数据列表页面，显示名称、状态和最近更新时间。请接入现有查询接口，并处理加载中、空数据和请求失败。",
+      "expected_output": "Agent 在第一次编辑前采用 plot-web-best-practices，先查看现有页面结构、组件和真实查询 API，再把页面放到正确的 feature/domain，并完成加载、成功、空态和错误态。",
+      "expectations": [
+        "The skill is adopted before editing Web code.",
+        "The agent uses the existing query/service contract instead of fake data.",
+        "Loading, success, empty and error states are implemented.",
+        "A relevant typecheck or test is run."
+      ]
+    },
+    {
+      "id": "new-route",
+      "prompt": "新增一个 /items/:id 路由，点击列表中的条目可以进入详情页，刷新页面后仍然可以打开。",
+      "expected_output": "Agent 采用 routing-and-layout 主题，按现有 Plot Web domain/router 方式注册参数路由，使用项目约定的懒加载方式，并验证点击、直接刷新和返回操作。",
+      "expectations": [
+        "The route is added through the existing router composition.",
+        "The route parameter is read from the router rather than from window.location.",
+        "The detail page supports loading and not-found/error behavior.",
+        "Route typecheck and refresh/back behavior are verified."
+      ]
+    },
+    {
+      "id": "component-style-fix",
+      "prompt": "修复信息卡片：长文本会撑破布局，移动端按钮也会溢出。只改这个组件的样式，不要改页面结构。",
+      "expected_output": "Agent 采用 styling 主题，先读取组件现有 token 和布局，使用响应式、换行或截断规则修复溢出，保留 focus 样式，并进行窄屏检查。",
+      "expectations": [
+        "The skill is used for a focused style fix.",
+        "Existing semantic tokens are reused instead of adding arbitrary colors.",
+        "Long text and narrow viewport behavior are handled without hiding focus.",
+        "The agent avoids unrelated structural refactoring."
+      ]
+    },
+    {
+      "id": "component-performance-fix",
+      "prompt": "数据表格有 500 行，每行都有相同的操作菜单，打开页面很慢。请减少重复渲染并保持菜单的键盘操作。",
+      "expected_output": "Agent 采用 react-performance 和 Base UI 主题，先确认重复渲染或重复浮层确实是问题，再选择合适的 memo、稳定 props 或共享 detached trigger，并验证键盘、Escape 和焦点恢复。",
+      "expectations": [
+        "The agent does not blindly add useMemo/useCallback everywhere.",
+        "A comparable render, mount or performance signal is checked before claiming improvement.",
+        "Detached trigger is used only when one shared menu instance fits the behavior.",
+        "Keyboard and focus behavior remain intact."
+      ]
+    },
+    {
+      "id": "form-and-mutation",
+      "prompt": "在详情页增加“修改描述”表单，保存成功后页面立即显示新备注，保存中不能重复提交。",
+      "expected_output": "Agent 采用 data-and-auth（如接口受保护）和 verification 主题，先确认真实 mutation 方法和输入类型，再实现表单校验、pending/error/success 状态与精确缓存更新。",
+      "expectations": [
+        "The mutation method and input shape come from the real generated client.",
+        "The form prevents duplicate submission and shows validation/server errors.",
+        "The affected detail data is updated or invalidated after success.",
+        "A focused test or typecheck is run."
+      ]
+    },
+    {
+      "id": "add-ui-component",
+      "prompt": "在现有 Base UI 组件库中加入一个 Tooltip，并在列表中的状态图标上使用它。",
+      "expected_output": "Agent 采用 base-ui-and-shadcn 主题，先检查现有组件封装和公共出口，复用已有依赖和样式，补充 Tooltip 导出后再验证组件库和数据列表。",
+      "expectations": [
+        "Existing Base UI/shadcn conventions are followed.",
+        "The agent checks whether the component already exists before adding it.",
+        "The component is exported through the intended public barrel.",
+        "Tooltip keyboard and hover/focus behavior are checked."
+      ]
+    },
+    {
+      "id": "small-typescript-fix",
+      "prompt": "修复状态徽章的 TypeScript 报错，改动范围只限这个组件。",
+      "expected_output": "即使只是一个组件的类型修复，Agent 仍在编辑前采用本技能，读取真实 props/type 定义，做最小手写源码修改，并运行聚焦 typecheck。",
+      "expectations": [
+        "Small TypeScript fixes still trigger the skill.",
+        "Generated files are not edited to hide the error.",
+        "The change is limited to the requested component.",
+        "A relevant typecheck is run."
+      ]
+    },
+    {
+      "id": "negative-server-only",
+      "prompt": "给业务服务增加一个数据库字段和服务端接口，前端页面不需要变化。",
+      "expected_output": "不采用 plot-web-best-practices；这是纯服务端契约和数据库变更。",
+      "expectations": [
+        "A server-only request is a negative trigger.",
+        "Web topics are not loaded unnecessarily.",
+        "No Web verification is claimed."
+      ]
+    },
+    {
+      "id": "negative-design-only",
+      "prompt": "只输出详情页的视觉稿和交互说明，暂时不写代码。",
+      "expected_output": "不采用 plot-web-best-practices 进行编码；这是纯设计任务，进入实现阶段后再采用本技能。",
+      "expectations": [
+        "A design-only request is a negative trigger.",
+        "No frontend source files are modified.",
+        "The agent does not claim code verification."
+      ]
+    }
+  ]
+}
