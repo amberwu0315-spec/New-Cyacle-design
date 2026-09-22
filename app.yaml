@@ -103,4 +103,3 @@ domains:
     - name: carbon.assets
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/carbon.assets.git
-
