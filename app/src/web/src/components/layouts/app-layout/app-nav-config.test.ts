@@ -3,6 +3,7 @@ import { Building2 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 import type { WebDomain } from "@carbonnt-cyacle/web-base"
+import { webDomain as workSupervisionWebDomain } from "@carbonnt-cyacle/web-work-supervision"
 
 import { createConfiguredAppNavConfig } from "./app-nav-config.ts"
 
@@ -592,6 +593,35 @@ describe("configured app navigation", () => {
     expect(config.categories.map((category) => category.title)).toEqual([
       "基础",
       "管理",
+    ])
+  })
+
+  it("puts the work.supervision entry into the management category", () => {
+    const config = createConfiguredAppNavConfig([workSupervisionWebDomain], {
+      language: "zh-CN",
+      workspace: createOrganizationWorkspace("ENTERPRISE_CUSTOMER"),
+    })
+    const managementCategory = config.categories.find((category) => category.title === "管理")
+    const scene = config.scenes.find((candidate) =>
+      managementCategory?.sceneIds.includes(candidate.id),
+    )
+
+    expect(managementCategory?.sceneIds).toHaveLength(1)
+    // 侧栏「管理」分类下的场景卡片名取该场景第一个菜单项 —— 与 demo 对齐后，
+    // 该模块的条目顺序是 首页(工作督办) → 管理事项 → 创建事项 → 事项填写 → 事项模板。
+    expect(scene).toMatchObject({
+      label: "工作督办",
+      description: "集中查看待处理事项、快捷入口与临期事项",
+      defaultTo: "/work-supervision",
+      category: "管理",
+    })
+    expect(scene?.groups[0]?.items[0]?.to).toBe("/work-supervision")
+    expect(scene?.groups[0]?.items.map((item) => item.to)).toEqual([
+      "/work-supervision",
+      "/work-supervision/tasks",
+      "/work-supervision/tasks/new",
+      "/work-supervision/fill",
+      "/work-supervision/templates",
     ])
   })
 })

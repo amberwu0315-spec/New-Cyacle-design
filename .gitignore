@@ -4,7 +4,7 @@
 go.work
 go.work.sum
 .cache/
-
+.gocache/
 
 # PLOTTED - BEGIN
 **/generated/
@@ -55,6 +55,7 @@ go.work.sum
 /domain/uic
 /domain/unit
 /domain/wecom
+/domain/work.supervision
 __unconfig*
 dist
 dist-ssr
