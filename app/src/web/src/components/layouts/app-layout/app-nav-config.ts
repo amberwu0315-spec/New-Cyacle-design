@@ -92,14 +92,13 @@ function splitUicEnterpriseManagementScene(config: AppNavConfig): AppNavConfig {
 }
 
 const MATERIAL_MODULE_SCENE_META: Record<string, { description: string }> = {
-  activity: { description: "活动类型、活动组、活动和活动记录" },
   collection: { description: "发起收集并跟踪回收进度" },
 }
 
 /**
- * 把 material 领域里「物料管理 / 活动管理 / 数据收集」三组入口提升为并列的
- * scene，对齐 material-demo 的入口菜单结构。material 领域只有一个 nav
- * capability，因此三组先在一个 scene 里声明，再在这里拆成三个同级 scene。
+ * material 领域只有一个 nav capability，场景内声明了「物料管理 / 活动管理 / 数据收集」
+ * 三组入口。物料与活动同属「物料/活动管理」一张卡片（侧栏里是它的两个一级菜单），
+ * 只有「数据收集」需要提升为独立的同级 scene。
  */
 function splitMaterialModuleScenes(config: AppNavConfig): AppNavConfig {
   const materialSceneIndex = config.scenes.findIndex((scene) => scene.id === "domain-material")
@@ -142,26 +141,33 @@ function splitMaterialModuleScenes(config: AppNavConfig): AppNavConfig {
  *
  * 注意：新接入的 domain 需要在本表登记插入顺序位置，并在 appNavSceneCategoryById
  * 中登记所属分组，否则会落到默认「业务应用」分组末尾。
- * - 「工作督办」：基础分组首位（当前首位为 domain-pcf-factor-api）。
+ * 被 domain 分类拆出来的 scene id 形如 `<scene id>--<该分组第一个菜单 id>`，登记时
+ * 必须用拆分后的 id（例如产品碳足迹是 `domain-accounting--accounting-cfp-accounting-tasks`，
+ * 生命周期评价是 `domain-accounting--accounting-lca-accounting-tasks`）。
+ *
+ * 未接入的模块（其 web domain 尚未提供 nav capability，卡片暂时不会出现）：
+ * 工作督办、CBAM合规、全国碳市场填报、碳资产管理。
  */
 const APP_NAV_SCENE_ORDER = [
   // 基础
+  "domain-work-supervision", // 工作督办（未接入，接入后按实际 scene id 校正）
   "domain-pcf-factor-api", // 背景数据
   "domain-project", // 业务单元 / 服务客户 / 研究对象（标签随 workspace 组织类型变化）
   "domain-supply-chain", // 问卷管理（按组织类型可见）
+  "domain-material", // 物料/活动管理
+  "domain-material--collection", // 数据收集
   // 核算
   "domain-project--project-list", // 项目列表
-  "domain-accounting--accounting-cfp-accounting-tasks", // 产品碳足迹
+  "domain-accounting--accounting-cfp-accounting-tasks", // 产品碳足迹（含建模规则子项）
   "domain-accounting--accounting-lca-accounting-tasks", // 生命周期评价
   "domain-cfo", // 组织碳足迹
-  "domain-cbam", // CBAM合规
+  "domain-cbam", // CBAM合规（未接入）
   // 管理
-  "domain-material", // 物料管理
-  "domain-material--activity", // 活动管理
-  "domain-material--collection", // 数据收集
-  "domain-market-carbon", // 全国碳市场填报
-  "domain-carbon-assets", // 碳资产管理
+  "domain-supply-chain--supplier-carbon-management", // 供应链碳管理（企业客户可见）
+  "domain-market-carbon", // 全国碳市场填报（未接入）
+  "domain-carbon-assets", // 碳资产管理（未接入）
   "domain-carbon-reduction", // 碳减排管理
+  "domain-accounting--carbon-verification-accounting-support", // 碳核查支撑（企业客户可见）
   // 账号
   "domain-uic", // 用户中心
   "domain-uic-enterprise-management", // 企业管理
@@ -170,8 +176,9 @@ const APP_NAV_SCENE_ORDER = [
 function groupAppNavConfig(config: AppNavConfig, options: AppNavConfigOptions = {}): AppNavConfig {
   type AppScene = AppNavConfig["scenes"][number]
   const appNavCategories = getAppNavCategories(options.language)
-  // 分组展示顺序。assetsCompliance / filing 当前已无 scene 归入（碳资产管理、全国碳市场填报已并入管理），
-  // 保留占位以便后续有 scene 复用时仍排在管理分组之前。
+  // 分组展示顺序：基础 → 核算 → 管理 → 账号。
+  // assetsCompliance / filing / dashboard / platform 当前已无 scene 归入（碳资产管理、
+  // 全国碳市场填报已并入管理），保留占位以便后续有 scene 复用时仍排在账号分组之前。
   const appNavCategoryOrder = [
     appNavCategories.basis,
     appNavCategories.accounting,
@@ -183,18 +190,20 @@ function groupAppNavConfig(config: AppNavConfig, options: AppNavConfigOptions = 
     appNavCategories.account,
   ]
   const appNavSceneCategoryById: Record<string, string> = {
+    "domain-work-supervision": appNavCategories.basis, // 待接入
     "domain-project": appNavCategories.basis,
     "domain-pcf-factor-api": appNavCategories.basis,
     "domain-supply-chain": appNavCategories.basis,
+    "domain-material": appNavCategories.basis,
+    "domain-material--collection": appNavCategories.basis,
     "domain-accounting": appNavCategories.accounting,
     "domain-cfo": appNavCategories.accounting,
-    "domain-cbam": appNavCategories.accounting,
-    "domain-carbon-assets": appNavCategories.management,
+    "domain-cbam": appNavCategories.accounting, // 待接入
+    "domain-supply-chain--supplier-carbon-management": appNavCategories.management,
+    "domain-carbon-assets": appNavCategories.management, // 待接入
     "domain-carbon-reduction": appNavCategories.management,
-    "domain-market-carbon": appNavCategories.management,
-    "domain-material": appNavCategories.management,
-    "domain-material--activity": appNavCategories.management,
-    "domain-material--collection": appNavCategories.management,
+    "domain-market-carbon": appNavCategories.management, // 待接入
+    "domain-accounting--carbon-verification-accounting-support": appNavCategories.management,
     "domain-document-management": appNavCategories.management,
     "domain-uic": appNavCategories.account,
     "domain-uic-enterprise-management": appNavCategories.account,

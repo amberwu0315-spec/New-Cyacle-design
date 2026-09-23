@@ -3,6 +3,14 @@ import { Building2 } from "lucide-react"
 import type { LucideIcon } from "lucide-react"
 
 import type { WebDomain } from "@carbonnt-cyacle/web-base"
+import { webDomain as accountingWebDomain } from "@carbonnt-cyacle/web-accounting"
+import { webDomain as carbonReductionWebDomain } from "@carbonnt-cyacle/web-carbon-reduction"
+import { webDomain as cfoWebDomain } from "@carbonnt-cyacle/web-cfo"
+import { webDomain as materialWebDomain } from "@carbonnt-cyacle/web-material"
+import { webDomain as pcfFactorApiWebDomain } from "@carbonnt-cyacle/web-pcf-factor-api"
+import { webDomain as projectWebDomain } from "@carbonnt-cyacle/web-project"
+import { webDomain as supplyChainWebDomain } from "@carbonnt-cyacle/web-supply-chain"
+import { webDomain as uicWebDomain } from "@carbonnt-cyacle/web-uic"
 import { webDomain as workSupervisionWebDomain } from "@carbonnt-cyacle/web-work-supervision"
 
 import { createConfiguredAppNavConfig } from "./app-nav-config.ts"
@@ -393,21 +401,80 @@ describe("configured app navigation", () => {
     ).toEqual(["domain-pcf-factor-api", "domain-project", "domain-supply-chain"])
   })
 
-  it("splits material into materials/activities/collection sibling scenes", () => {
+  it("orders every entry card by the configured foundation/accounting/management/account layout", () => {
+    // 真实领域：验证「基础 → 核算 → 管理 → 账号」四组卡片的组成与顺序。
+    // 工作督办、CBAM合规、全国碳市场填报、碳资产管理尚未接入（无 nav capability），
+    // 接入后分别落在 基础首位 / 核算末位 / 管理第三位 / 管理第四位。
+    const config = createConfiguredAppNavConfig(
+      [
+        supplyChainWebDomain,
+        projectWebDomain,
+        accountingWebDomain,
+        cfoWebDomain,
+        pcfFactorApiWebDomain,
+        materialWebDomain,
+        carbonReductionWebDomain,
+        uicWebDomain,
+      ],
+      {
+        language: "zh-CN",
+        workspace: createOrganizationWorkspace("ENTERPRISE_CUSTOMER"),
+      },
+    )
+
+    expect(config.categories.map((category) => [category.title, category.sceneIds])).toEqual([
+      [
+        "基础",
+        [
+          "domain-pcf-factor-api",
+          "domain-project",
+          "domain-supply-chain",
+          "domain-material",
+          "domain-material--collection",
+        ],
+      ],
+      [
+        "核算",
+        [
+          "domain-project--project-list",
+          "domain-accounting--accounting-cfp-accounting-tasks",
+          "domain-accounting--accounting-lca-accounting-tasks",
+          "domain-cfo",
+        ],
+      ],
+      [
+        "管理",
+        [
+          "domain-supply-chain--supplier-carbon-management",
+          "domain-carbon-reduction",
+          "domain-accounting--carbon-verification-accounting-support",
+        ],
+      ],
+      ["账号", ["domain-uic", "domain-uic-enterprise-management"]],
+    ])
+    // 侧栏分组标题即一级菜单，物料/活动管理卡片内是两个一级分组。
+    const materialScene = config.scenes.find((scene) => scene.id === "domain-material")
+    expect(materialScene?.groups.map((group) => group.title)).toEqual([
+      "物料管理",
+      "活动管理",
+    ])
+  })
+
+  it("keeps materials and activities in one card and promotes collection to its own card", () => {
     const materialDomain: WebDomain = {
       id: "material",
       routes: [],
       capabilities: {
         nav: () => ({
           id: "domain-material",
-          label: "物料管理",
-          desc: "物料类型、物料组和物料记录",
+          label: "物料/活动管理",
+          desc: "维护物料与活动的类型、分组和记录",
           icon: TestIcon,
           defaultTo: "/material/materials/types",
           groups: [
             {
               id: "material-master",
-              title: null,
+              title: "物料管理",
               items: [
                 {
                   id: "material-types",
@@ -450,6 +517,27 @@ describe("configured app navigation", () => {
                   to: "/material/activities/types",
                   icon: TestIcon,
                 },
+                {
+                  id: "activity-groups",
+                  label: "活动组",
+                  desc: "活动组",
+                  to: "/material/activities/groups",
+                  icon: TestIcon,
+                },
+                {
+                  id: "activity-items",
+                  label: "活动",
+                  desc: "活动",
+                  to: "/material/activities/items",
+                  icon: TestIcon,
+                },
+                {
+                  id: "activity-records",
+                  label: "活动记录",
+                  desc: "活动记录",
+                  to: "/material/activities/records",
+                  icon: TestIcon,
+                },
               ],
             },
             {
@@ -474,27 +562,33 @@ describe("configured app navigation", () => {
       workspace: createOrganizationWorkspace("ENTERPRISE_CUSTOMER"),
     })
 
+    // 物料/活动管理是一张卡（侧栏里两个一级分组），数据收集是另一张卡。
     expect(config.scenes.map((scene) => scene.id)).toEqual([
       "domain-material",
-      "domain-material--activity",
       "domain-material--collection",
     ])
-    expect(config.scenes[0]?.groups[0]?.items.map((item) => item.id)).toEqual([
-      "material-types",
-      "material-groups",
-      "material-items",
-      "material-records",
+    expect(config.scenes[0]).toMatchObject({
+      label: "物料/活动管理",
+      description: "维护物料与活动的类型、分组和记录",
+      defaultTo: "/material/materials/types",
+      category: "基础",
+    })
+    expect(
+      config.scenes[0]?.groups.map((group) => [group.title, group.items.length]),
+    ).toEqual([
+      ["物料管理", 4],
+      ["活动管理", 4],
     ])
     expect(config.scenes[1]).toMatchObject({
-      label: "活动管理",
-      description: "活动类型、活动组、活动和活动记录",
-      defaultTo: "/material/activities/types",
-    })
-    expect(config.scenes[2]).toMatchObject({
       label: "数据收集",
       description: "发起收集并跟踪回收进度",
       defaultTo: "/material/collection/tasks",
+      category: "基础",
     })
+    expect(config.categories.find((category) => category.title === "基础")?.sceneIds).toEqual([
+      "domain-material",
+      "domain-material--collection",
+    ])
   })
 
   it("groups carbon reduction management into management after carbon assets", () => {
@@ -624,32 +718,36 @@ describe("configured app navigation", () => {
     ])
   })
 
-  it("puts the work.supervision entry into the management category", () => {
-    const config = createConfiguredAppNavConfig([workSupervisionWebDomain], {
+  it("reserves the foundation group's first slot for the work supervision entry", () => {
+    // work.supervision 尚未接入（当前 web domain 只是没有 nav capability 的占位），
+    // 因此暂时不会产生入口卡片；APP_NAV_SCENE_ORDER 已把「基础」首位预留给它，
+    // 并把它排在背景数据之前。模块接入后，基础分组的顺序即：
+    // 工作督办 → 背景数据 → 业务单元 → 问卷管理 → 物料/活动管理 → 数据收集。
+    const placeholderConfig = createConfiguredAppNavConfig([workSupervisionWebDomain], {
       language: "zh-CN",
       workspace: createOrganizationWorkspace("ENTERPRISE_CUSTOMER"),
     })
-    const managementCategory = config.categories.find((category) => category.title === "管理")
-    const scene = config.scenes.find((candidate) =>
-      managementCategory?.sceneIds.includes(candidate.id),
+    expect(placeholderConfig.scenes).toEqual([])
+
+    const config = createConfiguredAppNavConfig(
+      [
+        createDomain({
+          id: "work.supervision",
+          itemId: "work-supervision-home",
+          sceneId: "domain-work-supervision",
+          to: "/work-supervision",
+        }),
+        pcfFactorApiWebDomain,
+      ],
+      {
+        language: "zh-CN",
+        workspace: createOrganizationWorkspace("ENTERPRISE_CUSTOMER"),
+      },
     )
 
-    expect(managementCategory?.sceneIds).toHaveLength(1)
-    // 侧栏「管理」分类下的场景卡片名取该场景第一个菜单项 —— 与 demo 对齐后，
-    // 该模块的条目顺序是 首页(工作督办) → 管理事项 → 创建事项 → 事项填写 → 事项模板。
-    expect(scene).toMatchObject({
-      label: "工作督办",
-      description: "集中查看待处理事项、快捷入口与临期事项",
-      defaultTo: "/work-supervision",
-      category: "管理",
-    })
-    expect(scene?.groups[0]?.items[0]?.to).toBe("/work-supervision")
-    expect(scene?.groups[0]?.items.map((item) => item.to)).toEqual([
-      "/work-supervision",
-      "/work-supervision/tasks",
-      "/work-supervision/tasks/new",
-      "/work-supervision/fill",
-      "/work-supervision/templates",
+    expect(config.categories.find((category) => category.title === "基础")?.sceneIds).toEqual([
+      "domain-work-supervision",
+      "domain-pcf-factor-api",
     ])
   })
 })
