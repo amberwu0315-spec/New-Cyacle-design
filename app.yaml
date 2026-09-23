@@ -107,3 +107,6 @@ domains:
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/carbon.reduction.git
 
+    - name: work.supervision
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/work.supervision.git

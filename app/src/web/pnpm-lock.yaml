@@ -275,6 +275,9 @@ importers:
       '@carbonnt-cyacle/skeled-wecompub':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-wecompub
+      '@carbonnt-cyacle/skeled-work-supervisionpub':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/skeled-work-supervisionpub
       '@carbonnt-cyacle/web-accounting':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-accounting
@@ -374,6 +377,9 @@ importers:
       '@carbonnt-cyacle/web-wecom':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-wecom
+      '@carbonnt-cyacle/web-work-supervision':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/web-work-supervision
       '@cew-lib/amap':
         specifier: catalog:web
         version: 1.0.2(clsx@2.1.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)

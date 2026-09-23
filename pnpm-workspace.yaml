@@ -102,6 +102,7 @@ packages:
   - ./.plot/web/virtual/skeled-uicpub
   - ./.plot/web/virtual/skeled-unitpub
   - ./.plot/web/virtual/skeled-wecompub
+  - ./.plot/web/virtual/skeled-work-supervisionpub
   - ./.plot/web/virtual/web-accounting
   - ./.plot/web/virtual/web-accounting-core
   - ./.plot/web/virtual/web-agent
@@ -135,5 +136,6 @@ packages:
   - ./.plot/web/virtual/web-uic
   - ./.plot/web/virtual/web-unit
   - ./.plot/web/virtual/web-wecom
+  - ./.plot/web/virtual/web-work-supervision
   - ./app/src/web
   # plot:workspace-end
