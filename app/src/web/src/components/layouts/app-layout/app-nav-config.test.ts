@@ -496,6 +496,34 @@ describe("configured app navigation", () => {
     })
   })
 
+  it("groups carbon reduction management into management after carbon assets", () => {
+    const config = createConfiguredAppNavConfig(
+      [
+        createDomain({
+          id: "carbon.reduction",
+          itemId: "carbon-reduction-targets",
+          sceneId: "domain-carbon-reduction",
+          to: "/carbon-reduction/targets",
+        }),
+        createDomain({
+          id: "carbon.assets",
+          itemId: "carbon-assets-ledger-asset",
+          sceneId: "domain-carbon-assets",
+        }),
+      ],
+      {
+        language: "zh-CN",
+        workspace: createOrganizationWorkspace("ENTERPRISE_CUSTOMER"),
+      },
+    )
+
+    expect(config.categories.map((category) => category.title)).toEqual(["管理"])
+    expect(config.categories[0]?.sceneIds).toEqual([
+      "domain-carbon-assets",
+      "domain-carbon-reduction",
+    ])
+  })
+
   it("hides the management group for non-enterprise-customer organizations", () => {
     const config = createConfiguredAppNavConfig(
       [

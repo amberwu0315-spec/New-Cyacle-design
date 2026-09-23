@@ -203,6 +203,9 @@ importers:
       '@carbonnt-cyacle/skeled-carbon-assetspub':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-carbon-assetspub
+      '@carbonnt-cyacle/skeled-carbon-reductionpub':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/skeled-carbon-reductionpub
       '@carbonnt-cyacle/skeled-categorypub':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-categorypub
@@ -299,6 +302,9 @@ importers:
       '@carbonnt-cyacle/web-carbon-assets':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-carbon-assets
+      '@carbonnt-cyacle/web-carbon-reduction':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/web-carbon-reduction
       '@carbonnt-cyacle/web-category':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-category

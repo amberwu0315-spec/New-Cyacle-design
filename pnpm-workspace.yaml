@@ -78,6 +78,7 @@ packages:
   - ./.plot/web/virtual/skeled-basepub
   - ./.plot/web/virtual/skeled-calculation-corepub
   - ./.plot/web/virtual/skeled-carbon-assetspub
+  - ./.plot/web/virtual/skeled-carbon-reductionpub
   - ./.plot/web/virtual/skeled-categorypub
   - ./.plot/web/virtual/skeled-cbampub
   - ./.plot/web/virtual/skeled-cfopub
@@ -110,6 +111,7 @@ packages:
   - ./.plot/web/virtual/web-base
   - ./.plot/web/virtual/web-calculation-core
   - ./.plot/web/virtual/web-carbon-assets
+  - ./.plot/web/virtual/web-carbon-reduction
   - ./.plot/web/virtual/web-category
   - ./.plot/web/virtual/web-cbam
   - ./.plot/web/virtual/web-cfo

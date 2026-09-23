@@ -31,6 +31,7 @@ go.work.sum
 /domain/audit
 /domain/calculation.core
 /domain/carbon.assets
+/domain/carbon.reduction
 /domain/category
 /domain/cbam
 /domain/cfo

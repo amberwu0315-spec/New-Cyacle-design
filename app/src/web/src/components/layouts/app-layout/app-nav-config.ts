@@ -140,10 +140,9 @@ function splitMaterialModuleScenes(config: AppNavConfig): AppNavConfig {
  * 入口菜单在每个分组内的展示顺序（按 scene id）。
  * 数组下标即顺序；未列出的 scene 稳定排在所属分组末尾（保留 webModules 注册顺序）。
  *
- * 待接入入口：对应 domain 尚未注册 nav，接入后需要在两处登记，否则会落到默认「业务应用」分组末尾：
- * 本表插入顺序位置，并在 appNavSceneCategoryById 中登记所属分组。
+ * 注意：新接入的 domain 需要在本表登记插入顺序位置，并在 appNavSceneCategoryById
+ * 中登记所属分组，否则会落到默认「业务应用」分组末尾。
  * - 「工作督办」：基础分组首位（当前首位为 domain-pcf-factor-api）。
- * - 「碳减排管理」：管理分组末位（当前末位为 domain-carbon-assets）。
  */
 const APP_NAV_SCENE_ORDER = [
   // 基础
@@ -162,6 +161,7 @@ const APP_NAV_SCENE_ORDER = [
   "domain-material--collection", // 数据收集
   "domain-market-carbon", // 全国碳市场填报
   "domain-carbon-assets", // 碳资产管理
+  "domain-carbon-reduction", // 碳减排管理
   // 账号
   "domain-uic", // 用户中心
   "domain-uic-enterprise-management", // 企业管理
@@ -190,6 +190,7 @@ function groupAppNavConfig(config: AppNavConfig, options: AppNavConfigOptions = 
     "domain-cfo": appNavCategories.accounting,
     "domain-cbam": appNavCategories.accounting,
     "domain-carbon-assets": appNavCategories.management,
+    "domain-carbon-reduction": appNavCategories.management,
     "domain-market-carbon": appNavCategories.management,
     "domain-material": appNavCategories.management,
     "domain-material--activity": appNavCategories.management,
