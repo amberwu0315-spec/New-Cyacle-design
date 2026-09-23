@@ -144,13 +144,19 @@ function splitMaterialModuleScenes(config: AppNavConfig): AppNavConfig {
  * 被 domain 分类拆出来的 scene id 形如 `<scene id>--<该分组第一个菜单 id>`，登记时
  * 必须用拆分后的 id（例如产品碳足迹是 `domain-accounting--accounting-cfp-accounting-tasks`，
  * 生命周期评价是 `domain-accounting--accounting-lca-accounting-tasks`）。
+ * 判断方法：domain 的 nav 里只要给条目标了 `category`，场景就会被拆、id 就带后缀；
+ * 标成别的分类（如 management）但希望卡片落在基础/核算时，app 层必须用带后缀的 id 覆盖。
  *
- * 未接入的模块（其 web domain 尚未提供 nav capability，卡片暂时不会出现）：
- * 工作督办、CBAM合规、全国碳市场填报、碳资产管理。
+ * 暂未接入的模块（其 web domain 尚未提供 nav capability，卡片不会出现）：
+ * CBAM合规、全国碳市场填报、碳资产管理。
  */
 const APP_NAV_SCENE_ORDER = [
   // 基础
-  "domain-work-supervision", // 工作督办（未接入，接入后按实际 scene id 校正）
+  // 工作督办：模块自身把 5 个菜单都标了 category: "management"，所以会被拆成
+  // `<scene id>--<首个菜单 id>` 的场景，这里必须用拆分后的 id 才能命中；
+  // 不带后缀的写法一并登记，模块改写法也不会掉到分组末尾。
+  "domain-work-supervision--work-supervision-home",
+  "domain-work-supervision",
   "domain-pcf-factor-api", // 背景数据
   "domain-project", // 业务单元 / 服务客户 / 研究对象（标签随 workspace 组织类型变化）
   "domain-supply-chain", // 问卷管理（按组织类型可见）
@@ -190,7 +196,11 @@ function groupAppNavConfig(config: AppNavConfig, options: AppNavConfigOptions = 
     appNavCategories.account,
   ]
   const appNavSceneCategoryById: Record<string, string> = {
-    "domain-work-supervision": appNavCategories.basis, // 待接入
+    // 工作督办：模块把 5 个菜单都标了 category: "management"，场景会被拆成
+    // `domain-work-supervision--work-supervision-home`；拆分场景的 id 也要在这里登记，
+    // 否则会回落到模块自己声明的「管理」。不带后缀的写法一并登记，模块改写法也不会掉。
+    "domain-work-supervision": appNavCategories.basis,
+    "domain-work-supervision--work-supervision-home": appNavCategories.basis,
     "domain-project": appNavCategories.basis,
     "domain-pcf-factor-api": appNavCategories.basis,
     "domain-supply-chain": appNavCategories.basis,
@@ -259,13 +269,18 @@ function groupAppNavConfig(config: AppNavConfig, options: AppNavConfigOptions = 
         return [{ ...scene, category: sceneCategory, groups }]
       }
 
+      // 拆分出来的场景 id 是 `<原 scene id>--<首个菜单 id>`。域自己声明的 category 只是
+      // 「归属建议」，app 层的 appNavSceneCategoryById 必须能整体改判（例如工作督办的菜单
+      // 都标了 management，但产品要求这张卡放在「基础」），否则模块自带分类会让覆盖表失效。
+      const splitSceneId = `${scene.id}--${firstItem.id}`
+
       return [
         {
           ...scene,
-          id: `${scene.id}--${firstItem.id}`,
+          id: splitSceneId,
           label: firstItem.label,
           description: firstItem.description,
-          category: appNavCategoryByKey[categoryKey] ?? categoryKey,
+          category: appNavSceneCategoryById[splitSceneId] ?? appNavCategoryByKey[categoryKey] ?? categoryKey,
           icon: firstItem.icon,
           defaultTo: firstItem.to,
           groups,

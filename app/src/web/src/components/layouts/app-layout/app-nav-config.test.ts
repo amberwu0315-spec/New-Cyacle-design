@@ -718,17 +718,11 @@ describe("configured app navigation", () => {
     ])
   })
 
-  it("reserves the foundation group's first slot for the work supervision entry", () => {
-    // work.supervision 尚未接入（当前 web domain 只是没有 nav capability 的占位），
-    // 因此暂时不会产生入口卡片；APP_NAV_SCENE_ORDER 已把「基础」首位预留给它，
-    // 并把它排在背景数据之前。模块接入后，基础分组的顺序即：
-    // 工作督办 → 背景数据 → 业务单元 → 问卷管理 → 物料/活动管理 → 数据收集。
-    const placeholderConfig = createConfiguredAppNavConfig([workSupervisionWebDomain], {
-      language: "zh-CN",
-      workspace: createOrganizationWorkspace("ENTERPRISE_CUSTOMER"),
-    })
-    expect(placeholderConfig.scenes).toEqual([])
-
+  it("puts the work supervision entry at the top of the foundation group", () => {
+    // 回归：work.supervision 的 nav 把 5 个菜单都标了 category: "management"，场景因此
+    // 被拆成 `domain-work-supervision--work-supervision-home`。app 层必须用这个带后缀的 id
+    // 才能把它从「管理」改判到「基础」；只登记不带后缀的 id 会命中不了，卡片掉进管理列末尾
+    // （dev 上已经踩过）。这里用同名 stub 场景占位校验顺序，模块接入后由下面的真实模块用例接管。
     const config = createConfiguredAppNavConfig(
       [
         createDomain({
@@ -749,5 +743,89 @@ describe("configured app navigation", () => {
       "domain-work-supervision",
       "domain-pcf-factor-api",
     ])
+  })
+
+  it("moves the split work supervision scene (all items marked management) into the foundation group", () => {
+    // 真实模块形态：分组内 5 个菜单都带 category: "management"，于是场景被拆成
+    // `domain-work-supervision--work-supervision-home`，模块自身声明的分类是「管理」。
+    const workSupervisionDomain: WebDomain = {
+      id: "work.supervision",
+      routes: [],
+      capabilities: {
+        nav: () => ({
+          id: "domain-work-supervision",
+          label: "工作督办",
+          desc: "集中查看待处理事项、快捷入口与临期事项",
+          icon: TestIcon,
+          defaultTo: "/work-supervision",
+          groups: [
+            {
+              id: "work-supervision-workbench",
+              title: "工作台",
+              items: [
+                {
+                  id: "work-supervision-home",
+                  label: "工作督办",
+                  desc: "集中查看待处理事项、快捷入口与临期事项",
+                  to: "/work-supervision",
+                  icon: TestIcon,
+                  category: "management",
+                },
+                {
+                  id: "work-supervision-tasks",
+                  label: "管理事项",
+                  desc: "管理事项",
+                  to: "/work-supervision/tasks",
+                  icon: TestIcon,
+                  category: "management",
+                },
+              ],
+            },
+          ],
+        }),
+      },
+    }
+    const config = createConfiguredAppNavConfig([workSupervisionDomain, pcfFactorApiWebDomain], {
+      language: "zh-CN",
+      workspace: createOrganizationWorkspace("ENTERPRISE_CUSTOMER"),
+    })
+
+    expect(config.categories.find((category) => category.title === "基础")?.sceneIds).toEqual([
+      "domain-work-supervision--work-supervision-home",
+      "domain-pcf-factor-api",
+    ])
+    expect(
+      config.categories.find((category) => category.title === "管理")?.sceneIds ?? [],
+    ).not.toContain("domain-work-supervision--work-supervision-home")
+  })
+
+  describe("with the real work.supervision module wired in", () => {
+    // 模块接入后（web-work-supervision 带 nav capability）自动启用这组校验；
+    // 当前仓库里它还是无 nav 的占位包，所以跳过而不是失败。
+    const workSupervisionScenes = createConfiguredAppNavConfig([workSupervisionWebDomain], {
+      language: "zh-CN",
+      workspace: createOrganizationWorkspace("ENTERPRISE_CUSTOMER"),
+    }).scenes
+    const hasWorkSupervisionNav = workSupervisionScenes.length > 0
+
+    it.runIf(hasWorkSupervisionNav)("lands in 基础 as the first card", () => {
+      const config = createConfiguredAppNavConfig(
+        [workSupervisionWebDomain, pcfFactorApiWebDomain],
+        {
+          language: "zh-CN",
+          workspace: createOrganizationWorkspace("ENTERPRISE_CUSTOMER"),
+        },
+      )
+      const foundationSceneIds =
+        config.categories.find((category) => category.title === "基础")?.sceneIds ?? []
+
+      expect(foundationSceneIds).toEqual([
+        "domain-work-supervision--work-supervision-home",
+        "domain-pcf-factor-api",
+      ])
+      expect(
+        config.categories.find((category) => category.title === "管理")?.sceneIds ?? [],
+      ).not.toContain("domain-work-supervision--work-supervision-home")
+    })
   })
 })
