@@ -754,7 +754,7 @@ describe("configured app navigation", () => {
       capabilities: {
         nav: () => ({
           id: "domain-work-supervision",
-          label: "工作督办",
+          label: "工作台",
           desc: "集中查看待处理事项、快捷入口与临期事项",
           icon: TestIcon,
           defaultTo: "/work-supervision",
