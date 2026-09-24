@@ -591,6 +591,53 @@ describe("configured app navigation", () => {
     ])
   })
 
+  it("keeps the material card for enterprise customer organizations", () => {
+    const config = createConfiguredAppNavConfig([materialWebDomain], {
+      language: "zh-CN",
+      workspace: createOrganizationWorkspace("ENTERPRISE_CUSTOMER"),
+    })
+
+    // 分类仍是「基础」，不靠挪进「管理」来表达企业专属。
+    expect(config.categories.find((category) => category.title === "基础")?.sceneIds).toEqual([
+      "domain-material",
+      "domain-material--collection",
+    ])
+  })
+
+  it("hides the material card for non-enterprise-customer organizations", () => {
+    const config = createConfiguredAppNavConfig([materialWebDomain], {
+      language: "zh-CN",
+      workspace: createOrganizationWorkspace("SERVICE_PROVIDER"),
+    })
+
+    // 物料/活动管理隐藏；数据收集保留（填报人/审批人可能是非企业用户）。
+    expect(config.scenes.map((scene) => scene.id)).toEqual(["domain-material--collection"])
+    expect(config.categories.map((category) => [category.title, category.sceneIds])).toEqual([
+      ["基础", ["domain-material--collection"]],
+    ])
+  })
+
+  it("hides the material card for personal workspaces", () => {
+    const config = createConfiguredAppNavConfig([materialWebDomain], {
+      language: "zh-CN",
+      workspace: {
+        id: "workspace-1",
+        scope: "workspace-scope-1",
+        name: "Workspace",
+        belongType: "PERSIONAL",
+      },
+    })
+
+    expect(config.scenes.map((scene) => scene.id)).toEqual(["domain-material--collection"])
+  })
+
+  it("hides the material card before an organization workspace loads", () => {
+    const config = createConfiguredAppNavConfig([materialWebDomain], { language: "zh-CN" })
+
+    // 组织类型未知时按失败关闭处理，避免短暂放出企业专属入口。
+    expect(config.scenes.map((scene) => scene.id)).toEqual(["domain-material--collection"])
+  })
+
   it("groups carbon reduction management into management after carbon assets", () => {
     const config = createConfiguredAppNavConfig(
       [

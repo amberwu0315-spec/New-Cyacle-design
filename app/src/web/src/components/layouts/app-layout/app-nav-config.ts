@@ -23,6 +23,19 @@ function isEnterpriseCustomerWorkspace(
 }
 
 /**
+ * 企业客户专属入口：分类仍留在「基础」，但非企业客户组织、个人工作空间和
+ * 组织类型尚未加载时一律不渲染。
+ *
+ * 与 `filterManagementCategoryByOrganizationType` 的「管理」分类折叠分开表达：
+ * 分类表达的是菜单归属，不是可见性；把企业专属写成「挪进管理分类」会让
+ * 后续调整分类的人无意间改掉权限（物料/活动管理就这样漏过企业门禁）。
+ *
+ * 「数据收集」（`domain-material--collection`）不在此列：它的菜单按
+ * manager/reporter/approver 权限可见，填报人和审批人可能是非企业用户。
+ */
+const ENTERPRISE_ONLY_SCENE_IDS = ["domain-material"] as const
+
+/**
  * Optional product-specific navigation presentation filter. The underlying
  * routes remain registered when a caller supplies visibleSceneIds.
  */
@@ -426,6 +439,39 @@ function filterManagementCategoryByOrganizationType(
   }
 }
 
+/**
+ * 移除企业客户专属入口。分类保持原样（例如物料/活动管理仍在「基础」），
+ * 只按工作空间类型决定是否出现在导航里。
+ */
+function filterEnterpriseOnlyScenes(
+  config: AppNavConfig,
+  options: AppNavConfigOptions = {},
+): AppNavConfig {
+  if (isEnterpriseCustomerWorkspace(options.workspace)) {
+    return config
+  }
+
+  const hiddenIds = new Set<string>(ENTERPRISE_ONLY_SCENE_IDS)
+  const scenes = config.scenes.filter((scene) => !hiddenIds.has(scene.id))
+  if (scenes.length === config.scenes.length) {
+    return config
+  }
+
+  return {
+    ...config,
+    scenes,
+    categories: config.categories
+      .map((category) => ({
+        ...category,
+        sceneIds: category.sceneIds.filter((sceneId) => !hiddenIds.has(sceneId)),
+      }))
+      .filter((category) => category.sceneIds.length > 0),
+    defaultSceneId: hiddenIds.has(config.defaultSceneId)
+      ? (scenes[0]?.id ?? "")
+      : config.defaultSceneId,
+  }
+}
+
 export function createConfiguredAppNavConfig(
   webDomains: ReadonlyArray<WebDomain>,
   options: ConfiguredAppNavConfigOptions = {},
@@ -437,12 +483,15 @@ export function createConfiguredAppNavConfig(
   )
 
   const config = filterAppNavScenes(
-    filterManagementCategoryByOrganizationType(
-      groupAppNavConfig(
-        splitMaterialModuleScenes(
-          splitUicEnterpriseManagementScene(
-            registration?.createNavConfig(options) ?? createAppNavConfig(webDomains, options),
+    filterEnterpriseOnlyScenes(
+      filterManagementCategoryByOrganizationType(
+        groupAppNavConfig(
+          splitMaterialModuleScenes(
+            splitUicEnterpriseManagementScene(
+              registration?.createNavConfig(options) ?? createAppNavConfig(webDomains, options),
+            ),
           ),
+          options,
         ),
         options,
       ),
