@@ -875,4 +875,83 @@ describe("configured app navigation", () => {
       ).not.toContain("domain-work-supervision--work-supervision-home")
     })
   })
+
+  describe("with the real accounting module wired in", () => {
+    // CFP 自动建模（AI 创建核算 / 从建模规则创建）与「建模规则」维护页只对企业客户
+    // 组织空间开放，非企业客户（个人空间、其它组织类型、workspace 未加载）连菜单都没有。
+    function createAccountingNavConfig(workspace?: {
+      id: string
+      scope: string
+      name: string
+      belongType: string
+      organizationCategory?: string
+    }) {
+      return createConfiguredAppNavConfig([accountingWebDomain], {
+        language: "zh-CN",
+        workspace,
+      })
+    }
+
+    function collectItemIds(config: ReturnType<typeof createConfiguredAppNavConfig>) {
+      return config.scenes.flatMap((scene) =>
+        scene.groups.flatMap((group) => group.items.map((item) => item.id)),
+      )
+    }
+
+    it("keeps 建模规则 under the product carbon footprint scene for enterprise customers", () => {
+      const config = createAccountingNavConfig(createOrganizationWorkspace("ENTERPRISE_CUSTOMER"))
+
+      expect(collectItemIds(config)).toEqual(
+        expect.arrayContaining([
+          "accounting-cfp-accounting-tasks",
+          "accounting-cfp-modeling-rule",
+        ]),
+      )
+      // 建模规则与产品碳足迹同属一个场景（不开启 standaloneScene）。
+      const cfpScene = config.scenes.find(
+        (scene) => scene.id === "domain-accounting--accounting-cfp-accounting-tasks",
+      )
+      expect(
+        cfpScene?.groups.flatMap((group) => group.items.map((item) => item.id)),
+      ).toEqual(["accounting-cfp-accounting-tasks", "accounting-cfp-modeling-rule"])
+    })
+
+    it("keeps 建模规则 only under the product carbon footprint scene", () => {
+      const config = createAccountingNavConfig(createOrganizationWorkspace("ENTERPRISE_CUSTOMER"))
+      const lcaScene = config.scenes.find(
+        (scene) => scene.id === "domain-accounting--accounting-lca-accounting-tasks",
+      )
+
+      // 产品要求：建模规则入口只挂「产品碳足迹」卡片；生命周期评价卡片不带该子项。
+      expect(
+        lcaScene?.groups.flatMap((group) => group.items.map((item) => item.id)),
+      ).toEqual(["accounting-lca-accounting-tasks"])
+    })
+
+    it("hides 建模规则 but keeps 产品碳足迹 for non-enterprise-customer organizations", () => {
+      const config = createAccountingNavConfig(createOrganizationWorkspace("SERVICE_PROVIDER"))
+
+      expect(collectItemIds(config)).not.toContain("accounting-cfp-modeling-rule")
+      expect(collectItemIds(config)).toContain("accounting-cfp-accounting-tasks")
+    })
+
+    it("hides 建模规则 for personal workspaces", () => {
+      const config = createAccountingNavConfig({
+        id: "workspace-1",
+        scope: "workspace-scope-1",
+        name: "Workspace",
+        belongType: "PERSIONAL",
+      })
+
+      expect(collectItemIds(config)).not.toContain("accounting-cfp-modeling-rule")
+      expect(collectItemIds(config)).toContain("accounting-cfp-accounting-tasks")
+    })
+
+    it("hides 建模规则 before a workspace loads", () => {
+      const config = createAccountingNavConfig()
+
+      expect(collectItemIds(config)).not.toContain("accounting-cfp-modeling-rule")
+      expect(collectItemIds(config)).toContain("accounting-cfp-accounting-tasks")
+    })
+  })
 })
