@@ -15,6 +15,8 @@ export const layout = {
   navCategories: {
     basis: '基础',
     accounting: '核算',
+    assetsCompliance: '资产与履约',
+    filing: '填报',
     management: '管理',
     dashboard: '驾驶舱',
     platform: '平台',

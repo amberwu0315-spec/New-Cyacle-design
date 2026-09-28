@@ -17,6 +17,8 @@ export const layout = {
   navCategories: {
     basis: 'Foundation',
     accounting: 'Accounting',
+    assetsCompliance: 'Assets & Compliance',
+    filing: 'Filing',
     management: 'Management',
     dashboard: 'Dashboard',
     platform: 'Platform',

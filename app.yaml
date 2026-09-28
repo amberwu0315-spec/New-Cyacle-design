@@ -37,6 +37,9 @@ domains:
     - name: formula
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/formula.git
+    - name: material
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/material.git
     - name: category
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/category.git
@@ -91,4 +94,20 @@ domains:
     - name: supply.chain
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/supply.chain.git
+    - name: cbam
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/cbam.git
+    - name: market.carbon
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/market.carbon.git
+    - name: carbon.assets
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/carbon.assets.git
+    - name: carbon.reduction
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/carbon.reduction.git
+    - name: work.supervision
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/work.supervision.git
+
 

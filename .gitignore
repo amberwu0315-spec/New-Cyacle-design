@@ -1,5 +1,12 @@
 # local disabled domains
 /scripts/
+# Plot 生成的本地 workspace 与本地构建缓存（放在托管块外，避免被 plot 重新生成时覆盖）
+go.work
+go.work.sum
+.cache/
+.gocache/
+
+
 
 
 # PLOTTED - BEGIN
@@ -27,7 +34,10 @@
 /domain/ai.model
 /domain/audit
 /domain/calculation.core
+/domain/carbon.assets
+/domain/carbon.reduction
 /domain/category
+/domain/cbam
 /domain/cfo
 /domain/factor
 /domain/file
@@ -35,6 +45,8 @@
 /domain/history
 /domain/lca
 /domain/lca.core
+/domain/market.carbon
+/domain/material
 /domain/meta
 /domain/notice
 /domain/pcf.factor.api
@@ -47,6 +59,7 @@
 /domain/uic
 /domain/unit
 /domain/wecom
+/domain/work.supervision
 __unconfig*
 dist
 dist-ssr

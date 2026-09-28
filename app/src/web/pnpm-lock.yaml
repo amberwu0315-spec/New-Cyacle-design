@@ -105,6 +105,9 @@ catalogs:
     katex:
       specifier: 0.16.47
       version: 0.16.47
+    lightweight-charts:
+      specifier: ^5.2.1
+      version: 5.2.1
     lucide-react:
       specifier: ^1.24.0
       version: 1.47.0
@@ -197,9 +200,18 @@ importers:
       '@carbonnt-cyacle/skeled-calculation-corepub':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-calculation-corepub
+      '@carbonnt-cyacle/skeled-carbon-assetspub':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/skeled-carbon-assetspub
+      '@carbonnt-cyacle/skeled-carbon-reductionpub':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/skeled-carbon-reductionpub
       '@carbonnt-cyacle/skeled-categorypub':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-categorypub
+      '@carbonnt-cyacle/skeled-cbampub':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/skeled-cbampub
       '@carbonnt-cyacle/skeled-cfopub':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-cfopub
@@ -221,6 +233,12 @@ importers:
       '@carbonnt-cyacle/skeled-lcapub':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-lcapub
+      '@carbonnt-cyacle/skeled-market-carbonpub':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/skeled-market-carbonpub
+      '@carbonnt-cyacle/skeled-materialpub':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/skeled-materialpub
       '@carbonnt-cyacle/skeled-metapub':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-metapub
@@ -257,6 +275,9 @@ importers:
       '@carbonnt-cyacle/skeled-wecompub':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-wecompub
+      '@carbonnt-cyacle/skeled-work-supervisionpub':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/skeled-work-supervisionpub
       '@carbonnt-cyacle/web-accounting':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-accounting
@@ -281,9 +302,18 @@ importers:
       '@carbonnt-cyacle/web-calculation-core':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-calculation-core
+      '@carbonnt-cyacle/web-carbon-assets':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/web-carbon-assets
+      '@carbonnt-cyacle/web-carbon-reduction':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/web-carbon-reduction
       '@carbonnt-cyacle/web-category':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-category
+      '@carbonnt-cyacle/web-cbam':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/web-cbam
       '@carbonnt-cyacle/web-cfo':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-cfo
@@ -305,6 +335,12 @@ importers:
       '@carbonnt-cyacle/web-lca-core':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-lca-core
+      '@carbonnt-cyacle/web-market-carbon':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/web-market-carbon
+      '@carbonnt-cyacle/web-material':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/web-material
       '@carbonnt-cyacle/web-meta':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-meta
@@ -341,6 +377,9 @@ importers:
       '@carbonnt-cyacle/web-wecom':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-wecom
+      '@carbonnt-cyacle/web-work-supervision':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/web-work-supervision
       '@cew-lib/amap':
         specifier: catalog:web
         version: 1.0.2(clsx@2.1.1)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
@@ -407,6 +446,9 @@ importers:
       katex:
         specifier: catalog:web
         version: 0.16.47
+      lightweight-charts:
+        specifier: catalog:web
+        version: 5.2.1
       lucide-react:
         specifier: catalog:web
         version: 1.47.0(react@19.3.0)
@@ -2901,6 +2943,9 @@ packages:
   extend@3.0.2:
     resolution: {integrity: sha512-fjquC59cD7CyW6urNXK0FBufkZcoiGG80wTuPujX590cB5Ttln20E2UB4S/WARVqhXffZl2LNgS+gQdPIIim/g==, tarball: https://npm.cew.io/repository/npm/extend/-/extend-3.0.2.tgz}
 
+  fancy-canvas@2.1.0:
+    resolution: {integrity: sha512-nifxXJ95JNLFR2NgRV4/MxVP45G9909wJTEKz5fg/TZS20JJZA6hfgRVh/bC9bwl2zBtBNcYPjiBE4njQHVBwQ==, tarball: https://npm.cew.io/repository/npm/fancy-canvas/-/fancy-canvas-2.1.0.tgz}
+
   fast-deep-equal@3.1.3:
     resolution: {integrity: sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==, tarball: https://npm.cew.io/repository/npm/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz}
 
@@ -3455,6 +3500,9 @@ packages:
   lightningcss@1.33.0:
     resolution: {integrity: sha512-WkUDrojuJs0xkgGf2udWxa3yGBRxPtxUkB79i6aCZLRgc7PM8fZe9TosfPDcvEpQZbuFASnHYmRLBLUbmLOIIA==, tarball: https://npm.cew.io/repository/npm/lightningcss/-/lightningcss-1.33.0.tgz}
     engines: {node: '>= 12.0.0'}
+
+  lightweight-charts@5.2.1:
+    resolution: {integrity: sha512-IVwoK1RLFiLPubaKIjNbtjWLnpPMqiABSrTay6whmNa8L1+19292VtHJ+BWyPUuLCwF0tcQlhEWd1CLB2a1nsQ==, tarball: https://npm.cew.io/repository/npm/lightweight-charts/-/lightweight-charts-5.2.1.tgz}
 
   lines-and-columns@1.2.4:
     resolution: {integrity: sha512-7ylylesZQ/PV29jhEDl3Ufjo6ZX7gCqJr5F7PKrqc93v7fzSymt1BpwEU8nAUXs8qzzvqhbjhK5QZg6Mt/HkBg==, tarball: https://npm.cew.io/repository/npm/lines-and-columns/-/lines-and-columns-1.2.4.tgz}
@@ -7452,6 +7500,8 @@ snapshots:
 
   extend@3.0.2: {}
 
+  fancy-canvas@2.1.0: {}
+
   fast-deep-equal@3.1.3: {}
 
   fast-diff@1.3.0: {}
@@ -7936,6 +7986,10 @@ snapshots:
       lightningcss-linux-x64-musl: 1.33.0
       lightningcss-win32-arm64-msvc: 1.33.0
       lightningcss-win32-x64-msvc: 1.33.0
+
+  lightweight-charts@5.2.1:
+    dependencies:
+      fancy-canvas: 2.1.0
 
   lines-and-columns@1.2.4: {}
 
