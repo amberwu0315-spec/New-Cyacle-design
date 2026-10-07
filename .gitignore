@@ -64,3 +64,5 @@ node_modules
 todos.json
 # PLOTTED - END
 
+go.work*
+
