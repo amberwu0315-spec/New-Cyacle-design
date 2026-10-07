@@ -18,7 +18,7 @@ const (
 )
 
 func (itemType ItemType) MarshalJSON() ([]byte, error) {
-	return []byte(fmt.Sprintf("\"%s\"", itemType)), nil
+	return fmt.Appendf(nil, "\"%s\"", itemType), nil
 }
 
 func (itemType *ItemType) UnmarshalJSON(data []byte) error {

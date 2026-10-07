@@ -176,108 +176,105 @@ importers:
       '@base-ui/react':
         specifier: catalog:web
         version: 1.8.0(@date-fns/tz@1.5.0)(@types/react@19.3.0)(date-fns@4.4.0)(react-dom@19.3.0(react@19.3.0))(react@19.3.0)
-      '@carbonnt-cyacle/skeled-accounting-corepub':
+      '@carbonnt-cyacle/skeled-accounting-coreapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-accounting-corepub
-      '@carbonnt-cyacle/skeled-accountingpub':
+        version: link:../../../.plot/web/virtual/skeled-accounting-coreapi
+      '@carbonnt-cyacle/skeled-accountingapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-accountingpub
-      '@carbonnt-cyacle/skeled-agentpub':
+        version: link:../../../.plot/web/virtual/skeled-accountingapi
+      '@carbonnt-cyacle/skeled-agentapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-agentpub
-      '@carbonnt-cyacle/skeled-ai-flowpub':
+        version: link:../../../.plot/web/virtual/skeled-agentapi
+      '@carbonnt-cyacle/skeled-ai-flowapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-ai-flowpub
-      '@carbonnt-cyacle/skeled-ai-modelpub':
+        version: link:../../../.plot/web/virtual/skeled-ai-flowapi
+      '@carbonnt-cyacle/skeled-ai-modelapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-ai-modelpub
-      '@carbonnt-cyacle/skeled-auditpub':
+        version: link:../../../.plot/web/virtual/skeled-ai-modelapi
+      '@carbonnt-cyacle/skeled-auditapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-auditpub
-      '@carbonnt-cyacle/skeled-basepub':
+        version: link:../../../.plot/web/virtual/skeled-auditapi
+      '@carbonnt-cyacle/skeled-baseapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-basepub
-      '@carbonnt-cyacle/skeled-calculation-corepub':
+        version: link:../../../.plot/web/virtual/skeled-baseapi
+      '@carbonnt-cyacle/skeled-calculation-coreapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-calculation-corepub
-      '@carbonnt-cyacle/skeled-carbon-assetspub':
+        version: link:../../../.plot/web/virtual/skeled-calculation-coreapi
+      '@carbonnt-cyacle/skeled-carbon-assetsapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-carbon-assetspub
-      '@carbonnt-cyacle/skeled-carbon-reductionpub':
+        version: link:../../../.plot/web/virtual/skeled-carbon-assetsapi
+      '@carbonnt-cyacle/skeled-carbon-reductionapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-carbon-reductionpub
-      '@carbonnt-cyacle/skeled-categorypub':
+        version: link:../../../.plot/web/virtual/skeled-carbon-reductionapi
+      '@carbonnt-cyacle/skeled-categoryapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-categorypub
-      '@carbonnt-cyacle/skeled-cbampub':
+        version: link:../../../.plot/web/virtual/skeled-categoryapi
+      '@carbonnt-cyacle/skeled-cbamapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-cbampub
-      '@carbonnt-cyacle/skeled-cfopub':
+        version: link:../../../.plot/web/virtual/skeled-cbamapi
+      '@carbonnt-cyacle/skeled-cfoapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-cfopub
-      '@carbonnt-cyacle/skeled-factorpub':
+        version: link:../../../.plot/web/virtual/skeled-cfoapi
+      '@carbonnt-cyacle/skeled-factorapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-factorpub
-      '@carbonnt-cyacle/skeled-filepub':
+        version: link:../../../.plot/web/virtual/skeled-factorapi
+      '@carbonnt-cyacle/skeled-fileapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-filepub
-      '@carbonnt-cyacle/skeled-formulapub':
+        version: link:../../../.plot/web/virtual/skeled-fileapi
+      '@carbonnt-cyacle/skeled-formulaapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-formulapub
-      '@carbonnt-cyacle/skeled-historypub':
+        version: link:../../../.plot/web/virtual/skeled-formulaapi
+      '@carbonnt-cyacle/skeled-historyapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-historypub
-      '@carbonnt-cyacle/skeled-lca-corepub':
+        version: link:../../../.plot/web/virtual/skeled-historyapi
+      '@carbonnt-cyacle/skeled-lca-coreapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-lca-corepub
-      '@carbonnt-cyacle/skeled-lcapub':
+        version: link:../../../.plot/web/virtual/skeled-lca-coreapi
+      '@carbonnt-cyacle/skeled-lcaapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-lcapub
-      '@carbonnt-cyacle/skeled-market-carbonpub':
+        version: link:../../../.plot/web/virtual/skeled-lcaapi
+      '@carbonnt-cyacle/skeled-market-carbonapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-market-carbonpub
-      '@carbonnt-cyacle/skeled-materialpub':
+        version: link:../../../.plot/web/virtual/skeled-market-carbonapi
+      '@carbonnt-cyacle/skeled-materialapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-materialpub
-      '@carbonnt-cyacle/skeled-metapub':
+        version: link:../../../.plot/web/virtual/skeled-materialapi
+      '@carbonnt-cyacle/skeled-metaapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-metapub
-      '@carbonnt-cyacle/skeled-noticepub':
+        version: link:../../../.plot/web/virtual/skeled-metaapi
+      '@carbonnt-cyacle/skeled-noticeapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-noticepub
-      '@carbonnt-cyacle/skeled-pcf-factor-apipub':
+        version: link:../../../.plot/web/virtual/skeled-noticeapi
+      '@carbonnt-cyacle/skeled-pcf-factor-apiapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-pcf-factor-apipub
-      '@carbonnt-cyacle/skeled-project-datapub':
+        version: link:../../../.plot/web/virtual/skeled-pcf-factor-apiapi
+      '@carbonnt-cyacle/skeled-project-dataapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-project-datapub
-      '@carbonnt-cyacle/skeled-projectpub':
+        version: link:../../../.plot/web/virtual/skeled-project-dataapi
+      '@carbonnt-cyacle/skeled-projectapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-projectpub
-      '@carbonnt-cyacle/skeled-recordpub':
+        version: link:../../../.plot/web/virtual/skeled-projectapi
+      '@carbonnt-cyacle/skeled-recordapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-recordpub
-      '@carbonnt-cyacle/skeled-reportpub':
+        version: link:../../../.plot/web/virtual/skeled-recordapi
+      '@carbonnt-cyacle/skeled-reportapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-reportpub
-      '@carbonnt-cyacle/skeled-search-indexerpub':
+        version: link:../../../.plot/web/virtual/skeled-reportapi
+      '@carbonnt-cyacle/skeled-supply-chainapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-search-indexerpub
-      '@carbonnt-cyacle/skeled-supply-chainpub':
+        version: link:../../../.plot/web/virtual/skeled-supply-chainapi
+      '@carbonnt-cyacle/skeled-uicapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-supply-chainpub
-      '@carbonnt-cyacle/skeled-uicpub':
+        version: link:../../../.plot/web/virtual/skeled-uicapi
+      '@carbonnt-cyacle/skeled-unitapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-uicpub
-      '@carbonnt-cyacle/skeled-unitpub':
+        version: link:../../../.plot/web/virtual/skeled-unitapi
+      '@carbonnt-cyacle/skeled-wecomapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-unitpub
-      '@carbonnt-cyacle/skeled-wecompub':
+        version: link:../../../.plot/web/virtual/skeled-wecomapi
+      '@carbonnt-cyacle/skeled-work-supervisionapi':
         specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-wecompub
-      '@carbonnt-cyacle/skeled-work-supervisionpub':
-        specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-work-supervisionpub
+        version: link:../../../.plot/web/virtual/skeled-work-supervisionapi
       '@carbonnt-cyacle/web-accounting':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-accounting

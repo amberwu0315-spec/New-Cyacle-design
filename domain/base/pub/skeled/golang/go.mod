@@ -4,17 +4,17 @@ module go.cew.io/app/carbonnt/cyacle/skeled/basepub
 
 go 1.27.0
 
-require go.yorun.ai/vine v0.21.5
+require go.yorun.ai/vine v0.27.0
 
 require (
 	cloud.google.com/go v0.123.0 // indirect
 	github.com/Masterminds/semver/v3 v3.5.0 // indirect
-	github.com/fxamacker/cbor/v2 v2.9.3 // indirect
-	github.com/klauspost/compress v1.20.0 // indirect
+	github.com/fxamacker/cbor/v2 v2.9.4 // indirect
+	github.com/klauspost/compress v1.20.1 // indirect
 	github.com/shopspring/decimal v1.4.0 // indirect
 	github.com/x448/float16 v0.8.4 // indirect
 	go.yorun.ai/vrpc v0.12.0 // indirect
-	golang.org/x/net v0.58.0 // indirect
-	golang.org/x/text v0.41.0 // indirect
+	golang.org/x/net v0.59.0 // indirect
+	golang.org/x/text v0.42.0 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )

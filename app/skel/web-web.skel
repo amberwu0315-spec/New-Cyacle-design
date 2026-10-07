@@ -5,4 +5,6 @@ import base
 @desc("WebWeb入口")
 web WebWeb {
     for base.UserActor via client
+    auth optional
+    mount /
 }

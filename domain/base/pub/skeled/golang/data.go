@@ -12,46 +12,12 @@ type Item struct {
 	Type *ItemType `json:"type"`
 }
 
-// Clone returns a value-isolated copy of the generated data.
-func (v Item) Clone() Item {
-	cloned := v
-	if v.Value != nil {
-		clonedValue0 := *v.Value
-		cloned.Value = &clonedValue0
-	}
-	if v.Type != nil {
-		clonedValue1 := *v.Type
-		cloned.Type = &clonedValue1
-	}
-	return cloned
-}
-
 // MMacroText 多语言宏文本
 type MMacroText struct {
 	// Zh 中文
 	Zh *MStringItem[MacroText] `json:"zh"`
 	// En 英文
 	En *MStringItem[MacroText] `json:"en"`
-}
-
-// Clone returns a value-isolated copy of the generated data.
-func (v MMacroText) Clone() MMacroText {
-	cloned := v
-	if v.Zh != nil {
-		clonedValue0 := *v.Zh
-		clonedValue0 = (*v.Zh).CloneBy(func(value MacroText) MacroText {
-			return value.Clone()
-		})
-		cloned.Zh = &clonedValue0
-	}
-	if v.En != nil {
-		clonedValue1 := *v.En
-		clonedValue1 = (*v.En).CloneBy(func(value MacroText) MacroText {
-			return value.Clone()
-		})
-		cloned.En = &clonedValue1
-	}
-	return cloned
 }
 
 // MString 多语言普通文本
@@ -62,70 +28,20 @@ type MString struct {
 	En *MStringItem[string] `json:"en"`
 }
 
-// Clone returns a value-isolated copy of the generated data.
-func (v MString) Clone() MString {
-	cloned := v
-	if v.Zh != nil {
-		clonedValue0 := *v.Zh
-		clonedValue0 = (*v.Zh).CloneBy(func(value string) string {
-			return value
-		})
-		cloned.Zh = &clonedValue0
-	}
-	if v.En != nil {
-		clonedValue1 := *v.En
-		clonedValue1 = (*v.En).CloneBy(func(value string) string {
-			return value
-		})
-		cloned.En = &clonedValue1
-	}
-	return cloned
-}
-
 // MStringItem 多语言中的单一语言内容
 type MStringItem[TItem any] struct {
 	// Value 内容
-	Value TItem `json:"value"`
+	Value *TItem `json:"value"`
 	// UpdatedAt 数据更新时间
 	UpdatedAt *skel.Timestamp `json:"updatedAt"`
 	// FromAi 是否来源于AI, 如翻译
 	FromAi bool `json:"fromAI"`
 }
 
-// CloneBy returns a copy whose value isolation depends on each clone callback.
-// Passing an identity callback does not guarantee isolation for reference-backed values.
-func (v MStringItem[TItem]) CloneBy(cloneTItem func(TItem) TItem) MStringItem[TItem] {
-	cloned := v
-	cloned.Value = cloneTItem(v.Value)
-	if v.UpdatedAt != nil {
-		clonedValue0 := *v.UpdatedAt
-		cloned.UpdatedAt = &clonedValue0
-	}
-	return cloned
-}
-
 // MacroText 宏文本
 type MacroText struct {
 	// Items 宏文片段列表
 	Items *[]Item `json:"items"`
-}
-
-// Clone returns a value-isolated copy of the generated data.
-func (v MacroText) Clone() MacroText {
-	cloned := v
-	if v.Items != nil {
-		clonedValue0 := *v.Items
-		if (*v.Items) == nil {
-			clonedValue0 = nil
-		} else {
-			clonedValue0 = make([]Item, len((*v.Items)))
-			for index1 := range *v.Items {
-				clonedValue0[index1] = (*v.Items)[index1].Clone()
-			}
-		}
-		cloned.Items = &clonedValue0
-	}
-	return cloned
 }
 
 // PageResp 分页结果
@@ -136,43 +52,10 @@ type PageResp[TItem any] struct {
 	Data *[]TItem `json:"data"`
 }
 
-// CloneBy returns a copy whose value isolation depends on each clone callback.
-// Passing an identity callback does not guarantee isolation for reference-backed values.
-func (v PageResp[TItem]) CloneBy(cloneTItem func(TItem) TItem) PageResp[TItem] {
-	cloned := v
-	if v.Data != nil {
-		clonedValue0 := *v.Data
-		if (*v.Data) == nil {
-			clonedValue0 = nil
-		} else {
-			clonedValue0 = make([]TItem, len((*v.Data)))
-			for index1 := range *v.Data {
-				clonedValue0[index1] = cloneTItem((*v.Data)[index1])
-			}
-		}
-		cloned.Data = &clonedValue0
-	}
-	return cloned
-}
-
 // UnitValue 数值带单位
 type UnitValue struct {
 	// Value 数值
 	Value *skel.Decimal `json:"value"`
 	// UnitId 单位id
 	UnitId *string `json:"unitId"`
-}
-
-// Clone returns a value-isolated copy of the generated data.
-func (v UnitValue) Clone() UnitValue {
-	cloned := v
-	if v.Value != nil {
-		clonedValue0 := *v.Value
-		cloned.Value = &clonedValue0
-	}
-	if v.UnitId != nil {
-		clonedValue1 := *v.UnitId
-		cloned.UnitId = &clonedValue1
-	}
-	return cloned
 }

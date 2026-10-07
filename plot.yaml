@@ -8,5 +8,5 @@ golang:
 git:
   repoUrlPrefix: 'git@git.cew.io:'
 toolchain:
-  vineVersion: v0.22.3
-  skelcVersion: v0.17.1
+  vineVersion: v0.27.0
+  skelcVersion: v0.30.0

@@ -69,40 +69,39 @@ catalogs:
 
 packages:
   # plot:workspace-begin
-  - ./.plot/web/virtual/skeled-accounting-corepub
-  - ./.plot/web/virtual/skeled-accountingpub
-  - ./.plot/web/virtual/skeled-agentpub
-  - ./.plot/web/virtual/skeled-ai-flowpub
-  - ./.plot/web/virtual/skeled-ai-modelpub
-  - ./.plot/web/virtual/skeled-auditpub
-  - ./.plot/web/virtual/skeled-basepub
-  - ./.plot/web/virtual/skeled-calculation-corepub
-  - ./.plot/web/virtual/skeled-carbon-assetspub
-  - ./.plot/web/virtual/skeled-carbon-reductionpub
-  - ./.plot/web/virtual/skeled-categorypub
-  - ./.plot/web/virtual/skeled-cbampub
-  - ./.plot/web/virtual/skeled-cfopub
-  - ./.plot/web/virtual/skeled-factorpub
-  - ./.plot/web/virtual/skeled-filepub
-  - ./.plot/web/virtual/skeled-formulapub
-  - ./.plot/web/virtual/skeled-historypub
-  - ./.plot/web/virtual/skeled-lca-corepub
-  - ./.plot/web/virtual/skeled-lcapub
-  - ./.plot/web/virtual/skeled-market-carbonpub
-  - ./.plot/web/virtual/skeled-materialpub
-  - ./.plot/web/virtual/skeled-metapub
-  - ./.plot/web/virtual/skeled-noticepub
-  - ./.plot/web/virtual/skeled-pcf-factor-apipub
-  - ./.plot/web/virtual/skeled-project-datapub
-  - ./.plot/web/virtual/skeled-projectpub
-  - ./.plot/web/virtual/skeled-recordpub
-  - ./.plot/web/virtual/skeled-reportpub
-  - ./.plot/web/virtual/skeled-search-indexerpub
-  - ./.plot/web/virtual/skeled-supply-chainpub
-  - ./.plot/web/virtual/skeled-uicpub
-  - ./.plot/web/virtual/skeled-unitpub
-  - ./.plot/web/virtual/skeled-wecompub
-  - ./.plot/web/virtual/skeled-work-supervisionpub
+  - ./.plot/web/virtual/skeled-accounting-coreapi
+  - ./.plot/web/virtual/skeled-accountingapi
+  - ./.plot/web/virtual/skeled-agentapi
+  - ./.plot/web/virtual/skeled-ai-flowapi
+  - ./.plot/web/virtual/skeled-ai-modelapi
+  - ./.plot/web/virtual/skeled-auditapi
+  - ./.plot/web/virtual/skeled-baseapi
+  - ./.plot/web/virtual/skeled-calculation-coreapi
+  - ./.plot/web/virtual/skeled-carbon-assetsapi
+  - ./.plot/web/virtual/skeled-carbon-reductionapi
+  - ./.plot/web/virtual/skeled-categoryapi
+  - ./.plot/web/virtual/skeled-cbamapi
+  - ./.plot/web/virtual/skeled-cfoapi
+  - ./.plot/web/virtual/skeled-factorapi
+  - ./.plot/web/virtual/skeled-fileapi
+  - ./.plot/web/virtual/skeled-formulaapi
+  - ./.plot/web/virtual/skeled-historyapi
+  - ./.plot/web/virtual/skeled-lca-coreapi
+  - ./.plot/web/virtual/skeled-lcaapi
+  - ./.plot/web/virtual/skeled-market-carbonapi
+  - ./.plot/web/virtual/skeled-materialapi
+  - ./.plot/web/virtual/skeled-metaapi
+  - ./.plot/web/virtual/skeled-noticeapi
+  - ./.plot/web/virtual/skeled-pcf-factor-apiapi
+  - ./.plot/web/virtual/skeled-project-dataapi
+  - ./.plot/web/virtual/skeled-projectapi
+  - ./.plot/web/virtual/skeled-recordapi
+  - ./.plot/web/virtual/skeled-reportapi
+  - ./.plot/web/virtual/skeled-supply-chainapi
+  - ./.plot/web/virtual/skeled-uicapi
+  - ./.plot/web/virtual/skeled-unitapi
+  - ./.plot/web/virtual/skeled-wecomapi
+  - ./.plot/web/virtual/skeled-work-supervisionapi
   - ./.plot/web/virtual/web-accounting
   - ./.plot/web/virtual/web-accounting-core
   - ./.plot/web/virtual/web-agent

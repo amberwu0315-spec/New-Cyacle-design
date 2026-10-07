@@ -1,4 +1,4 @@
-import type { BusinessCode } from '@carbonnt-cyacle/skeled-uicpub'
+import type { BusinessCode } from '@carbonnt-cyacle/skeled-uicapi'
 
 export type SystemEntry = 'admin' | 'frontend'
 

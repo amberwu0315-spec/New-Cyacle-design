@@ -15,14 +15,14 @@ func init() {
 	meta.RegisterActor(meta.ActorSpec{
 		Name:         "OpenActor",
 		SkelName:     "base.OpenActor",
-		Hash:         "7f11dbab",
+		Hash:         "fdc3c481",
 		InfoSkelName: "base.OpenActorInfo",
 		InfoType:     reflect.TypeFor[*OpenActorInfo](),
 	})
 	meta.RegisterActor(meta.ActorSpec{
 		Name:         "UserActor",
 		SkelName:     "base.UserActor",
-		Hash:         "023d183d",
+		Hash:         "9414d317",
 		InfoSkelName: "base.UserActorInfo",
 		InfoType:     reflect.TypeFor[*UserActorInfo](),
 	})
@@ -73,12 +73,6 @@ type OpenActorCredential struct {
 	Token string `json:"token"`
 }
 
-// Clone returns a value-isolated copy of the generated data.
-func (v OpenActorCredential) Clone() OpenActorCredential {
-	cloned := v
-	return cloned
-}
-
 type OpenActorInfo struct {
 	// SystemCode 外部系统编码
 	SystemCode string `json:"systemCode"`
@@ -86,23 +80,11 @@ type OpenActorInfo struct {
 	ClientId string `json:"clientId"`
 }
 
-// Clone returns a value-isolated copy of the generated data.
-func (v OpenActorInfo) Clone() OpenActorInfo {
-	cloned := v
-	return cloned
-}
-
 type UserActorCredential struct {
 	// Session 会话
 	Session string `json:"session"`
 	// Scope 应用权限范围 多个用,隔开
 	Scope string `json:"scope"`
-}
-
-// Clone returns a value-isolated copy of the generated data.
-func (v UserActorCredential) Clone() UserActorCredential {
-	cloned := v
-	return cloned
 }
 
 type UserActorInfo struct {
@@ -114,12 +96,6 @@ type UserActorInfo struct {
 	WorkspaceId string `json:"workspaceId"`
 }
 
-// Clone returns a value-isolated copy of the generated data.
-func (v UserActorInfo) Clone() UserActorInfo {
-	cloned := v
-	return cloned
-}
-
 // OpenActorAuthServiceServer
 
 // OpenActorAuthService / Spec
@@ -129,7 +105,7 @@ var (
 		Type:              rpc.ServiceSpecTypeServer,
 		Name:              "OpenActorAuthService",
 		SkelName:          "base.OpenActorAuthService",
-		Hash:              "7b29778a",
+		Hash:              "5a4141bb",
 		ServerType:        reflect.TypeFor[OpenActorAuthServiceServer](),
 		DefaultServerType: reflect.TypeFor[*DefaultOpenActorAuthServiceServer](),
 
@@ -141,22 +117,10 @@ var (
 		},
 	}
 	_OpenActorAuthServiceAuthSpec = &rpc.MethodSpec{
-		Name:          "Auth",
-		SkelName:      "auth",
-		ArgumentsType: reflect.TypeFor[_OpenActorAuthServiceAuthArguments](),
-		CloneArguments: func(value any) any {
-			source := value.(*_OpenActorAuthServiceAuthArguments)
-			cloned := *source
-			cloned.Credential = source.Credential.Clone()
-			return &cloned
-		},
-		ResultType: reflect.TypeFor[OpenActorInfo](),
-		CloneResult: func(value any) any {
-			source := value.(OpenActorInfo)
-			cloned := source
-			cloned = source.Clone()
-			return cloned
-		},
+		Name:                        "Auth",
+		SkelName:                    "auth",
+		ArgumentsType:               reflect.TypeFor[_OpenActorAuthServiceAuthArguments](),
+		ResultType:                  reflect.TypeFor[OpenActorInfo](),
 		ArgumentsSensitive:          false,
 		ResultSensitive:             false,
 		ArgumentsContainsBinaryType: false,
@@ -245,7 +209,7 @@ var (
 		Type:              rpc.ServiceSpecTypeServer,
 		Name:              "UserActorAuthService",
 		SkelName:          "base.UserActorAuthService",
-		Hash:              "b4095500",
+		Hash:              "636266c7",
 		ServerType:        reflect.TypeFor[UserActorAuthServiceServer](),
 		DefaultServerType: reflect.TypeFor[*DefaultUserActorAuthServiceServer](),
 
@@ -257,22 +221,10 @@ var (
 		},
 	}
 	_UserActorAuthServiceAuthSpec = &rpc.MethodSpec{
-		Name:          "Auth",
-		SkelName:      "auth",
-		ArgumentsType: reflect.TypeFor[_UserActorAuthServiceAuthArguments](),
-		CloneArguments: func(value any) any {
-			source := value.(*_UserActorAuthServiceAuthArguments)
-			cloned := *source
-			cloned.Credential = source.Credential.Clone()
-			return &cloned
-		},
-		ResultType: reflect.TypeFor[UserActorInfo](),
-		CloneResult: func(value any) any {
-			source := value.(UserActorInfo)
-			cloned := source
-			cloned = source.Clone()
-			return cloned
-		},
+		Name:                        "Auth",
+		SkelName:                    "auth",
+		ArgumentsType:               reflect.TypeFor[_UserActorAuthServiceAuthArguments](),
+		ResultType:                  reflect.TypeFor[UserActorInfo](),
 		ArgumentsSensitive:          false,
 		ResultSensitive:             false,
 		ArgumentsContainsBinaryType: false,

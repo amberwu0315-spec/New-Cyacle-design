@@ -5,6 +5,7 @@ go.work
 go.work.sum
 .cache/
 .gocache/
+go.work*
 
 # PLOTTED - BEGIN
 **/generated/
@@ -63,6 +64,3 @@ dist-ssr
 node_modules
 todos.json
 # PLOTTED - END
-
-go.work*
-
