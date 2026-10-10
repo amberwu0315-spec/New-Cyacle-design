@@ -11,11 +11,13 @@ portalSites:
 
 portalRules:
   - name: base.UserActor-client-rpc
+    entryName: cyacle.http
     matchPathPrefix: "/api"
     routeType: SITE
     routeSiteName: base.UserActor-client-rpc
 
   - name: base.OpenActor-client-rpc
+    entryName: cyacle.http
     matchPathPrefix: "/open-api"
     routeType: SITE
     routeSiteName: base.OpenActor-client-rpc
