@@ -61,57 +61,68 @@ portalSites:
 
 portalRules:
   - name: app.WebWeb-web
+    entryName: cyacle.http
     matchPathPrefix: "/"
     routeType: SITE
     routeSiteName: app.WebWeb-web
     routePathPrefix: "/"
 
   - name: file.FileWeb-web
+    entryName: cyacle.http
     matchPathPrefix: "/file.FileWeb"
     routeType: SITE
     routeSiteName: file.FileWeb-web
 
   - name: file.MultipartFileWeb-web
+    entryName: cyacle.http
     matchPathPrefix: "/file.MultipartFileWeb"
     routeType: SITE
     routeSiteName: file.MultipartFileWeb-web
 
   - name: uic.DocumentWeb-web
+    entryName: cyacle.http
     matchPathPrefix: "/uic.DocumentWeb"
     routeType: SITE
     routeSiteName: uic.DocumentWeb-web
 
   - name: doc.DocumentWeb-web
+    entryName: cyacle.http
     matchPathPrefix: "/doc.DocumentWeb"
     routeType: SITE
     routeSiteName: uic.DocumentWeb-web
 
   - name: uic.AuthWeb-web
+    entryName: cyacle.http
     matchPathPrefix: "/uic.AuthWeb"
     routeType: SITE
     routeSiteName: uic.AuthWeb-web
 
   - name: uic.CallbackWeb-web
+    entryName: cyacle.http
     matchPathPrefix: "/uic.CallbackWeb"
     routeType: SITE
     routeSiteName: uic.CallbackWeb-web
 
   - name: uic.RecordWeb-web
+    entryName: cyacle.http
     matchPathPrefix: "/uic.RecordWeb"
     routeType: SITE
     routeSiteName: uic.RecordWeb-web
 
   - name: supply.chain.SurveyWeb-web
+    entryName: cyacle.http
     matchPathPrefix: "/supply.chain.SurveyWeb"
     routeType: SITE
     routeSiteName: supply.chain.SurveyWeb-web
 
   - name: agent.AgentWeb-web
+    entryName: cyacle.http
     matchPathPrefix: "/agent.AgentWeb"
     routeType: SITE
     routeSiteName: agent.AgentWeb-web
 
   - name: agent.AgentDebugWeb-web
+    entryName: cyacle.http
     matchPathPrefix: "/agent.AgentDebugWeb"
     routeType: SITE
     routeSiteName: agent.AgentDebugWeb-web
