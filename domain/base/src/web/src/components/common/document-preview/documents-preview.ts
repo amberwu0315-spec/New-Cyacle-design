@@ -23,6 +23,10 @@ export interface DocumentsPreviewItem {
   size?: number | null
   url?: string
   rawUrl?: string
+  /** 预览项所属目标（组织/核算等由调用方决定），供业务扩展按同一目标读写数据。 */
+  targetId?: string | null
+  /** 文档的资源内容类型，供业务扩展推导默认值（如数据记录来源类型）。 */
+  resourceContentType?: string | null
   viewerFile: ViewerFile
 }
 
@@ -126,12 +130,15 @@ function getDocumentPreviewMessages() {
 
 export function createDocumentPreviewItem(
   entry: DocumentsPreviewDocumentEntry,
+  options: { resourceContentType?: string | null; targetId?: string | null } = {},
 ): DocumentsPreviewItem {
   return createDocumentPreviewItemFromDocument({
     createdAt: entry.createdAt,
     id: entry.id,
     name: entry.name,
+    resourceContentType: options.resourceContentType,
     size: entry.size,
+    targetId: options.targetId,
     updatedAt: entry.updatedAt,
     version: entry.raw?.version,
   })
@@ -141,7 +148,9 @@ export function createDocumentPreviewItemFromDocument(input: {
   createdAt?: string | null
   id: string
   name: string
+  resourceContentType?: string | null
   size?: number | null
+  targetId?: string | null
   updatedAt?: string | null
   version?: string | null
 }): DocumentsPreviewItem {
@@ -162,7 +171,9 @@ export function createDocumentPreviewItemFromDocument(input: {
     name: input.name,
     source,
     version: input.version,
+    resourceContentType: input.resourceContentType ?? null,
     size: input.size,
+    targetId: input.targetId ?? null,
     url,
     rawUrl,
     viewerFile: {
@@ -215,6 +226,7 @@ export function createFilePreviewItem(input: {
   id: string
   name: string
   size?: number | null
+  targetId?: string | null
   url?: string
 }): DocumentsPreviewItem {
   const source: DocumentsPreviewSource = 'file'
@@ -231,6 +243,7 @@ export function createFilePreviewItem(input: {
     name: input.name,
     source,
     size: input.size,
+    targetId: input.targetId ?? null,
     url,
     rawUrl: directUrl,
     viewerFile: {

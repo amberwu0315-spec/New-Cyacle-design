@@ -1,7 +1,11 @@
 import * as React from 'react'
 import { FileClock, FileText, History, RotateCcw } from 'lucide-react'
 import { UnsupportedContent, ViewerIconButton } from '@cew-lib/file-viewer-base'
-import type { ViewerContentProps } from '@cew-lib/file-viewer-base'
+import type {
+  ViewerContentProps,
+  ViewerFile,
+  ViewerImageFileOptions,
+} from '@cew-lib/file-viewer-base'
 
 import {
   Dialog,
@@ -34,6 +38,12 @@ import {
   formatDocumentDate,
   formatDocumentFileSize,
 } from './document-preview-utils'
+import {
+  resolveDocumentPreviewViewerOptions,
+  useDocumentPreviewExtensions,
+  useDocumentPreviewViewerOptionsVersion,
+} from './document-preview-extensions'
+import type { DocumentPreviewExtensionViewerOptions } from './document-preview-extensions'
 import { createDocumentPreviewItemFromVersion } from './documents-preview'
 import type {
   DocumentsPreviewItem,
@@ -238,6 +248,18 @@ function DocumentPreviewContent(props: ViewerContentProps) {
   return <UnsupportedContent {...props} />
 }
 
+/** 把扩展提供的图片 viewer 配置（如 OCR 块）合并进 viewerFile.image。 */
+function withExtensionImageViewerOptions(
+  file: ViewerFile | null,
+  image: ViewerImageFileOptions | undefined,
+) {
+  if (!file || !image) {
+    return file
+  }
+
+  return { ...file, image: { ...file.image, ...image } }
+}
+
 function getPreviewErrorMessage(error: unknown) {
   if (error instanceof Error && error.message.trim()) {
     return error.message
@@ -438,6 +460,9 @@ export function DocumentPreviewDialog({
   const { t: messages } = useTranslation()
   const previewMessages = messages.common.documentPreview
   const [historyOpen, setHistoryOpen] = React.useState(false)
+  const [activeExtensionId, setActiveExtensionId] = React.useState<string | null>(
+    null,
+  )
   const [selectedVersion, setSelectedVersion] =
     React.useState<DocumentsPreviewVersion | null>(null)
   const [recoverVersion, setRecoverVersion] =
@@ -451,9 +476,68 @@ export function DocumentPreviewDialog({
     return createDocumentPreviewItemFromVersion(item, selectedVersion)
   }, [item, selectedVersion])
   const authorizedPreview = useAuthorizedDocumentPreviewItem(open, effectiveItem)
+  const extensions = useDocumentPreviewExtensions()
+  const previewFile = authorizedPreview.item?.viewerFile ?? null
+  const extensionContext = React.useMemo(
+    () => ({
+      file: previewFile,
+      item,
+      open,
+      viewerKind: previewFile?.viewerKind ?? null,
+    }),
+    [item, open, previewFile],
+  )
+  const availableExtensions = extensions.filter(
+    (extension) => !extension.match || extension.match(extensionContext),
+  )
+  const activeExtension =
+    availableExtensions.find(
+      (extension) => extension.id === activeExtensionId,
+    ) ?? null
+  const viewerOptionsVersion = useDocumentPreviewViewerOptionsVersion()
+  const extensionViewerOptions = React.useMemo(() => {
+    void viewerOptionsVersion
+
+    return availableExtensions.reduce<DocumentPreviewExtensionViewerOptions>(
+      (merged, extension) => {
+        const options = resolveDocumentPreviewViewerOptions(
+          extension,
+          extensionContext,
+        )
+
+        return options ? { ...merged, ...options } : merged
+      },
+      {},
+    )
+  }, [availableExtensions, extensionContext, viewerOptionsVersion])
+  const extensionViewerExcelOptions = extensionViewerOptions.excel
+  const extensionViewerImageOptions = extensionViewerOptions.image
+  const buildExtensionRenderContext = React.useCallback(
+    (extensionId: string, active: boolean) => ({
+      ...extensionContext,
+      active,
+      activate: () => {
+        setActiveExtensionId(extensionId)
+        setHistoryOpen(false)
+      },
+      deactivate: () => {
+        setActiveExtensionId((current) =>
+          current === extensionId ? null : current,
+        )
+      },
+      toggle: () => {
+        setActiveExtensionId((current) =>
+          current === extensionId ? null : extensionId,
+        )
+        setHistoryOpen(false)
+      },
+    }),
+    [extensionContext],
+  )
 
   React.useEffect(() => {
     setHistoryOpen(false)
+    setActiveExtensionId(null)
     setSelectedVersion(null)
     setRecoverVersion(null)
   }, [item?.id])
@@ -468,39 +552,71 @@ export function DocumentPreviewDialog({
     setSelectedVersion(matched ?? versions[0])
   }, [item, selectedVersion, versions])
 
-  const toolbar = React.useMemo<ViewerContentProps['toolbar']>(
-    () => ({
-      renderActions: ({ defaultActions }) => (
-        <>
-          {item?.source === 'document' ? (
-            <ViewerIconButton
-              label={previewMessages.versionHistory}
-              pressed={historyOpen}
-              onClick={() => setHistoryOpen((currentOpen) => !currentOpen)}
-            >
-              <History className="size-4" />
-            </ViewerIconButton>
-          ) : null}
-          {item?.source === 'document' && onDownload ? (
-            <ViewerIconButton
-              label={previewMessages.downloadOriginalDocument}
-              onClick={() => {
-                if (!effectiveItem) {
-                  return
-                }
+  const renderExtensionToolbarActions = () =>
+    availableExtensions.map((extension) => {
+      const active = extension.id === activeExtensionId
+      const context = buildExtensionRenderContext(extension.id, active)
 
-                onDownload(effectiveItem, true)
-              }}
-            >
-              <FileText className="size-4" />
-            </ViewerIconButton>
-          ) : null}
-          {defaultActions}
-        </>
-      ),
-    }),
-    [effectiveItem, historyOpen, item, onDownload, previewMessages],
-  )
+      if (extension.toolbarAction) {
+        const action = extension.toolbarAction(context)
+
+        return (
+          <ViewerIconButton
+            key={extension.id}
+            label={action.label}
+            pressed={active}
+            onClick={context.toggle}
+          >
+            {action.icon}
+          </ViewerIconButton>
+        )
+      }
+
+      if (!extension.renderToolbarAction) {
+        return null
+      }
+
+      return (
+        <React.Fragment key={extension.id}>
+          {extension.renderToolbarAction(context)}
+        </React.Fragment>
+      )
+    })
+
+  const toolbar: ViewerContentProps['toolbar'] = {
+    renderActions: ({ defaultActions }) => (
+      <>
+        {renderExtensionToolbarActions()}
+        {item?.source === 'document' ? (
+          <ViewerIconButton
+            label={previewMessages.versionHistory}
+            pressed={historyOpen}
+            onClick={() => {
+              setHistoryOpen((currentOpen) => !currentOpen)
+              setActiveExtensionId(null)
+            }}
+          >
+            <History className="size-4" />
+          </ViewerIconButton>
+        ) : null}
+        {item?.source === 'document' && onDownload ? (
+          <ViewerIconButton
+            label={previewMessages.downloadOriginalDocument}
+            onClick={() => {
+              if (!effectiveItem) {
+                return
+              }
+
+              onDownload(effectiveItem, true)
+            }}
+          >
+            <FileText className="size-4" />
+          </ViewerIconButton>
+        ) : null}
+        {defaultActions}
+      </>
+    ),
+  }
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -509,7 +625,7 @@ export function DocumentPreviewDialog({
           <DialogTitle>{previewMessages.dialogTitle}</DialogTitle>
         </DialogHeader>
         <div className="flex min-h-0 flex-1 overflow-hidden bg-muted/20">
-          <div className="min-w-0 flex-1 overflow-hidden">
+          <div className="relative min-w-0 flex-1 overflow-hidden">
             {authorizedPreview.loading ? (
               <DocumentPreviewLoadingState messages={previewMessages} />
             ) : authorizedPreview.error ? (
@@ -527,7 +643,11 @@ export function DocumentPreviewDialog({
                 }
               >
                 <DocumentPreviewContent
-                  file={authorizedPreview.item?.viewerFile ?? null}
+                  file={withExtensionImageViewerOptions(
+                    authorizedPreview.item?.viewerFile ?? null,
+                    extensionViewerImageOptions,
+                  )}
+                  excel={extensionViewerExcelOptions}
                   toolbar={toolbar}
                   className="h-full"
                   classNames={{
@@ -536,20 +656,29 @@ export function DocumentPreviewDialog({
                 />
               </React.Suspense>
             )}
+            {activeExtension?.renderViewerOverlay
+              ? activeExtension.renderViewerOverlay(
+                  buildExtensionRenderContext(activeExtension.id, true),
+                )
+              : null}
           </div>
-          {historyOpen && item?.source === 'document' ? (
-            <DocumentPreviewVersionPanel
-              canRecoverVersion={Boolean(onRollbackVersion)}
-              currentVersion={selectedVersion}
-              latestVersion={latestVersion}
-              loading={versionsLoading}
-              recovering={rollbackPending}
-              versions={versions}
-              onSelectVersion={setSelectedVersion}
-              onRecover={() => setRecoverVersion(selectedVersion)}
-              messages={previewMessages}
-            />
-          ) : null}
+          {activeExtension?.renderSidePanel
+            ? activeExtension.renderSidePanel(
+                buildExtensionRenderContext(activeExtension.id, true),
+              )
+            : historyOpen && item?.source === 'document' ? (
+                <DocumentPreviewVersionPanel
+                  canRecoverVersion={Boolean(onRollbackVersion)}
+                  currentVersion={selectedVersion}
+                  latestVersion={latestVersion}
+                  loading={versionsLoading}
+                  recovering={rollbackPending}
+                  versions={versions}
+                  onSelectVersion={setSelectedVersion}
+                  onRecover={() => setRecoverVersion(selectedVersion)}
+                  messages={previewMessages}
+                />
+              ) : null}
         </div>
         <AlertDialog
           open={Boolean(recoverVersion)}
