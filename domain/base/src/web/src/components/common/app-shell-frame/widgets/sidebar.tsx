@@ -326,17 +326,19 @@ export function AppShellFrameSidebarBrand({
             {labelLines && labelLines.length > 0 ? (
               /*
                * 两行品牌名（上长下短、下行居中）。
-               * 容器必须有 `flex-1 min-w-0`、每行必须有 `w-full`，否则行内文字按内容宽度
-               * 撑开（`truncate` 不生效），在窄侧边栏里会压到左侧 logo 上。
-               * 字号 15px：24 字全称在 320px 侧边栏下正好两行放得下，超长才出省略号。
+               *
+               * 容器**不能**加 `flex-1`：那样容器会占满剩余宽度，第二行就会按整块宽度居中，
+               * 侧边栏越宽偏得越多（看起来像"下行往右跑"）。这里让容器按文字宽度收缩
+               * （`min-w-0 max-w-full` 保证超长时收缩到可用宽度），第二行 `self-center`
+               * 就是相对**第一行**居中；每行 `truncate` 保证过长时不压到 logo、只出省略号。
                */
-              <span className="flex min-w-0 flex-1 flex-col justify-center">
+              <span className="flex min-w-0 max-w-full flex-col justify-center">
                 {labelLines.map((line, index) => (
                   <span
                     key={line}
                     className={cn(
-                      'w-full truncate text-[15px] leading-[1.35] font-semibold tracking-normal text-foreground',
-                      index > 0 && 'text-center',
+                      'max-w-full truncate text-[15px] leading-[1.35] font-semibold tracking-normal text-foreground',
+                      index === 0 ? 'w-full' : 'self-center',
                     )}
                   >
                     {line}
