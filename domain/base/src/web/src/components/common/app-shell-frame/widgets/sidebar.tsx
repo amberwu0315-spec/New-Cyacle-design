@@ -253,6 +253,7 @@ export function AppShellFrameSidebarBrand({
   homeLabel,
   href = '/',
   label,
+  labelLines,
   logoAlt,
   logoSrc,
   onClick,
@@ -315,16 +316,38 @@ export function AppShellFrameSidebarBrand({
         onClick={handleClick}
       >
         {isLogoExpanded ? (
-          <div className="flex min-w-0 items-center gap-2.5">
+          <div className="flex w-full min-w-0 items-center gap-2.5">
             <img
               src={logoSrc}
               alt=""
               aria-hidden="true"
               className="size-9 shrink-0 object-contain"
             />
-            <span className="truncate text-[26px] leading-none font-semibold tracking-normal text-foreground">
-              {label}
-            </span>
+            {labelLines && labelLines.length > 0 ? (
+              /*
+               * 两行品牌名（上长下短、下行居中）。
+               * 容器必须有 `flex-1 min-w-0`、每行必须有 `w-full`，否则行内文字按内容宽度
+               * 撑开（`truncate` 不生效），在窄侧边栏里会压到左侧 logo 上。
+               * 字号 15px：24 字全称在 320px 侧边栏下正好两行放得下，超长才出省略号。
+               */
+              <span className="flex min-w-0 flex-1 flex-col justify-center">
+                {labelLines.map((line, index) => (
+                  <span
+                    key={line}
+                    className={cn(
+                      'w-full truncate text-[15px] leading-[1.35] font-semibold tracking-normal text-foreground',
+                      index > 0 && 'text-center',
+                    )}
+                  >
+                    {line}
+                  </span>
+                ))}
+              </span>
+            ) : (
+              <span className="truncate text-[26px] leading-none font-semibold tracking-normal text-foreground">
+                {label}
+              </span>
+            )}
           </div>
         ) : (
           <img
