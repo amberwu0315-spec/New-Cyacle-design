@@ -115,6 +115,7 @@ packages:
   - ./.plot/web/virtual/web-category
   - ./.plot/web/virtual/web-cbam
   - ./.plot/web/virtual/web-cfo
+  - ./.plot/web/virtual/web-dashboard
   - ./.plot/web/virtual/web-factor
   - ./.plot/web/virtual/web-file
   - ./.plot/web/virtual/web-formula

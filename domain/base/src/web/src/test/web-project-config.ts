@@ -6,6 +6,7 @@ export function configureTestWebProjectConfig() {
       agent: { enabled: true },
       dataRecordMap: { enabled: true },
       languageSwitcher: { enabled: true },
+      lcaAiCreateAccounting: { enabled: true },
     },
     routes: {
       loginPath: '/uic/login',

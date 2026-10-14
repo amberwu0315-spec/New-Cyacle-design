@@ -91,6 +91,13 @@ const webProjectConfig = {
         true,
       ),
     },
+    lcaAiCreateAccounting: {
+      enabled: readBooleanEnv(
+        'VITE_APP_LCA_AI_CREATE_ACCOUNTING_ENABLED',
+        import.meta.env.VITE_APP_LCA_AI_CREATE_ACCOUNTING_ENABLED,
+        true,
+      ),
+    },
   },
   routes: {
     loginPath: '/uic/login',

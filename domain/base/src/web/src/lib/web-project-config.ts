@@ -8,6 +8,7 @@ export interface WebProjectCapabilitiesConfig {
   readonly agent: WebProjectCapabilityConfig
   readonly dataRecordMap: WebProjectCapabilityConfig
   readonly languageSwitcher: WebProjectCapabilityConfig
+  readonly lcaAiCreateAccounting: WebProjectCapabilityConfig
 }
 
 export interface WebProjectCapabilityConfig {
@@ -62,6 +63,10 @@ function createWebProjectConfig(config: WebProjectConfig): WebProjectConfig {
       languageSwitcher: createCapabilityConfig(
         config.capabilities.languageSwitcher,
         'languageSwitcher',
+      ),
+      lcaAiCreateAccounting: createCapabilityConfig(
+        config.capabilities.lcaAiCreateAccounting,
+        'lcaAiCreateAccounting',
       ),
     }),
     routes: Object.freeze({

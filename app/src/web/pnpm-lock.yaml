@@ -314,6 +314,9 @@ importers:
       '@carbonnt-cyacle/web-cfo':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-cfo
+      '@carbonnt-cyacle/web-dashboard':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/web-dashboard
       '@carbonnt-cyacle/web-factor':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-factor
