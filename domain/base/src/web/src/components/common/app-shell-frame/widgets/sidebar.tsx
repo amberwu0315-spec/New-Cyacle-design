@@ -253,6 +253,7 @@ export function AppShellFrameSidebarBrand({
   homeLabel,
   href = '/',
   label,
+  labelLines,
   logoAlt,
   logoSrc,
   onClick,
@@ -315,16 +316,40 @@ export function AppShellFrameSidebarBrand({
         onClick={handleClick}
       >
         {isLogoExpanded ? (
-          <div className="flex min-w-0 items-center gap-2.5">
+          <div className="flex w-full min-w-0 items-center gap-2.5">
             <img
               src={logoSrc}
               alt=""
               aria-hidden="true"
               className="size-9 shrink-0 object-contain"
             />
-            <span className="truncate text-[26px] leading-none font-semibold tracking-normal text-foreground">
-              {label}
-            </span>
+            {labelLines && labelLines.length > 0 ? (
+              /*
+               * 两行品牌名（上长下短、下行居中）。
+               *
+               * 容器**不能**加 `flex-1`：那样容器会占满剩余宽度，第二行就会按整块宽度居中，
+               * 侧边栏越宽偏得越多（看起来像"下行往右跑"）。这里让容器按文字宽度收缩
+               * （`min-w-0 max-w-full` 保证超长时收缩到可用宽度），第二行 `self-center`
+               * 就是相对**第一行**居中；每行 `truncate` 保证过长时不压到 logo、只出省略号。
+               */
+              <span className="flex min-w-0 max-w-full flex-col justify-center">
+                {labelLines.map((line, index) => (
+                  <span
+                    key={line}
+                    className={cn(
+                      'max-w-full truncate text-[15px] leading-[1.35] font-semibold tracking-normal text-foreground',
+                      index === 0 ? 'w-full' : 'self-center',
+                    )}
+                  >
+                    {line}
+                  </span>
+                ))}
+              </span>
+            ) : (
+              <span className="truncate text-[26px] leading-none font-semibold tracking-normal text-foreground">
+                {label}
+              </span>
+            )}
           </div>
         ) : (
           <img

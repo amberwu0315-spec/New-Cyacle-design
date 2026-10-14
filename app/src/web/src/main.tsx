@@ -11,6 +11,7 @@ const rootElement = document.getElementById('app')!;
 
 applyAppEditionToDocument(getAppEdition());
 
+
 if (!rootElement.innerHTML) {
   ReactDOM.createRoot(rootElement).render(
     <StrictMode>

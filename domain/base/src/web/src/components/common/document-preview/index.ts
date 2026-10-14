@@ -15,6 +15,20 @@ export {
   type OpenDocumentPreviewOptions,
 } from './document-preview-controller'
 export {
+  DocumentPreviewSidePanel,
+  notifyDocumentPreviewViewerOptionsChanged,
+  registerDocumentPreviewExtension,
+  resolveDocumentPreviewViewerOptions,
+  useDocumentPreviewExtensions,
+  useDocumentPreviewViewerOptionsVersion,
+  type DocumentPreviewExtension,
+  type DocumentPreviewExtensionContext,
+  type DocumentPreviewExtensionRenderContext,
+  type DocumentPreviewExtensionViewerOptions,
+  type DocumentPreviewSidePanelProps,
+  type DocumentPreviewToolbarAction,
+} from './document-preview-extensions'
+export {
   createDocumentPreviewItem,
   createDocumentPreviewItemFromDocument,
   createDocumentPreviewItemFromVersion,

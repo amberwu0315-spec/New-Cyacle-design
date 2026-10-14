@@ -73,6 +73,11 @@ export interface AppLayoutProps {
   profileQuery: AppLayoutAsyncState<AppLayoutUserProfile>
   permissionQuery?: AppLayoutAsyncState<PermissionCodeMap>
   workspaceQuery: AppLayoutAsyncState<Array<WorkspaceSelectionItem>>
+  /**
+   * 侧边栏品牌名（多行）：由应用层注入部署自己的品牌文案。
+   * 不传时沿用 i18n 的单行 `brandName`，显示与不带本参数时完全一致。
+   */
+  sidebarBrandLabelLines?: readonly string[]
 }
 
 function SessionBootstrapError({
@@ -134,6 +139,7 @@ export function AppLayout({
   onWorkspaceSelect,
   permissionQuery,
   profileQuery,
+  sidebarBrandLabelLines,
   workspaceQuery,
 }: AppLayoutProps) {
   const { t } = useTranslation()
@@ -319,6 +325,7 @@ export function AppLayout({
               <AppShellFrame.SidebarBrand
                 href="/"
                 label={t.common.shell.sidebar.brandName}
+                labelLines={sidebarBrandLabelLines}
                 homeLabel={t.common.shell.sidebar.homeLink}
                 logoSrc={cyacleLogo}
                 onNavigate={handleNavigate}

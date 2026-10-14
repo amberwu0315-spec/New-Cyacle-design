@@ -108,6 +108,11 @@ export interface AppShellFrameSidebarBrandProps
   extends Omit<React.ComponentPropsWithoutRef<'a'>, 'children'> {
   homeLabel: string
   label: string
+  /**
+   * 多行品牌名：传入后代替 `label` 渲染，第一行靠左占满，其余行居中排在下面。
+   * 用于「上长下短」的两行中文品牌名排版；不传时行为与单行 `label` 完全一致。
+   */
+  labelLines?: readonly string[]
   logoAlt?: string
   logoSrc: string
   onNavigate?: (to: string) => void

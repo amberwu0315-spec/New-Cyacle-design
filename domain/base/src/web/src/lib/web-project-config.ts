@@ -8,7 +8,14 @@ export interface WebProjectCapabilitiesConfig {
   readonly agent: WebProjectCapabilityConfig
   readonly dataRecordMap: WebProjectCapabilityConfig
   readonly languageSwitcher: WebProjectCapabilityConfig
-  readonly lcaAiCreateAccounting: WebProjectCapabilityConfig
+  /** 兼容旧配置，缺省时保持 AI 创建核算入口开启。 */
+  readonly lcaAiCreateAccounting?: WebProjectCapabilityConfig
+}
+
+type ResolvedWebProjectConfig = WebProjectConfig & {
+  readonly capabilities: WebProjectCapabilitiesConfig & {
+    readonly lcaAiCreateAccounting: WebProjectCapabilityConfig
+  }
 }
 
 export interface WebProjectCapabilityConfig {
@@ -36,13 +43,13 @@ export interface WebProjectDocumentUploadServiceConfig {
   readonly downloadPath: string
 }
 
-let configuredWebProjectConfig: WebProjectConfig | undefined
+let configuredWebProjectConfig: ResolvedWebProjectConfig | undefined
 
 export function configureWebProjectConfig(config: WebProjectConfig) {
   configuredWebProjectConfig = createWebProjectConfig(config)
 }
 
-export function getWebProjectConfig(): WebProjectConfig {
+export function getWebProjectConfig(): ResolvedWebProjectConfig {
   if (!configuredWebProjectConfig) {
     throw new Error(
       'Web project config has not been configured. Import the app project-config module before creating the app router or using shared web libs.',
@@ -52,7 +59,7 @@ export function getWebProjectConfig(): WebProjectConfig {
   return configuredWebProjectConfig
 }
 
-function createWebProjectConfig(config: WebProjectConfig): WebProjectConfig {
+function createWebProjectConfig(config: WebProjectConfig): ResolvedWebProjectConfig {
   return Object.freeze({
     capabilities: Object.freeze({
       agent: createCapabilityConfig(config.capabilities.agent, 'agent'),
@@ -65,7 +72,7 @@ function createWebProjectConfig(config: WebProjectConfig): WebProjectConfig {
         'languageSwitcher',
       ),
       lcaAiCreateAccounting: createCapabilityConfig(
-        config.capabilities.lcaAiCreateAccounting,
+        config.capabilities.lcaAiCreateAccounting ?? { enabled: true },
         'lcaAiCreateAccounting',
       ),
     }),

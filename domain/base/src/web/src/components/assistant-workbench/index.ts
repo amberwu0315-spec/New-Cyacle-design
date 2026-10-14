@@ -1,4 +1,5 @@
 export type { AssistantWorkbenchAdapter } from './adapters'
+export { getAssistantWorkbenchMessages } from './i18n/index.ts'
 export {
   useAssistantAgentSession,
   useAssistantWorkbenchController,
