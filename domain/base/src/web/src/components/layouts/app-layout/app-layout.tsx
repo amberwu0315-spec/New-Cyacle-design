@@ -78,6 +78,11 @@ export interface AppLayoutProps {
    * 不传时沿用 i18n 的单行 `brandName`，显示与不带本参数时完全一致。
    */
   sidebarBrandLabelLines?: readonly string[]
+  /**
+   * 侧边栏品牌点击后的跳转地址；不传时保持 `/`（标品行为不变）。
+   * 私有化部署用它把品牌点击指向客户门户首页。
+   */
+  sidebarBrandHref?: string
 }
 
 function SessionBootstrapError({
@@ -140,6 +145,7 @@ export function AppLayout({
   permissionQuery,
   profileQuery,
   sidebarBrandLabelLines,
+  sidebarBrandHref,
   workspaceQuery,
 }: AppLayoutProps) {
   const { t } = useTranslation()
@@ -323,7 +329,7 @@ export function AppLayout({
               resizeHint={t.common.shell.sidebar.resizeHint}
             >
               <AppShellFrame.SidebarBrand
-                href="/"
+                href={sidebarBrandHref ?? '/'}
                 label={t.common.shell.sidebar.brandName}
                 labelLines={sidebarBrandLabelLines}
                 homeLabel={t.common.shell.sidebar.homeLink}
