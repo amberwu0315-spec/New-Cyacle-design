@@ -7,7 +7,6 @@ go.work.sum
 .gocache/
 go.work*
 
-
 # PLOTTED - BEGIN
 **/generated/
 *.local
@@ -23,7 +22,6 @@ go.work*
 .vite
 .vscode/
 .wrangler
-/.dsh/
 /app/src/server
 /dev.yaml
 /dist/
@@ -39,6 +37,7 @@ go.work*
 /domain/category
 /domain/cbam
 /domain/cfo
+/domain/dashboard
 /domain/factor
 /domain/file
 /domain/formula

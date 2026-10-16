@@ -165,6 +165,7 @@ function splitMaterialModuleScenes(config: AppNavConfig): AppNavConfig {
  */
 const APP_NAV_SCENE_ORDER = [
   // 基础
+  "domain-dashboard", // 驾驶舱
   // 工作督办：模块自身把 5 个菜单都标了 category: "management"，所以会被拆成
   // `<scene id>--<首个菜单 id>` 的场景，这里必须用拆分后的 id 才能命中；
   // 不带后缀的写法一并登记，模块改写法也不会掉到分组末尾。
@@ -209,6 +210,7 @@ function groupAppNavConfig(config: AppNavConfig, options: AppNavConfigOptions = 
     appNavCategories.account,
   ]
   const appNavSceneCategoryById: Record<string, string> = {
+    "domain-dashboard": appNavCategories.basis,
     // 工作督办：模块把 5 个菜单都标了 category: "management"，场景会被拆成
     // `domain-work-supervision--work-supervision-home`；拆分场景的 id 也要在这里登记，
     // 否则会回落到模块自己声明的「管理」。不带后缀的写法一并登记，模块改写法也不会掉。
