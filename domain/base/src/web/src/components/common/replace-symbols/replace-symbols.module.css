@@ -1,0 +1,38 @@
+.content {
+  min-width: 0;
+  max-width: 100%;
+  overflow-wrap: anywhere;
+}
+
+.display {
+  gap: 0;
+}
+
+/* 正文必须使用普通行内排版，不能把一个文本 segment 当作 flex item。 */
+.display [data-slot="replace-display-paragraph"] {
+  display: block;
+  white-space: pre-wrap;
+}
+
+/* NodeView 默认的 inline-block 会让长替换符成为不可拆行的整体。 */
+.content [data-slot="replace-token-node"] {
+  display: inline !important;
+  margin-inline: 0 !important;
+}
+
+.content [data-slot="replace-token-chip"] {
+  display: inline;
+  height: auto;
+  margin-inline: 2px;
+  vertical-align: baseline;
+  font: inherit;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  word-break: break-all;
+}
+
+.content [data-slot="replace-token-chip-label"] {
+  overflow: visible;
+  white-space: inherit;
+  text-overflow: clip;
+}
