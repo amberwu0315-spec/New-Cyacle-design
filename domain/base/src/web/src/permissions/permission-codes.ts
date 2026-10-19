@@ -223,6 +223,10 @@ export const COMMON_PERMISSION_CODES = definePermissionCodeDictionary({
     code: 'cyacle_workspace_matrix',
     description: '管理后台工作空间管理',
   },
+  targetAuthorizationManagement: {
+    code: 'target_authorization_mgt',
+    description: '管理后台给账号授权研究对象',
+  },
   workspaceProjectCopyMatrix: {
     code: 'workspace_project_copy_matrix',
     description: '在工作空间之间复制项目',
