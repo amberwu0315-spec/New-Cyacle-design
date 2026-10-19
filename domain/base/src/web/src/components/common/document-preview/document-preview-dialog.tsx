@@ -478,14 +478,16 @@ export function DocumentPreviewDialog({
   const authorizedPreview = useAuthorizedDocumentPreviewItem(open, effectiveItem)
   const extensions = useDocumentPreviewExtensions()
   const previewFile = authorizedPreview.item?.viewerFile ?? null
+  const extensionSessionKey = React.useMemo(() => ({ open }), [open])
   const extensionContext = React.useMemo(
     () => ({
+      sessionKey: extensionSessionKey,
       file: previewFile,
       item,
       open,
       viewerKind: previewFile?.viewerKind ?? null,
     }),
-    [item, open, previewFile],
+    [extensionSessionKey, item, open, previewFile],
   )
   const availableExtensions = extensions.filter(
     (extension) => !extension.match || extension.match(extensionContext),
