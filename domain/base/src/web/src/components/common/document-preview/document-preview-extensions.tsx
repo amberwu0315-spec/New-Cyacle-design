@@ -13,6 +13,8 @@ import type { DocumentsPreviewItem } from './documents-preview'
 
 /** 预览扩展的匹配入参。 */
 export interface DocumentPreviewExtensionContext {
+  /** 本次预览会话的标识；面板/文档切换时稳定，关闭后重开会改变。供扩展用 WeakMap 保存临时草稿。 */
+  sessionKey?: object
   file: ViewerFile | null
   item: DocumentsPreviewItem | null
   open: boolean
