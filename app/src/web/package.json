@@ -64,6 +64,7 @@
     "@carbonnt-cyacle/web-report": "workspace:*",
     "@carbonnt-cyacle/web-search-indexer": "workspace:*",
     "@carbonnt-cyacle/web-supply-chain": "workspace:*",
+    "@carbonnt-cyacle/web-tusen": "workspace:*",
     "@carbonnt-cyacle/web-uic": "workspace:*",
     "@carbonnt-cyacle/web-unit": "workspace:*",
     "@carbonnt-cyacle/web-wecom": "workspace:*",
