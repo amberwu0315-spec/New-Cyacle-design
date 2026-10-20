@@ -23,6 +23,7 @@ go.work*
 .vite
 .vscode/
 .wrangler
+/.dsh/
 /app/src/server
 /dev.yaml
 /dist/

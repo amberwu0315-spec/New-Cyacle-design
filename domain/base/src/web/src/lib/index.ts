@@ -2,11 +2,11 @@ export {
   DEFAULT_FORMULA_FUNCTIONS,
   DEFAULT_PLAIN_TEXT_ITEM_TYPE,
   FormulaEditor,
-  ReplaceDisplay,
-  ReplaceEditor,
   collectReferencedVariables,
   validateFormula,
 } from '@cew-lib/cyacle-replace-symbols'
+export { ReplaceDisplay, ReplaceEditor, ReplaceEditorToolbar } from '../components/common/replace-symbols/index.ts'
+export type { ReplaceEditorToolbarProps } from '../components/common/replace-symbols/index.ts'
 export type {
   FormulaEditorToolbarApi,
   FormulaEditorValue,
