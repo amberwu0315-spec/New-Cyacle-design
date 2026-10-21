@@ -2,6 +2,18 @@
 
 domain base
 
+@desc("后台敏感操作类型")
+pub enum AdminStepUpOperation {
+    @desc("禁用账号")
+    USER_DISABLE
+    @desc("认证机构归档")
+    CERTIFICATION_AUTHORITY_ARCHIVE
+    @desc("标准数据库信息编辑")
+    STANDARD_DATABASE_UPDATE
+    @desc("空间属性编辑")
+    WORKSPACE_UPDATE
+}
+
 @desc("宏文本片段类型")
 pub enum ItemType {
     @desc("普通文本")
@@ -58,6 +70,14 @@ pub data PageResp<TItem> {
     total: int
     @desc("数据")
     data: list<TItem>?
+}
+
+@desc("后台敏感操作二次验证参数")
+pub data StepUpVerification {
+    @desc("验证令牌")
+    token: string
+    @desc("短信验证码")
+    code: string
 }
 
 @desc("数值带单位")

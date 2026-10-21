@@ -137,4 +137,22 @@ export const common = {
     uploadFailed: 'Upload failed. Please try again later.',
     duplicateTask: (taskId) => `Upload task already exists: ${taskId}`,
   },
+  stepUpVerification: {
+    phoneLabel: 'Account phone number',
+    phoneLoading: 'Loading the bound phone number...',
+    phoneLoadFailed: 'Failed to load the bound phone number. Please try again later.',
+    phoneUnbound:
+      'This account has no bound phone number. Bind a phone number before continuing.',
+    codeLabel: 'SMS verification code',
+    codePlaceholder: 'Enter the SMS verification code',
+    sendCode: 'Send code',
+    resendCode: 'Resend in {seconds}s',
+    sending: 'Sending...',
+    verifying: 'Verifying...',
+    cancel: 'Cancel',
+    confirm: 'Verify and submit',
+    codeRequired: 'Enter the SMS verification code.',
+    sendFailed: 'Failed to send the verification code. Please try again later.',
+    verifyFailed: 'Verification failed. Please try again later.',
+  },
 } satisfies Messages['common']
