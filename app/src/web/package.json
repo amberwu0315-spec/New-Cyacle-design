@@ -47,7 +47,6 @@
     "@carbonnt-cyacle/web-category": "workspace:*",
     "@carbonnt-cyacle/web-cbam": "workspace:*",
     "@carbonnt-cyacle/web-cfo": "workspace:*",
-    "@carbonnt-cyacle/web-dashboard": "workspace:*",
     "@carbonnt-cyacle/web-factor": "workspace:*",
     "@carbonnt-cyacle/web-file": "workspace:*",
     "@carbonnt-cyacle/web-formula": "workspace:*",

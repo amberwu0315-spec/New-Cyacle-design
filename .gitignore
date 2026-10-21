@@ -37,7 +37,6 @@ go.work*
 /domain/category
 /domain/cbam
 /domain/cfo
-/domain/dashboard
 /domain/factor
 /domain/file
 /domain/formula
