@@ -55,6 +55,7 @@ go.work*
 /domain/report
 /domain/search.indexer
 /domain/supply.chain
+/domain/tusen
 /domain/uic
 /domain/unit
 /domain/wecom

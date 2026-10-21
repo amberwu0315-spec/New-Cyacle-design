@@ -133,6 +133,7 @@ packages:
   - ./.plot/web/virtual/web-report
   - ./.plot/web/virtual/web-search-indexer
   - ./.plot/web/virtual/web-supply-chain
+  - ./.plot/web/virtual/web-tusen
   - ./.plot/web/virtual/web-uic
   - ./.plot/web/virtual/web-unit
   - ./.plot/web/virtual/web-wecom

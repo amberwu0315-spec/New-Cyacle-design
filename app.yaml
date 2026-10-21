@@ -109,7 +109,7 @@ domains:
     - name: work.supervision
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/work.supervision.git
-    - name: dashboard
+    - name: tusen
       source: REMOTE
-      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/dashboard.git
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/tusen.git
 

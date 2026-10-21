@@ -368,6 +368,9 @@ importers:
       '@carbonnt-cyacle/web-supply-chain':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-supply-chain
+      '@carbonnt-cyacle/web-tusen':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/web-tusen
       '@carbonnt-cyacle/web-uic':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-uic
