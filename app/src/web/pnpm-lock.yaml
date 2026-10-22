@@ -215,9 +215,6 @@ importers:
       '@carbonnt-cyacle/skeled-cfoapi':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-cfoapi
-      '@carbonnt-cyacle/skeled-dashboardapi':
-        specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-dashboardapi
       '@carbonnt-cyacle/skeled-factorapi':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-factorapi

@@ -82,7 +82,6 @@ packages:
   - ./.plot/web/virtual/skeled-categoryapi
   - ./.plot/web/virtual/skeled-cbamapi
   - ./.plot/web/virtual/skeled-cfoapi
-  - ./.plot/web/virtual/skeled-dashboardapi
   - ./.plot/web/virtual/skeled-factorapi
   - ./.plot/web/virtual/skeled-fileapi
   - ./.plot/web/virtual/skeled-formulaapi
