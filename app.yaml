@@ -112,4 +112,7 @@ domains:
     - name: tusen
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/tusen.git
+    - name: dashboard
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/dashboard.git
 

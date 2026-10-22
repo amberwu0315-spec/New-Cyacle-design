@@ -215,6 +215,9 @@ importers:
       '@carbonnt-cyacle/skeled-cfoapi':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-cfoapi
+      '@carbonnt-cyacle/skeled-dashboardapi':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/skeled-dashboardapi
       '@carbonnt-cyacle/skeled-factorapi':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-factorapi
@@ -314,6 +317,9 @@ importers:
       '@carbonnt-cyacle/web-cfo':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-cfo
+      '@carbonnt-cyacle/web-dashboard':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/web-dashboard
       '@carbonnt-cyacle/web-factor':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-factor

@@ -30,10 +30,13 @@ function isEnterpriseCustomerWorkspace(
  * 分类表达的是菜单归属，不是可见性；把企业专属写成「挪进管理分类」会让
  * 后续调整分类的人无意间改掉权限（物料/活动管理就这样漏过企业门禁）。
  *
+ * 「驾驶舱」（`domain-dashboard`）同样只对企业客户开放，非企业客户组织、
+ * 个人工作空间和组织类型尚未加载时都不渲染该入口。
+ *
  * 「数据收集」（`domain-material--collection`）不在此列：它的菜单按
  * manager/reporter/approver 权限可见，填报人和审批人可能是非企业用户。
  */
-const ENTERPRISE_ONLY_SCENE_IDS = ["domain-material"] as const
+const ENTERPRISE_ONLY_SCENE_IDS = ["domain-dashboard", "domain-material"] as const
 
 /**
  * Optional product-specific navigation presentation filter. The underlying
