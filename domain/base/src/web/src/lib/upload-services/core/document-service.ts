@@ -5,6 +5,7 @@ import {
 } from './upload-service.shared'
 import { getWebProjectConfig } from '#/lib/web-project-config.ts'
 import { getSessionAuthorizationHeader } from '#/lib/session-storage.ts'
+import { saveBlobAsFile } from '#/lib/download-file.ts'
 import { getMessages, languageStore } from '#/lib/i18n/index.ts'
 
 export const DOCUMENT_SERVICE_PATH_PREFIX = '/uic.DocumentWeb/DocumentService'
@@ -119,6 +120,22 @@ export async function fetchDocumentBlobByUrl(
   }
 
   return blob
+}
+
+/**
+ * 带鉴权地下载一个文档地址并落盘。
+ *
+ * 凡是不能走 `fetch` 的入口（`<a href>`、`window.open`、`<img src>` 等浏览器导航）
+ * 都必须走这里：DocumentWeb 的凭据只在 Authorization 头里，导航请求带不上。
+ */
+export async function downloadDocumentFileByUrl(
+  url: string | null | undefined,
+  fileName: string,
+  options: FetchDocumentBlobByUrlOptions = {},
+) {
+  const blob = await fetchDocumentBlobByUrl(url, options)
+
+  saveBlobAsFile(blob, fileName)
 }
 
 export function getDocumentPreviewImageUrl(
