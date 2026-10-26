@@ -52,6 +52,14 @@ type PageResp[TItem any] struct {
 	Data *[]TItem `json:"data"`
 }
 
+// StepUpVerification 后台敏感操作二次验证参数
+type StepUpVerification struct {
+	// Token 验证令牌
+	Token string `json:"token"`
+	// Code 短信验证码
+	Code string `json:"code"`
+}
+
 // UnitValue 数值带单位
 type UnitValue struct {
 	// Value 数值

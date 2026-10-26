@@ -23,11 +23,14 @@ export * from './auth-session.ts'
 export * from './data-selector-styles.ts'
 export * from './date-input.ts'
 export { formatDateBoundaryInput, formatDateTimestampInput, toDateBoundaryTimestamp } from './date-timestamp.ts'
+export * from './download-file.ts'
 export * from './i18n/index.ts'
 export * from './session-storage.ts'
 export {
   DOCUMENT_SERVICE_PATH_PREFIX,
+  downloadDocumentFileByUrl,
   fetchDocumentBlobByUrl,
+  getDocumentDownloadUrl,
   getDocumentPreviewImageUrl,
   uploadDocumentFileWithProgress,
 } from './upload-services/core/document-service.ts'
@@ -49,7 +52,6 @@ export type {
 } from './upload-services/core/upload-pool.ts'
 export {
   fetchDocumentDownloadBlob,
-  getDocumentDownloadUrl,
   uploadDocumentFile,
 } from './upload-services/document-service.ts'
 export type {

@@ -4,6 +4,16 @@ package base
 
 import "go.cew.io/app/carbonnt/cyacle/skeled/basepub"
 
+type AdminStepUpOperation = basepub.AdminStepUpOperation
+
+const (
+	AdminStepUpOperationUnspecified                   = basepub.AdminStepUpOperationUnspecified
+	AdminStepUpOperationUserDisable                   = basepub.AdminStepUpOperationUserDisable
+	AdminStepUpOperationCertificationAuthorityArchive = basepub.AdminStepUpOperationCertificationAuthorityArchive
+	AdminStepUpOperationStandardDatabaseUpdate        = basepub.AdminStepUpOperationStandardDatabaseUpdate
+	AdminStepUpOperationWorkspaceUpdate               = basepub.AdminStepUpOperationWorkspaceUpdate
+)
+
 type ItemType = basepub.ItemType
 
 const (
@@ -19,6 +29,7 @@ type MString = basepub.MString
 type MStringItem[TItem any] = basepub.MStringItem[TItem]
 type MacroText = basepub.MacroText
 type PageResp[TItem any] = basepub.PageResp[TItem]
+type StepUpVerification = basepub.StepUpVerification
 type UnitValue = basepub.UnitValue
 
 type OpenActor = basepub.OpenActor

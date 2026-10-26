@@ -6,6 +6,7 @@ import type { WebDomain } from "@carbonnt-cyacle/web-base"
 import { webDomain as accountingWebDomain } from "@carbonnt-cyacle/web-accounting"
 import { webDomain as carbonReductionWebDomain } from "@carbonnt-cyacle/web-carbon-reduction"
 import { webDomain as cfoWebDomain } from "@carbonnt-cyacle/web-cfo"
+import { webDomain as dashboardWebDomain } from "@carbonnt-cyacle/web-dashboard"
 import { webDomain as materialWebDomain } from "@carbonnt-cyacle/web-material"
 import { webDomain as pcfFactorApiWebDomain } from "@carbonnt-cyacle/web-pcf-factor-api"
 import { webDomain as projectWebDomain } from "@carbonnt-cyacle/web-project"
@@ -636,6 +637,49 @@ describe("configured app navigation", () => {
 
     // 组织类型未知时按失败关闭处理，避免短暂放出企业专属入口。
     expect(config.scenes.map((scene) => scene.id)).toEqual(["domain-material--collection"])
+  })
+
+  it("keeps the cockpit entry for enterprise customer organizations", () => {
+    const config = createConfiguredAppNavConfig([dashboardWebDomain], {
+      language: "zh-CN",
+      workspace: createOrganizationWorkspace("ENTERPRISE_CUSTOMER"),
+    })
+
+    // 分类仍是「基础」，不靠挪进「管理」来表达企业专属。
+    expect(config.categories.find((category) => category.title === "基础")?.sceneIds).toEqual([
+      "domain-dashboard",
+    ])
+  })
+
+  it("hides the cockpit entry for non-enterprise-customer organizations", () => {
+    const config = createConfiguredAppNavConfig([dashboardWebDomain], {
+      language: "zh-CN",
+      workspace: createOrganizationWorkspace("SERVICE_PROVIDER"),
+    })
+
+    expect(config.scenes.map((scene) => scene.id)).toEqual([])
+    expect(config.categories).toEqual([])
+  })
+
+  it("hides the cockpit entry for personal workspaces", () => {
+    const config = createConfiguredAppNavConfig([dashboardWebDomain], {
+      language: "zh-CN",
+      workspace: {
+        id: "workspace-1",
+        scope: "workspace-scope-1",
+        name: "Workspace",
+        belongType: "PERSIONAL",
+      },
+    })
+
+    expect(config.scenes.map((scene) => scene.id)).toEqual([])
+  })
+
+  it("hides the cockpit entry before an organization workspace loads", () => {
+    const config = createConfiguredAppNavConfig([dashboardWebDomain], { language: "zh-CN" })
+
+    // 组织类型未知时按失败关闭处理，避免短暂放出企业专属入口。
+    expect(config.scenes.map((scene) => scene.id)).toEqual([])
   })
 
   it("groups carbon reduction management into management after carbon assets", () => {

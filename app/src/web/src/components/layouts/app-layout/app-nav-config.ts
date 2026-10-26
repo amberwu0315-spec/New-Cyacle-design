@@ -30,10 +30,13 @@ function isEnterpriseCustomerWorkspace(
  * 分类表达的是菜单归属，不是可见性；把企业专属写成「挪进管理分类」会让
  * 后续调整分类的人无意间改掉权限（物料/活动管理就这样漏过企业门禁）。
  *
+ * 「驾驶舱」（`domain-dashboard`）同样只对企业客户开放，非企业客户组织、
+ * 个人工作空间和组织类型尚未加载时都不渲染该入口。
+ *
  * 「数据收集」（`domain-material--collection`）不在此列：它的菜单按
  * manager/reporter/approver 权限可见，填报人和审批人可能是非企业用户。
  */
-const ENTERPRISE_ONLY_SCENE_IDS = ["domain-material"] as const
+const ENTERPRISE_ONLY_SCENE_IDS = ["domain-dashboard", "domain-material"] as const
 
 /**
  * Optional product-specific navigation presentation filter. The underlying
@@ -165,6 +168,7 @@ function splitMaterialModuleScenes(config: AppNavConfig): AppNavConfig {
  */
 const APP_NAV_SCENE_ORDER = [
   // 基础
+  "domain-dashboard", // 驾驶舱
   // 工作督办：模块自身把 5 个菜单都标了 category: "management"，所以会被拆成
   // `<scene id>--<首个菜单 id>` 的场景，这里必须用拆分后的 id 才能命中；
   // 不带后缀的写法一并登记，模块改写法也不会掉到分组末尾。
@@ -209,6 +213,7 @@ function groupAppNavConfig(config: AppNavConfig, options: AppNavConfigOptions = 
     appNavCategories.account,
   ]
   const appNavSceneCategoryById: Record<string, string> = {
+    "domain-dashboard": appNavCategories.basis,
     // 工作督办：模块把 5 个菜单都标了 category: "management"，场景会被拆成
     // `domain-work-supervision--work-supervision-home`；拆分场景的 id 也要在这里登记，
     // 否则会回落到模块自己声明的「管理」。不带后缀的写法一并登记，模块改写法也不会掉。

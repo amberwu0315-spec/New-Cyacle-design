@@ -15,6 +15,7 @@
   - [代码边界与导入导出](docs/code-boundaries-and-exports.md)
   - [路由与 Layout](docs/routing-and-layout.md)
   - [Feature 组织](docs/feature-organization.md)
+  - [部署能力开关](docs/deployment-capability-switches.md)
 - Web 开发约定
   - [Admin 页面展示规范](docs/admin-pages.md)
   - [Domain 多语言](docs/domain-i18n.md)
@@ -33,6 +34,7 @@
 | 代码属于 app、base 还是 feature domain，依赖和导出怎么处理 | [代码边界与导入导出](docs/code-boundaries-and-exports.md) |
 | route 挂在哪个 outlet、页面如何懒加载、Layout 如何分层 | [路由与 Layout](docs/routing-and-layout.md) |
 | 页面、hook、query、组件和 dialog 如何拆分 | [Feature 组织](docs/feature-organization.md) |
+| 功能如何按部署环境开关、VITE_* 能力开关链路如何复用 | [部署能力开关](docs/deployment-capability-switches.md) |
 | `/admin/**` 详情、分区、技术 ID 和业务跳转如何展示 | [Admin 页面展示规范](docs/admin-pages.md) |
 | Domain 文案目录和多语言 API 如何组织 | [Domain 多语言](docs/domain-i18n.md) |
 | 空名称如何展示、列表工具栏如何布局、选择弹框和枚举候选项如何交互 | [业务展示、列表与选择弹框](docs/business-display-and-selection.md) |

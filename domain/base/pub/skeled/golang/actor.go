@@ -22,7 +22,7 @@ func init() {
 	meta.RegisterActor(meta.ActorSpec{
 		Name:         "UserActor",
 		SkelName:     "base.UserActor",
-		Hash:         "9414d317",
+		Hash:         "297152ee",
 		InfoSkelName: "base.UserActorInfo",
 		InfoType:     reflect.TypeFor[*UserActorInfo](),
 	})
@@ -94,6 +94,8 @@ type UserActorInfo struct {
 	Username string `json:"username"`
 	// WorkspaceId 工作空间ID
 	WorkspaceId string `json:"workspaceId"`
+	// Phone 绑定手机号
+	Phone *string `json:"phone"`
 }
 
 // OpenActorAuthServiceServer

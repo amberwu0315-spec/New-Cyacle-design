@@ -7,6 +7,10 @@ import {
   DialogTitle,
 } from '#/components/ui/dialog.tsx'
 import { Button } from '#/components/ui/button.tsx'
+import { toast } from '#/components/ui/toast.tsx'
+import { useAuthorizedMediaUrl } from '#/hooks/use-authorized-media-url.ts'
+import { getMessages, languageStore } from '#/lib/i18n/index.ts'
+import { downloadDocumentFileByUrl } from '#/lib/upload-services/core/document-service.ts'
 import { useOptionalI18n } from './i18n/index.ts'
 
 export type DocumentsPreviewSource = 'document' | 'file'
@@ -230,16 +234,43 @@ export function DocumentPreviewDialog({
 }: DocumentPreviewDialogProps) {
   const { messages } = useOptionalI18n()
   const previewMessages = messages.assistantWorkbench.documentPreview
+  const inlinePreviewable = ['image', 'pdf', 'video'].includes(
+    item?.viewerFile.viewerKind ?? 'unknown',
+  )
+  // 只有内嵌预览才需要取 Blob：zip/word 等直接走下载，别白白拉一遍整份文件。
+  const media = useAuthorizedMediaUrl(
+    open && inlinePreviewable ? item?.url : undefined,
+  )
   const handleDownload = React.useCallback(() => {
     if (!item) {
       return
     }
 
-    onDownload?.(item)
+    if (onDownload) {
+      onDownload(item)
+      return
+    }
+
+    const url = item.url ?? item.rawUrl
+
+    if (!url) {
+      return
+    }
+
+    void downloadDocumentFileByUrl(url, item.name).catch((error: unknown) => {
+      toast.add({
+        type: 'error',
+        description:
+          error instanceof Error && error.message.trim()
+            ? error.message
+            : getMessages(languageStore.getSnapshot()).common.upload
+                .documentDownloadFailed,
+      })
+    })
   }, [item, onDownload])
 
   const canInlinePreview =
-    item?.url && ['image', 'pdf', 'video'].includes(item.viewerFile.viewerKind)
+    inlinePreviewable && Boolean(media.url) && !media.failed
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
@@ -254,19 +285,19 @@ export function DocumentPreviewDialog({
           {item && canInlinePreview ? (
             item.viewerFile.viewerKind === 'image' ? (
               <img
-                src={item.url}
+                src={media.url ?? undefined}
                 alt={item.name}
                 className="h-full w-full object-contain"
               />
             ) : item.viewerFile.viewerKind === 'video' ? (
               <video
-                src={item.url}
+                src={media.url ?? undefined}
                 controls
                 className="h-full w-full bg-black object-contain"
               />
             ) : (
               <iframe
-                src={item.url}
+                src={media.url ?? undefined}
                 title={item.name}
                 className="h-full w-full rounded-md border"
               />

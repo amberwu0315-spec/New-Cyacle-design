@@ -1,6 +1,7 @@
 'use client'
 
 import { X } from 'lucide-react'
+import * as React from 'react'
 import {
   ViewerFileTypeIcon,
   resolveFileKind,
@@ -12,12 +13,18 @@ import {
   type DocumentsPreviewItem,
 } from '#/components/assistant-workbench/document-preview.tsx'
 import { Button } from '#/components/ui/button.tsx'
+import { toast } from '#/components/ui/toast.tsx'
 import {
   getAssistantWorkbenchMessages,
   getCurrentLanguage,
   useOptionalI18n,
 } from '#/components/assistant-workbench/i18n/index.ts'
 import type { AppMessages } from '#/components/assistant-workbench/i18n/index.ts'
+import { getMessages, languageStore } from '#/lib/i18n/index.ts'
+import {
+  downloadDocumentFileByUrl,
+  getDocumentPreviewImageUrl,
+} from '#/lib/upload-services/core/document-service.ts'
 import { cn } from '#/lib/utils.ts'
 import type { AssistantWorkbenchAttachment } from '../../model'
 import type { AssistantDraftAttachment } from './draft-attachments'
@@ -106,6 +113,8 @@ function resolveAttachmentPreviewItem(input: {
       id: input.documentId,
       name: input.name,
       size: input.size,
+      // 预览器会按鉴权取回这个地址再转成 object URL；导航/媒体标签不能直接用它。
+      url: getDocumentPreviewImageUrl(input.documentId),
     })
   }
 
@@ -204,6 +213,30 @@ export function AssistantAnchorChatAttachmentList(props: {
   const layout = props.layout ?? 'compact'
   const isComposerLayout = layout === 'composer'
   const isStackedLayout = layout === 'stacked'
+
+  const downloadAttachment = React.useCallback(
+    async (attachment: AssistantAnchorChatAttachmentItem) => {
+      const url = attachment.downloadUrl
+
+      if (!url) {
+        return
+      }
+
+      try {
+        await downloadDocumentFileByUrl(url, attachment.name)
+      } catch (error) {
+        toast.add({
+          type: 'error',
+          description:
+            error instanceof Error && error.message.trim()
+              ? error.message
+              : getMessages(languageStore.getSnapshot()).common.upload
+                  .documentDownloadFailed,
+        })
+      }
+    },
+    [],
+  )
 
   return (
     <div
@@ -369,17 +402,18 @@ export function AssistantAnchorChatAttachmentList(props: {
             {content}
           </button>
         ) : downloadable ? (
-          <a
-            href={attachment.downloadUrl}
-            target="_blank"
-            rel="noreferrer"
+          <button
+            type="button"
             className={interactiveClassName}
+            onClick={() => {
+              void downloadAttachment(attachment)
+            }}
             aria-label={assistantMessages.attachments.aria.download(
               attachment.name,
             )}
           >
             {content}
-          </a>
+          </button>
         ) : (
           <div className={cardClassName}>{content}</div>
         )

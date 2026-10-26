@@ -19,6 +19,8 @@ pub actor UserActor {
             username: string
             @desc("工作空间ID")
             workspaceId: string
+            @desc("绑定手机号")
+            phone: string?
         }
     }
 }

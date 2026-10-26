@@ -4,6 +4,44 @@ package basepub
 
 import "fmt"
 
+// AdminStepUpOperation 后台敏感操作类型
+type AdminStepUpOperation string
+
+const (
+	AdminStepUpOperationUnspecified AdminStepUpOperation = "UNSPECIFIED"
+	// AdminStepUpOperationUserDisable 禁用账号
+	AdminStepUpOperationUserDisable AdminStepUpOperation = "USER_DISABLE"
+	// AdminStepUpOperationCertificationAuthorityArchive 认证机构归档
+	AdminStepUpOperationCertificationAuthorityArchive AdminStepUpOperation = "CERTIFICATION_AUTHORITY_ARCHIVE"
+	// AdminStepUpOperationStandardDatabaseUpdate 标准数据库信息编辑
+	AdminStepUpOperationStandardDatabaseUpdate AdminStepUpOperation = "STANDARD_DATABASE_UPDATE"
+	// AdminStepUpOperationWorkspaceUpdate 空间属性编辑
+	AdminStepUpOperationWorkspaceUpdate AdminStepUpOperation = "WORKSPACE_UPDATE"
+)
+
+func (adminStepUpOperation AdminStepUpOperation) MarshalJSON() ([]byte, error) {
+	return fmt.Appendf(nil, "\"%s\"", adminStepUpOperation), nil
+}
+
+func (adminStepUpOperation *AdminStepUpOperation) UnmarshalJSON(data []byte) error {
+	var err error = nil
+	switch string(data) {
+	case `"USER_DISABLE"`:
+		*adminStepUpOperation = AdminStepUpOperationUserDisable
+	case `"CERTIFICATION_AUTHORITY_ARCHIVE"`:
+		*adminStepUpOperation = AdminStepUpOperationCertificationAuthorityArchive
+	case `"STANDARD_DATABASE_UPDATE"`:
+		*adminStepUpOperation = AdminStepUpOperationStandardDatabaseUpdate
+	case `"WORKSPACE_UPDATE"`:
+		*adminStepUpOperation = AdminStepUpOperationWorkspaceUpdate
+	case "null":
+		err = fmt.Errorf("unexpected null value for non-pointer AdminStepUpOperation")
+	default:
+		*adminStepUpOperation = AdminStepUpOperationUnspecified
+	}
+	return err
+}
+
 // ItemType 宏文本片段类型
 type ItemType string
 

@@ -10,11 +10,17 @@ func init() {
 
 var _DomainSchema = &skel.DomainSchema{
 	Domain:    "base",
-	Hash:      "23e5db03",
+	Hash:      "cb6fbe0b",
 	Full:      true,
 	Generated: &skel.GeneratedInfo{CompilerVersion: "v0.30.0"},
 
 	Enums: []*skel.EnumSchema{
+		{Name: "AdminStepUpOperation", SkelName: "base.AdminStepUpOperation", Description: "后台敏感操作类型", Hash: "b27ff652", Items: []*skel.EnumItemSchema{
+			{Name: "USER_DISABLE", Description: "禁用账号"},
+			{Name: "CERTIFICATION_AUTHORITY_ARCHIVE", Description: "认证机构归档"},
+			{Name: "STANDARD_DATABASE_UPDATE", Description: "标准数据库信息编辑"},
+			{Name: "WORKSPACE_UPDATE", Description: "空间属性编辑"},
+		}},
 		{Name: "ItemType", SkelName: "base.ItemType", Description: "宏文本片段类型", Hash: "c7abbf72", Items: []*skel.EnumItemSchema{
 			{Name: "PLAIN", Description: "普通文本"},
 			{Name: "CTX_VAR", Description: "占位符"},
@@ -47,6 +53,10 @@ var _DomainSchema = &skel.DomainSchema{
 			{Name: "total", Description: "总数", Type: &skel.TypeSchema{Kind: skel.TypeKindScalar, Scalar: skel.ScalarInt}},
 			{Name: "data", Description: "数据", Type: &skel.TypeSchema{Kind: skel.TypeKindList, Element: &skel.TypeSchema{Kind: skel.TypeKindTypeParameter, Name: "TItem"}, Nullable: true}},
 		}},
+		{Name: "StepUpVerification", SkelName: "base.StepUpVerification", Description: "后台敏感操作二次验证参数", Hash: "6354295b", Members: []*skel.MemberSchema{
+			{Name: "token", Description: "验证令牌", Type: &skel.TypeSchema{Kind: skel.TypeKindScalar, Scalar: skel.ScalarString}},
+			{Name: "code", Description: "短信验证码", Type: &skel.TypeSchema{Kind: skel.TypeKindScalar, Scalar: skel.ScalarString}},
+		}},
 		{Name: "UnitValue", SkelName: "base.UnitValue", Description: "数值带单位", Hash: "e2c54182", Members: []*skel.MemberSchema{
 			{Name: "value", Description: "数值", Type: &skel.TypeSchema{Kind: skel.TypeKindScalar, Scalar: skel.ScalarDecimal, Nullable: true}},
 			{Name: "unitId", Description: "单位id", Type: &skel.TypeSchema{Kind: skel.TypeKindScalar, Scalar: skel.ScalarString, Nullable: true}},
@@ -66,13 +76,14 @@ var _DomainSchema = &skel.DomainSchema{
 		}}, AuthMethod: &skel.MethodSchema{Name: "auth", SkelName: "auth", Hash: "60a2d325", AuthMode: skel.AuthModeRequired, ResultType: &skel.TypeSchema{Kind: skel.TypeKindData, Name: "OpenActorInfo", SkelName: "base.OpenActorInfo"}, Arguments: []*skel.MemberSchema{
 			{Name: "credential", Type: &skel.TypeSchema{Kind: skel.TypeKindData, Name: "OpenActorCredential", SkelName: "base.OpenActorCredential"}},
 		}}, PermEnabled: false},
-		{Name: "UserActor", SkelName: "base.UserActor", Description: "用户参与者", Hash: "9414d317", Vias: []skel.ActorVia{skel.ActorViaClient}, AuthEnabled: true, AuthCredential: &skel.DataSchema{Name: "UserActorCredential", SkelName: "base.UserActorCredential", Hash: "3e83beeb", Members: []*skel.MemberSchema{
+		{Name: "UserActor", SkelName: "base.UserActor", Description: "用户参与者", Hash: "297152ee", Vias: []skel.ActorVia{skel.ActorViaClient}, AuthEnabled: true, AuthCredential: &skel.DataSchema{Name: "UserActorCredential", SkelName: "base.UserActorCredential", Hash: "3e83beeb", Members: []*skel.MemberSchema{
 			{Name: "session", Description: "会话", Type: &skel.TypeSchema{Kind: skel.TypeKindScalar, Scalar: skel.ScalarString}},
 			{Name: "scope", Description: "应用权限范围 多个用,隔开", Type: &skel.TypeSchema{Kind: skel.TypeKindScalar, Scalar: skel.ScalarString}},
-		}}, AuthInfo: &skel.DataSchema{Name: "UserActorInfo", SkelName: "base.UserActorInfo", Hash: "cb58a5c7", Members: []*skel.MemberSchema{
+		}}, AuthInfo: &skel.DataSchema{Name: "UserActorInfo", SkelName: "base.UserActorInfo", Hash: "b754a2bf", Members: []*skel.MemberSchema{
 			{Name: "userId", Description: "接收人用户ID", Type: &skel.TypeSchema{Kind: skel.TypeKindScalar, Scalar: skel.ScalarInt}},
 			{Name: "username", Description: "用户名字段名称", Type: &skel.TypeSchema{Kind: skel.TypeKindScalar, Scalar: skel.ScalarString}},
 			{Name: "workspaceId", Description: "工作空间ID", Type: &skel.TypeSchema{Kind: skel.TypeKindScalar, Scalar: skel.ScalarString}},
+			{Name: "phone", Description: "绑定手机号", Type: &skel.TypeSchema{Kind: skel.TypeKindScalar, Scalar: skel.ScalarString, Nullable: true}},
 		}}, AuthService: &skel.ServiceSchema{Name: "UserActorAuthService", SkelName: "base.UserActorAuthService", Hash: "636266c7", Pub: false, AuthMode: skel.AuthModeRequired, Methods: []*skel.MethodSchema{
 			{Name: "auth", SkelName: "auth", Hash: "8bf168b3", AuthMode: skel.AuthModeRequired, ResultType: &skel.TypeSchema{Kind: skel.TypeKindData, Name: "UserActorInfo", SkelName: "base.UserActorInfo"}, Arguments: []*skel.MemberSchema{
 				{Name: "credential", Type: &skel.TypeSchema{Kind: skel.TypeKindData, Name: "UserActorCredential", SkelName: "base.UserActorCredential"}},
