@@ -61,6 +61,10 @@ export interface DatePickerProps
   language?: SupportedLanguage
   maxDate?: Date
   minDate?: Date
+  /** 日历可切换的最早月份；用于收窄年/月下拉列表的范围。 */
+  startMonth?: Date
+  /** 日历可切换的最晚月份；比当前年更晚时才能选到下一年。 */
+  endMonth?: Date
 }
 
 function DatePicker({
@@ -75,6 +79,8 @@ function DatePicker({
   language: languageOverride,
   maxDate,
   minDate,
+  startMonth,
+  endMonth,
   onClick: inputOnClick,
   onFocus: inputOnFocus,
   placeholder,
@@ -177,6 +183,8 @@ function DatePicker({
             locale={language === "en-US" ? enUS : zhCN}
             selected={selectedDate}
             defaultMonth={selectedDate}
+            startMonth={startMonth}
+            endMonth={endMonth}
             disabled={disabledDates}
             onSelect={handleSelect}
           />
