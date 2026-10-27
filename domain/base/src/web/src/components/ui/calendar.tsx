@@ -5,11 +5,19 @@ import {
   DayPicker,
   getDefaultClassNames,
   type DayButton,
+  type DropdownProps,
   type Locale,
 } from "react-day-picker"
 
 import { cn } from "#/lib/utils.ts"
 import { Button, buttonVariants } from "#/components/ui/button.tsx"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "#/components/ui/select.tsx"
 import { ChevronLeftIcon, ChevronRightIcon, ChevronDownIcon } from "lucide-react"
 
 function Calendar({
@@ -164,6 +172,7 @@ function Calendar({
         DayButton: ({ ...props }) => (
           <CalendarDayButton locale={locale} {...props} />
         ),
+        Dropdown: (props) => <CalendarDropdown {...props} />,
         WeekNumber: ({ children, ...props }) => {
           return (
             <td {...props}>
@@ -177,6 +186,90 @@ function Calendar({
       }}
       {...props}
     />
+  )
+}
+
+/**
+ * 年份/月份下拉。
+ *
+ * react-day-picker 默认渲染原生 <select>，年份一多（默认 100 年）在 macOS 上
+ * 会铺满整个屏幕。这里换成设计系统的 Select：弹层高度受限、可滚动，
+ * 年份可以一直向上滚到更早的年份。
+ */
+function CalendarDropdown({
+  className,
+  disabled,
+  options,
+  style,
+  value,
+  onChange,
+  "aria-label": ariaLabel,
+}: DropdownProps) {
+  const [open, setOpen] = React.useState(false)
+  const selectedItemRef = React.useRef<HTMLDivElement | null>(null)
+  const currentValue = value == null ? null : String(value)
+  const items = React.useMemo(
+    () =>
+      (options ?? []).map((option) => ({
+        value: String(option.value),
+        label: option.label,
+        disabled: option.disabled,
+      })),
+    [options]
+  )
+
+  // 年份列表很长（默认往前 100 年），展开时把当前选中的年份滚到可视区域，
+  // 继续往上滑就能看到更早的年份。
+  React.useEffect(() => {
+    if (!open) return
+
+    const frame = requestAnimationFrame(() => {
+      selectedItemRef.current?.scrollIntoView?.({ block: "center" })
+    })
+
+    return () => cancelAnimationFrame(frame)
+  }, [open, currentValue])
+
+  return (
+    <span className={cn("inline-flex", className)} style={style}>
+      <Select
+        items={items}
+        value={currentValue}
+        disabled={disabled}
+        onOpenChange={setOpen}
+        onValueChange={(nextValue) => {
+          if (nextValue == null) return
+          // react-day-picker 按原生 select 的 change 事件取值。
+          onChange?.({
+            target: { value: nextValue },
+          } as React.ChangeEvent<HTMLSelectElement>)
+        }}
+      >
+        <SelectTrigger
+          aria-label={ariaLabel}
+          size="sm"
+          className="gap-1 border-0 bg-transparent px-1.5 text-sm font-medium shadow-none hover:bg-accent focus-visible:ring-2 dark:bg-transparent dark:hover:bg-accent"
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent
+          alignItemWithTrigger={false}
+          className="max-h-64 min-w-32 overflow-y-auto"
+        >
+          {items.map((item) => (
+            <SelectItem
+              key={item.value}
+              ref={item.value === currentValue ? selectedItemRef : undefined}
+              value={item.value}
+              label={item.label}
+              disabled={item.disabled}
+            >
+              {item.label}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
+    </span>
   )
 }
 

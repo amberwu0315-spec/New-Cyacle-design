@@ -1,32 +1,58 @@
 // @vitest-environment jsdom
 
-import { fireEvent, render, screen } from "@testing-library/react"
-import { describe, expect, it } from "vitest"
+import { cleanup, fireEvent, render, screen, within } from "@testing-library/react"
+import { afterEach, describe, expect, it } from "vitest"
 
 import { DatePicker } from "./date-picker.tsx"
 
+afterEach(cleanup)
+
 describe("DatePicker", () => {
-  it("limits year navigation to the provided month range", () => {
+  it("renders a scrollable year dropdown that can reach the next year", () => {
     render(
       <DatePicker
         value="2026-12-31"
-        startMonth={new Date(2026, 0, 1)}
+        language="en-US"
         endMonth={new Date(2027, 11, 31)}
         onValueChange={() => {}}
       />,
     )
 
     fireEvent.click(screen.getByRole("textbox"))
+    fireEvent.click(screen.getByRole("combobox", { name: /year/i }))
 
-    const yearSelect = Array.from(document.querySelectorAll("select")).find(
-      (select) =>
-        Array.from(select.options).some((option) => option.value === "2027"),
-    )
-    const years = Array.from(yearSelect?.options ?? []).map(
-      (option) => option.value,
+    const listbox = screen.getByRole("listbox")
+    const years = within(listbox)
+      .getAllByRole("option")
+      .map((option) => option.textContent)
+
+    // 年份列表是可滚动的长列表（默认往前 100 年），不是只有固定十几年。
+    expect(years.length).toBeGreaterThan(50)
+    // 当前年的下一年可以选。
+    expect(years).toContain("2027")
+    expect(years).toContain("2026")
+  })
+
+  it("navigates to the chosen year without closing the calendar", () => {
+    render(
+      <DatePicker
+        value="2026-12-31"
+        language="en-US"
+        endMonth={new Date(2027, 11, 31)}
+        onValueChange={() => {}}
+      />,
     )
 
-    // 年份下拉只保留传入范围内的年份，既能收窄列表，也保证能选到下一年。
-    expect(years).toEqual(["2026", "2027"])
+    fireEvent.click(screen.getByRole("textbox"))
+    fireEvent.click(screen.getByRole("combobox", { name: /year/i }))
+    const option = screen.getByRole("option", { name: "2027" })
+    fireEvent.pointerDown(option)
+    fireEvent.click(option)
+
+    // 年份切换后日历仍然打开（月份下拉还在），且年份触发器显示 2027。
+    expect(screen.getByRole("combobox", { name: /month/i })).toBeTruthy()
+    expect(
+      screen.getByRole("combobox", { name: /year/i }).textContent,
+    ).toContain("2027")
   })
 })
