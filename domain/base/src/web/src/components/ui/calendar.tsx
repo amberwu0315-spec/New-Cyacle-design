@@ -59,17 +59,19 @@ function Calendar({
         ),
         month: cn("flex w-full flex-col gap-4", defaultClassNames.month),
         nav: cn(
-          "absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
+          // 翻月箭头是整条覆盖在标题行上的绝对定位层，只让按钮本身响应点击，
+          // 否则会挡住标题行里的年/月下拉。
+          "pointer-events-none absolute inset-x-0 top-0 flex w-full items-center justify-between gap-1",
           defaultClassNames.nav
         ),
         button_previous: cn(
           buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
+          "pointer-events-auto size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
           defaultClassNames.button_previous
         ),
         button_next: cn(
           buttonVariants({ variant: buttonVariant }),
-          "size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
+          "pointer-events-auto size-(--cell-size) p-0 select-none aria-disabled:opacity-50",
           defaultClassNames.button_next
         ),
         month_caption: cn(
@@ -231,7 +233,9 @@ function CalendarDropdown({
   }, [open, currentValue])
 
   return (
-    <span className={cn("inline-flex", className)} style={style}>
+    // 日历的翻月箭头是一整条 absolute 的 nav，会盖在标题行上方；
+    // 这里要让下拉本身也是定位元素并抬高层级，否则点击会被那条 nav 吃掉。
+    <span className={cn("relative z-10 inline-flex", className)} style={style}>
       <Select
         items={items}
         value={currentValue}
