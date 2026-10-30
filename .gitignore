@@ -7,6 +7,7 @@ go.work.sum
 .gocache/
 go.work*
 
+
 # PLOTTED - BEGIN
 **/generated/
 *.local
