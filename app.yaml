@@ -112,3 +112,6 @@ domains:
     - name: dashboard
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/dashboard.git
+    - name: policy
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/policy.git

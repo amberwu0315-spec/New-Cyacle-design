@@ -7,7 +7,6 @@ go.work.sum
 .gocache/
 go.work*
 
-
 # PLOTTED - BEGIN
 **/generated/
 *.local
@@ -50,6 +49,7 @@ go.work*
 /domain/meta
 /domain/notice
 /domain/pcf.factor.api
+/domain/policy
 /domain/project
 /domain/project.data
 /domain/record

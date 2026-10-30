@@ -215,6 +215,9 @@ importers:
       '@carbonnt-cyacle/skeled-cfoapi':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-cfoapi
+      '@carbonnt-cyacle/skeled-dashboardapi':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/skeled-dashboardapi
       '@carbonnt-cyacle/skeled-factorapi':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-factorapi
@@ -248,6 +251,9 @@ importers:
       '@carbonnt-cyacle/skeled-pcf-factor-apiapi':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-pcf-factor-apiapi
+      '@carbonnt-cyacle/skeled-policyapi':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/skeled-policyapi
       '@carbonnt-cyacle/skeled-project-dataapi':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-project-dataapi
@@ -350,6 +356,9 @@ importers:
       '@carbonnt-cyacle/web-pcf-factor-api':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-pcf-factor-api
+      '@carbonnt-cyacle/web-policy':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/web-policy
       '@carbonnt-cyacle/web-project':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-project
