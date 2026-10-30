@@ -94,7 +94,6 @@ packages:
   - ./.plot/web/virtual/skeled-metaapi
   - ./.plot/web/virtual/skeled-noticeapi
   - ./.plot/web/virtual/skeled-pcf-factor-apiapi
-  - ./.plot/web/virtual/skeled-policyapi
   - ./.plot/web/virtual/skeled-project-dataapi
   - ./.plot/web/virtual/skeled-projectapi
   - ./.plot/web/virtual/skeled-recordapi

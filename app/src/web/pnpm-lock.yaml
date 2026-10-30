@@ -251,9 +251,6 @@ importers:
       '@carbonnt-cyacle/skeled-pcf-factor-apiapi':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-pcf-factor-apiapi
-      '@carbonnt-cyacle/skeled-policyapi':
-        specifier: workspace:*
-        version: link:../../../.plot/web/virtual/skeled-policyapi
       '@carbonnt-cyacle/skeled-project-dataapi':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-project-dataapi

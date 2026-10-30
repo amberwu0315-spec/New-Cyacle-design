@@ -26,7 +26,6 @@
     "@carbonnt-cyacle/skeled-metaapi": "workspace:*",
     "@carbonnt-cyacle/skeled-noticeapi": "workspace:*",
     "@carbonnt-cyacle/skeled-pcf-factor-apiapi": "workspace:*",
-    "@carbonnt-cyacle/skeled-policyapi": "workspace:*",
     "@carbonnt-cyacle/skeled-project-dataapi": "workspace:*",
     "@carbonnt-cyacle/skeled-projectapi": "workspace:*",
     "@carbonnt-cyacle/skeled-recordapi": "workspace:*",
