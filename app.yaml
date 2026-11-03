@@ -115,3 +115,6 @@ domains:
     - name: policy
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/policy.git
+    - name: cfo.accounting
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/cfo.accounting.git

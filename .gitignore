@@ -7,7 +7,6 @@ go.work.sum
 .gocache/
 go.work*
 
-
 # PLOTTED - BEGIN
 **/generated/
 *.local
@@ -38,6 +37,7 @@ go.work*
 /domain/category
 /domain/cbam
 /domain/cfo
+/domain/cfo.accounting
 /domain/dashboard
 /domain/factor
 /domain/file

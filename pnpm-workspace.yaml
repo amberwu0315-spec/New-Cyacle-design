@@ -81,6 +81,7 @@ packages:
   - ./.plot/web/virtual/skeled-carbon-reductionapi
   - ./.plot/web/virtual/skeled-categoryapi
   - ./.plot/web/virtual/skeled-cbamapi
+  - ./.plot/web/virtual/skeled-cfo-accountingapi
   - ./.plot/web/virtual/skeled-cfoapi
   - ./.plot/web/virtual/skeled-dashboardapi
   - ./.plot/web/virtual/skeled-factorapi
@@ -94,6 +95,7 @@ packages:
   - ./.plot/web/virtual/skeled-metaapi
   - ./.plot/web/virtual/skeled-noticeapi
   - ./.plot/web/virtual/skeled-pcf-factor-apiapi
+  - ./.plot/web/virtual/skeled-policyapi
   - ./.plot/web/virtual/skeled-project-dataapi
   - ./.plot/web/virtual/skeled-projectapi
   - ./.plot/web/virtual/skeled-recordapi
@@ -116,6 +118,7 @@ packages:
   - ./.plot/web/virtual/web-category
   - ./.plot/web/virtual/web-cbam
   - ./.plot/web/virtual/web-cfo
+  - ./.plot/web/virtual/web-cfo-accounting
   - ./.plot/web/virtual/web-dashboard
   - ./.plot/web/virtual/web-factor
   - ./.plot/web/virtual/web-file
