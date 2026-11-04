@@ -118,3 +118,6 @@ domains:
     - name: cfo.accounting
       source: REMOTE
       gitUrl: git@git.cew.io:carbonnt/cyacle/domain/cfo.accounting.git
+    - name: cfo.report
+      source: REMOTE
+      gitUrl: git@git.cew.io:carbonnt/cyacle/domain/cfo.report.git
