@@ -51,6 +51,7 @@
     "@carbonnt-cyacle/web-cbam": "workspace:*",
     "@carbonnt-cyacle/web-cfo": "workspace:*",
     "@carbonnt-cyacle/web-cfo-accounting": "workspace:*",
+    "@carbonnt-cyacle/web-cfo-report": "workspace:*",
     "@carbonnt-cyacle/web-dashboard": "workspace:*",
     "@carbonnt-cyacle/web-factor": "workspace:*",
     "@carbonnt-cyacle/web-file": "workspace:*",

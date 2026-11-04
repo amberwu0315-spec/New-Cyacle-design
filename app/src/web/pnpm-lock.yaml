@@ -326,6 +326,9 @@ importers:
       '@carbonnt-cyacle/web-cfo-accounting':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-cfo-accounting
+      '@carbonnt-cyacle/web-cfo-report':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/web-cfo-report
       '@carbonnt-cyacle/web-dashboard':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/web-dashboard
