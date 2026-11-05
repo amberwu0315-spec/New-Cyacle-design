@@ -84,6 +84,7 @@ packages:
   - ./.plot/web/virtual/skeled-cfo-accountingapi
   - ./.plot/web/virtual/skeled-cfo-reportapi
   - ./.plot/web/virtual/skeled-cfoapi
+  - ./domain/cfo.report/api/skeled/typescript
   - ./.plot/web/virtual/skeled-dashboardapi
   - ./.plot/web/virtual/skeled-factorapi
   - ./.plot/web/virtual/skeled-fileapi
