@@ -1,5 +1,8 @@
 # local disabled domains
 /scripts/
+# 非 app.yaml 声明、仅本地 clone 的域：不跟踪，避免 git add -A 把嵌套仓库登记成 gitlink
+/domain/authorization
+/domain/wuxibiologics
 # Plot 生成的本地 workspace 与本地构建缓存（放在托管块外，避免被 plot 重新生成时覆盖）
 go.work
 go.work.sum
