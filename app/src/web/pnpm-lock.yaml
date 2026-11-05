@@ -215,6 +215,9 @@ importers:
       '@carbonnt-cyacle/skeled-cfo-accountingapi':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-cfo-accountingapi
+      '@carbonnt-cyacle/skeled-cfo-reportapi':
+        specifier: workspace:*
+        version: link:../../../.plot/web/virtual/skeled-cfo-reportapi
       '@carbonnt-cyacle/skeled-cfoapi':
         specifier: workspace:*
         version: link:../../../.plot/web/virtual/skeled-cfoapi

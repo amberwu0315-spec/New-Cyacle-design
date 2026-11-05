@@ -14,6 +14,7 @@
     "@carbonnt-cyacle/skeled-categoryapi": "workspace:*",
     "@carbonnt-cyacle/skeled-cbamapi": "workspace:*",
     "@carbonnt-cyacle/skeled-cfo-accountingapi": "workspace:*",
+    "@carbonnt-cyacle/skeled-cfo-reportapi": "workspace:*",
     "@carbonnt-cyacle/skeled-cfoapi": "workspace:*",
     "@carbonnt-cyacle/skeled-dashboardapi": "workspace:*",
     "@carbonnt-cyacle/skeled-factorapi": "workspace:*",
