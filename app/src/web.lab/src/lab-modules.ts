@@ -1,7 +1,6 @@
 // lab 自有模块清单：从 app/src/web/src/generated/modules.gen.ts 同步。
-// 同步命令：node scripts/lab/sync-modules.mjs
+// 同步命令：node app/src/web.lab/scripts/sync-modules.mjs
 // 不要手改——main 新增 domain 时跑一次同步即可。
-
 
 import { webDomain as AccountingWebModule } from "@carbonnt-cyacle/web-accounting"
 import { webDomain as CarbonAssetsWebModule } from "@carbonnt-cyacle/web-carbon-assets"
