@@ -5,6 +5,7 @@ artifacts:
       type: SERVER
     - name: web
       type: WEB
+    - name: web.lab
 domains:
     - name: app
       source: LOCAL

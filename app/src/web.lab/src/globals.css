@@ -1,0 +1,10 @@
+@source "./**/*.{ts,tsx}";
+
+#app {
+  isolation: isolate;
+  min-height: 100%;
+}
+
+body {
+  position: relative;
+}

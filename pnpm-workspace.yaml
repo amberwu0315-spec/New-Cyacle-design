@@ -145,4 +145,5 @@ packages:
   - ./.plot/web/virtual/web-wecom
   - ./.plot/web/virtual/web-work-supervision
   - ./app/src/web
+  - ./app/src/web.lab
   # plot:workspace-end

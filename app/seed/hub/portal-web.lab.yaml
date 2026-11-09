@@ -1,0 +1,11 @@
+portalSites:
+    - name: app.WebLabWeb-web
+      type: WEBGW
+      actorSkelName: base.UserActor
+      actorVia: client
+      webName: app.WebLabWeb
+portalRules:
+    - name: app.WebLabWeb-web
+      entryName: cyacle.http
+      routeType: SITE
+      routeSiteName: app.WebLabWeb-web

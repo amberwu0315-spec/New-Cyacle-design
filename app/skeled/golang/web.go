@@ -9,8 +9,34 @@ import (
 )
 
 func init() {
+	web.Register(_WebLabWebSpec)
 	web.Register(_WebWebSpec)
 }
+
+var _WebLabWebSpec = &web.WebSpec{
+	Name:              "WebLabWeb",
+	SkelName:          "app.WebLabWeb",
+	Hash:              "321bfa1a",
+	MountPath:         "/lab",
+	ServerType:        reflect.TypeFor[WebLabWebServer](),
+	DefaultServerType: reflect.TypeFor[*DefaultWebLabWebServer](),
+}
+
+// WebLabWebServer Lab 实验入口
+type WebLabWebServer interface {
+	web.Handler
+
+	mustBeWebLabWebServer()
+}
+
+type DefaultWebLabWebServer struct {
+}
+
+func (*DefaultWebLabWebServer) Routes(*web.Router) {
+	panic("method routes is not implemented")
+}
+
+func (*DefaultWebLabWebServer) mustBeWebLabWebServer() {}
 
 var _WebWebSpec = &web.WebSpec{
 	Name:              "WebWeb",
